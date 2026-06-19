@@ -296,12 +296,18 @@ function drawField(){
   grassGrad.addColorStop(.5,'#388e3c');
   grassGrad.addColorStop(1,'#2e7d32');
   ctx.fillStyle=grassGrad; ctx.fillRect(0,0,W,H);
-  // Mowing stripes — alternating light/dark bands
-  const stripeCount=10;
+  // Mowing stripes — quer zur Spielrichtung
+  // Halbfeld + Strafraum: Spielrichtung vertikal → horizontale Streifen
+  // alle anderen: Spielrichtung horizontal → vertikale Streifen
+  const stripeCount=12;
+  const stripeVert=(ft==='half'||ft==='penalty');
   for(let i=0;i<stripeCount;i++){
-    const sy=i*(H/stripeCount);
     ctx.fillStyle=i%2===0?'rgba(0,0,0,.06)':'rgba(255,255,255,.045)';
-    ctx.fillRect(0,sy,W,H/stripeCount);
+    if(stripeVert){
+      ctx.fillRect(0,i*(H/stripeCount),W,H/stripeCount);
+    } else {
+      ctx.fillRect(i*(W/stripeCount),0,W/stripeCount,H);
+    }
   }
   // Subtle vignette around edges
   const vig=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*.3,W/2,H/2,Math.max(W,H)*.75);
