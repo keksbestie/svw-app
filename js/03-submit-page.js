@@ -53,7 +53,11 @@ async function renderSubmitPage(){
     _renderMySubmissionsFromCache();
     if(IS_ADMIN){ _renderAdminQueueFromCache(); renderUserList(); }
     document.getElementById('adminQueueWrap').style.display = IS_ADMIN ? 'block' : 'none';
-    document.getElementById('adminUserWrap').style.display = IS_ADMIN ? 'block' : 'none';
+    const uw=document.getElementById('adminUserWrap');
+    uw.style.display = IS_ADMIN ? 'block' : 'none';
+    uw.style.padding = '24px';
+    uw.style.maxWidth = '1260px';
+    uw.style.margin = '0 auto';
     // Canvas wird per Button im fieldOverlay geöffnet
   }
 }
