@@ -638,6 +638,7 @@
             <select id="fieldType" onchange="initCanvas(true)" style="padding:4px 8px;border-radius:6px;border:none;font-size:11px;font-weight:700;background:#344736;color:#fff;cursor:pointer;height:28px;">
               <option value="full">Vollfeld</option><option value="half">Halbfeld</option>
               <option value="small" selected>Kleinfeld</option><option value="neutral">Neutrales Feld</option>
+              <option value="penalty">Nur Strafraum</option><option value="sprint">Sprintbahn 30×5m</option>
             </select>
             <div style="width:1px;height:20px;background:rgba(255,255,255,.12);"></div>
             <div style="display:flex;align-items:center;gap:2px;">
@@ -680,6 +681,7 @@
               <button onclick="undoDraw()" style="padding:4px 8px;border-radius:6px;border:none;background:#344736;color:#fff;font-size:11px;font-weight:700;cursor:pointer;">↩</button>
               <button onclick="clearCanvas()" style="padding:4px 8px;border-radius:6px;border:none;background:#344736;color:rgba(255,100,100,.9);font-size:11px;cursor:pointer;">✕</button>
               <button onclick="exportCanvas()" style="padding:5px 10px;border-radius:6px;border:none;background:var(--g);color:#fff;font-size:11px;font-weight:800;cursor:pointer;">✓ Übernehmen</button>
+              <button onclick="closeFieldOverlay()" style="padding:5px 10px;border-radius:6px;border:none;background:#455a64;color:#ccc;font-size:11px;cursor:pointer;">✕ Schließen</button>
             </div>
           </div>
           <div style="background:#2d3f2f;padding:4px 10px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">

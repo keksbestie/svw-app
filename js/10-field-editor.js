@@ -18,12 +18,30 @@ let canvasEl=null, ctx=null, _cvInited=false;
 function switchImgTab(tab){
   const u=tab==='upload';
   document.getElementById('imgPanelUpload').style.display=u?'block':'none';
-  document.getElementById('imgPanelDraw').style.display=u?'none':'block';
   document.getElementById('imgTabUpload').style.background=u?'var(--g)':'none';
   document.getElementById('imgTabUpload').style.color=u?'#fff':'var(--gd2)';
   document.getElementById('imgTabDraw').style.background=u?'none':'var(--g)';
   document.getElementById('imgTabDraw').style.color=u?'var(--gd2)':'#fff';
-  if(!u) setTimeout(()=>initCanvas(false), 80);
+  if(u){
+    document.getElementById('imgPanelDraw').style.display='none';
+  } else {
+    openFieldOverlay();
+  }
+}
+
+function openFieldOverlay(){
+  const p=document.getElementById('imgPanelDraw');
+  p.style.cssText='display:flex;flex-direction:column;position:fixed;inset:0;z-index:9999;';
+  const cv=document.getElementById('fieldCanvas');
+  if(cv){cv.style.flex='1';cv.style.height='0';cv.style.borderRadius='0';cv.style.width='100%';}
+  setTimeout(()=>initCanvas(false),80);
+}
+
+function closeFieldOverlay(){
+  const p=document.getElementById('imgPanelDraw');
+  p.style.cssText='display:none;';
+  const cv=document.getElementById('fieldCanvas');
+  if(cv){cv.style.flex='';cv.style.height='';cv.style.borderRadius='0 0 10px 10px';}
 }
 
 function initCanvas(reset){
@@ -31,10 +49,13 @@ function initCanvas(reset){
   if(!canvasEl) return;
   const dpr=window.devicePixelRatio||1;
   const W=Math.max(canvasEl.parentElement.clientWidth||400, 320);
-  const H=Math.round(W*0.63);
+  // In Overlay-Modus hat das Canvas flex:1, Browser berechnet Höhe selbst
+  const flexH=canvasEl.offsetHeight;
+  const H=flexH>100?flexH:Math.round(W*0.63);
   // Set physical pixels = CSS pixels × dpr for sharp rendering
   canvasEl.width=W*dpr; canvasEl.height=H*dpr;
-  canvasEl.style.width=W+'px'; canvasEl.style.height=H+'px';
+  canvasEl.style.width=W+'px';
+  if(!canvasEl.style.flex){canvasEl.style.height=H+'px';}
   ctx=canvasEl.getContext('2d');
   ctx.scale(dpr,dpr); // all drawing in CSS px, display is sharp
   if(reset){canvasObjects=[];playerCounters={};undoStack=[];selectedObjIdx=null;linePhase=0;lineStart=null;}
@@ -44,11 +65,11 @@ function initCanvas(reset){
 
 function cvPos(e){
   const r=canvasEl.getBoundingClientRect();
-  let cx,cy;
-  if(e.touches){cx=e.touches[0].clientX;cy=e.touches[0].clientY;}
-  else{cx=e.clientX;cy=e.clientY;}
-  // Return CSS-pixel coords (already scaled via ctx.scale)
-  return{x:(cx-r.left),y:(cy-r.top)};
+  return{x:(e.clientX-r.left),y:(e.clientY-r.top)};
+}
+function cvPosT(t){
+  const r=canvasEl.getBoundingClientRect();
+  return{x:(t.clientX-r.left),y:(t.clientY-r.top)};
 }
 
 function attachCvEvents(){
@@ -59,14 +80,14 @@ function attachCvEvents(){
   });
 }
 const _cvH={
-  mousedown: e=>cvDown(cvPos(e)),
+  mousedown: e=>{e.preventDefault();cvDown(cvPos(e));},
   mousemove: e=>cvMove(cvPos(e)),
   mouseup:   e=>cvUp(cvPos(e)),
   contextmenu: e=>{e.preventDefault(); cvRightClick(cvPos(e));},
   dblclick: e=>{linePhase=0;lineStart=null;selectedObjIdx=null;isDribbling=false;dribblePoints=[];redraw();},
-  touchstart: e=>{e.preventDefault();cvDown(cvPos(e.touches[0]));},
-  touchmove:  e=>{e.preventDefault();cvMove(cvPos(e.touches[0]));},
-  touchend:   e=>{e.preventDefault();cvUp(cvPos(e.changedTouches[0]));}
+  touchstart: e=>{e.preventDefault();cvDown(cvPosT(e.touches[0]));},
+  touchmove:  e=>{e.preventDefault();cvMove(cvPosT(e.touches[0]));},
+  touchend:   e=>{e.preventDefault();cvUp(cvPosT(e.changedTouches[0]));}
 };
 
 // ── HIT TEST ──
@@ -173,9 +194,19 @@ function setTool(t){
   currentTool=t; linePhase=0; lineStart=null; isDribbling=false; dribblePoints=[];
   document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));
   const btn=document.getElementById('tb_'+t); if(btn)btn.classList.add('active');
-  const pc=document.getElementById('tb_player');
-  if(pc){pc.style.background=document.getElementById('playerColor')?.value||'#1565c0';}
+  updatePlayerColorBtn();
   if(canvasEl)canvasEl.style.cursor=t==='select'?'default':t==='erase'?'cell':'crosshair';
+}
+
+function updatePlayerColorBtn(){
+  const col=document.getElementById('playerColor')?.value||'#1565c0';
+  const pc=document.getElementById('tb_player');
+  if(pc){
+    pc.style.background=col;
+    // Textfarbe anpassen für helle Hintergründe
+    const bright=['#f9a825','#ffffff','#fff176','#e0e0e0'].includes(col);
+    pc.style.color=bright?'#1a1a1a':'#ffffff';
+  }
 }
 
 // ── RESAMPLE dribble path ──
@@ -291,6 +322,8 @@ function drawField(){
   if(ft==='full')drawFull(W,H,p);
   else if(ft==='half')drawHalf(W,H,p);
   else if(ft==='small')drawSmall(W,H,p);
+  else if(ft==='penalty')drawPenaltyBox(W,H,p);
+  else if(ft==='sprint')drawSprintLane(W,H,p);
   else drawNeutral(W,H,p);
 }
 // Draw a field goal with net (for field markings)
@@ -433,6 +466,83 @@ function drawNeutral(W,H,p){
   sr(p,p,fw,fh); sl(W/2,p,W/2,H-p); sl(p,H/2,W-p,H/2); dot(W/2,H/2,4);
 }
 
+// Nur Strafraum — FIFA: 40.32m breit × 16.5m tief
+// Canvas: W-Achse=40.32m, H-Achse=16.5m + Tor-Tiefe
+function drawPenaltyBox(W,H,p){
+  const fw=W-p*2, fh=H-p*2;
+  // Strafraum füllt die ganze Zeichenfläche
+  // sx: px pro Meter entlang 40.32m, sy: px pro Meter entlang ~20m (PA+goal)
+  const totalM=20; // ~16.5m PA + 2.44m Tor + ~1m Abstand
+  const sx=fw/40.32, sy=fh/totalM;
+  // Außenlinie (Torauslinie oben, Seitenlinien, PA-Linie unten)
+  sr(p,p,fw,fh);
+  // Torraum (FIFA: 18.32m × 5.5m)
+  const gaW=18.32*sx, gaH=5.5*sy;
+  sr(p+(fw-gaW)/2, p, gaW, gaH);
+  // Elfmeterpunkt (11m von Torlinie)
+  const ps=11*sy;
+  dot(W/2, p+ps, 3.5);
+  // Elfmeterbogen (r=9.15m) — nur Teil außerhalb des PA
+  ctx.save();
+  ctx.beginPath();ctx.rect(0,p+16.5*sy,W,H);ctx.clip(); // nur unterhalb der PA-Linie
+  ctx.lineWidth=1.5;ctx.strokeStyle='rgba(255,255,255,.72)';
+  sc(W/2, p+ps, 9.15*sy, 0, Math.PI*2);
+  ctx.restore();
+  // Tor (FIFA: 7.32m × 2.44m) — Pfosten oberhalb der Torlinie (Netz geht nach oben weg)
+  const gW=7.32*sx, gD=2.44*sy;
+  const gx=(W-gW)/2, gy=p;
+  ctx.save();ctx.strokeStyle='rgba(255,255,255,.75)';ctx.lineWidth=2.5;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(gx,gy);ctx.lineTo(gx,gy-gD);ctx.lineTo(gx+gW,gy-gD);ctx.lineTo(gx+gW,gy);ctx.stroke();
+  ctx.strokeStyle='rgba(255,255,255,.15)';ctx.lineWidth=.6;
+  for(let i=1;i<5;i++){const nx=gx+i*(gW/5);ctx.beginPath();ctx.moveTo(nx,gy);ctx.lineTo(nx,gy-gD);ctx.stroke();}
+  ctx.beginPath();ctx.moveTo(gx,gy-gD/2);ctx.lineTo(gx+gW,gy-gD/2);ctx.stroke();
+  ctx.restore();
+  // Label
+  ctx.fillStyle='rgba(255,255,255,.25)';ctx.font='bold 10px "Barlow Condensed",sans-serif';
+  ctx.textAlign='center';ctx.textBaseline='bottom';
+  ctx.fillText('STRAFRAUM  40.32m × 16.5m', W/2, H-4);
+}
+
+// Sprintbahn — 30m × 5m mit Abstandsmarkierungen alle 5m
+function drawSprintLane(W,H,p){
+  const fw=W-p*2, fh=H-p*2;
+  const sx=fw/30; // px pro Meter entlang 30m
+  // Rahmen
+  sr(p,p,fw,fh);
+  // Abstandsmarkierungen alle 5m
+  for(let m=5;m<30;m+=5){
+    const x=p+m*sx;
+    ctx.strokeStyle='rgba(255,255,255,.8)';ctx.lineWidth=1.5;
+    ctx.setLineDash([4,4]);
+    sl(x,p,x,H-p);
+    ctx.setLineDash([]);
+    // Meter-Beschriftung
+    ctx.fillStyle='rgba(255,255,255,.85)';
+    ctx.font='bold 11px "Barlow Condensed",sans-serif';
+    ctx.textAlign='center';ctx.textBaseline='top';
+    ctx.fillText(m+'m', x, p+4);
+    ctx.textBaseline='bottom';
+    ctx.fillText(m+'m', x, H-p-4);
+  }
+  // Start- und Endmarkierungen
+  ctx.strokeStyle='rgba(255,255,255,.9)';ctx.lineWidth=2.5;ctx.setLineDash([]);
+  sl(p,p,p,H-p);sl(W-p,p,W-p,H-p);
+  // Labels
+  ctx.fillStyle='rgba(255,255,255,.9)';ctx.font='bold 11px "Barlow Condensed",sans-serif';
+  ctx.textAlign='center';ctx.textBaseline='top';
+  ctx.fillText('0m', p, p+4);
+  ctx.fillText('30m', W-p, p+4);
+  ctx.textBaseline='bottom';
+  ctx.fillText('0m', p, H-p-4);
+  ctx.fillText('30m', W-p, H-p-4);
+  // Feldbreite-Label
+  ctx.fillStyle='rgba(255,255,255,.3)';ctx.font='bold 10px "Barlow Condensed",sans-serif';
+  ctx.textAlign='right';ctx.textBaseline='middle';
+  ctx.fillText('5m', W-p-4, H/2);
+  ctx.textAlign='left';
+  ctx.fillText('SPRINTBAHN  30m × 5m', p+4, H/2);
+}
+
 // ── DRAW OBJECTS ──
 function drawObj(o,sel){
   if(o.type==='pass')     drawArrowLine(o.x1,o.y1,o.x2,o.y2,'pass',sel);
@@ -527,6 +637,13 @@ function drawPlayer(x,y,lbl,col,sel,ang){
   grad.addColorStop(1,'rgba(0,0,0,.2)');
   ctx.fillStyle=grad;
   ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.fill();
+  // Blickrichtungs-Viertelkreis (schwarzer Halbmond oben = Blickrichtung vorne)
+  ctx.fillStyle='rgba(0,0,0,0.55)';
+  ctx.beginPath();
+  ctx.moveTo(0,0);
+  ctx.arc(0,0,R,-Math.PI*3/4,-Math.PI/4); // oberes Viertel des Kreises
+  ctx.closePath();
+  ctx.fill();
   // Border
   ctx.strokeStyle=sel?'#ffe082':'rgba(255,255,255,.9)';
   ctx.lineWidth=sel?2.5:1.8; ctx.stroke();
@@ -550,42 +667,58 @@ function drawPlayer(x,y,lbl,col,sel,ang){
 
 // ── Ball ──
 function drawBall(x,y,sel){
-  const R=9;
+  const R=11;
   ctx.save();
-  ctx.shadowColor='rgba(0,0,0,.5)'; ctx.shadowBlur=8; ctx.shadowOffsetY=4;
-  // Base white sphere
-  const grad=ctx.createRadialGradient(x-R*.3,y-R*.35,R*.1,x,y,R);
+  ctx.translate(x,y);
+  ctx.shadowColor='rgba(0,0,0,.55)'; ctx.shadowBlur=10; ctx.shadowOffsetY=5;
+  // Weißer Basiskörper mit Glanzgradient
+  const grad=ctx.createRadialGradient(-R*.3,-R*.38,R*.08,0,0,R);
   grad.addColorStop(0,'#ffffff');
-  grad.addColorStop(0.6,'#e0e0e0');
-  grad.addColorStop(1,'#b0b0b0');
+  grad.addColorStop(0.55,'#e8e8e8');
+  grad.addColorStop(1,'#aaaaaa');
   ctx.fillStyle=grad;
-  ctx.beginPath(); ctx.arc(x,y,R,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.fill();
   ctx.shadowBlur=0; ctx.shadowOffsetY=0;
-  // Pentagon patches — classic football pattern
-  ctx.fillStyle='#222';
-  const patches=[
-    [0,-R*.48],
-    [R*.46,-R*.15],[R*.28,R*.4],
-    [-R*.28,R*.4],[-R*.46,-R*.15]
-  ];
-  patches.forEach(([px,py])=>{
+  // Klassisches Fußball-Muster: 1 zentrales Pentagon + 5 außen
+  // Zentrales Pentagon oben
+  const drawPenta=(cx,cy,r)=>{
     ctx.beginPath();
     for(let i=0;i<5;i++){
       const a=i*Math.PI*2/5-Math.PI/2;
-      const pr=R*.26;
-      i===0?ctx.moveTo(x+px+pr*Math.cos(a),y+py+pr*Math.sin(a))
-           :ctx.lineTo(x+px+pr*Math.cos(a),y+py+pr*Math.sin(a));
+      i===0?ctx.moveTo(cx+r*Math.cos(a),cy+r*Math.sin(a))
+           :ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a));
     }
-    ctx.closePath(); ctx.fill();
-  });
-  // Outline
-  ctx.strokeStyle='#444'; ctx.lineWidth=.8;
-  ctx.beginPath(); ctx.arc(x,y,R,0,Math.PI*2); ctx.stroke();
-  // Selection
+    ctx.closePath();
+  };
+  ctx.fillStyle='#1a1a1a';
+  // Mittleres Pentagon
+  drawPenta(0,-R*.12,R*.32); ctx.fill();
+  // 5 außenliegende Pentagone
+  for(let i=0;i<5;i++){
+    const a=i*Math.PI*2/5-Math.PI/2;
+    const d=R*.66;
+    drawPenta(d*Math.cos(a),d*Math.sin(a),R*.22); ctx.fill();
+  }
+  // Feine Nähte zwischen den Pentagonen
+  ctx.strokeStyle='rgba(80,80,80,.5)'; ctx.lineWidth=.6;
+  for(let i=0;i<5;i++){
+    const a=i*Math.PI*2/5-Math.PI/2;
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.lineTo(R*.55*Math.cos(a),R*.55*Math.sin(a));
+    ctx.stroke();
+  }
+  // Außenring
+  ctx.strokeStyle='#555'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.stroke();
+  // Glanzfleck oben links
+  ctx.fillStyle='rgba(255,255,255,.55)';
+  ctx.beginPath(); ctx.ellipse(-R*.28,-R*.33,R*.2,R*.13,-0.5,0,Math.PI*2); ctx.fill();
+  // Selektion
   if(sel){
     ctx.strokeStyle='#ffe082'; ctx.lineWidth=2;
     ctx.setLineDash([3,3]);
-    ctx.beginPath(); ctx.arc(x,y,R+5,0,Math.PI*2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(0,0,R+5,0,Math.PI*2); ctx.stroke();
     ctx.setLineDash([]);
   }
   ctx.restore();
@@ -690,7 +823,9 @@ function drawEquip(x,y,sub,sel,ang){
 function drawGoal(x,y,sub,sel,ang){
   ctx.save();
   ctx.translate(x,y); ctx.rotate(ang);
-  const [gw,gh]=sub==='mini'?[28,18]:sub==='youth'?[48,26]:[70,36];
+  // FIFA-Proportionen: Großtor 7.32m, Jugendtor ~5m, Minitor ~3m
+  // gw = Breite (Öffnung), gh = Tiefe (Netztiefe ca. 2.44m/2m/1.5m skaliert)
+  const [gw,gh]=sub==='mini'?[26,12]:sub==='youth'?[44,18]:[70,24];
   const postR=sub==='full'?3:2;
 
   // Drop shadow
@@ -770,6 +905,7 @@ function exportCanvas(){
   selectedObjIdx=null;redraw();
   formImg=canvasEl.toDataURL('image/png');
   showToast('✓ Felddiagramm übernommen');
+  closeFieldOverlay();
 }
 
 // DeepL integration placeholder:
