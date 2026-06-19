@@ -140,7 +140,7 @@ function cvMove({x,y}){
   if((currentTool==='pass'||currentTool==='run')&&linePhase&&lineStart){
     redraw();
     ctx.save();
-    ctx.strokeStyle=currentTool==='pass'?'rgba(255,255,255,.5)':'rgba(255,224,130,.5)';
+    ctx.strokeStyle='rgba(0,0,0,.45)';
     ctx.lineWidth=2; ctx.setLineDash(currentTool==='run'?[7,5]:[]);
     ctx.beginPath();ctx.moveTo(lineStart.x,lineStart.y);ctx.lineTo(x,y);ctx.stroke();
     ctx.setLineDash([]);ctx.restore();
@@ -520,7 +520,7 @@ function drawObj(o,sel){
 // ── Arrow lines (pass / run) ──
 function drawArrowLine(x1,y1,x2,y2,kind,sel){
   const isRun=kind==='run';
-  const col=sel?'#ffe082':isRun?'#ffd740':'rgba(255,255,255,.95)';
+  const col=sel?'#555':'#111';
   const len=Math.hypot(x2-x1,y2-y1);
   if(len<4) return;
   ctx.save();
@@ -550,22 +550,22 @@ function drawArrowLine(x1,y1,x2,y2,kind,sel){
 
 // ── Dribble / sine wave line ──
 function drawSnakeLine(x1,y1,x2,y2,sel){
-  _drawSine(x1,y1,x2,y2,sel?'#c8e6c9':'#81c784',1);
+  _drawSine(x1,y1,x2,y2,sel?'#555':'#111',1);
 }
 function drawSinePreview(x1,y1,x2,y2,col){
-  _drawSine(x1,y1,x2,y2,col,0);
+  _drawSine(x1,y1,x2,y2,'#111',0);
 }
 function _drawSine(x1,y1,x2,y2,col,solid){
   const len=Math.hypot(x2-x1,y2-y1); if(len<4) return;
   const ang=Math.atan2(y2-y1,x2-x1);
-  const waves=Math.max(2,Math.round(len/30));
-  const amp=6; // schmaler
-  const steps=120;
-  const aw=15, ah=0.38; // größere Pfeilspitze
+  const waves=Math.max(2,Math.round(len/28));
+  const amp=4;
+  const steps=150;
+  const aw=13, ah=0.35;
   ctx.save();
   ctx.translate(x1,y1); ctx.rotate(ang);
-  ctx.shadowColor='rgba(0,0,0,.3)'; ctx.shadowBlur=3; ctx.shadowOffsetY=1;
-  ctx.strokeStyle=col; ctx.lineWidth=1.5; ctx.lineCap='round'; ctx.lineJoin='round';
+  ctx.shadowColor='rgba(0,0,0,.2)'; ctx.shadowBlur=2; ctx.shadowOffsetY=1;
+  ctx.strokeStyle=col; ctx.lineWidth=1.2; ctx.lineCap='round'; ctx.lineJoin='round';
   ctx.beginPath();
   for(let i=0;i<=steps;i++){
     const t=i/steps;
