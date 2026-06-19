@@ -85,8 +85,7 @@ function hitAt(x,y){
   for(let i=canvasObjects.length-1;i>=0;i--){
     const o=canvasObjects[i];
     if((o.type==='player'||o.type==='ball'||o.type==='equip'||o.type==='goal')&&Math.hypot(x-o.x,y-o.y)<22) return i;
-    if((o.type==='pass'||o.type==='run')&&ptNearSeg(x,y,o.x1,o.y1,o.x2,o.y2,12)) return i;
-    if(o.type==='dribble'&&o.pts&&o.pts.some(p=>Math.hypot(x-p.x,y-p.y)<12)) return i;
+    if((o.type==='pass'||o.type==='run'||o.type==='dribble')&&ptNearSeg(x,y,o.x1,o.y1,o.x2,o.y2,12)) return i;
   }
   return -1;
 }
@@ -113,7 +112,11 @@ function cvDown({x,y}){
     redraw(); return;
   }
   if(t==='erase'){pushUndo();const i=hitAt(x,y);if(i>=0){canvasObjects.splice(i,1);redraw();} return;}
-  if(t==='dribble'){pushUndo();isDribbling=true;dribblePoints=[{x,y}]; return;}
+  if(t==='dribble'){
+    if(!linePhase){pushUndo();linePhase=1;lineStart={x,y};}
+    else{canvasObjects.push({type:'dribble',x1:lineStart.x,y1:lineStart.y,x2:x,y2:y});linePhase=0;lineStart=null;redraw();}
+    return;
+  }
   if(t==='pass'||t==='run'){
     if(!linePhase){pushUndo();linePhase=1;lineStart={x,y};}
     else{canvasObjects.push({type:t,x1:lineStart.x,y1:lineStart.y,x2:x,y2:y});linePhase=0;lineStart=null;redraw();}
@@ -125,11 +128,15 @@ function cvMove({x,y}){
   if(isDraggingObj&&selectedObjIdx!==null){
     const o=canvasObjects[selectedObjIdx];
     if(o.x!==undefined){o.x=x-dragOffX;o.y=y-dragOffY;}
-    else if(o.x1!==undefined){const dx=x-dragOffX-o.x1,dy=y-dragOffY-o.y1;o.x1+=dx;o.y1+=dy;o.x2+=dx;o.y2+=dy;}
+    else if(o.x1!==undefined&&o.x2!==undefined){const dx=x-dragOffX-o.x1,dy=y-dragOffY-o.y1;o.x1+=dx;o.y1+=dy;o.x2+=dx;o.y2+=dy;}
     else if(o.pts){const dx=x-dragOffX-(o.pts[0].x||0),dy=y-dragOffY-(o.pts[0].y||0);o.pts=o.pts.map(p=>({x:p.x+dx,y:p.y+dy}));}
     redraw(); return;
   }
-  if(isDribbling){dribblePoints.push({x,y});redraw();drawRawPath(dribblePoints,'rgba(165,214,167,.6)'); return;}
+  if(currentTool==='dribble'&&linePhase&&lineStart){
+    redraw();
+    drawSinePreview(lineStart.x,lineStart.y,x,y,'rgba(129,199,132,.5)');
+    return;
+  }
   if((currentTool==='pass'||currentTool==='run')&&linePhase&&lineStart){
     redraw();
     ctx.save();
@@ -140,12 +147,7 @@ function cvMove({x,y}){
   }
 }
 function cvUp({x,y}){
-  if(isDraggingObj){isDraggingObj=false;redraw();return;} // keep selected after drag
-  if(isDribbling&&dribblePoints.length>3){
-    canvasObjects.push({type:'dribble',pts:resample(dribblePoints,8)});
-    isDribbling=false;dribblePoints=[];redraw();
-  }
-  isDribbling=false;
+  if(isDraggingObj){isDraggingObj=false;redraw();return;}
 }
 function cvRightClick({x,y}){
   // Right-click: rotate hit object 22.5° (or currently selected)
@@ -496,7 +498,7 @@ function drawSprintLane(W,H,p){
 function drawObj(o,sel){
   if(o.type==='pass')     drawArrowLine(o.x1,o.y1,o.x2,o.y2,'pass',sel);
   else if(o.type==='run') drawArrowLine(o.x1,o.y1,o.x2,o.y2,'run',sel);
-  else if(o.type==='dribble') drawSnakeLine(o.pts,sel);
+  else if(o.type==='dribble') drawSnakeLine(o.x1,o.y1,o.x2,o.y2,sel);
   else if(o.type==='player')  drawPlayer(o.x,o.y,o.label,o.color,sel,o.angle||0);
   else if(o.type==='ball')    drawBall(o.x,o.y,sel);
   else if(o.type==='equip')   drawEquip(o.x,o.y,o.subtype,sel,o.angle||0);
@@ -534,31 +536,46 @@ function drawArrowLine(x1,y1,x2,y2,kind,sel){
   ctx.restore();
 }
 
-// ── Dribble / snake line ──
-function drawSnakeLine(pts,sel){
-  if(!pts||pts.length<2) return;
-  const col=sel?'#c8e6c9':'#81c784';
+// ── Dribble / sine wave line ──
+function drawSnakeLine(x1,y1,x2,y2,sel){
+  _drawSine(x1,y1,x2,y2,sel?'#c8e6c9':'#81c784',1);
+}
+function drawSinePreview(x1,y1,x2,y2,col){
+  _drawSine(x1,y1,x2,y2,col,0);
+}
+function _drawSine(x1,y1,x2,y2,col,solid){
+  const len=Math.hypot(x2-x1,y2-y1); if(len<4) return;
+  const ang=Math.atan2(y2-y1,x2-x1);
+  const waves=Math.max(2,Math.round(len/28)); // eine Welle pro ~28px
+  const amp=10; // Amplitude in px
+  const steps=120;
   ctx.save();
+  ctx.translate(x1,y1); ctx.rotate(ang);
   ctx.shadowColor='rgba(0,0,0,.3)'; ctx.shadowBlur=3; ctx.shadowOffsetY=1;
   ctx.strokeStyle=col; ctx.lineWidth=2.2; ctx.lineCap='round'; ctx.lineJoin='round';
-  // Build smooth wave using quadratic bezier
-  ctx.beginPath(); ctx.moveTo(pts[0].x,pts[0].y);
-  for(let i=1;i<pts.length-1;i++){
-    const mx=(pts[i].x+pts[i+1].x)/2, my=(pts[i].y+pts[i+1].y)/2;
-    ctx.quadraticCurveTo(pts[i].x,pts[i].y,mx,my);
-  }
-  ctx.lineTo(pts[pts.length-1].x,pts[pts.length-1].y);
-  ctx.stroke();
-  // Arrowhead at end
-  const last=pts[pts.length-1], prev=pts[pts.length-2]||pts[0];
-  const a=Math.atan2(last.y-prev.y,last.x-prev.x);
-  const aw=11, ah=0.44;
-  ctx.shadowBlur=0; ctx.fillStyle=col;
   ctx.beginPath();
-  ctx.moveTo(last.x,last.y);
-  ctx.lineTo(last.x-aw*Math.cos(a-ah),last.y-aw*Math.sin(a-ah));
-  ctx.lineTo(last.x-aw*0.4*Math.cos(a),last.y-aw*0.4*Math.sin(a));
-  ctx.lineTo(last.x-aw*Math.cos(a+ah),last.y-aw*Math.sin(a+ah));
+  for(let i=0;i<=steps;i++){
+    const t=i/steps;
+    const px=t*len;
+    const py=amp*Math.sin(t*waves*Math.PI*2);
+    i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);
+  }
+  ctx.stroke();
+  ctx.shadowBlur=0;
+  // Start dot
+  ctx.fillStyle=col; ctx.beginPath(); ctx.arc(0,0,3,0,Math.PI*2); ctx.fill();
+  // Arrowhead at end (along travel direction, adjusted for sine exit angle)
+  const tEnd=(steps-1)/steps, tPrev=(steps-2)/steps;
+  const ex=len, ey=amp*Math.sin(tEnd*waves*Math.PI*2);
+  const px2=tPrev*len, py2=amp*Math.sin(tPrev*waves*Math.PI*2);
+  const a2=Math.atan2(ey-py2,ex-px2);
+  const aw=11, ah=0.42;
+  ctx.fillStyle=col;
+  ctx.beginPath();
+  ctx.moveTo(ex,ey);
+  ctx.lineTo(ex-aw*Math.cos(a2-ah),ey-aw*Math.sin(a2-ah));
+  ctx.lineTo(ex-aw*0.4*Math.cos(a2),ey-aw*0.4*Math.sin(a2));
+  ctx.lineTo(ex-aw*Math.cos(a2+ah),ey-aw*Math.sin(a2+ah));
   ctx.closePath(); ctx.fill();
   ctx.restore();
 }

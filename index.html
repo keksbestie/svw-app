@@ -941,9 +941,15 @@
       </select>
     </div>
     <div style="width:1px;height:20px;background:rgba(255,255,255,.15);"></div>
-    <button class="tb" id="tb_pass" onclick="setTool('pass')" title="Pass (2x klicken)" style="background:#344736;height:28px;padding:0 7px;border:none;border-radius:5px;cursor:pointer;color:#fff;font-size:13px;letter-spacing:-2px;">--</button>
-    <button class="tb" id="tb_run" onclick="setTool('run')" title="Laufweg (2x klicken)" style="background:#344736;height:28px;padding:0 7px;border:none;border-radius:5px;cursor:pointer;color:#aed581;font-size:11px;letter-spacing:-2px;">- -</button>
-    <button class="tb" id="tb_dribble" onclick="setTool('dribble')" title="Dribbling (halten + ziehen)" style="background:#344736;height:28px;width:28px;border:none;border-radius:5px;cursor:pointer;color:#81c784;font-size:13px;">~</button>
+    <button class="tb" id="tb_pass" onclick="setTool('pass')" title="Pass (2x klicken)" style="background:#344736;height:36px;padding:0 8px;border:none;border-radius:5px;cursor:pointer;">
+      <svg width="36" height="14" viewBox="0 0 36 14"><line x1="2" y1="7" x2="27" y2="7" stroke="white" stroke-width="2.2" stroke-linecap="round"/><polygon points="26,3 34,7 26,11" fill="white"/></svg>
+    </button>
+    <button class="tb" id="tb_run" onclick="setTool('run')" title="Laufweg (2x klicken)" style="background:#344736;height:36px;padding:0 8px;border:none;border-radius:5px;cursor:pointer;">
+      <svg width="36" height="14" viewBox="0 0 36 14"><line x1="2" y1="7" x2="27" y2="7" stroke="#ffe082" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="5,3"/><polygon points="26,3 34,7 26,11" fill="#ffe082"/></svg>
+    </button>
+    <button class="tb" id="tb_dribble" onclick="setTool('dribble')" title="Dribbling (2x klicken)" style="background:#344736;height:36px;padding:0 8px;border:none;border-radius:5px;cursor:pointer;">
+      <svg width="36" height="14" viewBox="0 0 36 14"><path d="M2,7 Q6,1 10,7 Q14,13 18,7 Q22,1 26,7" stroke="#81c784" stroke-width="2.2" fill="none" stroke-linecap="round"/><polygon points="25,3 33,7 25,11" fill="#81c784"/><circle cx="2" cy="7" r="2" fill="#81c784"/></svg>
+    </button>
     <div style="width:1px;height:20px;background:rgba(255,255,255,.15);"></div>
     <button class="tb" id="tb_select" onclick="setTool('select')" title="Auswaehlen/Verschieben" style="background:#344736;height:28px;width:28px;border:none;border-radius:5px;cursor:pointer;color:#fff;font-size:13px;">&#x2196;</button>
     <button class="tb" id="tb_erase" onclick="setTool('erase')" title="Loeschen" style="background:#880e4f;height:28px;width:28px;border:none;border-radius:5px;cursor:pointer;color:#fff;font-size:12px;">X</button>
@@ -965,7 +971,7 @@
   <div style="background:#162018;padding:3px 10px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.06);">
     <span style="font-size:10px;color:rgba(255,255,255,.45);">Pass: 2x klicken</span>
     <span style="font-size:10px;color:rgba(255,255,255,.45);">Laufweg: 2x klicken</span>
-    <span style="font-size:10px;color:rgba(255,255,255,.45);">Dribbling: halten + ziehen</span>
+    <span style="font-size:10px;color:rgba(255,255,255,.45);">Dribbling: 2x klicken</span>
     <span style="font-size:10px;color:rgba(255,255,255,.3);margin-left:auto;">Auswahl + Rechtsklick = drehen</span>
   </div>
   <!-- Canvas -->
