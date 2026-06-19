@@ -211,7 +211,7 @@ async function submitExercise(){
 function _renderMySubmissionsFromCache(){
   if(!submitUser) return;
   const el = document.getElementById('mySubList'); if(!el) return;
-  const mine = submissions.filter(s => s.author === currentUser?.id)
+  const mine = submissions.filter(s => s.author === currentUser?.id && (s.status==='pending'||s.status==='review'))
                           .sort((a,b)=>b.submittedTs-a.submittedTs);
   if(!mine.length){ el.innerHTML='<div style="font-size:12px;color:var(--text-3);padding:8px 0;">Noch keine Einreichungen.</div>'; return; }
   const statusLabel = {pending:'Ausstehend', review:'In Review', approved:'Freigegeben', rejected:'Abgelehnt'};
