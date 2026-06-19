@@ -688,11 +688,11 @@ function drawEquip(x,y,sub,sel,ang){
   if(sub==='cone'||sub==='cone-orange'||sub==='cone-yellow'||sub==='cone-blue'||sub==='cone-red'){
     const cols={'cone':'#e65100','cone-orange':'#e65100','cone-yellow':'#f9a825','cone-blue':'#1565c0','cone-red':'#c62828'};
     const cc=cols[sub]||'#e65100';
-    // Rounded top cone (trapezoid with rounded tip)
+    // Flatter cone — top cut off (trapezoid, no sharp tip)
     ctx.fillStyle=cc;
     ctx.beginPath();
-    ctx.moveTo(-2,-13); ctx.quadraticCurveTo(0,-16,2,-13);
-    ctx.lineTo(10,7); ctx.lineTo(-10,7); ctx.closePath(); ctx.fill();
+    ctx.moveTo(-3,-9); ctx.lineTo(3,-9); // flat top
+    ctx.lineTo(8,5); ctx.lineTo(-8,5); ctx.closePath(); ctx.fill();
     // Flat base
     ctx.shadowBlur=0;
     ctx.fillStyle='rgba(0,0,0,.5)';
@@ -713,6 +713,7 @@ function drawEquip(x,y,sub,sel,ang){
     ctx.fillStyle='#111';
     ctx.fillRect(-12,-3,2.5,11); ctx.fillRect(9.5,-3,2.5,11);
     ctx.fillRect(-14,8,6,2); ctx.fillRect(8,8,6,2);
+    ctx.fillStyle='#fdd835';
     ctx.fillRect(-12,-5,24,4.5);
 
   } else if(sub==='ladder'){
@@ -732,7 +733,7 @@ function drawEquip(x,y,sub,sel,ang){
   } else if(sub==='ring'){
     ctx.shadowBlur=0;
     // Flat ring — simple thick circle, no 3D ellipse
-    ctx.strokeStyle='#111'; ctx.lineWidth=5;
+    ctx.strokeStyle='#fdd835'; ctx.lineWidth=5;
     ctx.beginPath(); ctx.arc(0,0,12,0,Math.PI*2); ctx.stroke();
   }
 
