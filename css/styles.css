@@ -820,7 +820,8 @@ body:not(.on-home) .home-topbar { display: none; }
 .color-dot.sel { box-shadow:0 0 0 3px var(--accent); }
 
 #page-submit { min-height: calc(100vh - var(--header-h) - var(--nav-h)); }
-#adminUserWrap { padding: 24px; max-width: 1260px; margin: 0 auto; box-sizing: border-box; }
+.page-section { padding: 0 24px 24px; max-width: 1260px; margin: 0 auto; box-sizing: border-box; }
+.page-section-divider { border-top: 2px solid var(--border); margin-bottom: 24px; }
 
 /* Login Screen */
 .submit-login {
