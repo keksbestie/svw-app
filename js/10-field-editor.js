@@ -374,37 +374,33 @@ function drawFull(W,H,p){
 }
 
 function drawHalf(W,H,p){
-  // Half field landscape: 68m(horiz=W) × 52.5m(vert=H)
-  // Halfway line at top, goal line at bottom
-  const fw=W-p*2, fh=H-p*2;
-  const sx=fw/68;   // px per meter horizontal (along 68m touchline)
-  const sy=fh/52.5; // px per meter vertical   (along 52.5m length)
-  // Border
-  sr(p,p,fw,fh);
-  // Halfway line at top
-  sl(p,p,W-p,p);
-  dot(W/2,p,3.5);
-  // Centre circle arc (only half visible at top)
-  sc(W/2,p,9.15*sx,0,Math.PI);
-  // Penalty area: 40.32m wide (horiz), 16.5m deep (vert from bottom)
-  const paW=40.32*sx, paH=16.5*sy;
-  sr((W-paW)/2, H-p-paH, paW, paH);
-  // Goal area: 18.32m wide (horiz), 5.5m deep (vert)
-  const gaW=18.32*sx, gaH=5.5*sy;
-  sr((W-gaW)/2, H-p-gaH, gaW, gaH);
-  // Penalty spot: 11m from goal line (vert)
-  const ps=11*sy;
-  dot(W/2, H-p-ps, 3);
-  // Penalty arc: r=9.15m, clipped so it never crosses the PA line
+  // Halbfeld FIFA: 68m breit × 52.5m tief — einheitlicher Maßstab, zentriert
+  const s=Math.min((W-p*2)/68,(H-p*2)/52.5); // px pro Meter, uniform
+  const fw=68*s, fh=52.5*s;
+  const ox=(W-fw)/2, oy=(H-fh)/2; // Zentrierung
+  // Außenlinien
+  sr(ox,oy,fw,fh);
+  // Mittellinie (oben)
+  sl(ox,oy,ox+fw,oy);
+  dot(ox+fw/2,oy,3.5);
+  // Mittelkreis-Halbkreis (nur untere Hälfte sichtbar)
+  sc(ox+fw/2,oy,9.15*s,0,Math.PI);
+  // Strafraum: 40.32m × 16.5m
+  const paW=40.32*s, paH=16.5*s;
+  sr(ox+(fw-paW)/2, oy+fh-paH, paW, paH);
+  // Torraum: 18.32m × 5.5m
+  const gaW=18.32*s, gaH=5.5*s;
+  sr(ox+(fw-gaW)/2, oy+fh-gaH, gaW, gaH);
+  // Elfmeterpunkt
+  const ps=11*s;
+  dot(ox+fw/2, oy+fh-ps, 3);
+  // Elfmeterbogen — nur außerhalb des Strafraums
   ctx.save();ctx.lineWidth=1.5;ctx.strokeStyle='rgba(255,255,255,.72)';
-  // Clip to area ABOVE the PA top edge (i.e. exclude everything below H-p-paH)
-  ctx.beginPath();
-  ctx.rect(0, 0, W, H-p-paH);
-  ctx.clip();
-  sc(W/2, H-p-ps, 9.15*sx, 0, Math.PI*2);
+  ctx.beginPath();ctx.rect(0,0,W,oy+fh-paH);ctx.clip();
+  sc(ox+fw/2, oy+fh-ps, 9.15*s, 0, Math.PI*2);
   ctx.restore();
-  // Goal (FIFA 7.32m × 2.44m)
-  drawGoal(W/2, H-p, 'full', false, Math.PI);
+  // Tor hinter der Torlinie
+  drawGoal(ox+fw/2, oy+fh, 'full', false, Math.PI);
 }
 
 function drawSmall(W,H,p){
