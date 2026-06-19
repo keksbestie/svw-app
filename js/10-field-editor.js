@@ -640,49 +640,45 @@ function drawPlayer(x,y,lbl,col,sel,ang){
 
 // ── Ball ──
 function drawBall(x,y,sel){
-  const R=11;
+  const R=13;
+  const pr=R*0.306, dr=R*0.620;
   ctx.save();
   ctx.translate(x,y);
-  // Schatten
-  ctx.shadowColor='rgba(0,0,0,.5)'; ctx.shadowBlur=8; ctx.shadowOffsetY=4;
-  // Weißer Ball
-  ctx.fillStyle='#fff';
+  ctx.shadowColor='rgba(0,0,0,.5)'; ctx.shadowBlur=7; ctx.shadowOffsetY=3;
+  ctx.fillStyle='#f4f4f4';
   ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.fill();
   ctx.shadowBlur=0; ctx.shadowOffsetY=0;
-  // Clip auf Ball
+  const bVerts=(px,py,r,rot)=>{const v=[];for(let i=0;i<5;i++){const a=i*Math.PI*2/5+rot;v.push([px+r*Math.cos(a),py+r*Math.sin(a)]);}return v;};
+  const fillP=v=>{ctx.beginPath();v.forEach(([vx,vy],i)=>i?ctx.lineTo(vx,vy):ctx.moveTo(vx,vy));ctx.closePath();ctx.fill();};
+  const strokeP=v=>{ctx.beginPath();v.forEach(([vx,vy],i)=>i?ctx.lineTo(vx,vy):ctx.moveTo(vx,vy));ctx.closePath();ctx.stroke();};
+  const near=(vArr,t)=>vArr.reduce((b,v)=>Math.hypot(v[0]-t[0],v[1]-t[1])<Math.hypot(b[0]-t[0],b[1]-t[1])?v:b);
+  const cRot=-Math.PI/2;
+  const cV=bVerts(0,0,pr,cRot);
+  const ring=[];
+  for(let i=0;i<5;i++){
+    const ang=cRot+(2*i+1)*Math.PI/5;
+    const rot=ang+Math.PI-Math.PI/5;
+    ring.push({px:dr*Math.cos(ang),py:dr*Math.sin(ang),v:bVerts(dr*Math.cos(ang),dr*Math.sin(ang),pr,rot)});
+  }
   ctx.save();
   ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.clip();
-  // Zentrales schwarzes Hexagon
   ctx.fillStyle='#111';
-  ctx.beginPath();
-  for(let i=0;i<6;i++){
-    const a=i*Math.PI/3-Math.PI/6;
-    const r=R*.38;
-    i===0?ctx.moveTo(r*Math.cos(a),r*Math.sin(a)):ctx.lineTo(r*Math.cos(a),r*Math.sin(a));
-  }
-  ctx.closePath(); ctx.fill();
-  // 6 schwarze Segmente am Rand (klassisches Muster)
-  ctx.fillStyle='#111';
-  for(let i=0;i<6;i++){
-    const a=i*Math.PI/3+Math.PI/6;
-    const cx=Math.cos(a)*R*.72, cy=Math.sin(a)*R*.72;
-    ctx.beginPath();
-    for(let j=0;j<6;j++){
-      const pa=j*Math.PI/3-Math.PI/6;
-      const pr=R*.28;
-      j===0?ctx.moveTo(cx+pr*Math.cos(pa),cy+pr*Math.sin(pa))
-           :ctx.lineTo(cx+pr*Math.cos(pa),cy+pr*Math.sin(pa));
-    }
-    ctx.closePath(); ctx.fill();
+  fillP(cV); ring.forEach(r=>fillP(r.v));
+  ctx.strokeStyle='rgba(255,255,255,.9)'; ctx.lineWidth=1.2; ctx.lineJoin='round'; ctx.lineCap='round';
+  strokeP(cV); ring.forEach(r=>strokeP(r.v));
+  cV.forEach((cv0,i)=>{
+    const nA=near(ring[(i+4)%5].v,cv0), nB=near(ring[i].v,cv0);
+    ctx.beginPath();ctx.moveTo(cv0[0],cv0[1]);ctx.lineTo(nA[0],nA[1]);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cv0[0],cv0[1]);ctx.lineTo(nB[0],nB[1]);ctx.stroke();
+  });
+  for(let i=0;i<5;i++){
+    const rA=ring[i],rB=ring[(i+1)%5];
+    const nA=near(rA.v,[rB.px,rB.py]), nB=near(rB.v,[rA.px,rA.py]);
+    ctx.beginPath();ctx.moveTo(nA[0],nA[1]);ctx.lineTo(nB[0],nB[1]);ctx.stroke();
   }
   ctx.restore();
-  // Rand
-  ctx.strokeStyle='#333'; ctx.lineWidth=1;
+  ctx.strokeStyle='#222'; ctx.lineWidth=1;
   ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.stroke();
-  // Glanzfleck
-  ctx.fillStyle='rgba(255,255,255,.6)';
-  ctx.beginPath(); ctx.ellipse(-R*.25,-R*.3,R*.18,R*.1,-0.4,0,Math.PI*2); ctx.fill();
-  // Selektion
   if(sel){
     ctx.strokeStyle='#ffe082'; ctx.lineWidth=2; ctx.setLineDash([3,3]);
     ctx.beginPath(); ctx.arc(0,0,R+4,0,Math.PI*2); ctx.stroke();
