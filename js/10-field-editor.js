@@ -285,8 +285,8 @@ function redraw(){
 
 // ── FIELD ──
 function drawField(){
-  const W=parseFloat(canvasEl.style.width)||canvasEl.width;
-  const H=parseFloat(canvasEl.style.height)||canvasEl.height;
+  const W=canvasEl.offsetWidth||800;
+  const H=canvasEl.offsetHeight||Math.round(W*0.6);
   const ft=document.getElementById('fieldType')?.value||'small';
   // Base grass gradient
   const grassGrad=ctx.createLinearGradient(0,0,0,H);
@@ -315,38 +315,6 @@ function drawField(){
   else if(ft==='penalty')drawPenaltyBox(W,H,p);
   else if(ft==='sprint')drawSprintLane(W,H,p);
   else drawNeutral(W,H,p);
-}
-// Draw a field goal with net (for field markings)
-function fieldGoal(x,y,gW,gH,side){
-  // side: 'left' goal opens right, 'right' opens left, 'bottom' opens up
-  ctx.save();
-  // Net fill
-  ctx.fillStyle='rgba(255,255,255,.07)';
-  if(side==='left'){
-    ctx.fillRect(x,y,gW,gH);
-    // Net lines vertical
-    ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=.7;
-    for(let i=1;i<4;i++){const nx=x+i*(gW/4);ctx.beginPath();ctx.moveTo(nx,y);ctx.lineTo(nx,y+gH);ctx.stroke();}
-    for(let i=1;i<3;i++){const ny=y+i*(gH/3);ctx.beginPath();ctx.moveTo(x,ny);ctx.lineTo(x+gW,ny);ctx.stroke();}
-    // Frame
-    ctx.strokeStyle='rgba(255,255,255,.85)';ctx.lineWidth=2.5;ctx.lineCap='round';
-    ctx.beginPath();ctx.moveTo(x+gW,y);ctx.lineTo(x,y);ctx.lineTo(x,y+gH);ctx.lineTo(x+gW,y+gH);ctx.stroke();
-  } else if(side==='right'){
-    ctx.fillRect(x,y,gW,gH);
-    ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=.7;
-    for(let i=1;i<4;i++){const nx=x+i*(gW/4);ctx.beginPath();ctx.moveTo(nx,y);ctx.lineTo(nx,y+gH);ctx.stroke();}
-    for(let i=1;i<3;i++){const ny=y+i*(gH/3);ctx.beginPath();ctx.moveTo(x,ny);ctx.lineTo(x+gW,ny);ctx.stroke();}
-    ctx.strokeStyle='rgba(255,255,255,.85)';ctx.lineWidth=2.5;ctx.lineCap='round';
-    ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+gW,y);ctx.lineTo(x+gW,y+gH);ctx.lineTo(x,y+gH);ctx.stroke();
-  } else { // bottom
-    ctx.fillRect(x,y,gW,gH);
-    ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=.7;
-    for(let i=1;i<4;i++){const nx=x+i*(gW/4);ctx.beginPath();ctx.moveTo(nx,y);ctx.lineTo(nx,y+gH);ctx.stroke();}
-    for(let i=1;i<3;i++){const ny=y+i*(gH/3);ctx.beginPath();ctx.moveTo(x,ny);ctx.lineTo(x+gW,ny);ctx.stroke();}
-    ctx.strokeStyle='rgba(255,255,255,.85)';ctx.lineWidth=2.5;ctx.lineCap='round';
-    ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y+gH);ctx.lineTo(x+gW,y+gH);ctx.lineTo(x+gW,y);ctx.stroke();
-  }
-  ctx.restore();
 }
 
 function sr(x,y,w,h){ctx.strokeRect(x,y,w,h);}
@@ -384,12 +352,9 @@ function drawFull(W,H,p){
   // Right arc: opens to the left
   sc(W-p-ps,H/2,arcR,Math.PI-0.93,Math.PI+0.93);
   ctx.restore();
-  // Goals: 7.32m wide (vertical) × 2.44m deep (horizontal)
-  const gH=7.32*sy, gD=2.44*sx;
-  ctx.save();ctx.strokeStyle='rgba(255,255,255,.72)';ctx.lineWidth=2.5;
-  fieldGoal(p-gD,(H-gH)/2,gD,gH,'left');
-  fieldGoal(W-p,(H-gH)/2,gD,gH,'right');
-  ctx.restore();
+  // Goals (FIFA 7.32m × 2.44m)
+  drawGoal(p, H/2, 'full', false, Math.PI/2);
+  drawGoal(W-p, H/2, 'full', false, -Math.PI/2);
   // Corner arcs r=1m
   const ca=1*Math.min(sx,sy);
   sc(p,p,ca,0,Math.PI/2);
@@ -428,11 +393,8 @@ function drawHalf(W,H,p){
   ctx.clip();
   sc(W/2, H-p-ps, 9.15*sx, 0, Math.PI*2);
   ctx.restore();
-  // Goal: 7.32m wide (horiz), 2.44m deep (vert) — below goal line
-  const gW=7.32*sx, gD=2.44*sy;
-  ctx.save();ctx.strokeStyle='rgba(255,255,255,.72)';ctx.lineWidth=2.5;
-  fieldGoal((W-gW)/2, H-p, gW, gD, 'bottom');
-  ctx.restore();
+  // Goal (FIFA 7.32m × 2.44m)
+  drawGoal(W/2, H-p, 'full', false, Math.PI);
 }
 
 function drawSmall(W,H,p){
@@ -443,12 +405,9 @@ function drawSmall(W,H,p){
   const sx=fw/30,sy=fh/20;
   const gaW=3*sx,gaH=8*sy;
   sr(p,(H-gaH)/2,gaW,gaH); sr(W-p-gaW,(H-gaH)/2,gaW,gaH);
-  // Mini goals (2m wide)
-  const gW2=2*sy,gD2=1*sx;
-  ctx.save();ctx.lineWidth=2.5;
-  fieldGoal(p-gD2,(H-gW2)/2,gD2,gW2,'left');
-  fieldGoal(W-p,(H-gW2)/2,gD2,gW2,'right');
-  ctx.restore();
+  // Mini goals
+  drawGoal(p, H/2, 'mini', false, Math.PI/2);
+  drawGoal(W-p, H/2, 'mini', false, -Math.PI/2);
 }
 
 function drawNeutral(W,H,p){
