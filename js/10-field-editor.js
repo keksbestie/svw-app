@@ -512,7 +512,7 @@ function drawArrowLine(x1,y1,x2,y2,kind,sel){
   ctx.setLineDash([]);
   // Arrowhead — solid filled triangle
   const a=Math.atan2(y2-y1,x2-x1);
-  const aw=isRun?10:12, ah=isRun?0.42:0.38;
+  const aw=isRun?15:12, ah=isRun?0.38:0.38;
   ctx.shadowBlur=0;
   ctx.fillStyle=col;
   ctx.beginPath();
@@ -536,17 +536,18 @@ function drawSinePreview(x1,y1,x2,y2,col){
 function _drawSine(x1,y1,x2,y2,col,solid){
   const len=Math.hypot(x2-x1,y2-y1); if(len<4) return;
   const ang=Math.atan2(y2-y1,x2-x1);
-  const waves=Math.max(2,Math.round(len/28)); // eine Welle pro ~28px
-  const amp=10; // Amplitude in px
+  const waves=Math.max(2,Math.round(len/30));
+  const amp=6; // schmaler
   const steps=120;
+  const aw=15, ah=0.38; // größere Pfeilspitze
   ctx.save();
   ctx.translate(x1,y1); ctx.rotate(ang);
   ctx.shadowColor='rgba(0,0,0,.3)'; ctx.shadowBlur=3; ctx.shadowOffsetY=1;
-  ctx.strokeStyle=col; ctx.lineWidth=2.2; ctx.lineCap='round'; ctx.lineJoin='round';
+  ctx.strokeStyle=col; ctx.lineWidth=1.5; ctx.lineCap='round'; ctx.lineJoin='round';
   ctx.beginPath();
   for(let i=0;i<=steps;i++){
     const t=i/steps;
-    const px=t*len;
+    const px=t*(len-aw*0.6); // Welle endet vor Pfeilspitze
     const py=amp*Math.sin(t*waves*Math.PI*2);
     i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);
   }
@@ -554,18 +555,13 @@ function _drawSine(x1,y1,x2,y2,col,solid){
   ctx.shadowBlur=0;
   // Start dot
   ctx.fillStyle=col; ctx.beginPath(); ctx.arc(0,0,3,0,Math.PI*2); ctx.fill();
-  // Arrowhead at end (along travel direction, adjusted for sine exit angle)
-  const tEnd=(steps-1)/steps, tPrev=(steps-2)/steps;
-  const ex=len, ey=amp*Math.sin(tEnd*waves*Math.PI*2);
-  const px2=tPrev*len, py2=amp*Math.sin(tPrev*waves*Math.PI*2);
-  const a2=Math.atan2(ey-py2,ex-px2);
-  const aw=11, ah=0.42;
+  // Pfeilspitze immer in Reiserichtung (+x lokal = ang in Weltkoordinaten)
   ctx.fillStyle=col;
   ctx.beginPath();
-  ctx.moveTo(ex,ey);
-  ctx.lineTo(ex-aw*Math.cos(a2-ah),ey-aw*Math.sin(a2-ah));
-  ctx.lineTo(ex-aw*0.4*Math.cos(a2),ey-aw*0.4*Math.sin(a2));
-  ctx.lineTo(ex-aw*Math.cos(a2+ah),ey-aw*Math.sin(a2+ah));
+  ctx.moveTo(len,0);
+  ctx.lineTo(len-aw*Math.cos(-ah), -aw*Math.sin(-ah));
+  ctx.lineTo(len-aw*0.4, 0);
+  ctx.lineTo(len-aw*Math.cos(ah), -aw*Math.sin(ah));
   ctx.closePath(); ctx.fill();
   ctx.restore();
 }
