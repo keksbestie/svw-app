@@ -599,8 +599,8 @@ function drawPlayer(x,y,lbl,col,sel,ang){
   ctx.shadowBlur=0; ctx.shadowOffsetY=0;
 
   // Viewing-direction crescent — ring segment at outer edge only (center stays clear)
-  const Ri=R*0.45; // inner radius: center bleibt frei
-  const a1=-Math.PI*3/4, a2=-Math.PI/4;
+  const Ri=R*0.62; // inner radius: center bleibt frei, Ring dicker
+  const a1=-Math.PI*0.85, a2=-Math.PI*0.15;
   ctx.fillStyle='#111';
   ctx.beginPath();
   ctx.arc(0,0,R,a1,a2);       // äußerer Bogen vorwärts
