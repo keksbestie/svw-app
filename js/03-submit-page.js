@@ -33,6 +33,11 @@ if(error){console.error('loadSubmissions error:',error);submissions=[];return;}
 function saveSubmissions(){}
 
 async function renderSubmitPage(){
+  // Restore submitUser from existing Supabase session if not set
+  if(!submitUser && currentUser){
+    const displayName=currentUser.user_metadata?.username||currentUser.email;
+    submitUser={name:displayName,isDemo:false,id:currentUser.id};
+  }
   await loadSubmissions();
   if(!submitUser){
     document.getElementById('submitLoginWrap').style.display='block';
