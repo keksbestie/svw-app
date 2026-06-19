@@ -346,17 +346,19 @@ function drawFull(W,H,p){
   // Penalty spots: 11m from goal line (horizontal)
   const ps=11*sx;
   dot(p+ps,H/2,3); dot(W-p-ps,H/2,3);
-  // Penalty arcs: r=9.15m, show only part outside PA
+  // Penalty arcs: r=9.15m, clipped to only show outside penalty area
   ctx.save();ctx.lineWidth=1.5;ctx.strokeStyle='rgba(255,255,255,.72)';
   const arcR=9.15*sy;
-  // Left arc: opens to the right (toward center)
-  sc(p+ps,H/2,arcR,-0.93,0.93);
-  // Right arc: opens to the left
-  sc(W-p-ps,H/2,arcR,Math.PI-0.93,Math.PI+0.93);
+  // Left arc — clip to right of PA line
+  ctx.save();ctx.beginPath();ctx.rect(p+paW,0,W,H);ctx.clip();
+  sc(p+ps,H/2,arcR);ctx.restore();
+  // Right arc — clip to left of PA line
+  ctx.save();ctx.beginPath();ctx.rect(0,0,W-p-paW,H);ctx.clip();
+  sc(W-p-ps,H/2,arcR);ctx.restore();
   ctx.restore();
-  // Goals (FIFA 7.32m × 2.44m)
-  drawGoal(p, H/2, 'full', false, Math.PI/2);
-  drawGoal(W-p, H/2, 'full', false, -Math.PI/2);
+  // Goals BEHIND goal line (FIFA 7.32m × 2.44m)
+  drawGoal(p, H/2, 'full', false, -Math.PI/2);
+  drawGoal(W-p, H/2, 'full', false, Math.PI/2);
   // Corner arcs r=1m
   const ca=1*Math.min(sx,sy);
   sc(p,p,ca,0,Math.PI/2);
@@ -400,16 +402,11 @@ function drawHalf(W,H,p){
 }
 
 function drawSmall(W,H,p){
-  // Kleinfeld: typical 30×20m, mini goals
   const fw=W-p*2,fh=H-p*2;
   sr(p,p,fw,fh); sl(W/2,p,W/2,H-p); dot(W/2,H/2,4);
-  // Small goal areas (3m wide each side)
   const sx=fw/30,sy=fh/20;
   const gaW=3*sx,gaH=8*sy;
   sr(p,(H-gaH)/2,gaW,gaH); sr(W-p-gaW,(H-gaH)/2,gaW,gaH);
-  // Mini goals
-  drawGoal(p, H/2, 'mini', false, Math.PI/2);
-  drawGoal(W-p, H/2, 'mini', false, -Math.PI/2);
 }
 
 function drawNeutral(W,H,p){
@@ -439,15 +436,8 @@ function drawPenaltyBox(W,H,p){
   ctx.lineWidth=1.5;ctx.strokeStyle='rgba(255,255,255,.72)';
   sc(W/2, p+ps, 9.15*sy, 0, Math.PI*2);
   ctx.restore();
-  // Tor (FIFA: 7.32m × 2.44m) — Pfosten oberhalb der Torlinie (Netz geht nach oben weg)
-  const gW=7.32*sx, gD=2.44*sy;
-  const gx=(W-gW)/2, gy=p;
-  ctx.save();ctx.strokeStyle='rgba(255,255,255,.75)';ctx.lineWidth=2.5;ctx.lineCap='round';
-  ctx.beginPath();ctx.moveTo(gx,gy);ctx.lineTo(gx,gy-gD);ctx.lineTo(gx+gW,gy-gD);ctx.lineTo(gx+gW,gy);ctx.stroke();
-  ctx.strokeStyle='rgba(255,255,255,.15)';ctx.lineWidth=.6;
-  for(let i=1;i<5;i++){const nx=gx+i*(gW/5);ctx.beginPath();ctx.moveTo(nx,gy);ctx.lineTo(nx,gy-gD);ctx.stroke();}
-  ctx.beginPath();ctx.moveTo(gx,gy-gD/2);ctx.lineTo(gx+gW,gy-gD/2);ctx.stroke();
-  ctx.restore();
+  // Tor hinter der Torlinie (Netz geht nach oben weg)
+  drawGoal(W/2, p, 'full', false, 0);
   // Label
   ctx.fillStyle='rgba(255,255,255,.25)';ctx.font='bold 10px "Barlow Condensed",sans-serif';
   ctx.textAlign='center';ctx.textBaseline='bottom';
