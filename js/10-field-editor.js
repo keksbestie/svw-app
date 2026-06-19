@@ -696,26 +696,19 @@ function drawEquip(x,y,sub,sel,ang){
   ctx.shadowColor='rgba(0,0,0,.35)'; ctx.shadowBlur=5; ctx.shadowOffsetY=2;
 
   if(sub==='cone'||sub==='cone-orange'||sub==='cone-yellow'||sub==='cone-blue'||sub==='cone-red'){
-    const cols={
-      'cone':'#e65100','cone-orange':'#e65100',
-      'cone-yellow':'#f9a825','cone-blue':'#1565c0','cone-red':'#c62828'
-    };
+    const cols={'cone':'#e65100','cone-orange':'#e65100','cone-yellow':'#f9a825','cone-blue':'#1565c0','cone-red':'#c62828'};
     const cc=cols[sub]||'#e65100';
-    // Clean cone body
+    // Rounded top cone (trapezoid with rounded tip)
     ctx.fillStyle=cc;
-    ctx.beginPath(); ctx.moveTo(0,-15); ctx.lineTo(-9,7); ctx.lineTo(9,7); ctx.closePath(); ctx.fill();
-    // Single thin white stripe
-    ctx.save();
-    ctx.beginPath(); ctx.moveTo(0,-15); ctx.lineTo(-9,7); ctx.lineTo(9,7); ctx.closePath(); ctx.clip();
-    ctx.fillStyle='rgba(255,255,255,.35)';
-    ctx.fillRect(-9,-1,18,3);
-    ctx.restore();
-    // Flat base ellipse
+    ctx.beginPath();
+    ctx.moveTo(-2,-13); ctx.quadraticCurveTo(0,-16,2,-13);
+    ctx.lineTo(10,7); ctx.lineTo(-10,7); ctx.closePath(); ctx.fill();
+    // Flat base
     ctx.shadowBlur=0;
-    ctx.fillStyle='rgba(0,0,0,.55)';
-    ctx.beginPath(); ctx.ellipse(0,7,9,3,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='rgba(0,0,0,.5)';
+    ctx.beginPath(); ctx.ellipse(0,7,10,3,0,0,Math.PI*2); ctx.fill();
     ctx.fillStyle=cc;
-    ctx.beginPath(); ctx.ellipse(0,6.5,8,2.5,0,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(0,6.5,9,2.5,0,0,Math.PI*2); ctx.fill();
 
   } else if(sub==='pole'){
     ctx.strokeStyle='#fdd835'; ctx.lineWidth=3; ctx.lineCap='round';
@@ -726,14 +719,10 @@ function drawEquip(x,y,sub,sel,ang){
 
   } else if(sub==='hurdle'){
     ctx.shadowBlur=0;
-    // Legs — clean dark rectangles
-    ctx.fillStyle='#455a64';
+    ctx.shadowBlur=0;
+    ctx.fillStyle='#111';
     ctx.fillRect(-12,-3,2.5,11); ctx.fillRect(9.5,-3,2.5,11);
-    // Base feet
-    ctx.fillStyle='#37474f';
     ctx.fillRect(-14,8,6,2); ctx.fillRect(8,8,6,2);
-    // Crossbar — solid red, no gradient
-    ctx.fillStyle='#e53935';
     ctx.fillRect(-12,-5,24,4.5);
 
   } else if(sub==='ladder'){
@@ -743,21 +732,18 @@ function drawEquip(x,y,sub,sel,ang){
     ctx.strokeStyle='#fdd835'; ctx.lineWidth=2.5; ctx.lineCap='round';
     ctx.beginPath(); ctx.moveTo(-lw/2,-lh/2); ctx.lineTo(-lw/2,lh/2); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(lw/2,-lh/2); ctx.lineTo(lw/2,lh/2); ctx.stroke();
-    // Rungs — same color, even spacing with more gap
     ctx.lineWidth=2;
+    const gap=lh/rungs;
     for(let i=0;i<=rungs;i++){
-      const ry=-lh/2+i*(lh/rungs);
+      const ry=Math.round(-lh/2+i*gap);
       ctx.beginPath(); ctx.moveTo(-lw/2,ry); ctx.lineTo(lw/2,ry); ctx.stroke();
     }
 
   } else if(sub==='ring'){
     ctx.shadowBlur=0;
     // Flat ring — simple thick circle, no 3D ellipse
-    ctx.strokeStyle='#29b6f6'; ctx.lineWidth=5; ctx.lineCap='round';
+    ctx.strokeStyle='#111'; ctx.lineWidth=5;
     ctx.beginPath(); ctx.arc(0,0,12,0,Math.PI*2); ctx.stroke();
-    // Thin inner edge for definition
-    ctx.strokeStyle='rgba(255,255,255,.2)'; ctx.lineWidth=1;
-    ctx.beginPath(); ctx.arc(0,0,9.5,0,Math.PI*2); ctx.stroke();
   }
 
   if(sel){
