@@ -37,6 +37,8 @@ async function renderSubmitPage(){
   if(!submitUser){
     document.getElementById('submitLoginWrap').style.display='block';
     document.getElementById('submitLoggedWrap').style.display='none';
+    document.getElementById('loginEmail').value='';
+    document.getElementById('loginPass').value='';
   } else {
     document.getElementById('submitLoginWrap').style.display='none';
     document.getElementById('submitLoggedWrap').style.display='block';
