@@ -11,6 +11,7 @@
 let currentTool='player', canvasObjects=[], undoStack=[];
 let playerCounters={}, selectedObjIdx=null;
 let isDraggingObj=false, dragOffX=0, dragOffY=0;
+let isResizing=false, resizeObjIdx=null;
 let linePhase=0, lineStart=null;
 let dribblePoints=[], isDribbling=false;
 let canvasEl=null, ctx=null, _cvInited=false;
@@ -81,10 +82,20 @@ const _cvH={
 };
 
 // ── HIT TEST ──
+function _baseR(o){
+  if(o.type==='ball') return 13;
+  if(o.type==='goal') return o.subtype==='full'?42:o.subtype==='youth'?28:18;
+  return 14; // equip
+}
+function _objSc(o){return o.scale||1;}
+function _resizeHandlePos(o){
+  const sc=_objSc(o), br=_baseR(o);
+  return {x:o.x+(br*sc+7), y:o.y};
+}
 function hitAt(x,y){
   for(let i=canvasObjects.length-1;i>=0;i--){
     const o=canvasObjects[i];
-    if((o.type==='player'||o.type==='ball'||o.type==='equip'||o.type==='goal')&&Math.hypot(x-o.x,y-o.y)<22) return i;
+    if((o.type==='player'||o.type==='ball'||o.type==='equip'||o.type==='goal')&&Math.hypot(x-o.x,y-o.y)<22*_objSc(o)) return i;
     if((o.type==='pass'||o.type==='run'||o.type==='dribble')&&ptNearSeg(x,y,o.x1,o.y1,o.x2,o.y2,12)) return i;
   }
   return -1;
@@ -100,6 +111,16 @@ function ptNearSeg(px,py,x1,y1,x2,y2,t){
 function cvDown({x,y}){
   const t=currentTool;
   if(t==='select'){
+    // Check resize handle first
+    if(selectedObjIdx!==null&&selectedObjIdx>=0){
+      const o=canvasObjects[selectedObjIdx];
+      if(o.type==='ball'||o.type==='equip'||o.type==='goal'){
+        const h=_resizeHandlePos(o);
+        if(Math.hypot(x-h.x,y-h.y)<10){
+          pushUndo();isResizing=true;resizeObjIdx=selectedObjIdx;return;
+        }
+      }
+    }
     const i=hitAt(x,y);
     if(i>=0){
       selectedObjIdx=i; isDraggingObj=true;
@@ -107,7 +128,7 @@ function cvDown({x,y}){
       dragOffX=x-(o.x??o.x1??o.pts?.[0]?.x??0);
       dragOffY=y-(o.y??o.y1??o.pts?.[0]?.y??0);
     } else {
-      selectedObjIdx=null; // click empty = deselect
+      selectedObjIdx=null;
     }
     redraw(); return;
   }
@@ -125,6 +146,12 @@ function cvDown({x,y}){
   pushUndo(); placeObj(t,x,y);
 }
 function cvMove({x,y}){
+  if(isResizing&&resizeObjIdx!==null){
+    const o=canvasObjects[resizeObjIdx];
+    const d=Math.hypot(x-o.x,y-o.y);
+    o.scale=Math.max(0.2,Math.min(6,d/_baseR(o)));
+    redraw();return;
+  }
   if(isDraggingObj&&selectedObjIdx!==null){
     const o=canvasObjects[selectedObjIdx];
     if(o.x!==undefined){o.x=x-dragOffX;o.y=y-dragOffY;}
@@ -147,6 +174,7 @@ function cvMove({x,y}){
   }
 }
 function cvUp({x,y}){
+  if(isResizing){isResizing=false;resizeObjIdx=null;redraw();return;}
   if(isDraggingObj){isDraggingObj=false;redraw();return;}
 }
 function cvRightClick({x,y}){
@@ -172,11 +200,11 @@ function placeObj(t,x,y){
     const lbl=col==='#f9a825'?'TW':String(playerCounters[col]++);
     canvasObjects.push({type:'player',x,y,color:col,label:lbl,angle:0});
   } else if(t==='ball'){
-    canvasObjects.push({type:'ball',x,y});
+    canvasObjects.push({type:'ball',x,y,scale:0.5});
   } else if(t==='equip'){
-    canvasObjects.push({type:'equip',subtype:document.getElementById('equipType')?.value||'cone',x,y,angle:0});
+    canvasObjects.push({type:'equip',subtype:document.getElementById('equipType')?.value||'cone',x,y,angle:0,scale:1});
   } else if(t==='goal'){
-    canvasObjects.push({type:'goal',subtype:document.getElementById('goalType')?.value||'mini',x,y,angle:0});
+    canvasObjects.push({type:'goal',subtype:document.getElementById('goalType')?.value||'mini',x,y,angle:0,scale:1});
   }
   redraw();
 }
@@ -279,7 +307,10 @@ function redraw(){
   if(!ctx||!canvasEl) return;
   drawField();
   canvasObjects.forEach((o,i)=>drawObj(o,i===selectedObjIdx));
-  // line start indicator
+  if(selectedObjIdx!==null&&selectedObjIdx>=0){
+    const o=canvasObjects[selectedObjIdx];
+    if(o&&(o.type==='ball'||o.type==='equip'||o.type==='goal')) _drawResizeHandle(o);
+  }
   if(linePhase&&lineStart){
     ctx.save();ctx.fillStyle='rgba(255,255,255,.7)';ctx.beginPath();ctx.arc(lineStart.x,lineStart.y,5,0,Math.PI*2);ctx.fill();ctx.restore();
   }
@@ -512,9 +543,23 @@ function drawObj(o,sel){
   else if(o.type==='run') drawArrowLine(o.x1,o.y1,o.x2,o.y2,'run',sel);
   else if(o.type==='dribble') drawSnakeLine(o.x1,o.y1,o.x2,o.y2,sel);
   else if(o.type==='player')  drawPlayer(o.x,o.y,o.label,o.color,sel,o.angle||0);
-  else if(o.type==='ball')    drawBall(o.x,o.y,sel);
-  else if(o.type==='equip')   drawEquip(o.x,o.y,o.subtype,sel,o.angle||0);
-  else if(o.type==='goal')    drawGoal(o.x,o.y,o.subtype,sel,o.angle||0);
+  else if(o.type==='ball')    drawBall(o.x,o.y,sel,_objSc(o));
+  else if(o.type==='equip')   drawEquip(o.x,o.y,o.subtype,sel,o.angle||0,_objSc(o));
+  else if(o.type==='goal')    drawGoal(o.x,o.y,o.subtype,sel,o.angle||0,_objSc(o));
+}
+function _drawResizeHandle(o){
+  const h=_resizeHandlePos(o);
+  ctx.save();
+  ctx.fillStyle='#fff'; ctx.strokeStyle='#333'; ctx.lineWidth=1.5;
+  ctx.shadowColor='rgba(0,0,0,.3)'; ctx.shadowBlur=3;
+  ctx.beginPath();
+  // Kleines Quadrat als Resize-Handle
+  ctx.rect(h.x-4,h.y-4,8,8);
+  ctx.fill(); ctx.stroke();
+  // Diagonaler Pfeil-Hinweis
+  ctx.shadowBlur=0; ctx.strokeStyle='#555'; ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(h.x-2,h.y+2);ctx.lineTo(h.x+2,h.y-2);ctx.stroke();
+  ctx.restore();
 }
 
 // ── Arrow lines (pass / run) ──
@@ -639,11 +684,12 @@ function drawPlayer(x,y,lbl,col,sel,ang){
 }
 
 // ── Ball ──
-function drawBall(x,y,sel){
+function drawBall(x,y,sel,sc){
   const R=13;
   const pr=R*0.306, dr=R*0.620;
   ctx.save();
   ctx.translate(x,y);
+  ctx.scale(sc||1,sc||1);
   ctx.shadowColor='rgba(0,0,0,.5)'; ctx.shadowBlur=7; ctx.shadowOffsetY=3;
   ctx.fillStyle='#f4f4f4';
   ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.fill();
@@ -688,9 +734,9 @@ function drawBall(x,y,sel){
 }
 
 // ── Equipment ──
-function drawEquip(x,y,sub,sel,ang){
+function drawEquip(x,y,sub,sel,ang,sc){
   ctx.save();
-  ctx.translate(x,y); ctx.rotate(ang||0);
+  ctx.translate(x,y); ctx.rotate(ang||0); ctx.scale(sc||1,sc||1);
   ctx.shadowColor='rgba(0,0,0,.35)'; ctx.shadowBlur=5; ctx.shadowOffsetY=2;
 
   if(sub==='cone'||sub==='cone-orange'||sub==='cone-yellow'||sub==='cone-blue'||sub==='cone-red'){
@@ -754,9 +800,9 @@ function drawEquip(x,y,sub,sel,ang){
 }
 
 // ── Goal with realistic net ──
-function drawGoal(x,y,sub,sel,ang){
+function drawGoal(x,y,sub,sel,ang,sc){
   ctx.save();
-  ctx.translate(x,y); ctx.rotate(ang);
+  ctx.translate(x,y); ctx.rotate(ang); ctx.scale(sc||1,sc||1);
   // FIFA-Proportionen: Grosstor 7.32m, Jugendtor 5m, Minitor 3m
   const [gw,gh]=sub==='mini'?[28,20]:sub==='youth'?[48,28]:[76,36];
   const postR=sub==='full'?3:2;
