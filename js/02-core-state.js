@@ -13,9 +13,9 @@ let IS_ADMIN=false, apiOnline=false, syncTO=null;
 // INIT
 // ══════════════════════════════════════════════════════
 async function init(){
-  applyTheme(localStorage.getItem('svw_theme')||'light'); applyI18n(); applyFontSize(currentFsIdx);
+  applyTheme(localStorage.getItem('tb_theme') || localStorage.getItem('svw_theme')||'light'); applyI18n(); applyFontSize(currentFsIdx);
   setStat('loading');
-  applyTheme(localStorage.getItem('svw_theme')||'light'); loadClubTheme();
+  applyTheme(localStorage.getItem('tb_theme') || localStorage.getItem('svw_theme')||'light'); loadClubTheme();
   const ok=await loadAPI(); if(!ok)loadLocal();
   hideLS(); renderStbar(); renderSection(); renderSavedPlans(); renderLtp(); goPage('home');
   setupGS(); updateApiBar();

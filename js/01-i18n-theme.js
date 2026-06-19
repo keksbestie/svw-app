@@ -50,7 +50,7 @@ const LANG_META = {
   es: { flag: '🇪🇸', code: 'ES' }
 };
 
-let currentLang = localStorage.getItem('svw_lang') || 'de';
+let currentLang = localStorage.getItem('tb_lang') || localStorage.getItem('svw_lang') || 'de';
 
 function applyI18n() {
   const t = TRANSLATIONS[currentLang] || TRANSLATIONS.de;
@@ -80,7 +80,7 @@ function applyI18n() {
 
 function setLang(lang) {
   currentLang = lang;
-  localStorage.setItem('svw_lang', lang);
+  localStorage.setItem('tb_lang', lang);
   applyI18n();
   closeLangDrop();
 }
@@ -104,7 +104,7 @@ document.addEventListener('click', e => {
 // ══════════════════════════════════════════════════════════════════
 // THEME – Light / Dark Mode
 // ══════════════════════════════════════════════════════════════════
-let currentTheme = localStorage.getItem('svw_theme') || 'light';
+let currentTheme = localStorage.getItem('tb_theme') || localStorage.getItem('svw_theme') || 'light';
 
 function applyTheme(t) {
   document.documentElement.setAttribute('data-theme', t);
@@ -112,7 +112,7 @@ function applyTheme(t) {
   if (btn) btn.textContent = t === 'dark' ? '☀️' : '🌙';
   const homeBtn = document.getElementById('homeThemeBtn');
   if (homeBtn) homeBtn.textContent = t === 'dark' ? '☀️' : '🌙';
-  localStorage.setItem('svw_theme', t);
+  localStorage.setItem('tb_theme', t);
   currentTheme = t;
 }
 
@@ -122,13 +122,13 @@ function toggleTheme() {
 
 // ── Font Size ──────────────────────────────────────────
 const FS_STEPS = [80, 90, 100, 110, 120, 135];
-let currentFsIdx = parseInt(localStorage.getItem('svw_fs_idx') ?? '2');
+let currentFsIdx = parseInt(localStorage.getItem('tb_fs_idx') ?? localStorage.getItem('svw_fs_idx') ?? '2');
 
 function applyFontSize(idx) {
   currentFsIdx = Math.max(0, Math.min(FS_STEPS.length - 1, idx));
   const pct = FS_STEPS[currentFsIdx];
   document.body.style.zoom = pct + '%';
-  localStorage.setItem('svw_fs_idx', currentFsIdx);
+  localStorage.setItem('tb_fs_idx', currentFsIdx);
   const el = document.getElementById('cfgFsVal');
   if (el) el.textContent = pct + '%';
 }
@@ -153,7 +153,7 @@ function applyClubTheme(primary, secondary) {
   root.style.setProperty('--accent-d', shadeColor(primary, -15));
   root.style.setProperty('--accent-l', shadeColor(primary, 90));
   root.style.setProperty('--club-secondary', secondary || '#3a3a3a');
-  localStorage.setItem('svw_club_theme', JSON.stringify({ primary, secondary }));
+  localStorage.setItem('tb_club_theme', JSON.stringify({ primary, secondary }));
 }
 
 function resetClubTheme() {
@@ -162,7 +162,7 @@ function resetClubTheme() {
   root.style.removeProperty('--accent-d');
   root.style.removeProperty('--accent-l');
   root.style.removeProperty('--club-secondary');
-  localStorage.removeItem('svw_club_theme');
+  localStorage.removeItem('tb_club_theme');
 }
 
 function shadeColor(hex, percent) {
@@ -174,7 +174,7 @@ function shadeColor(hex, percent) {
 }
 
 function loadClubTheme() {
-  const saved = localStorage.getItem('svw_club_theme');
+  const saved = localStorage.getItem('tb_club_theme') || localStorage.getItem('svw_club_theme');
   if (saved) {
     try { const c = JSON.parse(saved); applyClubTheme(c.primary, c.secondary); } catch(e){}
   }
@@ -230,8 +230,8 @@ const SECS=[
   {id:4,name:'Abschlussspiel',color:'#ad1457'},
   {id:5,name:'Sondertraining',color:'#00695c'},
 ];
-const SK='svw_tb11';
-const ALL_PREV_KEYS=['svw_tb10','svw_tb9','svw_tb8','svw_tb7','svw_tb6','svw_tb5','svw_tb4','svw_tb_local','svw_tb3','svw_tb2'];
+const SK='tb_12';
+const ALL_PREV_KEYS=['svw_tb11','svw_tb10','svw_tb9','svw_tb8','svw_tb7','svw_tb6','svw_tb5','svw_tb4','svw_tb_local','svw_tb3','svw_tb2'];
 
 // ── MIGRATION: load from old key if new key is empty ──
 function migrateFromOldKeys(){
