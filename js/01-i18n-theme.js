@@ -127,7 +127,7 @@ let currentFsIdx = parseInt(localStorage.getItem('svw_fs_idx') ?? '2');
 function applyFontSize(idx) {
   currentFsIdx = Math.max(0, Math.min(FS_STEPS.length - 1, idx));
   const pct = FS_STEPS[currentFsIdx];
-  document.documentElement.style.fontSize = pct + '%';
+  document.body.style.zoom = pct + '%';
   localStorage.setItem('svw_fs_idx', currentFsIdx);
   const el = document.getElementById('cfgFsVal');
   if (el) el.textContent = pct + '%';
