@@ -419,31 +419,30 @@ function drawNeutral(W,H,p){
 // Nur Strafraum — FIFA: 40.32m breit × 16.5m tief
 // Canvas: W-Achse=40.32m, H-Achse=16.5m + Tor-Tiefe
 function drawPenaltyBox(W,H,p){
-  const fw=W-p*2, fh=H-p*2;
-  // Strafraum füllt die ganze Zeichenfläche
-  // sx: px pro Meter entlang 40.32m, sy: px pro Meter entlang ~20m (PA+goal)
-  const totalM=23; // 16.5m PA + 9.15m Bogen ragt bis 20.15m raus + Puffer
-  const sx=fw/40.32, sy=fh/totalM;
-  // Außenlinie (Torauslinie oben, Seitenlinien, PA-Linie unten)
-  sr(p,p,fw,fh);
-  // Torraum (FIFA: 18.32m × 5.5m)
-  const gaW=18.32*sx, gaH=5.5*sy;
-  sr(p+(fw-gaW)/2, p, gaW, gaH);
+  // Strafraum: 40.32m breit, 16.5m tief (PA-Linie)
+  // Sichtbarer Bereich: Torlinie oben + 16.5m PA + Bogenlücke bis 20.15m → ~21m Tiefe
+  // Einheitlicher Maßstab, zentriert
+  const fieldW=40.32, fieldH=21; // m
+  const s=Math.min((W-p*2)/fieldW,(H-p*2)/fieldH);
+  const fw=fieldW*s, fh=fieldH*s;
+  const ox=(W-fw)/2, oy=p+(H-p*2-fh)/2;
+  // Strafraum-Außenlinien (Torlinie oben, PA-Linie bei 16.5m)
+  const paH=16.5*s;
+  sr(ox, oy, fw, paH);
+  // Torraum (18.32m × 5.5m)
+  const gaW=18.32*s, gaH=5.5*s;
+  sr(ox+(fw-gaW)/2, oy, gaW, gaH);
   // Elfmeterpunkt (11m von Torlinie)
-  const ps=11*sy;
-  dot(W/2, p+ps, 3.5);
-  // Elfmeterbogen (r=9.15m) — nur Teil außerhalb des PA
+  const ps=11*s;
+  dot(ox+fw/2, oy+ps, 3.5);
+  // Elfmeterbogen — nur unterhalb der PA-Linie sichtbar
   ctx.save();
-  ctx.beginPath();ctx.rect(0,p+16.5*sy,W,H);ctx.clip(); // nur unterhalb der PA-Linie
+  ctx.beginPath();ctx.rect(0, oy+paH, W, H);ctx.clip();
   ctx.lineWidth=1.5;ctx.strokeStyle='rgba(255,255,255,.72)';
-  sc(W/2, p+ps, 9.15*sy, 0, Math.PI*2);
+  sc(ox+fw/2, oy+ps, 9.15*s, 0, Math.PI*2);
   ctx.restore();
-  // Tor hinter der Torlinie (Netz geht nach oben weg)
-  drawGoal(W/2, p, 'full', false, 0);
-  // Label
-  ctx.fillStyle='rgba(255,255,255,.25)';ctx.font='bold 10px "Barlow Condensed",sans-serif';
-  ctx.textAlign='center';ctx.textBaseline='bottom';
-  ctx.fillText('STRAFRAUM  40.32m × 16.5m', W/2, H-4);
+  // Tor hinter der Torlinie
+  drawGoal(ox+fw/2, oy, 'full', false, 0);
 }
 
 // Sprintbahn — 30m × 5m mit Abstandsmarkierungen alle 5m
