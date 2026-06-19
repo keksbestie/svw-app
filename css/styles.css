@@ -873,6 +873,16 @@ body:not(.on-home) .home-topbar { display: none; }
 .chk-dot.ok { background: #22c55e; border-color: #22c55e; color: #fff; }
 .chk-label { font-size: 12px; color: var(--text-2); transition: color .2s; }
 .chk-item.ok .chk-label { color: var(--text-1); font-weight: 600; }
+.trash-item { display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border); }
+.trash-item:last-child { border-bottom:none; }
+.trash-thumb { width:52px;height:36px;border-radius:6px;overflow:hidden;background:var(--surface-2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px; }
+.trash-info { flex:1;min-width:0; }
+.trash-name { font-size:13px;font-weight:700;color:var(--text-1); }
+.trash-meta { font-size:11px;color:var(--text-3);margin-top:2px; }
+.trash-actions { display:flex;flex-direction:column;gap:5px;flex-shrink:0; }
+.trash-btn { font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;border:none;cursor:pointer;white-space:nowrap; }
+.trash-btn.restore { background:#d1fae5;color:#065f46; }
+.trash-btn.perm { background:#fee2e2;color:#b91c1c; }
 
 /* Submit button */
 .submit-btn-wrap { margin-top: 20px; }

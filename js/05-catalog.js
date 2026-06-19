@@ -387,15 +387,54 @@ function saveEx(){
   save();activeSec=si;renderStbar();renderSection();closeMod('exMod');showToast(editingId?'Übung aktualisiert':'Übung gespeichert');
 }
 async function delEx(id){
-  if(!IS_ADMIN||!confirm('Übung löschen?'))return;
+  if(!IS_ADMIN||!confirm('Übung in den Papierkorb verschieben?'))return;
   if(_supabase&&apiOnline){
-    const{error}=await _supabase.from('exercises').delete().eq('id',id);
+    const{error}=await _supabase.from('exercises').update({status:'deleted'}).eq('id',id);
     if(error){showToast('Löschen fehlgeschlagen','err');return;}
   }
   exercises=exercises.filter(e=>e.id!==id);
   const _li=raw=>typeof raw==='string'?{id:raw}:raw;
   currentPlan.lanes=currentPlan.lanes.map(l=>l.filter(raw=>_li(raw).id!==id));
-  save();renderSection();showToast('Gelöscht');
+  save();renderSection();showToast('In Papierkorb verschoben');
+}
+async function restoreEx(id){
+  const{error}=await _supabase.from('exercises').update({status:'approved'}).eq('id',id);
+  if(error){showToast('Fehler beim Wiederherstellen','err');return;}
+  showToast('Übung wiederhergestellt');
+  await loadTrash();renderTrash();
+  const ok=await loadAPI();if(ok)renderSection();
+}
+async function permDeleteEx(id){
+  if(!confirm('Übung endgültig löschen? Das kann nicht rückgängig gemacht werden.'))return;
+  const{error}=await _supabase.from('exercises').delete().eq('id',id);
+  if(error){showToast('Fehler','err');return;}
+  showToast('Endgültig gelöscht');
+  await loadTrash();renderTrash();
+}
+let trashItems=[];
+async function loadTrash(){
+  if(!_supabase||!IS_ADMIN){trashItems=[];return;}
+  const{data}=await _supabase.from('exercises').select('*').eq('status','deleted');
+  trashItems=(data||[]).map(e=>({id:e.id,name:e.name,section:e.section,players:e.players,difficulty:e.difficulty,image:e.image}));
+}
+async function openTrash(){
+  await loadTrash();renderTrash();openMod('trashMod');
+}
+function renderTrash(){
+  const el=document.getElementById('trashList');if(!el)return;
+  if(!trashItems.length){el.innerHTML='<div style="font-size:13px;color:var(--text-3);padding:16px 0;text-align:center;">Papierkorb ist leer.</div>';return;}
+  el.innerHTML=trashItems.map(e=>`
+    <div class="trash-item">
+      <div class="trash-thumb">${e.image?`<img src="${e.image}" style="width:100%;height:100%;object-fit:cover;">`:'⚽'}</div>
+      <div class="trash-info">
+        <div class="trash-name">${e.name}</div>
+        <div class="trash-meta">${SECS[e.section]?.name||''} · ${e.players||''} · ${e.difficulty||''}</div>
+      </div>
+      <div class="trash-actions">
+        <button class="trash-btn restore" onclick="restoreEx('${e.id}')">↩ Wiederherstellen</button>
+        <button class="trash-btn perm" onclick="permDeleteEx('${e.id}')">🗑 Endgültig löschen</button>
+      </div>
+    </div>`).join('');
 }
 function addMTag(){const v=document.getElementById('mTagIn').value.trim().toUpperCase();if(v&&!formTags.includes(v)){formTags.push(v);renderMTags();}document.getElementById('mTagIn').value='';}
 function removeMTag(t){formTags=formTags.filter(x=>x!==t);renderMTags();}
