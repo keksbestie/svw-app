@@ -607,7 +607,8 @@
       <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Die durch die Betreiber erstellten Inhalte und Werke in dieser Anwendung unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechts bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.</p>
     </div>
 
-    <p style="font-size:11px;color:var(--gd2);text-align:center;margin-top:24px;">Stand: Juni 2025</p>
+    <p style="font-size:11px;color:var(--gd2);text-align:center;margin-top:24px;">Stand: <span id="impressumDate"></span></p>
+    <script>document.getElementById('impressumDate').textContent=new Date().toLocaleDateString('de-DE',{month:'long',year:'numeric'});</script>
   </div>
 </div>
 
