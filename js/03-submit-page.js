@@ -341,3 +341,109 @@ async function reviewAction(action){
   renderMySubmissions();
 }
 
+
+// ══════════════════════════════════════════════════════
+// GEAR DROPDOWN (Einstellungen-Menü oben rechts)
+// ══════════════════════════════════════════════════════
+
+function toggleCfgDrop(){
+  const drop=document.getElementById('cfgDrop');
+  const isOpen=drop.classList.contains('open');
+  if(!isOpen) updateCfgDropHeader();
+  drop.classList.toggle('open',!isOpen);
+}
+
+function closeCfgDrop(){
+  document.getElementById('cfgDrop')?.classList.remove('open');
+}
+
+function updateCfgDropHeader(){
+  const uname=document.getElementById('cfgUname');
+  const email=document.getElementById('cfgEmail');
+  const avatar=document.getElementById('cfgAvatar');
+  if(currentUser){
+    const name=currentUser.user_metadata?.username||currentUser.email;
+    uname.textContent=name;
+    email.textContent=currentUser.email;
+    avatar.textContent=(name[0]||'?').toUpperCase();
+  } else {
+    uname.textContent='Nicht angemeldet';
+    email.textContent='';
+    avatar.textContent='?';
+  }
+}
+
+document.addEventListener('click',e=>{
+  const sel=document.getElementById('cfgSel');
+  if(sel&&!sel.contains(e.target)) closeCfgDrop();
+});
+
+// ══════════════════════════════════════════════════════
+// ACCOUNT PAGE
+// ══════════════════════════════════════════════════════
+
+function switchAccTab(tab){
+  document.getElementById('accPanelProfile').style.display=tab==='profile'?'':'none';
+  document.getElementById('accPanelPlans').style.display=tab==='plans'?'':'none';
+  document.getElementById('accTabProfile').classList.toggle('acc-tab--active',tab==='profile');
+  document.getElementById('accTabPlans').classList.toggle('acc-tab--active',tab==='plans');
+  if(tab==='plans') renderMyAccPlans();
+}
+
+function renderAccountPage(){
+  if(!currentUser) return;
+  const name=currentUser.user_metadata?.username||'';
+  document.getElementById('accUsernameIn').value=name;
+  document.getElementById('accEmailIn').value=currentUser.email||'';
+  document.getElementById('accDisplayName').textContent=name||currentUser.email;
+  document.getElementById('accDisplayEmail').textContent=currentUser.email;
+  const avatar=document.getElementById('accAvatarBig');
+  if(avatar) avatar.textContent=(name[0]||currentUser.email[0]||'?').toUpperCase();
+  // public flag from metadata
+  const pub=currentUser.user_metadata?.publicName===true;
+  document.getElementById('accPublicName').checked=pub;
+}
+
+async function saveAccountProfile(){
+  if(!currentUser){showToast('Nicht angemeldet','err');return;}
+  const username=document.getElementById('accUsernameIn').value.trim();
+  const email=document.getElementById('accEmailIn').value.trim();
+  if(!username){showToast('Benutzername darf nicht leer sein','err');return;}
+  const updates={data:{...currentUser.user_metadata,username}};
+  if(email&&email!==currentUser.email) updates.email=email;
+  const {data,error}=await _supabase.auth.updateUser(updates);
+  if(error){showToast('Fehler: '+error.message,'err');return;}
+  currentUser=data.user;
+  if(submitUser) submitUser.name=username;
+  renderAccountPage();
+  updateCfgDropHeader();
+  showToast('Profil gespeichert ✓');
+}
+
+async function saveAccountVisibility(){
+  if(!currentUser){showToast('Nicht angemeldet','err');return;}
+  const pub=document.getElementById('accPublicName').checked;
+  const {data,error}=await _supabase.auth.updateUser({data:{...currentUser.user_metadata,publicName:pub}});
+  if(error){showToast('Fehler: '+error.message,'err');return;}
+  currentUser=data.user;
+  showToast('Einstellung gespeichert ✓');
+}
+
+function renderMyAccPlans(){
+  const list=document.getElementById('accPlansList');
+  if(!list) return;
+  const saved=JSON.parse(localStorage.getItem('savedPlans')||'[]');
+  if(!saved.length){
+    list.innerHTML='<div style="text-align:center;color:var(--gd2);font-size:14px;padding:40px 0;">Keine gespeicherten Pläne vorhanden.</div>';
+    return;
+  }
+  list.innerHTML=saved.map((p,i)=>`
+    <div style="background:var(--surface);border-radius:10px;padding:14px 18px;box-shadow:var(--sh);display:flex;align-items:center;gap:12px;">
+      <div style="flex:1;">
+        <div style="font-weight:700;font-size:15px;">${p.name||'Plan '+(i+1)}</div>
+        <div style="font-size:11px;color:var(--gd2);margin-top:2px;">${p.date||''}</div>
+      </div>
+      <button onclick="goPage('planner')" style="padding:7px 14px;background:var(--accent);color:#fff;border:none;border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;">Öffnen</button>
+    </div>
+  `).join('');
+}

@@ -196,6 +196,7 @@ function _prepPage(name,btn){
   if(name==='handbook')renderSection();
   if(name==='longterm')renderLtp();
   if(name==='submit')renderSubmitPage();
+  if(name==='account')renderAccountPage();
   // Scroll instantly while overlay still covers — no visible jump when revealed
   document.documentElement.scrollTop=0;
   document.body.scrollTop=0;

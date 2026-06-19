@@ -56,6 +56,42 @@
     <!-- Dark mode toggle -->
     <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Theme wechseln">🌙</button>
 
+    <!-- Settings dropdown -->
+    <div class="cfg-sel" id="cfgSel">
+      <button class="cfg-btn" onclick="toggleCfgDrop()" id="cfgBtn" title="Einstellungen">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </button>
+      <div class="cfg-drop" id="cfgDrop">
+        <div class="cfg-drop-header" id="cfgDropHeader">
+          <div class="cfg-avatar" id="cfgAvatar">?</div>
+          <div>
+            <div class="cfg-uname" id="cfgUname">Nicht angemeldet</div>
+            <div class="cfg-email" id="cfgEmail"></div>
+          </div>
+        </div>
+        <div class="cfg-sep"></div>
+        <button class="cfg-item" onclick="closeCfgDrop();goPage('account')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Mein Account
+        </button>
+        <button class="cfg-item" onclick="closeCfgDrop();goPage('account');setTimeout(()=>document.getElementById('accTabPlans')?.click(),100)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Meine Pläne
+        </button>
+        <button class="cfg-item cfg-item--soon" disabled>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Design anpassen <span class="cfg-badge-soon">bald</span>
+        </button>
+        <div class="cfg-sep"></div>
+        <button class="cfg-item" onclick="closeCfgDrop();goPage('impressum')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Impressum
+        </button>
+      </div>
+    </div>
+
     <button class="hbtn pri" onclick="goPage('planner')" id="hcnt">Trainingsplan</button>
   </div>
 </header>
@@ -190,11 +226,6 @@
     </div>
   </div>
 </div>
-
-<!-- Footer -->
-<footer style="text-align:center;padding:18px 16px 80px;font-size:11px;color:var(--gd2);">
-  <button onclick="goPage('impressum')" style="background:none;border:none;color:var(--gd2);font-size:11px;cursor:pointer;text-decoration:underline;font-family:'Barlow',sans-serif;padding:0;">Impressum</button>
-</footer>
 
 <!-- PAGE: SUBMIT — Übung einreichen -->
 <div id="page-submit" class="page">
@@ -477,6 +508,61 @@
         <button onclick="downloadITDoc()" style="width:100%;padding:9px;background:var(--gray);color:var(--gd2);border:none;border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;">IT-Dokument</button>
       </div>
       <button onclick="if(confirm('Alle Übungen löschen und Standardübungen neu laden?')){exercises=[];mergeNewDefaultExercises();save();renderSection();showToast('Übungen zurückgesetzt');}"  style="grid-column:1/-1;padding:9px;background:#fce4ec;color:#880e4f;border:none;border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;">Alle Übungen löschen</button>
+    </div>
+  </div>
+</div>
+
+<!-- ACCOUNT PAGE -->
+<div id="page-account" class="page">
+  <div class="inner" style="max-width:680px;padding-bottom:60px;">
+    <button onclick="goPage('home')" style="display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--gd2);font-size:13px;cursor:pointer;margin-bottom:18px;padding:0;font-family:'Barlow',sans-serif;">← Zurück</button>
+    <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;margin:0 0 20px;">Mein Account</h1>
+
+    <!-- Tabs -->
+    <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:22px;">
+      <button id="accTabProfile" class="acc-tab acc-tab--active" onclick="switchAccTab('profile')">Profil</button>
+      <button id="accTabPlans" class="acc-tab" onclick="switchAccTab('plans')">Meine Pläne</button>
+    </div>
+
+    <!-- Tab: Profil -->
+    <div id="accPanelProfile">
+      <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
+        <div class="fsec" style="margin-top:0;">Benutzerdaten</div>
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+          <div id="accAvatarBig" style="width:56px;height:56px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:#fff;flex-shrink:0;">?</div>
+          <div>
+            <div id="accDisplayName" style="font-size:18px;font-weight:700;">–</div>
+            <div id="accDisplayEmail" style="font-size:12px;color:var(--gd2);">–</div>
+          </div>
+        </div>
+        <label style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--gd2);display:block;margin-bottom:4px;">Benutzername</label>
+        <input type="text" id="accUsernameIn" class="fc" style="margin-bottom:14px;" placeholder="Benutzername">
+        <label style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--gd2);display:block;margin-bottom:4px;">E-Mail</label>
+        <input type="email" id="accEmailIn" class="fc" style="margin-bottom:14px;" placeholder="E-Mail-Adresse">
+        <button class="bpr" onclick="saveAccountProfile()" style="width:100%;">Änderungen speichern</button>
+      </div>
+
+      <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
+        <div class="fsec" style="margin-top:0;">Öffentliche Sichtbarkeit</div>
+        <label style="display:flex;align-items:center;gap:12px;cursor:pointer;padding:4px 0;">
+          <input type="checkbox" id="accPublicName" style="width:18px;height:18px;accent-color:var(--accent);cursor:pointer;">
+          <span style="font-size:14px;">Name öffentlich im Katalog anzeigen</span>
+        </label>
+        <p style="font-size:12px;color:var(--gd2);margin:8px 0 14px;line-height:1.5;">Wenn aktiv, erscheint dein Benutzername bei deinen eingereichten Übungen im öffentlichen Katalog.</p>
+        <button class="bpr" onclick="saveAccountVisibility()" style="width:100%;">Speichern</button>
+      </div>
+
+      <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);">
+        <div class="fsec" style="margin-top:0;color:#e53935;">Konto</div>
+        <button onclick="doLogout()" style="width:100%;padding:11px;background:#fce4ec;color:#c62828;border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;cursor:pointer;letter-spacing:.3px;">Abmelden</button>
+      </div>
+    </div>
+
+    <!-- Tab: Meine Pläne -->
+    <div id="accPanelPlans" style="display:none;">
+      <div id="accPlansList" style="display:flex;flex-direction:column;gap:10px;">
+        <div style="text-align:center;color:var(--gd2);font-size:14px;padding:40px 0;">Keine Pläne vorhanden.</div>
+      </div>
     </div>
   </div>
 </div>

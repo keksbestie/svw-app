@@ -111,6 +111,27 @@ header {
 .hbtn.pri:hover { background: var(--accent-d); }
 .abadge { background: #ffd700; color: #5a3e00; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; display: none; }
 
+/* Settings / gear dropdown */
+.cfg-sel { position: relative; }
+.cfg-btn { background: none; border: 1.5px solid var(--border); border-radius: 8px; padding: 6px 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-2); transition: border-color .15s, color .15s; }
+.cfg-btn:hover { border-color: var(--accent); color: var(--accent); }
+.cfg-drop { position: absolute; top: calc(100% + 8px); right: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow-lg); min-width: 220px; z-index: 600; display: none; overflow: hidden; }
+.cfg-drop.open { display: block; }
+.cfg-drop-header { padding: 14px 16px; display: flex; align-items: center; gap: 12px; background: var(--off); }
+.cfg-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 900; color: #fff; flex-shrink: 0; }
+.cfg-uname { font-size: 14px; font-weight: 700; color: var(--text-1); }
+.cfg-email { font-size: 11px; color: var(--gd2); margin-top: 1px; }
+.cfg-sep { height: 1px; background: var(--border); margin: 0; }
+.cfg-item { width: 100%; background: none; border: none; padding: 11px 16px; display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13px; color: var(--text-1); font-family: 'Barlow', sans-serif; text-align: left; transition: background .12s; }
+.cfg-item:hover { background: var(--surface-2); }
+.cfg-item svg { flex-shrink: 0; color: var(--gd2); }
+.cfg-item--soon { color: var(--gd2); cursor: default; }
+.cfg-item--soon:hover { background: none; }
+.cfg-badge-soon { margin-left: auto; font-size: 9px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; background: var(--border); color: var(--gd2); padding: 2px 6px; border-radius: 10px; }
+/* Account page tabs */
+.acc-tab { background: none; border: none; border-bottom: 2px solid transparent; padding: 8px 18px 10px; font-size: 14px; font-weight: 700; font-family: 'Barlow Condensed', sans-serif; letter-spacing: .3px; cursor: pointer; color: var(--gd2); transition: color .15s, border-color .15s; margin-bottom: -2px; }
+.acc-tab--active { color: var(--accent); border-bottom-color: var(--accent); }
+
 /* Language selector */
 .lang-sel { position: relative; }
 .lang-btn { background: none; border: 1.5px solid var(--border); border-radius: 8px; padding: 5px 9px; cursor: pointer; font-size: 15px; display: flex; align-items: center; gap: 5px; transition: border-color .15s; color: var(--text-2); }
