@@ -598,11 +598,13 @@ function drawPlayer(x,y,lbl,col,sel,ang){
   ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.fill();
   ctx.shadowBlur=0; ctx.shadowOffsetY=0;
 
-  // Viewing-direction wedge — solid black sector (top quarter: -135° → -45°)
+  // Viewing-direction crescent — ring segment at outer edge only (center stays clear)
+  const Ri=R*0.45; // inner radius: center bleibt frei
+  const a1=-Math.PI*3/4, a2=-Math.PI/4;
   ctx.fillStyle='#111';
   ctx.beginPath();
-  ctx.moveTo(0,0);
-  ctx.arc(0,0,R,-Math.PI*3/4,-Math.PI/4);
+  ctx.arc(0,0,R,a1,a2);       // äußerer Bogen vorwärts
+  ctx.arc(0,0,Ri,a2,a1,true); // innerer Bogen rückwärts
   ctx.closePath();
   ctx.fill();
 
