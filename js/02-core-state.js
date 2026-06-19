@@ -74,6 +74,15 @@ async function saveAPI(){
   }catch{apiOnline=false; setStat('err'); showToast('Speichern fehlgeschlagen','warn');}
 }
 async function retryConn(){const ok=await loadAPI();if(ok){showToast('Verbunden');renderSection();renderSavedPlans();renderLtp();}else showToast('Verbindung fehlgeschlagen','err');updateApiBar();}
+function applyData(d){
+  exercises=d.exercises||[];sectionDescs=d.sectionDescs||defaultDescs();
+  sectionCustomTags=d.sectionCustomTags||[[],[],[],[],[],[]];savedPlans=d.savedPlans||[];
+  ltpBlocks=d.ltpBlocks||defaultLtp();
+  if(d.sectionClusters)SECTION_CLUSTERS=d.sectionClusters;
+  else if(d.tagClusters)SECTION_CLUSTERS=Array.from({length:6},()=>JSON.parse(JSON.stringify(d.tagClusters)));
+  TAG_CLUSTERS=SECTION_CLUSTERS[activeSec]||SECTION_CLUSTERS[0];
+  if(d.blockLibrary)blockLibrary=d.blockLibrary;
+}
 function cacheLocal(){localStorage.setItem(SK,JSON.stringify({exercises,sectionDescs,sectionCustomTags,savedPlans,ltpBlocks,blockLibrary,sectionClusters:SECTION_CLUSTERS}));}
 function loadLocal(){
   try{
