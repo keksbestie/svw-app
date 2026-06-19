@@ -88,6 +88,17 @@
           Design anpassen <span class="cfg-badge-soon">bald</span>
         </button>
         <div class="cfg-sep"></div>
+        <div class="cfg-fontsize-row">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+          <span class="cfg-fontsize-label">Schrift</span>
+          <div class="cfg-fontsize-ctrl">
+            <button class="cfg-fs-btn" onclick="adjustFontSize(-1)">A−</button>
+            <span class="cfg-fs-val" id="cfgFsVal">100%</span>
+            <button class="cfg-fs-btn" onclick="adjustFontSize(1)">A+</button>
+          </div>
+          <button class="cfg-fs-rst" onclick="adjustFontSize(0)" title="Zurücksetzen">↺</button>
+        </div>
+        <div class="cfg-sep"></div>
         <button class="cfg-item" onclick="closeCfgDrop();goPage('impressum')">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           Impressum

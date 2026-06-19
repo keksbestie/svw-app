@@ -120,6 +120,24 @@ function toggleTheme() {
   applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
 }
 
+// ── Font Size ──────────────────────────────────────────
+const FS_STEPS = [80, 90, 100, 110, 120, 135];
+let currentFsIdx = parseInt(localStorage.getItem('svw_fs_idx') ?? '2');
+
+function applyFontSize(idx) {
+  currentFsIdx = Math.max(0, Math.min(FS_STEPS.length - 1, idx));
+  const pct = FS_STEPS[currentFsIdx];
+  document.documentElement.style.fontSize = pct + '%';
+  localStorage.setItem('svw_fs_idx', currentFsIdx);
+  const el = document.getElementById('cfgFsVal');
+  if (el) el.textContent = pct + '%';
+}
+
+function adjustFontSize(dir) {
+  if (dir === 0) applyFontSize(2); // reset to 100%
+  else applyFontSize(currentFsIdx + dir);
+}
+
 
 
 // ══════════════════════════════════════════════════════
