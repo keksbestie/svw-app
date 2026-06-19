@@ -588,42 +588,39 @@ function drawRawPath(pts,col){
 
 // ── Player ──
 function drawPlayer(x,y,lbl,col,sel,ang){
-  const R=14;
+  const R=15;
   ctx.save();
   ctx.translate(x,y); ctx.rotate(ang);
+
   // Drop shadow
-  ctx.shadowColor='rgba(0,0,0,.5)'; ctx.shadowBlur=8; ctx.shadowOffsetY=3;
-  // Outer ring (jersey color)
+  ctx.shadowColor='rgba(0,0,0,.55)'; ctx.shadowBlur=9; ctx.shadowOffsetY=3;
   ctx.fillStyle=col;
   ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.fill();
   ctx.shadowBlur=0; ctx.shadowOffsetY=0;
-  // Inner highlight gradient
-  const grad=ctx.createRadialGradient(-R*.25,-R*.3,R*.1,0,0,R);
-  grad.addColorStop(0,'rgba(255,255,255,.35)');
-  grad.addColorStop(1,'rgba(0,0,0,.2)');
-  ctx.fillStyle=grad;
-  ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.fill();
-  // Blickrichtungs-Viertelkreis (schwarzer Halbmond oben = Blickrichtung vorne)
-  ctx.fillStyle='rgba(0,0,0,0.55)';
+
+  // Viewing-direction wedge — solid black sector (top quarter: -135° → -45°)
+  ctx.fillStyle='#111';
   ctx.beginPath();
   ctx.moveTo(0,0);
-  ctx.arc(0,0,R,-Math.PI*3/4,-Math.PI/4); // oberes Viertel des Kreises
+  ctx.arc(0,0,R,-Math.PI*3/4,-Math.PI/4);
   ctx.closePath();
   ctx.fill();
-  // Border
-  ctx.strokeStyle=sel?'#ffe082':'rgba(255,255,255,.9)';
-  ctx.lineWidth=sel?2.5:1.8; ctx.stroke();
-  // Label
+
+  // Clean outer border
+  ctx.strokeStyle=sel?'#ffe082':'rgba(255,255,255,.92)';
+  ctx.lineWidth=sel?2.8:2;
+  ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.stroke();
+
+  // Label — shifted slightly toward the colored half (downward in local space)
   const bright=['#f9a825','#fff176','#ffffff','#e0e0e0'].includes(col);
-  ctx.fillStyle=bright?'#1a1a1a':'#fff';
-  ctx.font=`bold ${lbl&&lbl.length>2?8:10}px "Barlow Condensed",sans-serif`;
+  ctx.fillStyle=bright?'#111':'#fff';
+  ctx.font=`bold ${lbl&&lbl.length>2?8:11}px "Barlow Condensed",sans-serif`;
   ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.shadowColor='rgba(0,0,0,.4)'; ctx.shadowBlur=2;
-  ctx.fillText(lbl||'',0,0.5);
+  ctx.fillText(lbl||'',0,4);
+
   // Selection halo
   if(sel){
-    ctx.shadowBlur=0;
-    ctx.strokeStyle='rgba(255,224,130,.5)'; ctx.lineWidth=1.5;
+    ctx.strokeStyle='rgba(255,224,130,.55)'; ctx.lineWidth=1.5;
     ctx.setLineDash([3,3]);
     ctx.beginPath(); ctx.arc(0,0,R+5,0,Math.PI*2); ctx.stroke();
     ctx.setLineDash([]);
