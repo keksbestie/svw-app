@@ -48,8 +48,7 @@ async function renderSubmitPage(){
     if(IS_ADMIN){ renderAdminQueue(); renderUserList(); }
     document.getElementById('adminQueueWrap').style.display = IS_ADMIN ? 'block' : 'none';
     document.getElementById('adminUserWrap').style.display = IS_ADMIN ? 'block' : 'none';
-    // Init canvas after DOM is visible
-    setTimeout(()=>initSubmitCanvas(), 80);
+    // Canvas wird per Button im fieldOverlay geöffnet
   }
 }
 
@@ -94,168 +93,6 @@ function updateSMatField(){
   const parts = [...counted];
   if(free) parts.push(...free.split(',').map(x=>x.trim()).filter(Boolean));
   const f = document.getElementById('sMat'); if(f) f.value = parts.join(', ');
-}
-
-// ── Full canvas engine for submit form ──────────────
-let sCurTool='player', sCanvasObjects=[], sUndoStack=[];
-let sLinePhase=0, sLineStart=null, sIsDribbling=false, sDribblePoints=[];
-let sSelectedObjIdx=null, sCanvasInited=false;
-
-function initSubmitCanvas(){
-  if(sCanvasInited) return;
-  const c = document.getElementById('sCanvas'); if(!c) return;
-  sCanvasInited = true;
-  const dpr = window.devicePixelRatio||1;
-  const cssW = c.parentElement.clientWidth || 800;
-  const cssH = Math.round(cssW * 0.63);
-  c.width = cssW * dpr; c.height = cssH * dpr;
-  c.style.width = cssW+'px'; c.style.height = cssH+'px';
-  const sctx = c.getContext('2d');
-  sctx.scale(dpr, dpr);
-  c.addEventListener('click', sScanvasClick);
-  c.addEventListener('mousemove', sScanvasMove);
-  c.addEventListener('contextmenu', e=>{ e.preventDefault(); sHandleRightClick(e); });
-  c.addEventListener('touchstart', e=>{
-    e.preventDefault();
-    const t=e.touches[0], r=c.getBoundingClientRect();
-    sScanvasClick({clientX:t.clientX, clientY:t.clientY});
-  },{passive:false});
-  sRedraw();
-}
-
-function sGetXY(e){
-  const c=document.getElementById('sCanvas'); if(!c) return {x:0,y:0};
-  const r=c.getBoundingClientRect();
-  // Always return CSS-pixel coords — ctx is already scaled by dpr
-  const cx = e.clientX!==undefined ? e.clientX : (e.offsetX||0)+r.left;
-  const cy = e.clientY!==undefined ? e.clientY : (e.offsetY||0)+r.top;
-  return {x: cx - r.left, y: cy - r.top};
-}
-
-function sHandleRightClick(e){
-  const {x,y}=sGetXY(e);
-  const found=[...sCanvasObjects.entries()].reverse().find(([,o])=>
-    o.type!=='line'&&o.type!=='dribble'&&Math.hypot((o.x||0)-x,(o.y||0)-y)<24
-  );
-  if(found){
-    const [idx,o]=found;
-    if(o.angle!==undefined){
-      sPushUndo();
-      o.angle=(o.angle||0)+Math.PI/8; // 22.5°
-      sSelectedObjIdx=idx;
-      sRedraw(); sExportCanvas();
-    }
-  }
-}
-
-function sScanvasClick(e){
-  const {x,y}=sGetXY(e);
-  sPushUndo();
-  if(sCurTool==='select'){
-    const found=[...sCanvasObjects.entries()].reverse().find(([,o])=>Math.hypot((o.x||o.x1)-x,(o.y||o.y1)-y)<16);
-    sSelectedObjIdx=found?found[0]:null; sRedraw(); return;
-  }
-  if(sCurTool==='erase'){
-    const idx=[...sCanvasObjects.entries()].reverse().find(([,o])=>Math.hypot((o.x||o.x1)-x,(o.y||o.y1)-y)<16);
-    if(idx!==undefined){ sCanvasObjects.splice(idx[0],1); }
-    sRedraw(); sExportCanvas(); return;
-  }
-  if(sCurTool==='pass'||sCurTool==='run'){
-    if(!sLinePhase){ sLineStart={x,y}; sLinePhase=1; }
-    else{ sCanvasObjects.push({type:'line',kind:sCurTool,x1:sLineStart.x,y1:sLineStart.y,x2:x,y2:y}); sLinePhase=0; sLineStart=null; }
-    sRedraw(); sExportCanvas(); return;
-  }
-  if(sCurTool==='dribble'){
-    if(!sIsDribbling){ sIsDribbling=true; sDribblePoints=[{x,y}]; }
-    else{ sDribblePoints.push({x,y}); if(sDribblePoints.length>1){ sCanvasObjects.push({type:'dribble',points:[...sDribblePoints]}); sIsDribbling=false; sDribblePoints=[]; } }
-    sRedraw(); sExportCanvas(); return;
-  }
-  if(sCurTool==='player'){
-    const col=document.getElementById('sPlayerColor')?.value||'#1565c0';
-    const cnt=sCanvasObjects.filter(o=>o.type==='player'&&o.color===col).length;
-    sCanvasObjects.push({type:'player',x,y,color:col,label:String.fromCharCode(65+cnt),angle:0});
-  } else if(sCurTool==='ball'){
-    sCanvasObjects.push({type:'ball',x,y});
-  } else if(sCurTool==='equip'){
-    sCanvasObjects.push({type:'equip',x,y,equip:document.getElementById('sEquipType')?.value||'cone',angle:0});
-  } else if(sCurTool==='goal'){
-    sCanvasObjects.push({type:'goal',x,y,goalType:document.getElementById('sGoalType')?.value||'mini',angle:0});
-  }
-  sRedraw(); sExportCanvas();
-}
-
-function sScanvasMove(e){
-  if(!sLinePhase||!sLineStart) return;
-  sRedraw();
-  const {x,y}=sGetXY(e);
-  const c=document.getElementById('sCanvas'); if(!c) return;
-  const ctx=c.getContext('2d');
-  ctx.save();
-  ctx.strokeStyle=sCurTool==='run'?'rgba(255,224,130,.6)':'rgba(255,255,255,.5)';
-  ctx.lineWidth=2; ctx.setLineDash(sCurTool==='run'?[7,5]:[]);
-  ctx.beginPath(); ctx.moveTo(sLineStart.x,sLineStart.y); ctx.lineTo(x,y); ctx.stroke();
-  ctx.restore();
-}
-
-function sRotateSelected(deg){
-  if(sSelectedObjIdx===null) return;
-  const o=sCanvasObjects[sSelectedObjIdx]; if(!o) return;
-  o.angle=((o.angle||0)+deg)%360; sRedraw(); sExportCanvas();
-}
-
-function sPushUndo(){ sUndoStack.push(JSON.stringify(sCanvasObjects)); if(sUndoStack.length>30)sUndoStack.shift(); }
-function sUndoDraw(){ if(!sUndoStack.length){showToast('Nichts rückgängig');return;} sCanvasObjects=JSON.parse(sUndoStack.pop()); sRedraw(); sExportCanvas(); }
-function sClearCanvas(){ if(!confirm('Diagramm leeren?'))return; sPushUndo(); sCanvasObjects=[]; sLinePhase=0; sLineStart=null; sIsDribbling=false; sDribblePoints=[]; sSelectedObjIdx=null; sRedraw(); submitCanvasData=null; updateSubmitChecklist(); }
-function setSTool(t){ sCurTool=t; sLinePhase=0; sLineStart=null; sIsDribbling=false; sDribblePoints=[]; document.querySelectorAll('[id^="stb_"]').forEach(b=>b.classList.remove('active')); const el=document.getElementById('stb_'+t); if(el)el.classList.add('active'); }
-
-function sExportCanvas(){
-  const c=document.getElementById('sCanvas'); if(!c) return;
-  submitCanvasData = sCanvasObjects.length>0 ? c.toDataURL('image/png') : null;
-  updateSubmitChecklist();
-}
-
-function sRedraw(){
-  const c=document.getElementById('sCanvas'); if(!c) return;
-  const ctx=c.getContext('2d');
-  // Use CSS dimensions — ctx is already scaled by dpr
-  const w=parseFloat(c.style.width)||c.width;
-  const h=parseFloat(c.style.height)||c.height;
-  sDrawField(ctx,w,h,document.getElementById('sFieldType')?.value||'small');
-  sCanvasObjects.forEach((o,i)=>sDrawObj(ctx,o,i===sSelectedObjIdx));
-  if(sIsDribbling&&sDribblePoints.length>0){
-    ctx.save(); ctx.strokeStyle='rgba(165,214,167,.7)'; ctx.lineWidth=2; ctx.setLineDash([5,4]);
-    ctx.beginPath(); ctx.moveTo(sDribblePoints[0].x,sDribblePoints[0].y);
-    sDribblePoints.forEach(p=>ctx.lineTo(p.x,p.y)); ctx.stroke(); ctx.restore();
-  }
-}
-
-// Submit canvas uses same draw logic as main canvas
-// by temporarily swapping global ctx/canvasEl and passing field type directly
-function sWithCtx(sctx, cssW, cssH, fn){
-  const _ctx=ctx, _cv=canvasEl;
-  ctx=sctx;
-  canvasEl={style:{width:cssW+'px',height:cssH+'px'},width:cssW,height:cssH};
-  fn();
-  ctx=_ctx; canvasEl=_cv;
-}
-
-function sDrawField(sctx,w,h,type){
-  sWithCtx(sctx,w,h,()=>{
-    ctx.fillStyle='#2d8a4e';ctx.fillRect(0,0,w,h);
-    for(let i=0;i<8;i++){ctx.fillStyle=i%2===0?'rgba(0,0,0,.05)':'rgba(255,255,255,.04)';ctx.fillRect(0,i*(h/8),w,h/8);}
-    ctx.strokeStyle='rgba(255,255,255,.88)';ctx.lineWidth=2;ctx.lineCap='round';ctx.lineJoin='round';ctx.setLineDash([]);
-    const p=Math.round(Math.min(w,h)*0.04);
-    if(type==='full')drawFull(w,h,p);
-    else if(type==='half')drawHalf(w,h,p);
-    else if(type==='small')drawSmall(w,h,p);
-    else drawNeutral(w,h,p);
-  });
-}
-
-function sDrawObj(sctx,o,sel){
-  const c=document.getElementById('sCanvas');
-  const w=parseFloat(c?.style.width)||800, h=parseFloat(c?.style.height)||504;
-  sWithCtx(sctx,w,h,()=>drawObj(o,sel));
 }
 
 // ── Checklist logic ──────────────────────────────────
@@ -342,10 +179,9 @@ async function submitExercise(){
   showToast('✓ Übung eingereicht! Das Admin-Team prüft sie.');
   renderSubmitChecklist_init();
   submitCanvasData=null;
-  sCanvasObjects=[];sUndoStack=[];sLinePhase=0;sLineStart=null;
-  sIsDribbling=false;sDribblePoints=[];sSelectedObjIdx=null;
-  sCanvasInited=false;
-  setTimeout(()=>initSubmitCanvas(),80);
+  const sPreview=document.getElementById('sPreviewWrap');
+  if(sPreview) sPreview.style.display='none';
+  canvasObjects=[];playerCounters={};undoStack=[];selectedObjIdx=null;linePhase=0;lineStart=null;
   await loadSubmissions();
   renderMySubmissions();
   if(IS_ADMIN)renderAdminQueue();

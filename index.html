@@ -299,60 +299,10 @@
           <div class="fsec">Felddiagramm (Pflicht – mind. 1 Objekt) *</div>
           <div class="fg">
             <div id="submitCanvasWrap">
-              <div style="background:#1a2b1c;border-radius:10px 10px 0 0;padding:7px 10px;display:flex;flex-wrap:wrap;gap:5px;align-items:center;">
-                <select id="sFieldType" onchange="initSCanvas(true)" style="padding:4px 8px;border-radius:6px;border:none;font-size:11px;font-weight:700;background:#344736;color:#fff;cursor:pointer;height:28px;">
-                  <option value="full">Vollfeld</option><option value="half">Halbfeld</option>
-                  <option value="small" selected>Kleinfeld</option><option value="neutral">Neutrales Feld</option>
-                </select>
-                <div style="width:1px;height:20px;background:rgba(255,255,255,.12);"></div>
-                <div style="display:flex;align-items:center;gap:2px;">
-                  <button class="tb active" id="stb_player" onclick="setSTool('player')" title="Spieler" style="background:#1565c0;font-size:14px;font-weight:900;">●</button>
-                  <select id="sPlayerColor" onchange="setSTool('player')" style="padding:3px 4px;border-radius:5px;border:none;font-size:10px;background:#344736;color:#fff;cursor:pointer;height:28px;">
-                    <option value="#1565c0">Blau</option><option value="#b71c1c">Rot</option>
-                    <option value="#1b5e20">Grün</option><option value="#e65100">Orange</option>
-                    <option value="#f9a825">Gelb/TW</option><option value="#4a148c">Lila</option>
-                    <option value="#212121">Schwarz</option>
-                  </select>
-                </div>
-                <button class="tb" id="stb_ball" onclick="setSTool('ball')" title="Ball" style="background:#344736;font-size:14px;">⚽</button>
-                <div style="display:flex;align-items:center;gap:2px;">
-                  <button class="tb" id="stb_equip" onclick="setSTool('equip')" title="Equipment" style="background:#344736;font-size:12px;">▲</button>
-                  <select id="sEquipType" onchange="setSTool('equip')" style="padding:3px 4px;border-radius:5px;border:none;font-size:10px;background:#344736;color:#fff;cursor:pointer;height:28px;">
-                    <option value="cone">Hütchen</option><option value="pole">Stange</option>
-                    <option value="hurdle">Minihürde</option><option value="ladder">Leiter</option>
-                    <option value="ring">Ring</option>
-                  </select>
-                </div>
-                <div style="display:flex;align-items:center;gap:2px;">
-                  <button class="tb" id="stb_goal" onclick="setSTool('goal')" title="Tor" style="background:#344736;padding:0 5px;">
-                    <svg width="16" height="11" viewBox="0 0 16 11"><rect x="1" y="1" width="14" height="8" fill="none" stroke="white" stroke-width="1.8"/><line x1="1" y1="9" x2="15" y2="9" stroke="white" stroke-width="1.5"/></svg>
-                  </button>
-                  <select id="sGoalType" onchange="setSTool('goal')" style="padding:3px 4px;border-radius:5px;border:none;font-size:10px;background:#344736;color:#fff;cursor:pointer;height:28px;">
-                    <option value="mini">Minitor</option><option value="youth">Jugendtor</option>
-                    <option value="full">Großtor</option>
-                  </select>
-                </div>
-                <div style="width:1px;height:20px;background:rgba(255,255,255,.12);"></div>
-                <div style="display:flex;align-items:center;gap:2px;background:#1e3320;border-radius:7px;padding:2px 4px;">
-                  <button class="tb" id="stb_pass" onclick="setSTool('pass')" title="Pass" style="background:#344736;letter-spacing:-2px;font-size:13px;">──</button>
-                  <button class="tb" id="stb_run" onclick="setSTool('run')" title="Laufweg" style="background:#344736;letter-spacing:-2px;font-size:11px;">╌╌</button>
-                  <button class="tb" id="stb_dribble" onclick="setSTool('dribble')" title="Dribbling" style="background:#344736;font-size:14px;">〜</button>
-                </div>
-                <div style="width:1px;height:20px;background:rgba(255,255,255,.12);"></div>
-                <button class="tb" id="stb_select" onclick="setSTool('select')" title="Auswählen" style="background:#344736;font-size:14px;">↖</button>
-                <button class="tb" id="stb_erase" onclick="setSTool('erase')" title="Löschen" style="background:#880e4f;">✕</button>
-                <div style="margin-left:auto;display:flex;gap:4px;">
-                  <button onclick="sUndoDraw()" style="padding:4px 8px;border-radius:6px;border:none;background:#344736;color:#fff;font-size:11px;font-weight:700;cursor:pointer;">↩</button>
-                  <button onclick="sClearCanvas()" style="padding:4px 8px;border-radius:6px;border:none;background:#344736;color:rgba(255,100,100,.9);font-size:11px;cursor:pointer;">✕</button>
-                </div>
+              <button onclick="openFieldOverlay('submit')" style="width:100%;padding:13px 10px;background:#1a2b1c;color:#a5d6a7;border:1.5px dashed rgba(165,214,167,.35);border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.3px;">⚽ Felddiagramm zeichnen / bearbeiten</button>
+              <div id="sPreviewWrap" style="display:none;margin-top:8px;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,.1);">
+                <img id="sPreviewImg" style="width:100%;display:block;" alt="Vorschau">
               </div>
-              <div style="background:#2d3f2f;padding:4px 10px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
-                <span style="font-size:10px;color:rgba(255,255,255,.55);display:flex;align-items:center;gap:4px;"><svg width="24" height="7"><line x1="0" y1="3.5" x2="19" y2="3.5" stroke="white" stroke-width="2"/><polygon points="19,1 24,3.5 19,6" fill="white"/></svg>Pass</span>
-                <span style="font-size:10px;color:rgba(255,255,255,.55);display:flex;align-items:center;gap:4px;"><svg width="24" height="7"><line x1="0" y1="3.5" x2="19" y2="3.5" stroke="#ffe082" stroke-width="2" stroke-dasharray="4,3"/><polygon points="19,1 24,3.5 19,6" fill="#ffe082"/></svg>Laufweg</span>
-                <span style="font-size:10px;color:rgba(255,255,255,.55);display:flex;align-items:center;gap:4px;"><svg width="24" height="7"><path d="M0,3.5 Q3,0 6,3.5 Q9,7 12,3.5 Q15,0 18,3.5" stroke="#a5d6a7" stroke-width="2" fill="none"/><polygon points="18,1 23,3.5 18,6" fill="#a5d6a7"/></svg>Dribbling</span>
-                <span style="font-size:9px;color:rgba(255,255,255,.35);margin-left:auto;">↖ auswählen · Rechtsklick = +11°</span>
-              </div>
-              <canvas id="sCanvas" width="800" height="504" style="width:100%;display:block;cursor:crosshair;touch-action:none;"></canvas>
             </div>
           </div>
           <div class="fsec">Sichtbarkeit im Katalog</div>

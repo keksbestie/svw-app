@@ -14,6 +14,7 @@ let isDraggingObj=false, dragOffX=0, dragOffY=0;
 let linePhase=0, lineStart=null;
 let dribblePoints=[], isDribbling=false;
 let canvasEl=null, ctx=null, _cvInited=false;
+let _cvMode='edit'; // 'edit' = Übung bearbeiten, 'submit' = Übung einreichen
 
 function switchImgTab(tab){
   const u=tab==='upload';
@@ -25,10 +26,11 @@ function switchImgTab(tab){
   document.getElementById('imgTabDraw').style.color=u?'var(--gd2)':'#fff';
 }
 
-function openFieldOverlay(){
+function openFieldOverlay(mode){
+  _cvMode=mode||'edit';
   const ov=document.getElementById('fieldOverlay');
   if(ov) ov.style.display='flex';
-  _cvInited=false; // Events neu anhängen falls nötig
+  _cvInited=false;
   setTimeout(()=>initCanvas(false),80);
 }
 
@@ -890,11 +892,19 @@ function clearCanvas(){if(!confirm('Diagramm leeren?'))return;pushUndo();canvasO
 function exportCanvas(){
   if(!canvasEl){showToast('Kein Feld','err');return;}
   selectedObjIdx=null;redraw();
-  formImg=canvasEl.toDataURL('image/png');
-  // Vorschau im Modal anzeigen
-  const prev=document.getElementById('cvPreview');
-  const prevImg=document.getElementById('cvPreviewImg');
-  if(prev&&prevImg){prevImg.src=formImg;prev.style.display='block';}
+  const dataUrl=canvasEl.toDataURL('image/png');
+  if(_cvMode==='submit'){
+    submitCanvasData=dataUrl;
+    const wrap=document.getElementById('sPreviewWrap');
+    const img=document.getElementById('sPreviewImg');
+    if(wrap&&img){img.src=dataUrl;wrap.style.display='block';}
+    if(typeof updateSubmitChecklist==='function') updateSubmitChecklist();
+  } else {
+    formImg=dataUrl;
+    const prev=document.getElementById('cvPreview');
+    const prevImg=document.getElementById('cvPreviewImg');
+    if(prev&&prevImg){prevImg.src=formImg;prev.style.display='block';}
+  }
   showToast('Felddiagramm übernommen');
   closeFieldOverlay();
 }
