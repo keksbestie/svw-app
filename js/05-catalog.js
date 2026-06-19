@@ -129,6 +129,20 @@ function openExDetail(id){
 
 function switchSec(idx){activeSec=idx;selectedTags=[];activeCluster=null;clusterFilterTags=[];TAG_CLUSTERS=SECTION_CLUSTERS[idx]||SECTION_CLUSTERS[0];document.querySelectorAll('.st').forEach((b,i)=>b.classList.toggle('active',i===idx));renderSection();}
 
+function openDescMod(si){
+  descIdx=si;
+  document.getElementById('descModTit').textContent='Beschreibung – '+SECS[si].name;
+  document.getElementById('descTa').value=sectionDescs[si]||'';
+  openMod('descMod');
+}
+function saveDesc(){
+  if(descIdx==null)return;
+  sectionDescs[descIdx]=document.getElementById('descTa').value.trim();
+  closeMod('descMod');
+  save();
+  renderSection();
+}
+
 function renderSection(){
   const s=SECS[activeSec];const col=s.color;
   const sEx=exercises.filter(e=>e.section===activeSec);
