@@ -17,19 +17,18 @@ let reviewingId = null;
 
 async function loadSubmissions(){
   if(!currentUser){submissions=[];return;}
-  try{
-    let q=_supabase.from('exercises').select('*').neq('status','approved');
-    if(!IS_ADMIN) q=q.eq('created_by',currentUser.id);
-    const {data}=await q;
-    submissions=(data||[]).map(e=>({
-      id:e.id,name:e.name,desc:e.description,players:e.players,
-      duration:e.duration,material:e.material,section:e.section,
-      intensity:e.difficulty,tags:e.tags||[],diagram:e.image,
-      author:e.created_by,status:e.status,
-      submittedAt:new Date(e.created_at).toLocaleDateString('de-DE'),
-      submittedTs:new Date(e.created_at).getTime()
-    }));
-  }catch{submissions=[];}
+  let q=_supabase.from('exercises').select('*').neq('status','approved');
+  if(!IS_ADMIN) q=q.eq('created_by',currentUser.id);
+  const {data,error}=await q;
+  if(error){console.error('loadSubmissions error:',error);submissions=[];return;}
+  submissions=(data||[]).map(e=>({
+    id:e.id,name:e.name,desc:e.description,players:e.players,
+    duration:e.duration,material:e.material,section:e.section,
+    intensity:e.difficulty,tags:e.tags||[],diagram:e.image,
+    author:e.created_by,status:e.status,
+    submittedAt:new Date(e.created_at).toLocaleDateString('de-DE'),
+    submittedTs:new Date(e.created_at).getTime()
+  }));
 }
 function saveSubmissions(){}
 
@@ -204,15 +203,14 @@ async function submitExercise(){
   if(sPreview) sPreview.style.display='none';
   canvasObjects=[];playerCounters={};undoStack=[];selectedObjIdx=null;linePhase=0;lineStart=null;
   await loadSubmissions();
-  renderMySubmissions();
-  if(IS_ADMIN)renderAdminQueue();
+  _renderMySubmissionsFromCache();
+  if(IS_ADMIN) _renderAdminQueueFromCache();
 }
 
 // ── My Submissions ───────────────────────────────────
-async function renderMySubmissions(){
+function _renderMySubmissionsFromCache(){
   if(!submitUser) return;
   const el = document.getElementById('mySubList'); if(!el) return;
-  await loadSubmissions();
   const mine = submissions.filter(s => s.author === currentUser?.id);
   if(!mine.length){ el.innerHTML='<div style="font-size:12px;color:var(--text-3);padding:8px 0;">Noch keine Einreichungen.</div>'; return; }
   const statusLabel = {pending:'Ausstehend', review:'In Review', approved:'Freigegeben', rejected:'Abgelehnt'};
@@ -225,11 +223,14 @@ async function renderMySubmissions(){
       </div>
     </div>`).join('');
 }
+async function renderMySubmissions(){
+  await loadSubmissions();
+  _renderMySubmissionsFromCache();
+}
 
 // ── Admin Queue ──────────────────────────────────────
-async function renderAdminQueue(){
+function _renderAdminQueueFromCache(){
   const el = document.getElementById('queueCards'); if(!el) return;
-  await loadSubmissions();
   const pending = submissions.filter(s=>s.status==='pending'||s.status==='review');
   el.innerHTML = SECS.map((s,i)=>{
     const count = pending.filter(sub=>sub.section===i).length;
@@ -243,9 +244,13 @@ async function renderAdminQueue(){
     </div>`;
   }).join('');
 }
+async function renderAdminQueue(){
+  await loadSubmissions();
+  _renderAdminQueueFromCache();
+}
 
-function openQueueSection(secIdx){
-  loadSubmissions();
+async function openQueueSection(secIdx){
+  await loadSubmissions();
   const subs = submissions.filter(s=>(s.status==='pending'||s.status==='review') && s.section===secIdx)
                           .sort((a,b)=>a.submittedTs-b.submittedTs); // älteste zuerst
   const el = document.getElementById('subListContent'); if(!el) return;
@@ -267,7 +272,6 @@ function openQueueSection(secIdx){
 }
 
 function openReviewMod(id){
-  loadSubmissions();
   const s = submissions.find(x=>x.id===id); if(!s) return;
   reviewingId = id;
   document.getElementById('reviewModTit').textContent = s.name;
