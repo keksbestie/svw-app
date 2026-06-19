@@ -447,3 +447,31 @@ function renderMyAccPlans(){
     </div>
   `).join('');
 }
+
+// ══════════════════════════════════════════════════════
+// HELP PANEL
+// ══════════════════════════════════════════════════════
+
+function toggleHelpPanel(){
+  const panel=document.getElementById('helpPanel');
+  const overlay=document.getElementById('helpOverlay');
+  const isOpen=panel.classList.contains('open');
+  if(isOpen){ closeHelpPanel(); } else { openHelpPanel(); }
+}
+
+function openHelpPanel(){
+  const panel=document.getElementById('helpPanel');
+  const overlay=document.getElementById('helpOverlay');
+  panel.style.display='flex';
+  overlay.style.display='block';
+  requestAnimationFrame(()=>panel.classList.add('open'));
+  closeCfgDrop();
+}
+
+function closeHelpPanel(){
+  const panel=document.getElementById('helpPanel');
+  const overlay=document.getElementById('helpOverlay');
+  panel.classList.remove('open');
+  overlay.style.display='none';
+  setTimeout(()=>{ if(!panel.classList.contains('open')) panel.style.display='none'; },300);
+}

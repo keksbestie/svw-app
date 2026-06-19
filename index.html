@@ -56,6 +56,9 @@
     <!-- Dark mode toggle -->
     <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Theme wechseln">🌙</button>
 
+    <!-- Help button -->
+    <button class="cfg-btn" onclick="toggleHelpPanel()" title="Hilfe & Erklärung" style="font-size:15px;font-weight:900;font-family:'Barlow Condensed',sans-serif;letter-spacing:-.5px;">?</button>
+
     <!-- Settings dropdown -->
     <div class="cfg-sel" id="cfgSel">
       <button class="cfg-btn" onclick="toggleCfgDrop()" id="cfgBtn" title="Einstellungen">
@@ -607,6 +610,93 @@
     <p style="font-size:11px;color:var(--gd2);text-align:center;margin-top:24px;">Stand: Juni 2025</p>
   </div>
 </div>
+
+<!-- HELP PANEL -->
+<div id="helpOverlay" onclick="closeHelpPanel()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:8000;backdrop-filter:blur(2px);"></div>
+<aside id="helpPanel" style="display:none;position:fixed;top:0;right:0;bottom:0;width:min(480px,100vw);background:var(--surface);z-index:8001;overflow-y:auto;box-shadow:-4px 0 32px rgba(0,0,0,.3);flex-direction:column;">
+  <div style="position:sticky;top:0;background:var(--surface);border-bottom:1px solid var(--border);padding:16px 20px;display:flex;align-items:center;gap:12px;z-index:1;">
+    <div style="width:32px;height:32px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#fff;flex-shrink:0;">?</div>
+    <div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;letter-spacing:.3px;">Wie funktioniert der Trainingskatalog?</div>
+      <div style="font-size:11px;color:var(--gd2);">Schnellübersicht aller Funktionen</div>
+    </div>
+    <button onclick="closeHelpPanel()" style="margin-left:auto;background:none;border:none;font-size:20px;cursor:pointer;color:var(--gd2);line-height:1;padding:4px;">✕</button>
+  </div>
+
+  <div style="padding:20px;display:flex;flex-direction:column;gap:14px;">
+
+    <!-- Katalog -->
+    <div class="help-card">
+      <div class="help-card-icon" style="background:#1b5e20;">📚</div>
+      <div>
+        <div class="help-card-title">Übungskatalog</div>
+        <p class="help-card-text">Im <strong>Katalog</strong> findest du alle verfügbaren Übungen, sortiert nach Schwerpunkten (Technik, Taktik, Kondition …). Nutze die Suche oder die Filter, um schnell die passende Übung zu finden.</p>
+        <div class="help-step"><span class="help-num">1</span>Übung im Katalog anklicken → Details öffnen sich</div>
+        <div class="help-step"><span class="help-num">2</span>Auf <strong style="color:var(--accent);">„+ zum Plan hinzufügen"</strong> klicken</div>
+        <div class="help-step"><span class="help-num">3</span>Trainingseinheit und Position wählen – fertig</div>
+      </div>
+    </div>
+
+    <!-- Trainingsplan -->
+    <div class="help-card">
+      <div class="help-card-icon" style="background:#0d3b6e;">📋</div>
+      <div>
+        <div class="help-card-title">Trainingsplan</div>
+        <p class="help-card-text">Der Trainingsplan zeigt deine Einheit als strukturierte Abfolge. Für jede Übung werden automatisch berechnet:</p>
+        <div class="help-pill-row">
+          <span class="help-pill">⏱ Belastungszeit</span>
+          <span class="help-pill">🔄 Wiederholungen</span>
+          <span class="help-pill">📦 Materialbedarf</span>
+          <span class="help-pill">👥 Spielerzahl</span>
+        </div>
+        <p class="help-card-text" style="margin-top:10px;">Per Drag &amp; Drop kannst du die Reihenfolge der Übungen anpassen. Am Ende lässt sich der Plan als PDF exportieren.</p>
+      </div>
+    </div>
+
+    <!-- Langzeitplanung -->
+    <div class="help-card">
+      <div class="help-card-icon" style="background:#4a148c;">📅</div>
+      <div>
+        <div class="help-card-title">Langzeitplanung</div>
+        <p class="help-card-text">Die Langzeitplanung hilft dir, Trainingsblöcke über Wochen und Monate zu strukturieren. Du legst Phasen (z. B. Vorbereitung, Wettkampf, Regeneration) an und weist ihnen Schwerpunkte zu.</p>
+        <div class="help-step"><span class="help-num">1</span>Block anlegen: Zeitraum + Schwerpunkt festlegen</div>
+        <div class="help-step"><span class="help-num">2</span>Mehrere Blöcke ergeben eine Saison-Übersicht</div>
+        <div class="help-step"><span class="help-num">3</span>Einzelne Einheiten lassen sich direkt aus dem Block öffnen</div>
+      </div>
+    </div>
+
+    <!-- Vorlagen -->
+    <div class="help-card">
+      <div class="help-card-icon" style="background:#b71c1c;">⭐</div>
+      <div>
+        <div class="help-card-title">Fertige Vorlagen</div>
+        <p class="help-card-text">Unter <strong>„Vorlagen"</strong> im Trainingsplan findest du fertig zusammengestellte Einheiten für gängige Schwerpunkte:</p>
+        <div class="help-pill-row">
+          <span class="help-pill">Passspiel</span>
+          <span class="help-pill">Pressing</span>
+          <span class="help-pill">Abschluss</span>
+          <span class="help-pill">Kondition</span>
+          <span class="help-pill">Spielformen</span>
+        </div>
+        <p class="help-card-text" style="margin-top:10px;">Eine Vorlage laden, anpassen und direkt nutzen – oder als eigener Plan speichern.</p>
+      </div>
+    </div>
+
+    <!-- Einreichen -->
+    <div class="help-card">
+      <div class="help-card-icon" style="background:#e65100;">✏️</div>
+      <div>
+        <div class="help-card-title">Eigene Übung einreichen</div>
+        <p class="help-card-text">Du hast eine Übung, die noch nicht im Katalog ist? Unter <strong>„Einreichen"</strong> kannst du sie für alle zugänglich machen:</p>
+        <div class="help-step"><span class="help-num">1</span>Konto erstellen oder anmelden</div>
+        <div class="help-step"><span class="help-num">2</span>Formular ausfüllen: Name, Beschreibung, Schwerpunkt, Material</div>
+        <div class="help-step"><span class="help-num">3</span>Optional: Felddiagramm mit dem eingebauten Editor zeichnen</div>
+        <div class="help-step"><span class="help-num">4</span>Einreichen → das Team prüft und schaltet die Übung frei</div>
+      </div>
+    </div>
+
+  </div>
+</aside>
 
 <!-- MODAL: Übung -->
 <div class="mbg h" id="exMod">
