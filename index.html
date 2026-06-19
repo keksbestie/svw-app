@@ -191,6 +191,11 @@
   </div>
 </div>
 
+<!-- Footer -->
+<footer style="text-align:center;padding:18px 16px 80px;font-size:11px;color:var(--gd2);">
+  <button onclick="goPage('impressum')" style="background:none;border:none;color:var(--gd2);font-size:11px;cursor:pointer;text-decoration:underline;font-family:'Barlow',sans-serif;padding:0;">Impressum</button>
+</footer>
+
 <!-- PAGE: SUBMIT — Übung einreichen -->
 <div id="page-submit" class="page">
   <div id="submitLoginWrap" style="display:none;">
@@ -473,6 +478,47 @@
       </div>
       <button onclick="if(confirm('Alle Übungen löschen und Standardübungen neu laden?')){exercises=[];mergeNewDefaultExercises();save();renderSection();showToast('Übungen zurückgesetzt');}"  style="grid-column:1/-1;padding:9px;background:#fce4ec;color:#880e4f;border:none;border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;">Alle Übungen löschen</button>
     </div>
+  </div>
+</div>
+
+<!-- IMPRESSUM PAGE -->
+<div id="page-impressum" class="page">
+  <div class="inner" style="max-width:680px;padding-bottom:60px;">
+    <button onclick="history.back()||goPage('home')" style="display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--gd2);font-size:13px;cursor:pointer;margin-bottom:18px;padding:0;font-family:'Barlow',sans-serif;">← Zurück</button>
+    <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;margin:0 0 6px;">Impressum</h1>
+    <p style="font-size:12px;color:var(--gd2);margin:0 0 28px;">Angaben gemäß § 5 TMG</p>
+
+    <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
+      <div class="fsec" style="margin-top:0;">Anbieter</div>
+      <p style="margin:0 0 4px;font-weight:600;">[Vor- und Nachname]</p>
+      <p style="margin:0;color:var(--gd2);font-size:14px;">[Straße und Hausnummer]<br>[PLZ Stadt]<br>Deutschland</p>
+    </div>
+
+    <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
+      <div class="fsec" style="margin-top:0;">Kontakt</div>
+      <table style="border-collapse:collapse;font-size:14px;width:100%;">
+        <tr><td style="padding:3px 14px 3px 0;color:var(--gd2);white-space:nowrap;">E-Mail</td><td>[kontakt@beispiel.de]</td></tr>
+        <tr><td style="padding:3px 14px 3px 0;color:var(--gd2);">Telefon</td><td>[+49 …]</td></tr>
+      </table>
+    </div>
+
+    <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
+      <div class="fsec" style="margin-top:0;">Verantwortlich für den Inhalt (§ 18 Abs. 2 MStV)</div>
+      <p style="margin:0;font-size:14px;">[Vor- und Nachname]<br>[Straße], [PLZ Stadt]</p>
+    </div>
+
+    <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
+      <div class="fsec" style="margin-top:0;">Haftungsausschluss</div>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Die Inhalte dieser Anwendung wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte kann jedoch keine Gewähr übernommen werden.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Als Diensteanbieter sind wir gemäß § 7 Abs. 1 TMG für eigene Inhalte nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen.</p>
+    </div>
+
+    <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
+      <div class="fsec" style="margin-top:0;">Urheberrecht</div>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Die durch die Betreiber erstellten Inhalte und Werke in dieser Anwendung unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechts bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.</p>
+    </div>
+
+    <p style="font-size:11px;color:var(--gd2);text-align:center;margin-top:24px;">Stand: Juni 2025</p>
   </div>
 </div>
 
