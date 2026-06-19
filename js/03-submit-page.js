@@ -43,8 +43,8 @@ async function renderSubmitPage(){
     document.getElementById('submitUserTag').textContent = submitUser.name;
     document.getElementById('sAuthorPreview').textContent = submitUser.name;
     renderSubmitChecklist_init();
-    renderMySubmissions();
-    if(IS_ADMIN){ renderAdminQueue(); renderUserList(); }
+    _renderMySubmissionsFromCache();
+    if(IS_ADMIN){ _renderAdminQueueFromCache(); renderUserList(); }
     document.getElementById('adminQueueWrap').style.display = IS_ADMIN ? 'block' : 'none';
     document.getElementById('adminUserWrap').style.display = IS_ADMIN ? 'block' : 'none';
     // Canvas wird per Button im fieldOverlay geöffnet
@@ -211,7 +211,8 @@ async function submitExercise(){
 function _renderMySubmissionsFromCache(){
   if(!submitUser) return;
   const el = document.getElementById('mySubList'); if(!el) return;
-  const mine = submissions.filter(s => s.author === currentUser?.id);
+  const mine = submissions.filter(s => s.author === currentUser?.id)
+                          .sort((a,b)=>b.submittedTs-a.submittedTs);
   if(!mine.length){ el.innerHTML='<div style="font-size:12px;color:var(--text-3);padding:8px 0;">Noch keine Einreichungen.</div>'; return; }
   const statusLabel = {pending:'Ausstehend', review:'In Review', approved:'Freigegeben', rejected:'Abgelehnt'};
   el.innerHTML = mine.map(s=>`
@@ -220,8 +221,42 @@ function _renderMySubmissionsFromCache(){
       <div class="sub-item-meta">
         <span class="sub-status ${s.status}">${statusLabel[s.status]||s.status}</span>
         <span class="sub-date">${s.submittedAt}</span>
+        ${s.status==='pending'?`
+          <button class="sub-action-btn sub-edit-btn" onclick="editSubmission('${s.id}')">Bearbeiten</button>
+          <button class="sub-action-btn sub-withdraw-btn" onclick="withdrawSubmission('${s.id}')">Zurückziehen</button>
+        `:''}
       </div>
     </div>`).join('');
+}
+async function withdrawSubmission(id){
+  if(!confirm('Einreichung wirklich zurückziehen?')) return;
+  const {error}=await _supabase.from('exercises').delete().eq('id',id).eq('created_by',currentUser.id);
+  if(error){showToast('Fehler beim Zurückziehen','err');return;}
+  showToast('Einreichung zurückgezogen.');
+  await loadSubmissions();
+  _renderMySubmissionsFromCache();
+  if(IS_ADMIN) _renderAdminQueueFromCache();
+}
+async function editSubmission(id){
+  const s=submissions.find(x=>x.id===id); if(!s) return;
+  // Zurückziehen und Formular vorausfüllen
+  const {error}=await _supabase.from('exercises').delete().eq('id',id).eq('created_by',currentUser.id);
+  if(error){showToast('Fehler','err');return;}
+  // Formular befüllen
+  document.getElementById('sName').value=s.name||'';
+  document.getElementById('sDesc').value=s.desc||'';
+  document.getElementById('sPlayers').value=s.players||'';
+  document.getElementById('sDuration').value=s.duration||'';
+  document.getElementById('sIntensity').value=s.intensity||'';
+  document.getElementById('sSec').value=s.section??'';
+  submitTags=s.tags||[];
+  renderSTagDisplay();
+  if(s.diagram){submitCanvasData=s.diagram;const p=document.getElementById('sPreviewWrap');const img=document.getElementById('sPreviewImg');if(p&&img){img.src=s.diagram;p.style.display='block';}}
+  updateSubmitChecklist();
+  await loadSubmissions();
+  _renderMySubmissionsFromCache();
+  document.querySelector('.submit-form-wrap')?.scrollIntoView({behavior:'smooth',block:'start'});
+  showToast('Übung zum Bearbeiten geladen – nach Änderung erneut einreichen.');
 }
 async function renderMySubmissions(){
   await loadSubmissions();
