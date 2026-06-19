@@ -45,8 +45,9 @@ async function renderSubmitPage(){
     document.getElementById('sAuthorPreview').textContent = submitUser.name;
     renderSubmitChecklist_init();
     renderMySubmissions();
-    if(IS_ADMIN) renderAdminQueue();
+    if(IS_ADMIN){ renderAdminQueue(); renderUserList(); }
     document.getElementById('adminQueueWrap').style.display = IS_ADMIN ? 'block' : 'none';
+    document.getElementById('adminUserWrap').style.display = IS_ADMIN ? 'block' : 'none';
     // Init canvas after DOM is visible
     setTimeout(()=>initSubmitCanvas(), 80);
   }
@@ -429,6 +430,30 @@ function openReviewMod(id){
   else { cw.innerHTML='<div style="padding:20px;text-align:center;color:var(--text-3);">Kein Diagramm</div>'; }
   closeMod('subListMod');
   openMod('reviewMod');
+}
+
+async function renderUserList(){
+  const el=document.getElementById('userList');if(!el)return;
+  const {data:users}=await _supabase.from('profiles').select('id,email,role');
+  if(!users||!users.length){el.innerHTML='<div style="font-size:13px;color:var(--text-3);">Keine Trainer gefunden.</div>';return;}
+  el.innerHTML=users.map(u=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface-2);border-radius:9px;border:1px solid var(--border);">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--text-1);">${u.email||u.id}</div>
+        <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${u.role==='admin'?'Admin':'Trainer'}</div>
+      </div>
+      ${u.id===currentUser?.id?'<span style="font-size:11px;color:var(--text-3);">Du</span>':
+        u.role==='admin'
+          ?`<button onclick="setUserRole('${u.id}','trainer')" style="padding:6px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;color:var(--text-1);">Admin entziehen</button>`
+          :`<button onclick="setUserRole('${u.id}','admin')" style="padding:6px 12px;background:var(--g);color:#fff;border:none;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;">Admin machen</button>`
+      }
+    </div>`).join('');
+}
+
+async function setUserRole(userId,role){
+  await _supabase.from('profiles').update({role}).eq('id',userId);
+  renderUserList();
+  showToast(role==='admin'?'Admin-Rechte vergeben':'Admin-Rechte entzogen');
 }
 
 async function reviewAction(action){
