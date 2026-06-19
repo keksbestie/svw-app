@@ -693,87 +693,71 @@ function drawBall(x,y,sel){
 function drawEquip(x,y,sub,sel,ang){
   ctx.save();
   ctx.translate(x,y); ctx.rotate(ang||0);
-  ctx.shadowColor='rgba(0,0,0,.4)'; ctx.shadowBlur=6; ctx.shadowOffsetY=2;
+  ctx.shadowColor='rgba(0,0,0,.35)'; ctx.shadowBlur=5; ctx.shadowOffsetY=2;
 
-  if(sub==='cone'){
-    // 3D cone: body + ellipse base + highlight stripe
-    const cg=ctx.createLinearGradient(-9,7,9,7);
-    cg.addColorStop(0,'#e65100'); cg.addColorStop(.4,'#ff6f00'); cg.addColorStop(1,'#e65100');
-    ctx.fillStyle=cg;
-    ctx.beginPath(); ctx.moveTo(0,-14); ctx.lineTo(-9,7); ctx.lineTo(9,7); ctx.closePath(); ctx.fill();
-    // White stripe
-    ctx.save(); ctx.clip();
-    ctx.fillStyle='rgba(255,255,255,.6)';
-    ctx.fillRect(-9,0,18,3);
+  if(sub==='cone'||sub==='cone-orange'||sub==='cone-yellow'||sub==='cone-blue'||sub==='cone-red'){
+    const cols={
+      'cone':'#e65100','cone-orange':'#e65100',
+      'cone-yellow':'#f9a825','cone-blue':'#1565c0','cone-red':'#c62828'
+    };
+    const cc=cols[sub]||'#e65100';
+    // Clean cone body
+    ctx.fillStyle=cc;
+    ctx.beginPath(); ctx.moveTo(0,-15); ctx.lineTo(-9,7); ctx.lineTo(9,7); ctx.closePath(); ctx.fill();
+    // Single thin white stripe
+    ctx.save();
+    ctx.beginPath(); ctx.moveTo(0,-15); ctx.lineTo(-9,7); ctx.lineTo(9,7); ctx.closePath(); ctx.clip();
+    ctx.fillStyle='rgba(255,255,255,.35)';
+    ctx.fillRect(-9,-1,18,3);
     ctx.restore();
-    // Ellipse base
-    ctx.fillStyle='#bf360c';
-    ctx.beginPath(); ctx.ellipse(0,7,9,3.5,0,0,Math.PI*2); ctx.fill();
-    // Highlight
-    ctx.fillStyle='rgba(255,255,255,.25)';
-    ctx.beginPath(); ctx.moveTo(-1,-14); ctx.lineTo(-6,4); ctx.lineTo(-2,4); ctx.closePath(); ctx.fill();
+    // Flat base ellipse
+    ctx.shadowBlur=0;
+    ctx.fillStyle='rgba(0,0,0,.55)';
+    ctx.beginPath(); ctx.ellipse(0,7,9,3,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle=cc;
+    ctx.beginPath(); ctx.ellipse(0,6.5,8,2.5,0,0,Math.PI*2); ctx.fill();
 
   } else if(sub==='pole'){
-    // Realistic slalom pole: gradient + flag-like top
-    const pg=ctx.createLinearGradient(-2,0,2,0);
-    pg.addColorStop(0,'#fff176'); pg.addColorStop(.5,'#ffd600'); pg.addColorStop(1,'#f9a825');
-    ctx.strokeStyle=pg; ctx.lineWidth=3; ctx.lineCap='round';
+    ctx.strokeStyle='#fdd835'; ctx.lineWidth=3; ctx.lineCap='round';
     ctx.beginPath(); ctx.moveTo(0,-22); ctx.lineTo(0,20); ctx.stroke();
-    // Base plate
-    ctx.fillStyle='#f57f17';
+    ctx.shadowBlur=0;
+    ctx.fillStyle='#f9a825';
     ctx.beginPath(); ctx.ellipse(0,20,5,2,0,0,Math.PI*2); ctx.fill();
-    // Highlight on pole
-    ctx.strokeStyle='rgba(255,255,255,.4)'; ctx.lineWidth=1;
-    ctx.beginPath(); ctx.moveTo(-1,-22); ctx.lineTo(-1,20); ctx.stroke();
 
   } else if(sub==='hurdle'){
-    // Hurdle: red crossbar + dark legs + base plates
-    // Legs
+    ctx.shadowBlur=0;
+    // Legs — clean dark rectangles
+    ctx.fillStyle='#455a64';
+    ctx.fillRect(-12,-3,2.5,11); ctx.fillRect(9.5,-3,2.5,11);
+    // Base feet
     ctx.fillStyle='#37474f';
-    ctx.fillRect(-13,-5,3,13); ctx.fillRect(10,-5,3,13);
-    // Base plates
-    ctx.fillStyle='#263238';
-    ctx.fillRect(-15,8,7,3); ctx.fillRect(8,8,7,3);
-    // Crossbar gradient
-    const hg=ctx.createLinearGradient(0,-6,0,-1);
-    hg.addColorStop(0,'#ff1744'); hg.addColorStop(.5,'#ff5252'); hg.addColorStop(1,'#d50000');
-    ctx.fillStyle=hg;
-    ctx.beginPath(); ctx.rect(-13,-6,26,5); ctx.fill();
-    // Highlight on crossbar
-    ctx.fillStyle='rgba(255,255,255,.25)';
-    ctx.fillRect(-12,-5.5,24,2);
+    ctx.fillRect(-14,8,6,2); ctx.fillRect(8,8,6,2);
+    // Crossbar — solid red, no gradient
+    ctx.fillStyle='#e53935';
+    ctx.fillRect(-12,-5,24,4.5);
 
   } else if(sub==='ladder'){
-    // Coordination ladder: rails + colored rungs
-    const lw=12, lh=48, rc=8;
-    // Shadow base
-    ctx.fillStyle='rgba(0,0,0,.2)';
-    ctx.beginPath(); ctx.ellipse(0,lh/2+2,8,3,0,0,Math.PI*2); ctx.fill();
+    const lw=11, lh=52, rungs=7;
     ctx.shadowBlur=0;
-    // Rails
-    const rg=ctx.createLinearGradient(-lw/2,0,lw/2,0);
-    rg.addColorStop(0,'#f57f17'); rg.addColorStop(.5,'#ffd600'); rg.addColorStop(1,'#f57f17');
-    ctx.strokeStyle=rg; ctx.lineWidth=2.5; ctx.lineCap='round';
+    // Rails — uniform color
+    ctx.strokeStyle='#fdd835'; ctx.lineWidth=2.5; ctx.lineCap='round';
     ctx.beginPath(); ctx.moveTo(-lw/2,-lh/2); ctx.lineTo(-lw/2,lh/2); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(lw/2,-lh/2); ctx.lineTo(lw/2,lh/2); ctx.stroke();
-    // Rungs alternating
-    for(let i=0;i<=rc;i++){
-      const ry=-lh/2+i*(lh/rc);
-      ctx.strokeStyle=i%2===0?'rgba(255,255,255,.9)':'rgba(255,214,0,.7)';
-      ctx.lineWidth=2;
+    // Rungs — same color, even spacing with more gap
+    ctx.lineWidth=2;
+    for(let i=0;i<=rungs;i++){
+      const ry=-lh/2+i*(lh/rungs);
       ctx.beginPath(); ctx.moveTo(-lw/2,ry); ctx.lineTo(lw/2,ry); ctx.stroke();
     }
 
   } else if(sub==='ring'){
-    // Coordination ring: 3D look
-    ctx.shadowBlur=4;
-    const rog=ctx.createRadialGradient(0,0,6,0,0,13);
-    rog.addColorStop(0,'#4fc3f7'); rog.addColorStop(1,'#0288d1');
-    ctx.strokeStyle=rog; ctx.lineWidth=4.5;
-    ctx.beginPath(); ctx.ellipse(0,3,12,5,0,0,Math.PI*2); ctx.stroke();
-    // Inner highlight
-    ctx.strokeStyle='rgba(255,255,255,.35)'; ctx.lineWidth=2;
-    ctx.beginPath(); ctx.ellipse(-2,1,9,3.5,-.15,Math.PI*.9,Math.PI*1.6); ctx.stroke();
+    ctx.shadowBlur=0;
+    // Flat ring — simple thick circle, no 3D ellipse
+    ctx.strokeStyle='#29b6f6'; ctx.lineWidth=5; ctx.lineCap='round';
+    ctx.beginPath(); ctx.arc(0,0,12,0,Math.PI*2); ctx.stroke();
+    // Thin inner edge for definition
+    ctx.strokeStyle='rgba(255,255,255,.2)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.arc(0,0,9.5,0,Math.PI*2); ctx.stroke();
   }
 
   if(sel){
