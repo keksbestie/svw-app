@@ -340,6 +340,8 @@ function openReviewMod(id){
 }
 
 async function renderUserList(){
+  const wrap=document.getElementById('adminUserWrap');
+  if(wrap){wrap.style.cssText='display:block;padding:24px;max-width:1260px;margin:0 auto;box-sizing:border-box;';}
   const el=document.getElementById('userList');if(!el)return;
   const {data:users}=await _supabase.from('profiles').select('id,email,role');
   if(!users||!users.length){el.innerHTML='<div style="font-size:13px;color:var(--text-3);">Keine Trainer gefunden.</div>';return;}
