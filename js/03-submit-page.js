@@ -209,11 +209,11 @@ async function submitExercise(){
 }
 
 // ── My Submissions ───────────────────────────────────
-function renderMySubmissions(){
+async function renderMySubmissions(){
   if(!submitUser) return;
   const el = document.getElementById('mySubList'); if(!el) return;
-  loadSubmissions();
-  const mine = submissions.filter(s => s.author === submitUser.name);
+  await loadSubmissions();
+  const mine = submissions.filter(s => s.author === currentUser?.id);
   if(!mine.length){ el.innerHTML='<div style="font-size:12px;color:var(--text-3);padding:8px 0;">Noch keine Einreichungen.</div>'; return; }
   const statusLabel = {pending:'Ausstehend', review:'In Review', approved:'Freigegeben', rejected:'Abgelehnt'};
   el.innerHTML = mine.map(s=>`
@@ -227,9 +227,9 @@ function renderMySubmissions(){
 }
 
 // ── Admin Queue ──────────────────────────────────────
-function renderAdminQueue(){
+async function renderAdminQueue(){
   const el = document.getElementById('queueCards'); if(!el) return;
-  loadSubmissions();
+  await loadSubmissions();
   const pending = submissions.filter(s=>s.status==='pending'||s.status==='review');
   el.innerHTML = SECS.map((s,i)=>{
     const count = pending.filter(sub=>sub.section===i).length;
