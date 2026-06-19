@@ -213,11 +213,11 @@
         <div class="submit-login-title">Übung einreichen</div>
         <div class="submit-login-sub">Melde dich an, um eigene Übungen zu erstellen und für den Katalog vorzuschlagen.</div>
         <div class="submit-login-form">
-          <input class="fc" id="loginName" type="text" placeholder="Name / Benutzername" autocomplete="off">
+          <input class="fc" id="loginEmail" type="email" placeholder="E-Mail-Adresse" autocomplete="email">
           <input class="fc" id="loginPass" type="password" placeholder="Passwort" onkeydown="if(event.key==='Enter')doLogin()">
           <button class="bpr" onclick="doLogin()" style="width:100%;padding:11px;font-size:13px;">Anmelden</button>
+          <button class="bsc" onclick="doRegister()" style="width:100%;padding:11px;font-size:13px;margin-top:6px;">Neu registrieren</button>
         </div>
-        <div class="submit-login-demo" onclick="doLoginDemo()">Demo-Modus: Direkt fortfahren →</div>
       </div>
     </div>
   </div>
@@ -1006,6 +1006,8 @@
      4. Restliche Module (nutzen den globalen State aus core-state.js)
      5. App-Start (init()) als LETZTES
      ════════════════════════════════════════════════════════════════ -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/00-supabase.js"></script>
 <script src="data/exercises.default.js"></script>
 <script src="js/01-i18n-theme.js"></script>
 <script src="js/02-core-state.js"></script>

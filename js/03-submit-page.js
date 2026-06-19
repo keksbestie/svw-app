@@ -15,15 +15,26 @@ let submitCanvasData = null; // base64 from canvas
 let submissions = []; // array of submission objects
 let reviewingId = null;
 
-function loadSubmissions(){
-  try { const r=localStorage.getItem('svw_submissions'); submissions=r?JSON.parse(r):[]; } catch{ submissions=[]; }
+async function loadSubmissions(){
+  if(!currentUser){submissions=[];return;}
+  try{
+    let q=_supabase.from('exercises').select('*').neq('status','approved');
+    if(!IS_ADMIN) q=q.eq('created_by',currentUser.id);
+    const {data}=await q;
+    submissions=(data||[]).map(e=>({
+      id:e.id,name:e.name,desc:e.description,players:e.players,
+      duration:e.duration,material:e.material,section:e.section,
+      intensity:e.difficulty,tags:e.tags||[],diagram:e.image,
+      author:e.created_by,status:e.status,
+      submittedAt:new Date(e.created_at).toLocaleDateString('de-DE'),
+      submittedTs:new Date(e.created_at).getTime()
+    }));
+  }catch{submissions=[];}
 }
-function saveSubmissions(){
-  try{ localStorage.setItem('svw_submissions', JSON.stringify(submissions)); } catch(e){}
-}
+function saveSubmissions(){}
 
-function renderSubmitPage(){
-  loadSubmissions();
+async function renderSubmitPage(){
+  await loadSubmissions();
   if(!submitUser){
     document.getElementById('submitLoginWrap').style.display='block';
     document.getElementById('submitLoggedWrap').style.display='none';
@@ -41,22 +52,33 @@ function renderSubmitPage(){
   }
 }
 
-function doLogin(){
-  const name = (document.getElementById('loginName').value||'').trim();
-  if(!name){ showToast('Bitte Namen eingeben','err'); return; }
-  submitUser = {name, isDemo: false};
+async function doLogin(){
+  const email=(document.getElementById('loginEmail').value||'').trim();
+  const pass=document.getElementById('loginPass').value||'';
+  if(!email||!pass){showToast('E-Mail und Passwort eingeben','err');return;}
+  const {data,error}=await _supabase.auth.signInWithPassword({email,password:pass});
+  if(error){showToast('Login fehlgeschlagen: '+error.message,'err');return;}
+  currentUser=data.user; IS_ADMIN=true;
+  document.body.classList.add('admin');
+  submitUser={name:data.user.email,isDemo:false,id:data.user.id};
+  await silentSync();
   renderSubmitPage();
 }
 
-function doLoginDemo(){
-  submitUser = {name: 'Demo-Trainer', isDemo: true};
-  renderSubmitPage();
+async function doRegister(){
+  const email=(document.getElementById('loginEmail').value||'').trim();
+  const pass=document.getElementById('loginPass').value||'';
+  if(!email||!pass){showToast('E-Mail und Passwort eingeben','err');return;}
+  const {error}=await _supabase.auth.signUp({email,password:pass});
+  if(error){showToast('Registrierung fehlgeschlagen: '+error.message,'err');return;}
+  showToast('Bestätigungs-E-Mail gesendet – bitte E-Mail prüfen');
 }
 
-function doLogout(){
-  submitUser = null;
-  submitTags = [];
-  submitCanvasData = null;
+async function doLogout(){
+  await _supabase.auth.signOut();
+  currentUser=null; IS_ADMIN=false;
+  document.body.classList.remove('admin');
+  submitUser=null; submitTags=[]; submitCanvasData=null;
   renderSubmitPage();
 }
 
@@ -298,40 +320,32 @@ function renderSTagDisplay(){
 }
 
 // ── Submit exercise ──────────────────────────────────
-function submitExercise(){
-  if(!submitUser) return;
-  const sec = parseInt(document.getElementById('sSec').value);
-  const showAuthor = document.getElementById('sShowAuthor').checked;
-  const sub = {
-    id: uid(),
-    name: document.getElementById('sName').value.trim(),
-    desc: document.getElementById('sDesc').value.trim(),
-    players: document.getElementById('sPlayers').value.trim(),
-    duration: parseInt(document.getElementById('sDuration').value)||null,
-    material: document.getElementById('sMat').value.trim(),
-    section: sec,
-    intensity: document.getElementById('sIntensity').value,
-    tags: [...submitTags],
-    diagram: submitCanvasData,
-    author: submitUser.name,
-    showAuthor: showAuthor,
-    status: 'pending', // pending | review | approved | rejected
-    submittedAt: new Date().toLocaleDateString('de-DE'),
-    submittedTs: Date.now(),
-  };
-  loadSubmissions();
-  submissions.unshift(sub);
-  saveSubmissions();
+async function submitExercise(){
+  if(!submitUser||!currentUser)return;
+  const sec=parseInt(document.getElementById('sSec').value);
+  const {error}=await _supabase.from('exercises').insert({
+    name:document.getElementById('sName').value.trim(),
+    description:document.getElementById('sDesc').value.trim(),
+    players:document.getElementById('sPlayers').value.trim(),
+    material:document.getElementById('sMat').value.trim(),
+    section:sec,
+    difficulty:document.getElementById('sIntensity').value,
+    tags:submitTags,
+    image:submitCanvasData,
+    created_by:currentUser.id,
+    status:'pending'
+  });
+  if(error){showToast('Fehler beim Einreichen','err');return;}
   showToast('✓ Übung eingereicht! Das Admin-Team prüft sie.');
-  // Reset form
   renderSubmitChecklist_init();
-  submitCanvasData = null;
-  sCanvasObjects = []; sUndoStack = []; sLinePhase = 0; sLineStart = null;
-  sIsDribbling = false; sDribblePoints = []; sSelectedObjIdx = null;
-  sCanvasInited = false;
-  setTimeout(()=>initSubmitCanvas(), 80);
+  submitCanvasData=null;
+  sCanvasObjects=[];sUndoStack=[];sLinePhase=0;sLineStart=null;
+  sIsDribbling=false;sDribblePoints=[];sSelectedObjIdx=null;
+  sCanvasInited=false;
+  setTimeout(()=>initSubmitCanvas(),80);
+  await loadSubmissions();
   renderMySubmissions();
-  if(IS_ADMIN) renderAdminQueue();
+  if(IS_ADMIN)renderAdminQueue();
 }
 
 // ── My Submissions ───────────────────────────────────
@@ -415,49 +429,29 @@ function openReviewMod(id){
   openMod('reviewMod');
 }
 
-function reviewAction(action){
-  loadSubmissions();
-  const idx = submissions.findIndex(x=>x.id===reviewingId); if(idx<0) return;
-  const s = submissions[idx];
-  // Read edited fields
-  s.name = document.getElementById('rv-name').value.trim() || s.name;
-  s.desc = document.getElementById('rv-desc').value.trim();
-  s.players = document.getElementById('rv-players').value.trim();
-  s.duration = parseInt(document.getElementById('rv-duration').value)||s.duration;
-  s.material = document.getElementById('rv-mat').value.trim();
-  s.section = parseInt(document.getElementById('rv-sec').value);
-  s.intensity = document.getElementById('rv-intensity').value;
-  s.tags = document.getElementById('rv-tags').value.split(',').map(t=>t.trim().toUpperCase()).filter(Boolean);
-
+async function reviewAction(action){
+  const updates={
+    name:document.getElementById('rv-name').value.trim(),
+    description:document.getElementById('rv-desc').value.trim(),
+    players:document.getElementById('rv-players').value.trim(),
+    material:document.getElementById('rv-mat').value.trim(),
+    section:parseInt(document.getElementById('rv-sec').value),
+    difficulty:document.getElementById('rv-intensity').value,
+    tags:document.getElementById('rv-tags').value.split(',').map(t=>t.trim().toUpperCase()).filter(Boolean)
+  };
   if(action==='delete'){
-    s.status = 'rejected';
+    await _supabase.from('exercises').delete().eq('id',reviewingId);
     showToast('Übung abgelehnt');
   } else if(action==='review'){
-    s.status = 'review';
+    await _supabase.from('exercises').update({...updates,status:'review'}).eq('id',reviewingId);
     showToast('In Review markiert');
   } else if(action==='approve'){
-    s.status = 'approved';
-    // Add to main exercise catalog
-    const ex = {
-      id: uid(),
-      name: s.name,
-      desc: s.desc,
-      players: s.players,
-      duration: s.duration,
-      material: s.material,
-      section: s.section,
-      difficulty: s.intensity,
-      tags: s.tags,
-      image: s.diagram||null,
-      author: s.showAuthor ? s.author : null,
-      createdByUser: true,
-    };
-    exercises.push(ex);
-    save();
+    await _supabase.from('exercises').update({...updates,status:'approved'}).eq('id',reviewingId);
+    const {data}=await _supabase.from('exercises').select('*').eq('id',reviewingId);
+    if(data&&data[0])exercises.push(mapExercise(data[0]));
     showToast('✓ Übung in den Katalog übernommen!');
   }
-  submissions[idx] = s;
-  saveSubmissions();
+  await loadSubmissions();
   closeMod('reviewMod');
   renderAdminQueue();
   renderMySubmissions();

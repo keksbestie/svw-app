@@ -7,21 +7,16 @@
 // WICHTIG: Dieses Modul muss nach data/exercises.default.js und vor
 // allen anderen js/-Modulen geladen werden (definiert globalen State).
 // ══════════════════════════════════════════════════════════════════
-let IS_ADMIN=false, API_URL='', API_KEY='', apiOnline=false, syncTO=null;
+let IS_ADMIN=false, apiOnline=false, syncTO=null;
 
 // ══════════════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════════════
-async function init(){applyTheme(localStorage.getItem('svw_theme')||'light');applyI18n();
-  const p=new URLSearchParams(window.location.search);
-  IS_ADMIN=true;
-  if(IS_ADMIN)document.body.classList.add('admin');
-  API_URL=localStorage.getItem('svw_api_url')||DEFAULT_API;
-  API_KEY=localStorage.getItem('svw_api_key')||'';
-  const ui=document.getElementById('apiUrlIn'); if(ui)ui.value=API_URL;
-  const ki=document.getElementById('apiKeyIn'); if(ki)ki.value=API_KEY;
+async function init(){
+  applyTheme(localStorage.getItem('svw_theme')||'light'); applyI18n();
   setStat('loading');
-  applyTheme(localStorage.getItem('svw_theme')||'light'); loadClubTheme(); const ok=await loadAPI(); if(!ok)loadLocal();
+  applyTheme(localStorage.getItem('svw_theme')||'light'); loadClubTheme();
+  const ok=await loadAPI(); if(!ok)loadLocal();
   hideLS(); renderStbar(); renderSection(); renderSavedPlans(); renderLtp(); goPage('home');
   setupGS(); updateApiBar();
   setInterval(()=>{if(apiOnline)silentSync();},60000);
@@ -29,38 +24,56 @@ async function init(){applyTheme(localStorage.getItem('svw_theme')||'light');app
 function hideLS(){const l=document.getElementById('ls');l.classList.add('fade');setTimeout(()=>l.style.display='none',400);}
 
 // ══════════════════════════════════════════════════════
-// API
+// SUPABASE API
 // ══════════════════════════════════════════════════════
-function apiH(){const h={'Content-Type':'application/json'};if(API_KEY)h['X-API-Key']=API_KEY;return h;}
-async function loadAPI(){
-  if(!API_URL||API_URL===DEFAULT_API)return false;
-  try{const r=await fetch(API_URL+'/data',{method:'GET',headers:apiH()});if(!r.ok)throw 0;
-    const d=await r.json();applyData(d);apiOnline=true;setStat('ok');cacheLocal();return true;}
-  catch{apiOnline=false;setStat('err');return false;}
+function mapExercise(e){
+  return {id:e.id,name:e.name,players:e.players,material:e.material,section:e.section,
+    difficulty:e.difficulty,desc:e.description,tags:e.tags||[],image:e.image,status:e.status};
 }
-function applyData(d){
-  exercises=d.exercises||[];sectionDescs=d.sectionDescs||defaultDescs();
-  sectionCustomTags=d.sectionCustomTags||[[],[],[],[],[],[]];savedPlans=d.savedPlans||[];
-  ltpBlocks=d.ltpBlocks||defaultLtp();
-  if(d.sectionClusters)SECTION_CLUSTERS=d.sectionClusters;
-      else if(d.tagClusters)SECTION_CLUSTERS=Array.from({length:6},()=>JSON.parse(JSON.stringify(d.tagClusters)));
-      TAG_CLUSTERS=SECTION_CLUSTERS[activeSec]||SECTION_CLUSTERS[0];
-  if(d.blockLibrary)blockLibrary=d.blockLibrary;
+async function loadAPI(){
+  try{
+    const {data:{user}}=await _supabase.auth.getUser();
+    currentUser=user; IS_ADMIN=!!user;
+    document.body.classList.toggle('admin',IS_ADMIN);
+    const {data:exData,error:exErr}=await _supabase.from('exercises').select('*').eq('status','approved');
+    if(exErr)throw exErr;
+    exercises=exData.map(mapExercise);
+    if(user){
+      const {data:plansData}=await _supabase.from('plans').select('*').eq('owner_id',user.id);
+      savedPlans=(plansData||[]).map(p=>p.lanes);
+      const {data:ltpData}=await _supabase.from('ltp_blocks').select('*').eq('owner_id',user.id);
+      ltpBlocks=(ltpData||[]).map(b=>b.weeks);
+    }
+    apiOnline=true; setStat('ok'); cacheLocal(); return true;
+  }catch{apiOnline=false; setStat('err'); return false;}
 }
 async function silentSync(){
-  try{const r=await fetch(API_URL+'/data',{method:'GET',headers:apiH()});if(!r.ok)return;
-    applyData(await r.json());apiOnline=true;setStat('ok');updateCnt();renderSection();cacheLocal();}
-  catch{apiOnline=false;setStat('err');}
+  try{
+    const {data:exData}=await _supabase.from('exercises').select('*').eq('status','approved');
+    exercises=exData.map(mapExercise);
+    if(currentUser){
+      const {data:plansData}=await _supabase.from('plans').select('*').eq('owner_id',currentUser.id);
+      savedPlans=(plansData||[]).map(p=>p.lanes);
+      const {data:ltpData}=await _supabase.from('ltp_blocks').select('*').eq('owner_id',currentUser.id);
+      ltpBlocks=(ltpData||[]).map(b=>b.weeks);
+    }
+    apiOnline=true; setStat('ok'); updateCnt(); renderSection(); cacheLocal();
+  }catch{apiOnline=false; setStat('err');}
 }
 async function saveAPI(){
-  if(!API_URL||API_URL===DEFAULT_API||!apiOnline)return;
+  if(!currentUser||!apiOnline)return;
   setStat('sync');
-  try{const payload={exercises,sectionDescs,sectionCustomTags,savedPlans,ltpBlocks,sectionClusters:SECTION_CLUSTERS,lastUpdated:new Date().toISOString()};
-    const r=await fetch(API_URL+'/data',{method:'POST',headers:apiH(),body:JSON.stringify(payload)});
-    if(!r.ok)throw 0;apiOnline=true;setStat('ok');cacheLocal();}
-  catch{apiOnline=false;setStat('err');showToast('Speichern fehlgeschlagen','warn');}
+  try{
+    await _supabase.from('plans').delete().eq('owner_id',currentUser.id);
+    if(savedPlans.length>0)
+      await _supabase.from('plans').insert(savedPlans.map(p=>({owner_id:currentUser.id,name:p.name||'Plan',lanes:p})));
+    await _supabase.from('ltp_blocks').delete().eq('owner_id',currentUser.id);
+    if(ltpBlocks.length>0)
+      await _supabase.from('ltp_blocks').insert(ltpBlocks.map(b=>({owner_id:currentUser.id,name:b.name||'Block',weeks:b})));
+    apiOnline=true; setStat('ok'); cacheLocal();
+  }catch{apiOnline=false; setStat('err'); showToast('Speichern fehlgeschlagen','warn');}
 }
-async function retryConn(){const ok=await loadAPI();if(ok){showToast('Verbunden');renderSection();}else showToast('Verbindung fehlgeschlagen','err');updateApiBar();}
+async function retryConn(){const ok=await loadAPI();if(ok){showToast('Verbunden');renderSection();renderSavedPlans();renderLtp();}else showToast('Verbindung fehlgeschlagen','err');updateApiBar();}
 function cacheLocal(){localStorage.setItem(SK,JSON.stringify({exercises,sectionDescs,sectionCustomTags,savedPlans,ltpBlocks,blockLibrary,sectionClusters:SECTION_CLUSTERS}));}
 function loadLocal(){
   try{
@@ -105,18 +118,8 @@ function updateCnt(){
 function setStat(s){const d=document.getElementById('sdot');if(d)d.className='sdot '+(s==='ok'?'ok':s==='err'?'err':s==='sync'?'sync':'');}
 function updateApiBar(){
   const b=document.getElementById('apibar');const m=document.getElementById('apibarMsg');if(!b||!m)return;
-  if(API_URL===DEFAULT_API||!API_URL){b.className='apibar warn';m.textContent='Noch keine API-URL – App läuft lokal.';b.classList.remove('h');}
-  else if(apiOnline){b.className='apibar h';}
+  if(apiOnline){b.className='apibar h';}
   else{b.className='apibar err';m.textContent='Server nicht erreichbar – Offline-Modus.';b.classList.remove('h');}
-  const ad=document.getElementById('apiDetail');
-  if(ad)ad.textContent=apiOnline?'Verbunden: '+API_URL:API_URL===DEFAULT_API?'Kein Server konfiguriert.':'Verbindung fehlgeschlagen: '+API_URL;
-}
-async function saveApiCfg(){
-  API_URL=document.getElementById('apiUrlIn').value.trim();
-  API_KEY=document.getElementById('apiKeyIn').value.trim();
-  localStorage.setItem('svw_api_url',API_URL);localStorage.setItem('svw_api_key',API_KEY);
-  showToast('Wird getestet…','warn');const ok=await loadAPI();updateApiBar();
-  if(ok){showToast('Verbindung erfolgreich');renderSection();}else showToast('Verbindung fehlgeschlagen','err');
 }
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5);}
 
