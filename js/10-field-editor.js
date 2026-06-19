@@ -18,46 +18,34 @@ let canvasEl=null, ctx=null, _cvInited=false;
 function switchImgTab(tab){
   const u=tab==='upload';
   document.getElementById('imgPanelUpload').style.display=u?'block':'none';
+  document.getElementById('imgPanelDraw').style.display=u?'none':'block';
   document.getElementById('imgTabUpload').style.background=u?'var(--g)':'none';
   document.getElementById('imgTabUpload').style.color=u?'#fff':'var(--gd2)';
   document.getElementById('imgTabDraw').style.background=u?'none':'var(--g)';
   document.getElementById('imgTabDraw').style.color=u?'var(--gd2)':'#fff';
-  if(u){
-    document.getElementById('imgPanelDraw').style.display='none';
-  } else {
-    openFieldOverlay();
-  }
 }
 
 function openFieldOverlay(){
-  const p=document.getElementById('imgPanelDraw');
-  p.style.cssText='display:flex;flex-direction:column;position:fixed;inset:0;z-index:9999;';
-  const cv=document.getElementById('fieldCanvas');
-  if(cv){cv.style.flex='1';cv.style.height='0';cv.style.borderRadius='0';cv.style.width='100%';}
+  const ov=document.getElementById('fieldOverlay');
+  if(ov) ov.style.display='flex';
+  _cvInited=false; // Events neu anhängen falls nötig
   setTimeout(()=>initCanvas(false),80);
 }
 
 function closeFieldOverlay(){
-  const p=document.getElementById('imgPanelDraw');
-  p.style.cssText='display:none;';
-  const cv=document.getElementById('fieldCanvas');
-  if(cv){cv.style.flex='';cv.style.height='';cv.style.borderRadius='0 0 10px 10px';}
+  const ov=document.getElementById('fieldOverlay');
+  if(ov) ov.style.display='none';
 }
 
 function initCanvas(reset){
   canvasEl=document.getElementById('fieldCanvas');
   if(!canvasEl) return;
   const dpr=window.devicePixelRatio||1;
-  const W=Math.max(canvasEl.parentElement.clientWidth||400, 320);
-  // In Overlay-Modus hat das Canvas flex:1, Browser berechnet Höhe selbst
-  const flexH=canvasEl.offsetHeight;
-  const H=flexH>100?flexH:Math.round(W*0.63);
-  // Set physical pixels = CSS pixels × dpr for sharp rendering
+  const W=canvasEl.offsetWidth||800;
+  const H=canvasEl.offsetHeight||Math.round(W*0.6);
   canvasEl.width=W*dpr; canvasEl.height=H*dpr;
-  canvasEl.style.width=W+'px';
-  if(!canvasEl.style.flex){canvasEl.style.height=H+'px';}
   ctx=canvasEl.getContext('2d');
-  ctx.scale(dpr,dpr); // all drawing in CSS px, display is sharp
+  ctx.scale(dpr,dpr);
   if(reset){canvasObjects=[];playerCounters={};undoStack=[];selectedObjIdx=null;linePhase=0;lineStart=null;}
   redraw();
   if(!_cvInited){attachCvEvents();_cvInited=true;}
@@ -773,7 +761,7 @@ function drawEquip(x,y,sub,sel,ang){
     const hg=ctx.createLinearGradient(0,-6,0,-1);
     hg.addColorStop(0,'#ff1744'); hg.addColorStop(.5,'#ff5252'); hg.addColorStop(1,'#d50000');
     ctx.fillStyle=hg;
-    ctx.beginPath(); ctx.roundRect(-13,-6,26,5,2); ctx.fill();
+    ctx.beginPath(); ctx.rect(-13,-6,26,5); ctx.fill();
     // Highlight on crossbar
     ctx.fillStyle='rgba(255,255,255,.25)';
     ctx.fillRect(-12,-5.5,24,2);
@@ -823,9 +811,8 @@ function drawEquip(x,y,sub,sel,ang){
 function drawGoal(x,y,sub,sel,ang){
   ctx.save();
   ctx.translate(x,y); ctx.rotate(ang);
-  // FIFA-Proportionen: Großtor 7.32m, Jugendtor ~5m, Minitor ~3m
-  // gw = Breite (Öffnung), gh = Tiefe (Netztiefe ca. 2.44m/2m/1.5m skaliert)
-  const [gw,gh]=sub==='mini'?[26,12]:sub==='youth'?[44,18]:[70,24];
+  // FIFA-Proportionen: Grosstor 7.32m, Jugendtor 5m, Minitor 3m
+  const [gw,gh]=sub==='mini'?[28,20]:sub==='youth'?[48,28]:[76,36];
   const postR=sub==='full'?3:2;
 
   // Drop shadow
@@ -904,7 +891,11 @@ function exportCanvas(){
   if(!canvasEl){showToast('Kein Feld','err');return;}
   selectedObjIdx=null;redraw();
   formImg=canvasEl.toDataURL('image/png');
-  showToast('✓ Felddiagramm übernommen');
+  // Vorschau im Modal anzeigen
+  const prev=document.getElementById('cvPreview');
+  const prevImg=document.getElementById('cvPreviewImg');
+  if(prev&&prevImg){prevImg.src=formImg;prev.style.display='block';}
+  showToast('Felddiagramm übernommen');
   closeFieldOverlay();
 }
 
