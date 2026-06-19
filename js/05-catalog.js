@@ -386,7 +386,17 @@ function saveEx(){
   if(editingId)exercises=exercises.map(e=>e.id===editingId?ex:e);else exercises.push(ex);
   save();activeSec=si;renderStbar();renderSection();closeMod('exMod');showToast(editingId?'Übung aktualisiert':'Übung gespeichert');
 }
-function delEx(id){if(!IS_ADMIN||!confirm('Übung löschen?'))return;exercises=exercises.filter(e=>e.id!==id);currentPlan.lanes=currentPlan.lanes.map(l=>l.filter(i=>i!==id));save();renderSection();showToast('Gelöscht');}
+async function delEx(id){
+  if(!IS_ADMIN||!confirm('Übung löschen?'))return;
+  if(_supabase&&apiOnline){
+    const{error}=await _supabase.from('exercises').delete().eq('id',id);
+    if(error){showToast('Löschen fehlgeschlagen','err');return;}
+  }
+  exercises=exercises.filter(e=>e.id!==id);
+  const _li=raw=>typeof raw==='string'?{id:raw}:raw;
+  currentPlan.lanes=currentPlan.lanes.map(l=>l.filter(raw=>_li(raw).id!==id));
+  save();renderSection();showToast('Gelöscht');
+}
 function addMTag(){const v=document.getElementById('mTagIn').value.trim().toUpperCase();if(v&&!formTags.includes(v)){formTags.push(v);renderMTags();}document.getElementById('mTagIn').value='';}
 function removeMTag(t){formTags=formTags.filter(x=>x!==t);renderMTags();}
 function renderMTags(){
