@@ -62,18 +62,39 @@ async function doLogin(){
   const {data:profile}=await _supabase.from('profiles').select('role').eq('id',data.user.id).single();
   IS_ADMIN=profile?.role==='admin';
   document.body.classList.toggle('admin',IS_ADMIN);
-  submitUser={name:data.user.email,isDemo:false,id:data.user.id};
+  const displayName=data.user.user_metadata?.username||data.user.email;
+  submitUser={name:displayName,isDemo:false,id:data.user.id};
   await silentSync();
   renderSubmitPage();
+}
+
+function toggleRegisterMode(){
+  const usernameField=document.getElementById('loginUsername');
+  const loginBtn=document.getElementById('loginBtn');
+  const registerBtn=document.getElementById('registerBtn');
+  const isRegMode=usernameField.style.display!=='none';
+  if(isRegMode){
+    usernameField.style.display='none';
+    loginBtn.textContent='Anmelden';
+    loginBtn.onclick=doLogin;
+    registerBtn.textContent='Neu registrieren';
+  } else {
+    usernameField.style.display='block';
+    loginBtn.textContent='Registrieren';
+    loginBtn.onclick=doRegister;
+    registerBtn.textContent='Zurück zum Login';
+  }
 }
 
 async function doRegister(){
   const email=(document.getElementById('loginEmail').value||'').trim();
   const pass=document.getElementById('loginPass').value||'';
-  if(!email||!pass){showToast('E-Mail und Passwort eingeben','err');return;}
-  const {error}=await _supabase.auth.signUp({email,password:pass});
+  const username=(document.getElementById('loginUsername').value||'').trim();
+  if(!email||!pass||!username){showToast('Alle Felder ausfüllen','err');return;}
+  const {error}=await _supabase.auth.signUp({email,password:pass,options:{data:{username}}});
   if(error){showToast('Registrierung fehlgeschlagen: '+error.message,'err');return;}
   showToast('Bestätigungs-E-Mail gesendet – bitte E-Mail prüfen');
+  toggleRegisterMode();
 }
 
 async function doLogout(){
