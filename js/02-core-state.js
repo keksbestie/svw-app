@@ -31,6 +31,7 @@ function mapExercise(e){
     difficulty:e.difficulty,desc:e.description,tags:e.tags||[],image:e.image,status:e.status};
 }
 async function loadAPI(){
+  if(!_supabase)return false;
   try{
     const {data:{user}}=await _supabase.auth.getUser();
     currentUser=user; IS_ADMIN=!!user;
@@ -48,6 +49,7 @@ async function loadAPI(){
   }catch{apiOnline=false; setStat('err'); return false;}
 }
 async function silentSync(){
+  if(!_supabase)return;
   try{
     const {data:exData}=await _supabase.from('exercises').select('*').eq('status','approved');
     exercises=exData.map(mapExercise);
@@ -61,7 +63,7 @@ async function silentSync(){
   }catch{apiOnline=false; setStat('err');}
 }
 async function saveAPI(){
-  if(!currentUser||!apiOnline)return;
+  if(!_supabase||!currentUser||!apiOnline)return;
   setStat('sync');
   try{
     await _supabase.from('plans').delete().eq('owner_id',currentUser.id);
