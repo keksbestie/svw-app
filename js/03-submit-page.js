@@ -20,6 +20,7 @@ async function loadSubmissions(){
   let q=_supabase.from('exercises').select('*').neq('status','approved');
   if(!IS_ADMIN) q=q.eq('created_by',currentUser.id);
   const {data,error}=await q;
+  console.log('loadSubmissions →',{data,error,userId:currentUser?.id,isAdmin:IS_ADMIN});
   if(error){console.error('loadSubmissions error:',error);submissions=[];return;}
   submissions=(data||[]).map(e=>({
     id:e.id,name:e.name,desc:e.description,players:e.players,
