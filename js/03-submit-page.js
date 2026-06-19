@@ -58,8 +58,10 @@ async function doLogin(){
   if(!email||!pass){showToast('E-Mail und Passwort eingeben','err');return;}
   const {data,error}=await _supabase.auth.signInWithPassword({email,password:pass});
   if(error){showToast('Login fehlgeschlagen: '+error.message,'err');return;}
-  currentUser=data.user; IS_ADMIN=true;
-  document.body.classList.add('admin');
+  currentUser=data.user;
+  const {data:profile}=await _supabase.from('profiles').select('role').eq('id',data.user.id).single();
+  IS_ADMIN=profile?.role==='admin';
+  document.body.classList.toggle('admin',IS_ADMIN);
   submitUser={name:data.user.email,isDemo:false,id:data.user.id};
   await silentSync();
   renderSubmitPage();

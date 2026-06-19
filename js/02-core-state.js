@@ -34,7 +34,11 @@ async function loadAPI(){
   if(!_supabase)return false;
   try{
     const {data:{user}}=await _supabase.auth.getUser();
-    currentUser=user; IS_ADMIN=!!user;
+    currentUser=user; IS_ADMIN=false;
+    if(user){
+      const {data:profile}=await _supabase.from('profiles').select('role').eq('id',user.id).single();
+      IS_ADMIN=profile?.role==='admin';
+    }
     document.body.classList.toggle('admin',IS_ADMIN);
     const {data:exData,error:exErr}=await _supabase.from('exercises').select('*').eq('status','approved');
     if(exErr)throw exErr;
