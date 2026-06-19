@@ -419,16 +419,20 @@ function drawNeutral(W,H,p){
 // Nur Strafraum — FIFA: 40.32m breit × 16.5m tief
 // Canvas: W-Achse=40.32m, H-Achse=16.5m + Tor-Tiefe
 function drawPenaltyBox(W,H,p){
-  // Strafraum: 40.32m breit, 16.5m tief (PA-Linie)
-  // Sichtbarer Bereich: Torlinie oben + 16.5m PA + Bogenlücke bis 20.15m → ~21m Tiefe
-  // Einheitlicher Maßstab, zentriert
-  const fieldW=40.32, fieldH=21; // m
+  // Strafraum: 40.32m breit, 16.5m tief + Bogen bis 20.15m → 21m Tiefe
+  const fieldW=40.32, fieldH=21;
   const s=Math.min((W-p*2)/fieldW,(H-p*2)/fieldH);
   const fw=fieldW*s, fh=fieldH*s;
   const ox=(W-fw)/2, oy=p+(H-p*2-fh)/2;
-  // Strafraum-Außenlinien (Torlinie oben, PA-Linie bei 16.5m)
   const paH=16.5*s;
-  sr(ox, oy, fw, paH);
+  // Grundlinie über volle Canvas-Breite
+  ctx.save();ctx.strokeStyle='rgba(255,255,255,.72)';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(p,oy);ctx.lineTo(W-p,oy);ctx.stroke();ctx.restore();
+  // Strafraum-Seitenlinien + PA-Linie (ohne Torlinie — schon gezeichnet)
+  ctx.save();ctx.strokeStyle='rgba(255,255,255,.72)';ctx.lineWidth=1.5;
+  ctx.beginPath();
+  ctx.moveTo(ox,oy);ctx.lineTo(ox,oy+paH);ctx.lineTo(ox+fw,oy+paH);ctx.lineTo(ox+fw,oy);
+  ctx.stroke();ctx.restore();
   // Torraum (18.32m × 5.5m)
   const gaW=18.32*s, gaH=5.5*s;
   sr(ox+(fw-gaW)/2, oy, gaW, gaH);
@@ -437,12 +441,29 @@ function drawPenaltyBox(W,H,p){
   dot(ox+fw/2, oy+ps, 3.5);
   // Elfmeterbogen — nur unterhalb der PA-Linie sichtbar
   ctx.save();
-  ctx.beginPath();ctx.rect(0, oy+paH, W, H);ctx.clip();
+  ctx.beginPath();ctx.rect(0,oy+paH,W,H);ctx.clip();
   ctx.lineWidth=1.5;ctx.strokeStyle='rgba(255,255,255,.72)';
   sc(ox+fw/2, oy+ps, 9.15*s, 0, Math.PI*2);
   ctx.restore();
-  // Tor hinter der Torlinie
-  drawGoal(ox+fw/2, oy, 'full', false, 0);
+  // Tor proportional zum Maßstab (7.32m × 2.44m)
+  const gw=7.32*s, gh=2.44*s, postR=Math.max(1.5,s*0.12);
+  const gx=ox+fw/2, gy=oy;
+  ctx.save();ctx.translate(gx,gy);
+  // Netz-Fill
+  ctx.fillStyle='rgba(255,255,255,.06)';
+  ctx.fillRect(-gw/2,-gh,gw,gh);
+  // Netz-Linien
+  ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=.6;
+  for(let i=1;i<8;i++){ctx.beginPath();ctx.moveTo(-gw/2+i*gw/8,-gh);ctx.lineTo(-gw/2+i*gw/8,0);ctx.stroke();}
+  for(let i=1;i<4;i++){ctx.beginPath();ctx.moveTo(-gw/2,-i*gh/4);ctx.lineTo(gw/2,-i*gh/4);ctx.stroke();}
+  // Pfosten & Querlatte
+  const pg=ctx.createLinearGradient(-postR,0,postR,0);
+  pg.addColorStop(0,'#bdbdbd');pg.addColorStop(.35,'#fff');pg.addColorStop(1,'#9e9e9e');
+  ctx.strokeStyle=pg;ctx.lineWidth=postR*2;ctx.lineCap='round';ctx.lineJoin='round';
+  ctx.beginPath();ctx.moveTo(-gw/2,-gh);ctx.lineTo(-gw/2,0);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(gw/2,-gh);ctx.lineTo(gw/2,0);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(-gw/2,-gh);ctx.lineTo(gw/2,-gh);ctx.stroke();
+  ctx.restore();
 }
 
 // Sprintbahn — 30m × 5m mit Abstandsmarkierungen alle 5m
