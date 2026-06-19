@@ -776,6 +776,11 @@ body:not(.on-home) .home-topbar { display: none; }
 .pi-meta { display:flex;gap:4px;flex-wrap:wrap;margin-top:3px; }
 .pi-rm { background:none;border:none;cursor:pointer;color:var(--text-3);font-size:14px;padding:2px 4px;border-radius:5px;transition:color .12s;flex-shrink:0; }
 .pi-rm:hover { color:#880e4f; }
+.pi-ovr-wrap { display:inline-flex;align-items:center;gap:2px;cursor:default; }
+.pi-ovr-in { border:none;background:transparent;font-size:inherit;font-weight:inherit;color:inherit;font-family:inherit;padding:0;min-width:20px;outline:none;border-bottom:1px dashed currentColor; }
+.pi-ovr-in:focus { border-bottom:1px solid currentColor;background:rgba(0,0,0,.06);border-radius:3px; }
+.pi-ovr-rst { background:none;border:none;cursor:pointer;color:inherit;opacity:.5;font-size:11px;padding:0 1px;line-height:1; }
+.pi-ovr-rst:hover { opacity:1; }
 
 /* ══════════════════════════════════════════════════
    LANGZEIT-PLANER — Neu

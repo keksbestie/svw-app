@@ -24,8 +24,9 @@ function renderPlanCart(){
   }
 
   // Build per-section summary
+  const _li=raw=>typeof raw==='string'?{id:raw}:raw;
   const sections = currentPlan.lanes.map((lane, si)=>{
-    const exs = lane.map(id=>exercises.find(e=>e.id===id)).filter(Boolean);
+    const exs = lane.map(raw=>{const it=_li(raw);const e=exercises.find(x=>x.id===it.id);return e?{...e,players:it.players??e.players,duration:it.duration??e.duration,difficulty:it.difficulty??e.difficulty}:null;}).filter(Boolean);
     const totalMin = exs.reduce((a,e)=>a+(parseInt(e.duration)||0),0);
     return {si, exs, totalMin, name:secNames[si], color:secColors[si]};
   }).filter(s=>s.exs.length>0);
@@ -34,7 +35,7 @@ function renderPlanCart(){
 
   // Intensity distribution
   const intens = {Leicht:0, Mittel:0, Schwer:0};
-  allItems.forEach(id=>{ const e=exercises.find(x=>x.id===id); if(e&&e.difficulty) intens[e.difficulty]=(intens[e.difficulty]||0)+(parseInt(e.duration)||0); });
+  allItems.forEach(raw=>{ const it=_li(raw); const e=exercises.find(x=>x.id===it.id); if(e){const diff=it.difficulty??e.difficulty;const dur=parseInt(it.duration??e.duration)||0;if(diff)intens[diff]=(intens[diff]||0)+dur;} });
   const intensColors = {Leicht:'#1a7f4b', Mittel:'#e65100', Schwer:'#880e4f'};
 
   const intensBars = Object.entries(intens).filter(([,m])=>m>0).map(([label,min])=>{
@@ -81,7 +82,8 @@ function updatePlanCart(){
 }
 
 function removePlanItem(exId){
-  currentPlan.lanes=currentPlan.lanes.map(lane=>lane.filter(id=>id!==exId));
+  const _li=raw=>typeof raw==='string'?{id:raw}:raw;
+  currentPlan.lanes=currentPlan.lanes.map(lane=>lane.filter(raw=>_li(raw).id!==exId));
   updatePlanCart();
   renderPlanner();
 }
