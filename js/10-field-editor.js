@@ -643,55 +643,49 @@ function drawBall(x,y,sel){
   const R=11;
   ctx.save();
   ctx.translate(x,y);
-  ctx.shadowColor='rgba(0,0,0,.55)'; ctx.shadowBlur=10; ctx.shadowOffsetY=5;
-  // Weißer Basiskörper mit Glanzgradient
-  const grad=ctx.createRadialGradient(-R*.3,-R*.38,R*.08,0,0,R);
-  grad.addColorStop(0,'#ffffff');
-  grad.addColorStop(0.55,'#e8e8e8');
-  grad.addColorStop(1,'#aaaaaa');
-  ctx.fillStyle=grad;
+  // Schatten
+  ctx.shadowColor='rgba(0,0,0,.5)'; ctx.shadowBlur=8; ctx.shadowOffsetY=4;
+  // Weißer Ball
+  ctx.fillStyle='#fff';
   ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.fill();
   ctx.shadowBlur=0; ctx.shadowOffsetY=0;
-  // Klassisches Fußball-Muster: 1 zentrales Pentagon + 5 außen
-  // Zentrales Pentagon oben
-  const drawPenta=(cx,cy,r)=>{
+  // Clip auf Ball
+  ctx.save();
+  ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.clip();
+  // Zentrales schwarzes Hexagon
+  ctx.fillStyle='#111';
+  ctx.beginPath();
+  for(let i=0;i<6;i++){
+    const a=i*Math.PI/3-Math.PI/6;
+    const r=R*.38;
+    i===0?ctx.moveTo(r*Math.cos(a),r*Math.sin(a)):ctx.lineTo(r*Math.cos(a),r*Math.sin(a));
+  }
+  ctx.closePath(); ctx.fill();
+  // 6 schwarze Segmente am Rand (klassisches Muster)
+  ctx.fillStyle='#111';
+  for(let i=0;i<6;i++){
+    const a=i*Math.PI/3+Math.PI/6;
+    const cx=Math.cos(a)*R*.72, cy=Math.sin(a)*R*.72;
     ctx.beginPath();
-    for(let i=0;i<5;i++){
-      const a=i*Math.PI*2/5-Math.PI/2;
-      i===0?ctx.moveTo(cx+r*Math.cos(a),cy+r*Math.sin(a))
-           :ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a));
+    for(let j=0;j<6;j++){
+      const pa=j*Math.PI/3-Math.PI/6;
+      const pr=R*.28;
+      j===0?ctx.moveTo(cx+pr*Math.cos(pa),cy+pr*Math.sin(pa))
+           :ctx.lineTo(cx+pr*Math.cos(pa),cy+pr*Math.sin(pa));
     }
-    ctx.closePath();
-  };
-  ctx.fillStyle='#1a1a1a';
-  // Mittleres Pentagon
-  drawPenta(0,-R*.12,R*.32); ctx.fill();
-  // 5 außenliegende Pentagone
-  for(let i=0;i<5;i++){
-    const a=i*Math.PI*2/5-Math.PI/2;
-    const d=R*.66;
-    drawPenta(d*Math.cos(a),d*Math.sin(a),R*.22); ctx.fill();
+    ctx.closePath(); ctx.fill();
   }
-  // Feine Nähte zwischen den Pentagonen
-  ctx.strokeStyle='rgba(80,80,80,.5)'; ctx.lineWidth=.6;
-  for(let i=0;i<5;i++){
-    const a=i*Math.PI*2/5-Math.PI/2;
-    ctx.beginPath();
-    ctx.moveTo(0,0);
-    ctx.lineTo(R*.55*Math.cos(a),R*.55*Math.sin(a));
-    ctx.stroke();
-  }
-  // Außenring
-  ctx.strokeStyle='#555'; ctx.lineWidth=1;
+  ctx.restore();
+  // Rand
+  ctx.strokeStyle='#333'; ctx.lineWidth=1;
   ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.stroke();
-  // Glanzfleck oben links
-  ctx.fillStyle='rgba(255,255,255,.55)';
-  ctx.beginPath(); ctx.ellipse(-R*.28,-R*.33,R*.2,R*.13,-0.5,0,Math.PI*2); ctx.fill();
+  // Glanzfleck
+  ctx.fillStyle='rgba(255,255,255,.6)';
+  ctx.beginPath(); ctx.ellipse(-R*.25,-R*.3,R*.18,R*.1,-0.4,0,Math.PI*2); ctx.fill();
   // Selektion
   if(sel){
-    ctx.strokeStyle='#ffe082'; ctx.lineWidth=2;
-    ctx.setLineDash([3,3]);
-    ctx.beginPath(); ctx.arc(0,0,R+5,0,Math.PI*2); ctx.stroke();
+    ctx.strokeStyle='#ffe082'; ctx.lineWidth=2; ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.arc(0,0,R+4,0,Math.PI*2); ctx.stroke();
     ctx.setLineDash([]);
   }
   ctx.restore();
