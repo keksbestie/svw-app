@@ -352,9 +352,9 @@ function drawFull(W,H,p){
   // Penalty spots: 11m from goal line (horizontal)
   const ps=11*sx;
   dot(p+ps,H/2,3); dot(W-p-ps,H/2,3);
-  // Penalty arcs: r=9.15m, clipped to only show outside penalty area
+  // Penalty arcs: r=9.15m — use sx so the arc is correctly sized relative to the 105m axis
   ctx.save();ctx.lineWidth=1.5;ctx.strokeStyle='rgba(255,255,255,.72)';
-  const arcR=9.15*sy;
+  const arcR=9.15*sx;
   // Left arc — clip to right of PA line
   ctx.save();ctx.beginPath();ctx.rect(p+paW,0,W,H);ctx.clip();
   sc(p+ps,H/2,arcR);ctx.restore();
@@ -422,7 +422,7 @@ function drawPenaltyBox(W,H,p){
   const fw=W-p*2, fh=H-p*2;
   // Strafraum füllt die ganze Zeichenfläche
   // sx: px pro Meter entlang 40.32m, sy: px pro Meter entlang ~20m (PA+goal)
-  const totalM=20; // ~16.5m PA + 2.44m Tor + ~1m Abstand
+  const totalM=23; // 16.5m PA + 9.15m Bogen ragt bis 20.15m raus + Puffer
   const sx=fw/40.32, sy=fh/totalM;
   // Außenlinie (Torauslinie oben, Seitenlinien, PA-Linie unten)
   sr(p,p,fw,fh);
