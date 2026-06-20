@@ -127,7 +127,12 @@ let currentFsIdx = parseInt(localStorage.getItem('tb_fs_idx') ?? localStorage.ge
 function applyFontSize(idx) {
   currentFsIdx = Math.max(0, Math.min(FS_STEPS.length - 1, idx));
   const pct = FS_STEPS[currentFsIdx];
-  document.body.style.zoom = pct + '%';
+  // zoom breaks mobile viewport — only apply on desktop
+  if (window.innerWidth > 767) {
+    document.body.style.zoom = pct + '%';
+  } else {
+    document.body.style.zoom = '';
+  }
   localStorage.setItem('tb_fs_idx', currentFsIdx);
   const el = document.getElementById('cfgFsVal');
   if (el) el.textContent = pct + '%';
