@@ -290,6 +290,16 @@ header {
   margin-bottom: 22px;
   text-transform: uppercase;
 }
+.home-hero-tagline {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(18px, 2.2vw, 28px);
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+  opacity: .85;
+}
 .home-hero-sub {
   font-size: 15px;
   color: var(--text-2);
