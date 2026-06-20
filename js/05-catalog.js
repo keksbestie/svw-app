@@ -199,7 +199,7 @@ function renderSection(){
         ${activeCluster?`<span onclick="toggleCluster(null)" style="font-size:10px;font-weight:700;color:var(--gm);cursor:pointer;margin-left:2px;">✕ Alle</span>`:''}
         ${IS_ADMIN?`<button class="cpill-edit" onclick="openTagMod(${activeSec})">+ Verwalten</button>`:''}
       </div>`:''}
-      <div style="display:grid;grid-template-columns:1fr 280px;gap:16px;align-items:start;" id="catalogLayout">
+      <div class="catalog-layout" id="catalogLayout">
         <div>
           <div class="fbar">
             <div class="ftop">

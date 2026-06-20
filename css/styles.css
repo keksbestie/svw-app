@@ -551,6 +551,8 @@ body.admin .hero-edit-btn { display: flex; }
    EXERCISE GRID & CARDS
    ══════════════════════════════════════════════════ */
 .exgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.catalog-layout { display: grid; grid-template-columns: 1fr 280px; gap: 16px; align-items: start; }
+@media (max-width: 767px) { .catalog-layout { grid-template-columns: 1fr; } }
 .card { background: var(--surface); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow); transition: transform .18s, box-shadow .18s; position: relative; cursor: grab; border: 1px solid var(--border); }
 .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); border-color: var(--border-s); }
 .card.dragging { opacity: .4; transform: scale(.97); }
@@ -1124,9 +1126,6 @@ body:not(.on-home) .home-topbar { display: none; }
   .home-card-title { font-size: 16px; }
   .home-card-desc { font-size: 12px; }
   .home-card-icon { width: 42px; height: 42px; }
-
-  /* ── Catalog layout: hide sidebar column ── */
-  #catalogLayout { grid-template-columns: 1fr !important; }
 
   /* ── Catalog cards ── */
   .exgrid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
