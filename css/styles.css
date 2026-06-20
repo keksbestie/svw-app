@@ -302,6 +302,25 @@ header {
   margin-bottom: 18px;
   opacity: .85;
 }
+.home-beta-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff3e0;
+  color: #b84a00;
+  border: 1.5px solid #ff6b00;
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  max-width: 480px;
+}
+[data-theme="dark"] .home-beta-banner {
+  background: rgba(255, 107, 0, 0.12);
+  color: #ffaa66;
+  border-color: #ff6b00;
+}
 .home-hero-sub {
   font-size: 15px;
   color: var(--text-2);
