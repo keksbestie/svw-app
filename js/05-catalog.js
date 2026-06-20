@@ -121,7 +121,7 @@ function openExDetail(id){
       <div>${tags}</div>
     </div>`:''}
     <div style="display:flex;gap:8px;padding-top:12px;border-top:1px solid var(--border);">
-      <button onclick="addToPlan('${e.id}',${e.section});closeMod('exDetailMod');updatePlanCart();" style="flex:1;padding:12px;background:${s.color};color:#fff;border:none;border-radius:9px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;">+ Zum Plan hinzufügen</button>
+      <button onclick="addToPlanOrPick('${e.id}',${e.section},true)" style="flex:1;padding:12px;background:${s.color};color:#fff;border:none;border-radius:9px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;">+ Zum Plan hinzufügen</button>
       ${IS_ADMIN?`<button onclick="closeMod('exDetailMod');openCatalogFieldEdit('${e.id}')" title="Felddiagramm bearbeiten" style="padding:12px 14px;border:1px solid var(--border);background:none;border-radius:9px;font-size:15px;cursor:pointer;color:var(--text-2);">🎨</button><button onclick="closeMod('exDetailMod');editEx('${e.id}')" title="Übung bearbeiten" style="padding:12px 14px;border:1px solid var(--border);background:none;border-radius:9px;font-size:13px;cursor:pointer;color:var(--text-2);">✏️</button>`:''}
     </div>`;
   openMod('exDetailMod');
@@ -323,7 +323,7 @@ function cardHTML(e,col){
       ${e.desc?`<div class="cdesc">${e.desc.length>110?e.desc.slice(0,110)+'…':e.desc}</div>`:''}
       <div class="ctags">${tags}</div>
       <div class="cfoot" onclick="event.stopPropagation()">
-        <button class="bcrd ap" style="background:${col}" onclick="addToPlan('${e.id}',${e.section});updatePlanCart()">+ Plan</button>
+        <button class="bcrd ap" style="background:${col}" onclick="addToPlanOrPick('${e.id}',${e.section},false)">+ Plan</button>
         ${IS_ADMIN?`<button class="bcrd" onclick="editEx('${e.id}')">✏️</button><button class="bcrd rd" onclick="delEx('${e.id}')">🗑</button>`:''}
       </div>
     </div>
@@ -449,6 +449,36 @@ function handleImg(){} // removed
 function renderIZ(){} // no image upload
 // iz removed
 // iz listeners removed
+
+// ── Sondertraining: Abschnitt wählen beim Hinzufügen zum Plan ──
+let _pendingSonderExId = null;
+
+function addToPlanOrPick(id, fromSec, closeDetailFirst) {
+  if (fromSec === 5) {
+    _pendingSonderExId = id;
+    if (closeDetailFirst) closeMod('exDetailMod');
+    // Render section buttons (only sections 0–4)
+    document.getElementById('sectionPickBtns').innerHTML = SECS.slice(0,5).map((s,i) =>
+      `<button onclick="confirmSectionPick(${i})" style="display:flex;align-items:center;gap:12px;padding:13px 16px;background:var(--surface-2);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:var(--text-1);text-align:left;">
+        <span style="width:10px;height:10px;border-radius:50%;background:${s.color};flex-shrink:0;display:inline-block;"></span>
+        ${i+1}. ${s.name}
+      </button>`
+    ).join('');
+    openMod('sectionPickMod');
+  } else {
+    addToPlan(id, fromSec);
+    updatePlanCart();
+  }
+}
+
+function confirmSectionPick(targetSec) {
+  if (_pendingSonderExId !== null) {
+    addToPlan(_pendingSonderExId, targetSec);
+    updatePlanCart();
+    _pendingSonderExId = null;
+  }
+  closeMod('sectionPickMod');
+}
 
 function openCatalogFieldEdit(id){
   if(!IS_ADMIN) return;
