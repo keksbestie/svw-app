@@ -56,6 +56,9 @@
     <!-- Dark mode toggle -->
     <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Theme wechseln">🌙</button>
 
+    <!-- Feedback button -->
+    <button class="cfg-btn" onclick="openMod('feedbackMod')" title="Feedback senden" style="font-size:14px;">💬</button>
+
     <!-- Help button -->
     <button class="cfg-btn" onclick="toggleHelpPanel()" title="Hilfe & Erklärung" style="font-size:15px;font-weight:900;font-family:'Barlow Condensed',sans-serif;letter-spacing:-.5px;">?</button>
 
@@ -431,6 +434,26 @@
         <button onclick="openTrash()" style="display:flex;align-items:center;gap:7px;padding:9px 16px;background:#fef2f2;border:1.5px solid #fca5a5;color:#b91c1c;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;">🗑 Papierkorb</button>
       </div>
       <div class="queue-cards" id="queueCards"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Feedback Modal -->
+<div class="mbg h" id="feedbackMod">
+  <div class="md" style="max-width:480px;">
+    <div class="mhdr">
+      <div class="mhdr-t">💬 Feedback senden</div>
+      <button class="mcls" onclick="closeMod('feedbackMod')">✕</button>
+    </div>
+    <div class="mbd">
+      <p style="font-size:13px;color:var(--text-2);margin-bottom:18px;">Hast du einen Verbesserungsvorschlag, einen Bug gefunden oder eine Idee? Schreib uns – wir freuen uns über jede Rückmeldung.</p>
+      <label class="flbl">Dein Name</label>
+      <input class="fc" id="fbName" type="text" placeholder="z.B. Max Müller" style="margin-bottom:10px;">
+      <label class="flbl">E-Mail (optional, für Rückmeldung)</label>
+      <input class="fc" id="fbEmail" type="email" placeholder="deine@email.de" style="margin-bottom:10px;">
+      <label class="flbl">Nachricht</label>
+      <textarea class="fc" id="fbMessage" rows="5" placeholder="Dein Feedback…" style="resize:vertical;min-height:100px;"></textarea>
+      <button class="bpr" onclick="sendFeedback()" style="width:100%;margin-top:14px;padding:11px;">Feedback absenden</button>
     </div>
   </div>
 </div>
@@ -1173,6 +1196,8 @@
      5. App-Start (init()) als LETZTES
      ════════════════════════════════════════════════════════════════ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>emailjs.init('Gdp0v57LwSddbt-GE');</script>
 <script src="js/00-supabase.js"></script>
 <script src="data/exercises.default.js"></script>
 <script src="js/01-i18n-theme.js"></script>
