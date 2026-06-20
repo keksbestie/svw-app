@@ -110,6 +110,8 @@ header {
 .hbtn.pri { background: var(--accent); border-color: var(--accent); color: #fff; }
 .hbtn.pri:hover { background: var(--accent-d); }
 .abadge { background: #ffd700; color: #5a3e00; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; display: none; }
+.beta-badge { background: #ff6b00; color: #fff; padding: 2px 7px; border-radius: 5px; font-size: 10px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; vertical-align: middle; display: inline-block; }
+.beta-badge--hero { font-size: 16px; padding: 4px 12px; border-radius: 8px; letter-spacing: 1.5px; }
 
 /* Settings / gear dropdown */
 .cfg-sel { position: relative; }

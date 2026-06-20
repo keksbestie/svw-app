@@ -3,11 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
 <title>AssistCoach</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=20260620">
+<link rel="stylesheet" href="css/styles.css?v=20260621">
 </head>
 <body class="on-home">
+
 
 <div id="ls" style="display:none;">
   <div style="font-size:52px;line-height:1;">⚽</div>
@@ -22,7 +24,13 @@
 <header>
   <div class="logo">
     <span style="font-size:28px;line-height:1;">⚽</span>
-    <div><div class="logo-t">AssistCoach</div><div style="font-size:10px;color:var(--text-3);letter-spacing:.3px;margin-top:1px;">Dein Trainingskatalog</div></div>
+    <div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <div class="logo-t">AssistCoach</div>
+        <span class="beta-badge">Beta</span>
+      </div>
+      <div style="font-size:10px;color:var(--text-3);letter-spacing:.3px;margin-top:1px;">Dein Trainingskatalog</div>
+    </div>
   </div>
   <div class="gs-wrap">
     <span class="gs-ico">⚽</span>
@@ -166,7 +174,7 @@
   <!-- Hero -->
   <div class="home-hero">
     <div class="home-hero-eyebrow" data-i18n="home_eyebrow">Nachwuchs</div>
-    <h1 class="home-hero-title" data-i18n="home_title">AssistCoach</h1>
+    <h1 class="home-hero-title" data-i18n="home_title">AssistCoach <span class="beta-badge beta-badge--hero">Beta</span></h1>
     <div class="home-hero-tagline">Dein Trainingskatalog</div>
     <p class="home-hero-sub" data-i18n="home_sub">Übungen planen, strukturieren und langfristig periodisieren – alles an einem Ort.</p>
   </div>
@@ -1198,19 +1206,19 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>emailjs.init('Gdp0v57LwSddbt-GE');</script>
-<script src="js/00-supabase.js?v=20260620"></script>
-<script src="data/exercises.default.js?v=20260620"></script>
-<script src="js/01-i18n-theme.js?v=20260620"></script>
-<script src="js/02-core-state.js?v=20260620"></script>
-<script src="js/03-submit-page.js?v=20260620"></script>
-<script src="js/04-planner.js?v=20260620"></script>
-<script src="js/05-catalog.js?v=20260620"></script>
-<script src="js/06-plan-save-load.js?v=20260620"></script>
-<script src="js/07-longterm-planning.js?v=20260620"></script>
-<script src="js/08-modals-toast.js?v=20260620"></script>
-<script src="js/09-default-descs.js?v=20260620"></script>
-<script src="js/10-field-editor.js?v=20260620"></script>
-<script src="js/11-app-start.js?v=20260620"></script>
+<script src="js/00-supabase.js?v=20260621"></script>
+<script src="data/exercises.default.js?v=20260621"></script>
+<script src="js/01-i18n-theme.js?v=20260621"></script>
+<script src="js/02-core-state.js?v=20260621"></script>
+<script src="js/03-submit-page.js?v=20260621"></script>
+<script src="js/04-planner.js?v=20260621"></script>
+<script src="js/05-catalog.js?v=20260621"></script>
+<script src="js/06-plan-save-load.js?v=20260621"></script>
+<script src="js/07-longterm-planning.js?v=20260621"></script>
+<script src="js/08-modals-toast.js?v=20260621"></script>
+<script src="js/09-default-descs.js?v=20260621"></script>
+<script src="js/10-field-editor.js?v=20260621"></script>
+<script src="js/11-app-start.js?v=20260621"></script>
 
 <!-- FELDDIAGRAMM OVERLAY – direkt in <body>, außerhalb aller Modals -->
 <div id="fieldOverlay" style="display:none;position:fixed;inset:0;z-index:10000;background:#1a2b1c;flex-direction:column;">
