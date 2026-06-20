@@ -122,7 +122,7 @@ function openExDetail(id){
     </div>`:''}
     <div style="display:flex;gap:8px;padding-top:12px;border-top:1px solid var(--border);">
       <button onclick="addToPlan('${e.id}',${e.section});closeMod('exDetailMod');updatePlanCart();" style="flex:1;padding:12px;background:${s.color};color:#fff;border:none;border-radius:9px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;">+ Zum Plan hinzufügen</button>
-      ${IS_ADMIN?`<button onclick="closeMod('exDetailMod');editEx('${e.id}')" style="padding:12px 16px;border:1px solid var(--border);background:none;border-radius:9px;font-size:13px;cursor:pointer;color:var(--text-2);">✏️</button>`:''}
+      ${IS_ADMIN?`<button onclick="closeMod('exDetailMod');openCatalogFieldEdit('${e.id}')" title="Felddiagramm bearbeiten" style="padding:12px 14px;border:1px solid var(--border);background:none;border-radius:9px;font-size:15px;cursor:pointer;color:var(--text-2);">🎨</button><button onclick="closeMod('exDetailMod');editEx('${e.id}')" title="Übung bearbeiten" style="padding:12px 14px;border:1px solid var(--border);background:none;border-radius:9px;font-size:13px;cursor:pointer;color:var(--text-2);">✏️</button>`:''}
     </div>`;
   openMod('exDetailMod');
 }
@@ -449,4 +449,18 @@ function handleImg(){} // removed
 function renderIZ(){} // no image upload
 // iz removed
 // iz listeners removed
+
+function openCatalogFieldEdit(id){
+  if(!IS_ADMIN) return;
+  const e=exercises.find(x=>x.id===id); if(!e) return;
+  _catalogEditExId=id;
+  // Load existing canvas objects if present
+  if(e.canvasObjects&&e.canvasObjects.length){
+    canvasObjects=JSON.parse(JSON.stringify(e.canvasObjects));
+  } else {
+    canvasObjects=[];
+  }
+  playerCounters={}; undoStack=[]; selectedObjIdx=null; selectedIndices=[];
+  openFieldOverlay('catalog-edit');
+}
 

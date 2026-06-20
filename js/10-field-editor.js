@@ -15,7 +15,14 @@ let isResizing=false, resizeObjIdx=null;
 let linePhase=0, lineStart=null;
 let dribblePoints=[], isDribbling=false;
 let canvasEl=null, ctx=null, _cvInited=false;
-let _cvMode='edit'; // 'edit' = Übung bearbeiten, 'submit' = Übung einreichen
+let _cvMode='edit'; // 'edit' | 'submit' | 'catalog-edit'
+// Multi-select & lasso
+let selectedIndices=[], isLasso=false, lassoStart=null, lassoRect=null;
+let dragAnchor=null;
+// Copy/Paste
+let clipboardObjects=[];
+// Catalog-edit mode
+let _catalogEditExId=null;
 
 function switchImgTab(tab){
   const u=tab==='upload';
@@ -100,6 +107,16 @@ function hitAt(x,y){
   }
   return -1;
 }
+function objectsInRect(rx1,ry1,rx2,ry2){
+  const minX=Math.min(rx1,rx2),maxX=Math.max(rx1,rx2);
+  const minY=Math.min(ry1,ry2),maxY=Math.max(ry1,ry2);
+  const result=[];
+  canvasObjects.forEach((o,i)=>{
+    if(o.x!==undefined){if(o.x>=minX&&o.x<=maxX&&o.y>=minY&&o.y<=maxY)result.push(i);}
+    else if(o.x1!==undefined){const mx=(o.x1+o.x2)/2,my=(o.y1+o.y2)/2;if(mx>=minX&&mx<=maxX&&my>=minY&&my<=maxY)result.push(i);}
+  });
+  return result;
+}
 function ptNearSeg(px,py,x1,y1,x2,y2,t){
   const dx=x2-x1,dy=y2-y1,l2=dx*dx+dy*dy;
   if(!l2) return Math.hypot(px-x1,py-y1)<t;
@@ -111,24 +128,31 @@ function ptNearSeg(px,py,x1,y1,x2,y2,t){
 function cvDown({x,y}){
   const t=currentTool;
   if(t==='select'){
-    // Check resize handle first
-    if(selectedObjIdx!==null&&selectedObjIdx>=0){
-      const o=canvasObjects[selectedObjIdx];
-      if(o.type==='ball'||o.type==='equip'||o.type==='goal'){
+    // Check resize handle first (only for single selection)
+    if(selectedIndices.length===1){
+      const o=canvasObjects[selectedIndices[0]];
+      if(o&&(o.type==='ball'||o.type==='equip'||o.type==='goal')){
         const h=_resizeHandlePos(o);
         if(Math.hypot(x-h.x,y-h.y)<10){
-          pushUndo();isResizing=true;resizeObjIdx=selectedObjIdx;return;
+          pushUndo();isResizing=true;resizeObjIdx=selectedIndices[0];selectedObjIdx=selectedIndices[0];return;
         }
       }
     }
     const i=hitAt(x,y);
     if(i>=0){
-      selectedObjIdx=i; isDraggingObj=true;
+      // Click on already-selected group → drag whole group
+      if(!selectedIndices.includes(i)){
+        selectedIndices=[i]; selectedObjIdx=i;
+      }
+      isDraggingObj=true;
+      dragAnchor={x,y};
       const o=canvasObjects[i];
       dragOffX=x-(o.x??o.x1??o.pts?.[0]?.x??0);
       dragOffY=y-(o.y??o.y1??o.pts?.[0]?.y??0);
     } else {
-      selectedObjIdx=null;
+      // Start lasso
+      selectedObjIdx=null; selectedIndices=[];
+      isLasso=true; lassoStart={x,y}; lassoRect=null;
     }
     redraw(); return;
   }
@@ -152,11 +176,29 @@ function cvMove({x,y}){
     o.scale=Math.max(0.2,Math.min(6,d/_baseR(o)));
     redraw();return;
   }
-  if(isDraggingObj&&selectedObjIdx!==null){
-    const o=canvasObjects[selectedObjIdx];
-    if(o.x!==undefined){o.x=x-dragOffX;o.y=y-dragOffY;}
-    else if(o.x1!==undefined&&o.x2!==undefined){const dx=x-dragOffX-o.x1,dy=y-dragOffY-o.y1;o.x1+=dx;o.y1+=dy;o.x2+=dx;o.y2+=dy;}
-    else if(o.pts){const dx=x-dragOffX-(o.pts[0].x||0),dy=y-dragOffY-(o.pts[0].y||0);o.pts=o.pts.map(p=>({x:p.x+dx,y:p.y+dy}));}
+  // Lasso: update rect
+  if(isLasso&&lassoStart){
+    lassoRect={x1:Math.min(lassoStart.x,x),y1:Math.min(lassoStart.y,y),x2:Math.max(lassoStart.x,x),y2:Math.max(lassoStart.y,y)};
+    redraw(); return;
+  }
+  if(isDraggingObj&&selectedIndices.length>0&&dragAnchor){
+    if(selectedIndices.length>1){
+      // Delta-based multi-drag
+      const dX=x-dragAnchor.x, dY=y-dragAnchor.y;
+      selectedIndices.forEach(i=>{
+        const o=canvasObjects[i]; if(!o)return;
+        if(o.x!==undefined){o.x+=dX;o.y+=dY;}
+        else if(o.x1!==undefined){o.x1+=dX;o.y1+=dY;o.x2+=dX;o.y2+=dY;}
+        else if(o.pts){o.pts=o.pts.map(p=>({x:p.x+dX,y:p.y+dY}));}
+      });
+      dragAnchor={x,y};
+    } else if(selectedObjIdx!==null){
+      // Single-object absolute drag (existing behavior)
+      const o=canvasObjects[selectedObjIdx];
+      if(o.x!==undefined){o.x=x-dragOffX;o.y=y-dragOffY;}
+      else if(o.x1!==undefined&&o.x2!==undefined){const dx=x-dragOffX-o.x1,dy=y-dragOffY-o.y1;o.x1+=dx;o.y1+=dy;o.x2+=dx;o.y2+=dy;}
+      else if(o.pts){const dx=x-dragOffX-(o.pts[0].x||0),dy=y-dragOffY-(o.pts[0].y||0);o.pts=o.pts.map(p=>({x:p.x+dx,y:p.y+dy}));}
+    }
     redraw(); return;
   }
   if(currentTool==='dribble'&&linePhase&&lineStart){
@@ -175,7 +217,17 @@ function cvMove({x,y}){
 }
 function cvUp({x,y}){
   if(isResizing){isResizing=false;resizeObjIdx=null;redraw();return;}
-  if(isDraggingObj){isDraggingObj=false;redraw();return;}
+  if(isDraggingObj){isDraggingObj=false;dragAnchor=null;redraw();return;}
+  if(isLasso){
+    isLasso=false;
+    if(lassoRect&&(lassoRect.x2-lassoRect.x1>5||lassoRect.y2-lassoRect.y1>5)){
+      selectedIndices=objectsInRect(lassoRect.x1,lassoRect.y1,lassoRect.x2,lassoRect.y2);
+      selectedObjIdx=selectedIndices.length===1?selectedIndices[0]:null;
+      if(selectedIndices.length>0) showToast(selectedIndices.length+' Objekt'+( selectedIndices.length>1?'e':'')+' ausgewählt');
+    }
+    lassoRect=null; lassoStart=null;
+    redraw(); return;
+  }
 }
 function cvRightClick({x,y}){
   // Right-click: rotate hit object 22.5° (or currently selected)
@@ -243,17 +295,48 @@ function resample(pts,step){
 
 // ── KEYBOARD DELETE ──────────────────────────────────
 document.addEventListener('keydown', function(e){
+  const tag = document.activeElement.tagName;
+  if(tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+  // Delete / Backspace
   if(e.key === 'Delete' || e.key === 'Backspace'){
-    // Only if canvas is active (not in an input/textarea)
-    const tag = document.activeElement.tagName;
-    if(tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
-    if(selectedObjIdx !== null && selectedObjIdx >= 0 && canvasObjects[selectedObjIdx]){
+    const toDelete = selectedIndices.length > 0 ? [...selectedIndices] : (selectedObjIdx !== null && selectedObjIdx >= 0 ? [selectedObjIdx] : []);
+    if(toDelete.length){
       pushUndo();
-      canvasObjects.splice(selectedObjIdx, 1);
-      selectedObjIdx = null;
+      // Remove highest index first to not shift lower indices
+      toDelete.sort((a,b)=>b-a).forEach(i=>canvasObjects.splice(i,1));
+      selectedObjIdx=null; selectedIndices=[];
       redraw();
-      showToast('Objekt gelöscht');
+      showToast(toDelete.length>1?toDelete.length+' Objekte gelöscht':'Objekt gelöscht');
     }
+  }
+  // Ctrl/Cmd + C — Copy
+  if((e.ctrlKey||e.metaKey)&&e.key==='c'){
+    const indices=selectedIndices.length>0?selectedIndices:(selectedObjIdx!==null&&selectedObjIdx>=0?[selectedObjIdx]:[]);
+    if(indices.length){
+      clipboardObjects=indices.map(i=>JSON.parse(JSON.stringify(canvasObjects[i]))).filter(Boolean);
+      showToast(clipboardObjects.length+' Objekt'+(clipboardObjects.length>1?'e':'')+' kopiert');
+    }
+  }
+  // Ctrl/Cmd + V — Paste
+  if((e.ctrlKey||e.metaKey)&&e.key==='v'){
+    if(!clipboardObjects.length) return;
+    pushUndo();
+    const off=20;
+    const pasted=clipboardObjects.map(o=>{const c=JSON.parse(JSON.stringify(o));
+      if(c.x!==undefined){c.x+=off;c.y+=off;}
+      else if(c.x1!==undefined){c.x1+=off;c.y1+=off;c.x2+=off;c.y2+=off;}
+      return c;
+    });
+    const startIdx=canvasObjects.length;
+    pasted.forEach(o=>canvasObjects.push(o));
+    selectedIndices=pasted.map((_,i)=>startIdx+i);
+    selectedObjIdx=selectedIndices.length===1?selectedIndices[0]:null;
+    redraw();
+    showToast(pasted.length+' Objekt'+(pasted.length>1?'e':'')+' eingefügt');
+  }
+  // Escape — deselect
+  if(e.key==='Escape'){
+    selectedIndices=[]; selectedObjIdx=null; isLasso=false; lassoRect=null; redraw();
   }
 });
 
@@ -263,8 +346,9 @@ function updateRotCtrl(){
   const slider = document.getElementById('angleSlider');
   const valEl = document.getElementById('angleVal');
   if(!ctrl) return;
-  if(selectedObjIdx !== null && selectedObjIdx >= 0 && canvasObjects[selectedObjIdx]){
-    const o = canvasObjects[selectedObjIdx];
+  const singleIdx = selectedIndices.length===1 ? selectedIndices[0] : selectedObjIdx;
+  if(singleIdx !== null && singleIdx >= 0 && canvasObjects[singleIdx] && selectedIndices.length<=1){
+    const o = canvasObjects[singleIdx];
     if(o.angle !== undefined){
       const deg = Math.round(((o.angle || 0) * 180 / Math.PI) % 360 + 360) % 360;
       ctrl.style.display = 'flex';
@@ -306,13 +390,27 @@ function rotateSel(deltaDeg){
 function redraw(){
   if(!ctx||!canvasEl) return;
   drawField();
-  canvasObjects.forEach((o,i)=>drawObj(o,i===selectedObjIdx));
-  if(selectedObjIdx!==null&&selectedObjIdx>=0){
+  canvasObjects.forEach((o,i)=>drawObj(o,selectedIndices.includes(i)||i===selectedObjIdx));
+  // Resize handle only for single selection
+  if(selectedIndices.length===1){
+    const o=canvasObjects[selectedIndices[0]];
+    if(o&&(o.type==='ball'||o.type==='equip'||o.type==='goal')) _drawResizeHandle(o);
+  } else if(selectedIndices.length===0&&selectedObjIdx!==null&&selectedObjIdx>=0){
     const o=canvasObjects[selectedObjIdx];
     if(o&&(o.type==='ball'||o.type==='equip'||o.type==='goal')) _drawResizeHandle(o);
   }
   if(linePhase&&lineStart){
     ctx.save();ctx.fillStyle='rgba(255,255,255,.7)';ctx.beginPath();ctx.arc(lineStart.x,lineStart.y,5,0,Math.PI*2);ctx.fill();ctx.restore();
+  }
+  // Draw lasso rectangle
+  if(isLasso&&lassoRect){
+    ctx.save();
+    ctx.strokeStyle='rgba(255,255,255,.85)'; ctx.lineWidth=1.5; ctx.setLineDash([5,4]);
+    ctx.fillStyle='rgba(255,255,255,.06)';
+    const r=lassoRect;
+    ctx.fillRect(r.x1,r.y1,r.x2-r.x1,r.y2-r.y1);
+    ctx.strokeRect(r.x1,r.y1,r.x2-r.x1,r.y2-r.y1);
+    ctx.setLineDash([]); ctx.restore();
   }
 }
 
@@ -881,7 +979,7 @@ function undoDraw(){if(!undoStack.length){showToast('Nichts rückgängig');retur
 function clearCanvas(){if(!confirm('Diagramm leeren?'))return;pushUndo();canvasObjects=[];playerCounters={};linePhase=0;lineStart=null;isDribbling=false;dribblePoints=[];selectedObjIdx=null;redraw();}
 function exportCanvas(){
   if(!canvasEl){showToast('Kein Feld','err');return;}
-  selectedObjIdx=null;redraw();
+  selectedObjIdx=null; selectedIndices=[]; redraw();
   const dataUrl=canvasEl.toDataURL('image/png');
   if(_cvMode==='submit'){
     submitCanvasData=dataUrl;
@@ -889,14 +987,27 @@ function exportCanvas(){
     const img=document.getElementById('sPreviewImg');
     if(wrap&&img){img.src=dataUrl;wrap.style.display='block';}
     if(typeof updateSubmitChecklist==='function') updateSubmitChecklist();
+    showToast('Felddiagramm übernommen');
+    closeFieldOverlay();
+  } else if(_cvMode==='catalog-edit'){
+    // Save directly to the exercise
+    const e=exercises.find(x=>x.id===_catalogEditExId);
+    if(e){
+      e.canvasObjects=[...canvasObjects];
+      e.image=dataUrl;
+      save();
+      renderSection();
+      showToast('Felddiagramm gespeichert');
+    }
+    closeFieldOverlay();
   } else {
     formImg=dataUrl;
     const prev=document.getElementById('cvPreview');
     const prevImg=document.getElementById('cvPreviewImg');
     if(prev&&prevImg){prevImg.src=formImg;prev.style.display='block';}
+    showToast('Felddiagramm übernommen');
+    closeFieldOverlay();
   }
-  showToast('Felddiagramm übernommen');
-  closeFieldOverlay();
 }
 
 // DeepL integration placeholder:
