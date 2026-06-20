@@ -129,8 +129,9 @@ function applyFontSize(idx) {
   const pct = FS_STEPS[currentFsIdx];
   // zoom breaks mobile viewport — only apply on desktop
   if (window.innerWidth > 767) {
-    document.body.style.zoom = pct + '%';
+    document.documentElement.style.fontSize = pct + '%';
   } else {
+    document.documentElement.style.fontSize = '';
     document.body.style.zoom = '';
   }
   localStorage.setItem('tb_fs_idx', currentFsIdx);
