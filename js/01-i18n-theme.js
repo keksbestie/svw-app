@@ -12,7 +12,7 @@ const TRANSLATIONS = {
   de: {
     nav_home:'Start', nav_catalog:'Katalog', nav_plan:'Planer', nav_longterm:'Blöcke',
     home_eyebrow:'Nachwuchs',
-    home_title:'Trainingskatalog',
+    home_title:'AssistCoach',
     home_sub:'Übungen planen, strukturieren und langfristig periodisieren – alles an einem Ort.',
     home_card_catalog:'Übungskatalog', home_card_catalog_desc:'Alle Übungen nach Abschnitt, Thema und Schwierigkeitsgrad durchsuchen und filtern.',
     home_card_plan:'Trainingsplan', home_card_plan_desc:'Einzelne Trainingseinheiten zusammenstellen, speichern und ausdrucken.',
@@ -23,7 +23,7 @@ const TRANSLATIONS = {
   en: {
     nav_home:'Home', nav_catalog:'Catalog', nav_plan:'Planner', nav_longterm:'Blocks',
     home_eyebrow:'Youth',
-    home_title:'Training Catalog',
+    home_title:'AssistCoach',
     home_sub:'Plan, structure and periodise your sessions – all in one place.',
     home_card_catalog:'Exercise Catalog', home_card_catalog_desc:'Browse and filter all exercises by section, topic and difficulty.',
     home_card_plan:'Session Planner', home_card_plan_desc:'Build individual training sessions, save them and print them out.',
@@ -34,7 +34,7 @@ const TRANSLATIONS = {
   es: {
     nav_home:'Inicio', nav_catalog:'Catálogo', nav_plan:'Planificador', nav_longterm:'Bloques',
     home_eyebrow:'Categorías inferiores',
-    home_title:'Catálogo de Entrenamiento',
+    home_title:'AssistCoach',
     home_sub:'Planifica, estructura y periodiza tus sesiones, todo en un solo lugar.',
     home_card_catalog:'Catálogo de ejercicios', home_card_catalog_desc:'Busca y filtra todos los ejercicios por sección, tema y dificultad.',
     home_card_plan:'Planificador de sesión', home_card_plan_desc:'Crea sesiones individuales, guárdalas e imprímelas.',
