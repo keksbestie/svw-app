@@ -729,7 +729,10 @@ body.admin .hero-edit-btn { display: flex; }
 .mbg.h { display: none; }
 .md { background: var(--surface); border-radius: var(--radius-lg); width: 100%; max-width: 640px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg); border: 1px solid var(--border); }
 .md.sm { max-width: 440px; }
-.mhdr { padding: 20px 22px 0; display: flex; align-items: center; gap: 10px; }
+.mhdr { padding: 28px 28px 0; display: flex; align-items: center; gap: 10px; }
+.mhdr-t { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 900; letter-spacing: .4px; color: var(--text-1); }
+.mcls { margin-left: auto; background: var(--surface-2); border: 1px solid var(--border); width: 28px; height: 28px; border-radius: 7px; font-size: 14px; cursor: pointer; color: var(--text-2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.mbd { padding: 20px 28px 28px; }
 .mico { width: 36px; height: 36px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
 .mtit { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 900; letter-spacing: .5px; color: var(--text-1); }
 .mcl { margin-left: auto; background: var(--surface-2); border: 1px solid var(--border); width: 27px; height: 27px; border-radius: 6px; font-size: 15px; cursor: pointer; color: var(--text-2); flex-shrink: 0; }
