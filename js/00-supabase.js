@@ -6,6 +6,14 @@ let currentUser = null;
 try {
   if (window.supabase && window.supabase.createClient) {
     _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Password-Reset-Flow: Supabase setzt nach Klick auf Mail-Link eine Session
+    // mit Event PASSWORD_RECOVERY — dann Passwort-setzen-Dialog zeigen
+    _supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        showSetNewPasswordDialog();
+      }
+    });
   }
 } catch(e) {
   console.warn('Supabase konnte nicht initialisiert werden:', e);

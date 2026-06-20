@@ -99,8 +99,78 @@ async function doRegister(){
   if(!email||!pass||!username){showToast('Alle Felder ausfüllen','err');return;}
   const {error}=await _supabase.auth.signUp({email,password:pass,options:{data:{username}}});
   if(error){showToast('Registrierung fehlgeschlagen: '+error.message,'err');return;}
-  showToast('Bestätigungs-E-Mail gesendet – bitte E-Mail prüfen');
-  toggleRegisterMode();
+  // Show confirmation pending screen instead of toast
+  document.getElementById('loginForm').style.display='none';
+  document.getElementById('forgotForm').style.display='none';
+  document.getElementById('confirmPendingMsg').style.display='block';
+}
+
+function showForgotPassword(){
+  document.getElementById('loginForm').style.display='none';
+  document.getElementById('forgotForm').style.display='block';
+  document.getElementById('confirmPendingMsg').style.display='none';
+  document.getElementById('resetEmail').value=document.getElementById('loginEmail').value||'';
+}
+
+function hideForgotPassword(){
+  document.getElementById('forgotForm').style.display='none';
+  document.getElementById('loginForm').style.display='block';
+}
+
+function backToLogin(){
+  document.getElementById('confirmPendingMsg').style.display='none';
+  document.getElementById('loginForm').style.display='block';
+  // Reset to login mode (not register)
+  document.getElementById('loginUsername').style.display='none';
+  document.getElementById('loginBtn').textContent='Anmelden';
+  document.getElementById('loginBtn').onclick=doLogin;
+  document.getElementById('registerBtn').textContent='Neu registrieren';
+}
+
+async function doResetPassword(){
+  const email=(document.getElementById('resetEmail').value||'').trim();
+  if(!email){showToast('E-Mail-Adresse eingeben','err');return;}
+  const redirectUrl=window.location.origin+window.location.pathname;
+  const {error}=await _supabase.auth.resetPasswordForEmail(email,{redirectTo:redirectUrl});
+  if(error){showToast('Fehler: '+error.message,'err');return;}
+  showToast('Reset-Link gesendet – bitte E-Mail prüfen');
+  hideForgotPassword();
+}
+
+function showSetNewPasswordDialog(){
+  // Navigate to submit page so the dialog is visible
+  goPage('submit');
+  document.getElementById('submitLoginWrap').style.display='block';
+  document.getElementById('submitLoggedWrap').style.display='none';
+  document.getElementById('loginForm').style.display='none';
+  document.getElementById('forgotForm').style.display='none';
+  document.getElementById('confirmPendingMsg').style.display='none';
+  document.getElementById('setNewPasswordForm').style.display='block';
+  document.getElementById('newPassword1').value='';
+  document.getElementById('newPassword2').value='';
+}
+
+async function doSetNewPassword(){
+  const p1=(document.getElementById('newPassword1').value||'');
+  const p2=(document.getElementById('newPassword2').value||'');
+  if(!p1||!p2){showToast('Beide Felder ausfüllen','err');return;}
+  if(p1.length<6){showToast('Passwort muss mindestens 6 Zeichen haben','err');return;}
+  if(p1!==p2){showToast('Passwörter stimmen nicht überein','err');return;}
+  const {error}=await _supabase.auth.updateUser({password:p1});
+  if(error){showToast('Fehler: '+error.message,'err');return;}
+  showToast('Passwort erfolgreich gesetzt – du bist jetzt angemeldet');
+  document.getElementById('setNewPasswordForm').style.display='none';
+  // Session is now active — reload submit page
+  const {data:{user}}=await _supabase.auth.getUser();
+  if(user){
+    currentUser=user;
+    const {data:profile}=await _supabase.from('profiles').select('role').eq('id',user.id).single();
+    IS_ADMIN=profile?.role==='admin';
+    document.body.classList.toggle('admin',IS_ADMIN);
+    const displayName=user.user_metadata?.username||user.email;
+    submitUser={name:displayName,isDemo:false,id:user.id};
+  }
+  renderSubmitPage();
 }
 
 async function doLogout(){

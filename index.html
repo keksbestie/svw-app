@@ -249,12 +249,38 @@
         <div class="submit-login-icon">✏️</div>
         <div class="submit-login-title">Übung einreichen</div>
         <div class="submit-login-sub">Melde dich an, um eigene Übungen zu erstellen und für den Katalog vorzuschlagen.</div>
-        <div class="submit-login-form">
+        <div class="submit-login-form" id="loginForm">
           <input class="fc" id="loginEmail" type="email" placeholder="E-Mail-Adresse" autocomplete="email">
-          <input class="fc" id="loginPass" type="password" placeholder="Passwort" onkeydown="if(event.key==='Enter')doLogin()">
-          <input class="fc" id="loginUsername" type="text" placeholder="Anzeigename (z.B. Max Müller)" autocomplete="off" style="display:none;">
-          <button class="bpr" id="loginBtn" onclick="doLogin()" style="width:100%;padding:11px;font-size:13px;">Anmelden</button>
+          <input class="fc" id="loginPass" type="password" placeholder="Passwort" onkeydown="if(event.key==='Enter')doLogin()" style="margin-top:8px;">
+          <input class="fc" id="loginUsername" type="text" placeholder="Anzeigename (z.B. Max Müller)" autocomplete="off" style="display:none;margin-top:8px;">
+          <button class="bpr" id="loginBtn" onclick="doLogin()" style="width:100%;padding:11px;font-size:13px;margin-top:10px;">Anmelden</button>
           <button class="bsc" id="registerBtn" onclick="toggleRegisterMode()" style="width:100%;padding:11px;font-size:13px;margin-top:6px;">Neu registrieren</button>
+          <div style="text-align:center;margin-top:10px;">
+            <button onclick="showForgotPassword()" style="background:none;border:none;color:var(--accent);font-size:12px;cursor:pointer;text-decoration:underline;padding:0;">Passwort vergessen?</button>
+          </div>
+        </div>
+        <!-- Passwort-Reset-Formular (versteckt) -->
+        <div id="forgotForm" style="display:none;">
+          <div style="font-size:13px;color:var(--text-2);margin-bottom:12px;text-align:center;">Gib deine E-Mail-Adresse ein – wir schicken dir einen Link zum Zurücksetzen.</div>
+          <input class="fc" id="resetEmail" type="email" placeholder="E-Mail-Adresse" autocomplete="email">
+          <button class="bpr" onclick="doResetPassword()" style="width:100%;padding:11px;font-size:13px;margin-top:10px;">Link senden</button>
+          <button class="bsc" onclick="hideForgotPassword()" style="width:100%;padding:11px;font-size:13px;margin-top:6px;">Zurück zum Login</button>
+        </div>
+        <!-- E-Mail-Bestätigung ausstehend -->
+        <div id="confirmPendingMsg" style="display:none;text-align:center;padding:16px 0 4px;">
+          <div style="font-size:32px;margin-bottom:10px;">📬</div>
+          <div style="font-weight:700;font-size:15px;margin-bottom:6px;">Fast geschafft!</div>
+          <div style="font-size:13px;color:var(--text-2);margin-bottom:14px;">Wir haben dir eine Bestätigungs-E-Mail geschickt.<br>Bitte öffne den Link in der Mail, um dein Konto zu aktivieren.</div>
+          <button class="bsc" onclick="backToLogin()" style="width:100%;padding:10px;font-size:13px;">Zurück zum Login</button>
+        </div>
+        <!-- Neues Passwort setzen (nach Klick auf Reset-Link) -->
+        <div id="setNewPasswordForm" style="display:none;">
+          <div style="font-size:32px;text-align:center;margin-bottom:10px;">🔐</div>
+          <div style="font-weight:700;font-size:15px;text-align:center;margin-bottom:6px;">Neues Passwort setzen</div>
+          <div style="font-size:13px;color:var(--text-2);text-align:center;margin-bottom:14px;">Gib dein neues Passwort ein. Mindestens 6 Zeichen.</div>
+          <input class="fc" id="newPassword1" type="password" placeholder="Neues Passwort" autocomplete="new-password">
+          <input class="fc" id="newPassword2" type="password" placeholder="Passwort wiederholen" autocomplete="new-password" style="margin-top:8px;" onkeydown="if(event.key==='Enter')doSetNewPassword()">
+          <button class="bpr" onclick="doSetNewPassword()" style="width:100%;padding:11px;font-size:13px;margin-top:10px;">Passwort speichern</button>
         </div>
       </div>
     </div>
