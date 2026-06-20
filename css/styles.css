@@ -1125,6 +1125,9 @@ body:not(.on-home) .home-topbar { display: none; }
   .home-card-desc { font-size: 12px; }
   .home-card-icon { width: 42px; height: 42px; }
 
+  /* ── Catalog layout: hide sidebar column ── */
+  #catalogLayout { grid-template-columns: 1fr !important; }
+
   /* ── Catalog cards ── */
   .exgrid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
   .card { border-radius: 10px; }
