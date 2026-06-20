@@ -212,6 +212,7 @@ header {
   flex-direction: column;
   background:
     radial-gradient(ellipse 80% 50% at 50% -10%, rgba(26,127,75,.10) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(255,255,255,.045) 0%, transparent 55%, rgba(0,0,0,.08) 100%),
     var(--bg);
   overflow: hidden;
   overflow-y: auto;
@@ -219,6 +220,12 @@ header {
   pointer-events: auto;
   will-change: opacity;
   transition: opacity .75s cubic-bezier(.4,0,.2,1);
+}
+[data-theme="dark"] #page-home {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(26,127,75,.13) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(255,255,255,.06) 0%, transparent 50%, rgba(0,0,0,.18) 100%),
+    var(--bg);
 }
 #page-home.hidden {
   opacity: 0;
@@ -353,7 +360,7 @@ header {
 @media (max-width: 1200px) { .home-cards.five { grid-template-columns: repeat(3, 1fr); } }
 .home-card {
   position: relative;
-  padding: 32px 28px 28px;
+  padding: 40px 34px 34px;
   cursor: pointer;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -424,15 +431,15 @@ header {
 
 .home-card-num {
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 800;
   letter-spacing: 2px;
   color: var(--text-3);
   margin-bottom: 24px;
 }
 .home-card-icon {
-  width: 46px; height: 46px;
-  border-radius: 12px;
+  width: 58px; height: 58px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -454,7 +461,7 @@ header {
 .home-card-inner { flex: 1; }
 .home-card-title {
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: 17px;
+  font-size: 21px;
   font-weight: 900;
   color: var(--text-1);
   margin-bottom: 10px;
@@ -462,7 +469,7 @@ header {
   text-transform: uppercase;
 }
 .home-card-desc {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-2);
   line-height: 1.65;
 }

@@ -11,7 +11,7 @@
 const TRANSLATIONS = {
   de: {
     nav_home:'Start', nav_catalog:'Katalog', nav_plan:'Planer', nav_longterm:'Blöcke',
-    home_eyebrow:'Nachwuchs · ',
+    home_eyebrow:'Nachwuchs',
     home_title:'Trainingskatalog',
     home_sub:'Übungen planen, strukturieren und langfristig periodisieren – alles an einem Ort.',
     home_card_catalog:'Übungskatalog', home_card_catalog_desc:'Alle Übungen nach Abschnitt, Thema und Schwierigkeitsgrad durchsuchen und filtern.',
@@ -22,7 +22,7 @@ const TRANSLATIONS = {
   },
   en: {
     nav_home:'Home', nav_catalog:'Catalog', nav_plan:'Planner', nav_longterm:'Blocks',
-    home_eyebrow:'Youth · ',
+    home_eyebrow:'Youth',
     home_title:'Training Catalog',
     home_sub:'Plan, structure and periodise your sessions – all in one place.',
     home_card_catalog:'Exercise Catalog', home_card_catalog_desc:'Browse and filter all exercises by section, topic and difficulty.',
@@ -33,7 +33,7 @@ const TRANSLATIONS = {
   },
   es: {
     nav_home:'Inicio', nav_catalog:'Catálogo', nav_plan:'Planificador', nav_longterm:'Bloques',
-    home_eyebrow:'Categorías inferiores · ',
+    home_eyebrow:'Categorías inferiores',
     home_title:'Catálogo de Entrenamiento',
     home_sub:'Planifica, estructura y periodiza tus sesiones, todo en un solo lugar.',
     home_card_catalog:'Catálogo de ejercicios', home_card_catalog_desc:'Busca y filtra todos los ejercicios por sección, tema y dificultad.',
