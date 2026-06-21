@@ -142,71 +142,57 @@ function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2
 // ══════════════════════════════════════════════════════
 // PAGE NAV
 // ══════════════════════════════════════════════════════
-let _leavingHome=false;
 function goPage(name,btn){
   const homeEl=document.getElementById('page-home');
-  const isOnHome=document.body.classList.contains('on-home');
 
+  // ── Go Home ──────────────────────────────────────────
   if(name==='home'){
-    if(_leavingHome) return; // block jump-back during animation
-    _leavingHome=false;
-    document.querySelectorAll('.mb,.bnav-item').forEach(b=>b.classList.remove('active'));
-    const b=btn||document.querySelector('.mb[data-page="home"]');if(b)b.classList.add('active');
+    document.body.classList.add('on-home');
     homeEl.classList.remove('hidden','fading-out');
     document.querySelectorAll('.home-card').forEach(c=>c.classList.remove('flying'));
     document.querySelector('.home-hero')?.classList.remove('flying');
-    document.body.classList.add('on-home');
+    document.querySelectorAll('.mb,.bnav-item').forEach(b=>b.classList.remove('active'));
+    const hb=btn||document.querySelector('.mb[data-page="home"]');if(hb)hb.classList.add('active');
     return;
   }
 
-  if(isOnHome){
-    _leavingHome=true;
-    _prepPage(name,btn);
+  // ── Navigate to any other page ────────────────────────
+  const fromHome=document.body.classList.contains('on-home');
 
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{
-      document.querySelectorAll('.home-card').forEach(c=>c.classList.add('flying'));
-      document.querySelector('.home-hero')?.classList.add('flying');
-
-      setTimeout(()=>{
-        document.body.classList.remove('on-home');
-        homeEl.classList.add('fading-out');
-      }, 200);
-
-      setTimeout(()=>{
-        homeEl.classList.add('hidden');
-        homeEl.classList.remove('fading-out');
-        _leavingHome=false;
-      }, 950);
-    }));
-
-  } else {
-    _prepPage(name,btn);
-    const pg=document.getElementById('page-'+name);
-    if(pg){ pg.classList.add('page-enter'); setTimeout(()=>pg.classList.remove('page-enter'),420); }
-  }
-}
-
-function _prepPage(name,btn){
+  // 1. Update state immediately — no waiting for animation
   document.body.classList.remove('on-home');
-  document.querySelectorAll('.page').forEach(p=>{ if(p!==document.getElementById('page-home')) p.classList.remove('active'); });
-  document.querySelectorAll('.mb,.bnav-item').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p=>{if(p!==homeEl)p.classList.remove('active');});
   const pg=document.getElementById('page-'+name);
-  if(pg) pg.classList.add('active');
-  const b=btn||document.querySelector(`.mb[data-page="${name}"]`);if(b)b.classList.add('active');
-  const bn=document.querySelector(`.bnav-item[data-page="${name}"]`);if(bn)bn.classList.add('active');
+  if(pg)pg.classList.add('active');
+  document.querySelectorAll('.mb,.bnav-item').forEach(b=>b.classList.remove('active'));
+  const nb=btn||document.querySelector(`.mb[data-page="${name}"]`);if(nb)nb.classList.add('active');
+  const bb=document.querySelector(`.bnav-item[data-page="${name}"]`);if(bb)bb.classList.add('active');
+
+  // 2. Render page content
   if(name==='planner')renderPlanner();
   if(name==='handbook')renderSection();
   if(name==='longterm')renderLtp();
   if(name==='submit')renderSubmitPage();
   if(name==='account')renderAccountPage();
-  // Scroll instantly while overlay still covers — no visible jump when revealed
-  document.documentElement.scrollTop=0;
-  document.body.scrollTop=0;
+
+  // 3. Scroll to top (or stbar for catalog)
+  document.documentElement.scrollTop=0; document.body.scrollTop=0;
   if(name==='handbook'){
     requestAnimationFrame(()=>{
       const stbar=document.getElementById('stbar');
-      if(stbar){ document.documentElement.scrollTop=stbar.offsetTop+stbar.offsetHeight; document.body.scrollTop=stbar.offsetTop+stbar.offsetHeight; }
+      if(stbar){document.documentElement.scrollTop=stbar.offsetTop+stbar.offsetHeight;document.body.scrollTop=stbar.offsetTop+stbar.offsetHeight;}
     });
+  }
+
+  // 4. Animate home overlay out (purely visual — state already updated above)
+  if(fromHome){
+    document.querySelectorAll('.home-card').forEach(c=>c.classList.add('flying'));
+    document.querySelector('.home-hero')?.classList.add('flying');
+    setTimeout(()=>homeEl.classList.add('fading-out'),200);
+    setTimeout(()=>{homeEl.classList.add('hidden');homeEl.classList.remove('fading-out');},950);
+  } else {
+    homeEl.classList.add('hidden');
+    if(pg){pg.classList.add('page-enter');setTimeout(()=>pg.classList.remove('page-enter'),420);}
   }
 }
 
