@@ -147,6 +147,8 @@ function goPage(name,btn){
   const isOnHome=document.body.classList.contains('on-home');
 
   if(name==='home'){
+    // Block if we're currently animating away from home — prevents jump-back glitch
+    if(homeEl.classList.contains('fading-out')) return;
     document.querySelectorAll('.mb,.bnav-item').forEach(b=>b.classList.remove('active'));
     const b=btn||document.querySelector('.mb[data-page="home"]');if(b)b.classList.add('active');
     homeEl.classList.remove('hidden','fading-out');
