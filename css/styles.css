@@ -421,6 +421,7 @@ header {
 }
 
 .home-card { will-change: transform, opacity; }
+body.app-loading .home-card { pointer-events: none; }
 .home-card.flying { animation: cardFlyUp .4s cubic-bezier(.55,0,1,.45) forwards; }
 .home-card.flying:nth-child(1) { animation-delay: .00s; }
 .home-card.flying:nth-child(2) { animation-delay: .03s; }

@@ -13,11 +13,13 @@ let IS_ADMIN=false, apiOnline=false, syncTO=null;
 // INIT
 // ══════════════════════════════════════════════════════
 async function init(){
+  document.body.classList.add('app-loading');
   applyTheme(localStorage.getItem('tb_theme') || localStorage.getItem('svw_theme')||'light'); applyI18n(); applyFontSize(currentFsIdx);
   setStat('loading');
   applyTheme(localStorage.getItem('tb_theme') || localStorage.getItem('svw_theme')||'light'); loadClubTheme();
   const ok=await loadAPI(); if(!ok)loadLocal();
   hideLS(); renderStbar(); renderSection(); renderSavedPlans(); renderLtp(); goPage('home');
+  document.body.classList.remove('app-loading');
   setupGS(); updateApiBar();
   setInterval(()=>{if(apiOnline)silentSync();},60000);
 }
@@ -147,7 +149,6 @@ function goPage(name,btn){
 
   // ── Go Home ──────────────────────────────────────────
   if(name==='home'){
-    console.trace('goPage HOME called');
     document.body.classList.add('on-home');
     homeEl.classList.remove('hidden','fading-out');
     document.querySelectorAll('.home-card').forEach(c=>c.classList.remove('flying'));
