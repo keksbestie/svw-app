@@ -36,7 +36,7 @@ function mapExercise(e){
     difficulty:e.difficulty,desc:e.description,tags:e.tags||[],image:e.image,status:e.status};
 }
 async function loadAPI(){
-  if(!_supabase){console.warn('loadAPI: _supabase is null');return false;}
+  if(!_supabase)return false;
   try{
     const {data:{user}}=await _supabase.auth.getUser();
     currentUser=user; IS_ADMIN=false;
@@ -56,7 +56,7 @@ async function loadAPI(){
       ltpBlocks=(ltpData||[]).map(b=>b.weeks);
     }
     apiOnline=true; setStat('ok'); cacheLocal(); return true;
-  }catch(e){console.error('loadAPI error:',e);apiOnline=false; setStat('err'); return false;}
+  }catch(e){apiOnline=false; setStat('err'); return false;}
 }
 async function silentSync(){
   if(!_supabase)return;
@@ -95,7 +95,7 @@ function applyData(d){
   TAG_CLUSTERS=SECTION_CLUSTERS[activeSec]||SECTION_CLUSTERS[0];
   if(d.blockLibrary)blockLibrary=d.blockLibrary;
 }
-function cacheLocal(){localStorage.setItem(SK,JSON.stringify({exercises,sectionDescs,sectionCustomTags,savedPlans,ltpBlocks,blockLibrary,sectionClusters:SECTION_CLUSTERS}));}
+function cacheLocal(){try{localStorage.setItem(SK,JSON.stringify({exercises,sectionDescs,sectionCustomTags,savedPlans,ltpBlocks,blockLibrary,sectionClusters:SECTION_CLUSTERS}));}catch(e){console.warn('localStorage voll – Cache übersprungen:',e);}}
 function loadLocal(){
   try{
     const r=localStorage.getItem(SK);
