@@ -291,7 +291,7 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;color:#111;background:#fff;pa
 .ex-card-num{position:absolute;top:10px;left:-12px;width:22px;height:22px;border-radius:50%;color:#fff;font-size:8pt;font-weight:900;display:flex;align-items:center;justify-content:center;}
 .ex-card-sec{font-size:7pt;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
 .ex-card-body{display:flex;gap:14px;align-items:flex-start;}
-.ex-card-img{flex-shrink:0;width:320px;height:220px;border-radius:6px;overflow:hidden;border:1px solid #eee;}
+.ex-card-img{flex-shrink:0;width:210px;height:145px;border-radius:6px;overflow:hidden;border:1px solid #eee;}
 .ex-card-img img{width:100%;height:100%;object-fit:cover;}
 .ex-card-info{flex:1;min-width:0;}
 .ex-card-name{font-size:13pt;font-weight:900;margin-bottom:5px;}
