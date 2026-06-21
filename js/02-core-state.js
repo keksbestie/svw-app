@@ -13,14 +13,17 @@ let IS_ADMIN=false, apiOnline=false, syncTO=null;
 // INIT
 // ══════════════════════════════════════════════════════
 async function init(){
-  document.body.classList.add('app-loading');
   applyTheme(localStorage.getItem('tb_theme') || localStorage.getItem('svw_theme')||'light'); applyI18n(); applyFontSize(currentFsIdx);
-  setStat('loading');
   applyTheme(localStorage.getItem('tb_theme') || localStorage.getItem('svw_theme')||'light'); loadClubTheme();
-  const ok=await loadAPI(); if(!ok)loadLocal();
+  // Show app instantly from local cache
+  loadLocal();
   hideLS(); renderStbar(); renderSection(); renderSavedPlans(); renderLtp(); goPage('home');
-  document.body.classList.remove('app-loading');
-  setupGS(); updateApiBar();
+  setupGS();
+  // Sync with API in background — no blocking, no re-navigating
+  setStat('loading');
+  const ok=await loadAPI();
+  if(ok){ renderStbar(); renderSection(); renderSavedPlans(); renderLtp(); }
+  updateApiBar();
   setInterval(()=>{if(apiOnline)silentSync();},60000);
 }
 function hideLS(){const l=document.getElementById('ls');l.classList.add('fade');setTimeout(()=>l.style.display='none',400);}
