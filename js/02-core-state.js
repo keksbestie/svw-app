@@ -142,13 +142,14 @@ function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2
 // ══════════════════════════════════════════════════════
 // PAGE NAV
 // ══════════════════════════════════════════════════════
+let _leavingHome=false;
 function goPage(name,btn){
   const homeEl=document.getElementById('page-home');
   const isOnHome=document.body.classList.contains('on-home');
 
   if(name==='home'){
-    // Block if we're currently animating away from home — prevents jump-back glitch
-    if(homeEl.classList.contains('fading-out')) return;
+    if(_leavingHome) return; // block jump-back during animation
+    _leavingHome=false;
     document.querySelectorAll('.mb,.bnav-item').forEach(b=>b.classList.remove('active'));
     const b=btn||document.querySelector('.mb[data-page="home"]');if(b)b.classList.add('active');
     homeEl.classList.remove('hidden','fading-out');
@@ -159,25 +160,22 @@ function goPage(name,btn){
   }
 
   if(isOnHome){
-    // Step 1: render the target page fully while overlay still covers it
+    _leavingHome=true;
     _prepPage(name,btn);
 
-    // Step 2: wait 2 frames so browser finishes layout/paint, THEN animate
     requestAnimationFrame(()=>requestAnimationFrame(()=>{
-      // Start card + hero fly-up
       document.querySelectorAll('.home-card').forEach(c=>c.classList.add('flying'));
       document.querySelector('.home-hero')?.classList.add('flying');
 
-      // After cards are mostly airborne, start overlay fade
       setTimeout(()=>{
         document.body.classList.remove('on-home');
         homeEl.classList.add('fading-out');
       }, 200);
 
-      // After fade completes — page already fully rendered, no animation needed
       setTimeout(()=>{
         homeEl.classList.add('hidden');
         homeEl.classList.remove('fading-out');
+        _leavingHome=false;
       }, 950);
     }));
 
