@@ -292,7 +292,7 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;color:#111;background:#fff;pa
 .ex-card-sec{font-size:7pt;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
 .ex-card-body{display:flex;gap:14px;align-items:flex-start;}
 .ex-card-img{flex-shrink:0;width:260px;height:180px;border-radius:6px;overflow:hidden;border:1px solid #eee;}
-.ex-card-img img{width:100%;height:100%;object-fit:cover;}
+.ex-card-img img{width:100%;height:100%;object-fit:contain;background:#f0f4f0;}
 .ex-card-info{flex:1;min-width:0;}
 .ex-card-name{font-size:13pt;font-weight:900;margin-bottom:5px;}
 .ex-card-meta{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:7px;font-size:9pt;color:#444;font-weight:600;}
