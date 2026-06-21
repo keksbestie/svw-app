@@ -147,6 +147,7 @@ function goPage(name,btn){
 
   // ── Go Home ──────────────────────────────────────────
   if(name==='home'){
+    console.trace('goPage HOME called');
     document.body.classList.add('on-home');
     homeEl.classList.remove('hidden','fading-out');
     document.querySelectorAll('.home-card').forEach(c=>c.classList.remove('flying'));
