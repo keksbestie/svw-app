@@ -215,11 +215,14 @@ function printPlan(){
   });
   const materials=[...matSet];
 
-  // Total load
-  const totalMin=items.reduce((sum,{item,ex})=>{
-    const d=item.duration??ex.duration??null;
-    return sum+(d?parseInt(d)||0:0);
-  },0);
+  // Total load by difficulty
+  const byDiff={Leicht:0,Mittel:0,Schwer:0,'':0};
+  items.forEach(({item,ex})=>{
+    const d=parseInt(item.duration??ex.duration??0)||0;
+    const diff=item.difficulty??ex.difficulty??'';
+    byDiff[diff in byDiff?diff:'']+=d;
+  });
+  const totalMin=Object.values(byDiff).reduce((a,b)=>a+b,0);
 
   const planName=document.getElementById('planName').value.trim()||'Trainingsplan';
   const today=new Date().toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
@@ -256,9 +259,20 @@ function printPlan(){
     <div class="mat-box-items">${materials.map(m=>`<span class="mat-pill">${m}</span>`).join('')}</div>
   </div>`:'';
 
+  const diffRows=[
+    {label:'Leicht',color:'#1a7f4b',min:byDiff['Leicht']},
+    {label:'Mittel',color:'#e65100',min:byDiff['Mittel']},
+    {label:'Schwer',color:'#880e4f',min:byDiff['Schwer']},
+  ].filter(r=>r.min>0);
   const totalHTML=totalMin?`<div class="total-box">
-    <span class="total-label">Gesamtbelastung</span>
-    <span class="total-val">${totalMin} Minuten</span>
+    <div>
+      <div class="total-label">Gesamtbelastung</div>
+      <div class="total-breakdown">
+        ${diffRows.map(r=>`<span class="diff-pill" style="background:${r.color}18;color:${r.color};border:1px solid ${r.color}40;">${r.label}: ${r.min} min</span>`).join('')}
+        ${byDiff['']>0?`<span class="diff-pill" style="background:#f5f5f5;color:#555;border:1px solid #ccc;">Ohne Angabe: ${byDiff['']} min</span>`:''}
+      </div>
+    </div>
+    <span class="total-val">${totalMin} min</span>
   </div>`:'';
 
   const html=`<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8">
@@ -283,9 +297,11 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;color:#111;background:#fff;pa
 .ex-card-name{font-size:13pt;font-weight:900;margin-bottom:5px;}
 .ex-card-meta{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:7px;font-size:9pt;color:#444;font-weight:600;}
 .ex-card-desc{font-size:9pt;color:#333;line-height:1.6;white-space:pre-wrap;}
-.total-box{margin-top:10mm;padding:10px 16px;border-top:2px solid #111;display:flex;justify-content:space-between;align-items:center;}
-.total-label{font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#555;}
-.total-val{font-size:16pt;font-weight:900;}
+.total-box{margin-top:10mm;padding:10px 16px;border-top:2px solid #111;display:flex;justify-content:space-between;align-items:center;gap:16px;}
+.total-label{font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#555;margin-bottom:6px;}
+.total-breakdown{display:flex;flex-wrap:wrap;gap:6px;}
+.diff-pill{font-size:9pt;font-weight:700;padding:3px 10px;border-radius:20px;}
+.total-val{font-size:18pt;font-weight:900;white-space:nowrap;}
 @media print{body{padding:0;}@page{margin:18mm;}}
 </style></head><body>
 <div class="print-header">
