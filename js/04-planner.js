@@ -231,38 +231,24 @@ function printPlan(){
   const secColor=si=>SECS[si]?.color||'#333';
   const secName=si=>SECS[si]?.name||'';
 
-  // Group by section
-  const bySec=[];
-  items.forEach(({item,ex,si},idx)=>{
-    let g=bySec.find(g=>g.si===si);
-    if(!g){g={si,items:[]};bySec.push(g);}
-    g.items.push({item,ex,idx});
-  });
-  const cardsHTML=bySec.map(({si,items:gitems})=>{
+  const cardsHTML=items.map(({item,ex,si},idx)=>{
+    const players=item.players??ex.players??'';
+    const duration=item.duration??ex.duration??'';
+    const difficulty=item.difficulty??ex.difficulty??'';
     const col=secColor(si);
-    const pairs=[];
-    for(let i=0;i<gitems.length;i+=2) pairs.push(gitems.slice(i,i+2));
-    const rowsHTML=pairs.map(pair=>`<div class="ex-row">
-      ${pair.map(({item,ex,idx})=>{
-        const players=item.players??ex.players??'';
-        const duration=item.duration??ex.duration??'';
-        const difficulty=item.difficulty??ex.difficulty??'';
-        return`<div class="ex-cell">
-          <div class="ex-num" style="background:${col}">${idx+1}</div>
-          ${ex.image?`<div class="ex-img"><img src="${ex.image}" alt="${ex.name}"></div>`:'<div class="ex-img ex-img-empty"></div>'}
-          <div class="ex-name">${ex.name}</div>
-          <div class="ex-meta">
-            ${players?`<span>👥 ${players}</span>`:''}
-            ${duration?`<span>⏱ ${duration} min</span>`:''}
-            ${difficulty?`<span>◉ ${difficulty}</span>`:''}
-          </div>
-          ${ex.desc?`<div class="ex-desc">${ex.desc}</div>`:''}
-        </div>`;
-      }).join('')}
-    </div>`).join('');
-    return`<div class="sec-block">
-      <div class="sec-hdr" style="color:${col};border-bottom:2px solid ${col};">${secName(si)}</div>
-      ${rowsHTML}
+    return`<div class="ex-card">
+      <div class="ex-num" style="background:${col}">${idx+1}</div>
+      <div class="ex-img">${ex.image?`<img src="${ex.image}" alt="${ex.name}">`:'<div class="ex-img-empty"></div>'}</div>
+      <div class="ex-info">
+        <div class="ex-sec" style="color:${col}">${secName(si)}</div>
+        <div class="ex-name">${ex.name}</div>
+        <div class="ex-meta">
+          ${players?`<span>👥 ${players}</span>`:''}
+          ${duration?`<span>⏱ ${duration} min</span>`:''}
+          ${difficulty?`<span>◉ ${difficulty}</span>`:''}
+        </div>
+        ${ex.desc?`<div class="ex-desc">${ex.desc}</div>`:''}
+      </div>
     </div>`;
   }).join('');
 
@@ -292,31 +278,37 @@ function printPlan(){
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Helvetica Neue',Arial,sans-serif;color:#111;background:#fff;padding:14mm 16mm;}
-.print-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:6mm;padding-bottom:3mm;border-bottom:2px solid #111;}
-.print-title{font-size:20pt;font-weight:900;}
+.brand{text-align:center;margin-bottom:5mm;}
+.brand-name{font-size:18pt;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:#1a7f4b;}
+.brand-sub{font-size:7pt;letter-spacing:3px;text-transform:uppercase;color:#888;margin-top:1px;}
+.print-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:5mm;padding-bottom:3mm;border-bottom:2px solid #111;}
+.print-title{font-size:16pt;font-weight:900;}
 .print-date{font-size:9pt;color:#666;}
-.mat-box{background:#f5f5f5;border-radius:5px;padding:5px 10px;margin-bottom:6mm;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.mat-box{background:#f5f5f5;border-radius:5px;padding:5px 10px;margin-bottom:5mm;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
 .mat-box-title{font-size:7pt;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#666;white-space:nowrap;}
 .mat-box-items{display:flex;flex-wrap:wrap;gap:5px;}
 .mat-pill{font-size:8pt;padding:2px 9px;border-radius:20px;background:#fff;border:1px solid #ccc;font-weight:600;}
-.sec-block{margin-bottom:6mm;}
-.sec-hdr{font-size:8pt;font-weight:900;text-transform:uppercase;letter-spacing:1.5px;padding-bottom:3px;margin-bottom:4mm;}
-.ex-row{display:flex;gap:10mm;margin-bottom:5mm;page-break-inside:avoid;}
-.ex-cell{flex:1;min-width:0;position:relative;}
-.ex-num{position:absolute;top:0;left:0;width:18px;height:18px;border-radius:50%;color:#fff;font-size:7pt;font-weight:900;display:flex;align-items:center;justify-content:center;z-index:1;}
-.ex-img{width:100%;aspect-ratio:4/3;border-radius:5px;overflow:hidden;border:1px solid #e0e0e0;margin-bottom:4px;}
+.ex-card{display:flex;gap:12px;align-items:flex-start;padding:8px 0;border-bottom:1px solid #e8e8e8;page-break-inside:avoid;position:relative;}
+.ex-num{flex-shrink:0;width:20px;height:20px;border-radius:50%;color:#fff;font-size:7pt;font-weight:900;display:flex;align-items:center;justify-content:center;margin-top:2px;}
+.ex-img{flex-shrink:0;width:200px;height:140px;border-radius:5px;overflow:hidden;border:1px solid #e0e0e0;}
 .ex-img img{width:100%;height:100%;object-fit:contain;background:#f0f4f0;}
-.ex-img-empty{background:#f0f4f0;}
-.ex-name{font-size:10pt;font-weight:900;margin-bottom:2px;}
-.ex-meta{display:flex;gap:8px;flex-wrap:wrap;font-size:8pt;color:#444;font-weight:600;margin-bottom:3px;}
-.ex-desc{font-size:8pt;color:#333;line-height:1.5;white-space:pre-wrap;}
-.total-box{margin-top:6mm;padding:8px 12px;border-top:2px solid #111;display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.ex-img-empty{width:200px;height:140px;background:#f0f4f0;border-radius:5px;}
+.ex-info{flex:1;min-width:0;}
+.ex-sec{font-size:7pt;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+.ex-name{font-size:12pt;font-weight:900;margin-bottom:4px;}
+.ex-meta{display:flex;gap:10px;flex-wrap:wrap;font-size:8pt;color:#444;font-weight:600;margin-bottom:5px;}
+.ex-desc{font-size:8.5pt;color:#333;line-height:1.55;white-space:pre-wrap;}
+.total-box{margin-top:6mm;padding:8px 0;border-top:2px solid #111;display:flex;justify-content:space-between;align-items:center;gap:12px;}
 .total-label{font-size:9pt;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#555;margin-bottom:4px;}
 .total-breakdown{display:flex;flex-wrap:wrap;gap:5px;}
 .diff-pill{font-size:8pt;font-weight:700;padding:2px 9px;border-radius:20px;}
 .total-val{font-size:16pt;font-weight:900;white-space:nowrap;}
 @media print{body{padding:0;}@page{margin:14mm;}}
 </style></head><body>
+<div class="brand">
+  <div class="brand-name">AssistCoach</div>
+  <div class="brand-sub">Trainingsplanung</div>
+</div>
 <div class="print-header">
   <div class="print-title">${planName}</div>
   <div class="print-date">${today}</div>
