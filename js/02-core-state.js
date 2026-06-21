@@ -42,7 +42,8 @@ async function loadAPI(){
     document.body.classList.toggle('admin',IS_ADMIN);
     const {data:exData,error:exErr}=await _supabase.from('exercises').select('*').eq('status','approved');
     if(exErr)throw exErr;
-    exercises=exData.map(mapExercise);
+    // Only overwrite local exercises if Supabase actually has data
+    if(exData&&exData.length>0) exercises=exData.map(mapExercise);
     if(user){
       const {data:plansData}=await _supabase.from('plans').select('*').eq('owner_id',user.id);
       savedPlans=(plansData||[]).map(p=>p.lanes);
@@ -186,6 +187,7 @@ function goPage(name,btn){
 }
 
 function _prepPage(name,btn){
+  document.body.classList.remove('on-home');
   document.querySelectorAll('.page').forEach(p=>{ if(p!==document.getElementById('page-home')) p.classList.remove('active'); });
   document.querySelectorAll('.mb,.bnav-item').forEach(b=>b.classList.remove('active'));
   const pg=document.getElementById('page-'+name);
