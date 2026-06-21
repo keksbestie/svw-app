@@ -36,7 +36,7 @@ function mapExercise(e){
     difficulty:e.difficulty,desc:e.description,tags:e.tags||[],image:e.image,status:e.status};
 }
 async function loadAPI(){
-  if(!_supabase)return false;
+  if(!_supabase){console.warn('loadAPI: _supabase is null');return false;}
   try{
     const {data:{user}}=await _supabase.auth.getUser();
     currentUser=user; IS_ADMIN=false;
@@ -56,7 +56,7 @@ async function loadAPI(){
       ltpBlocks=(ltpData||[]).map(b=>b.weeks);
     }
     apiOnline=true; setStat('ok'); cacheLocal(); return true;
-  }catch{apiOnline=false; setStat('err'); return false;}
+  }catch(e){console.error('loadAPI error:',e);apiOnline=false; setStat('err'); return false;}
 }
 async function silentSync(){
   if(!_supabase)return;
