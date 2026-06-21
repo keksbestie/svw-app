@@ -95,7 +95,13 @@ function applyData(d){
   TAG_CLUSTERS=SECTION_CLUSTERS[activeSec]||SECTION_CLUSTERS[0];
   if(d.blockLibrary)blockLibrary=d.blockLibrary;
 }
-function cacheLocal(){try{localStorage.setItem(SK,JSON.stringify({exercises,sectionDescs,sectionCustomTags,savedPlans,ltpBlocks,blockLibrary,sectionClusters:SECTION_CLUSTERS}));}catch(e){console.warn('localStorage voll – Cache übersprungen:',e);}}
+function cacheLocal(){
+  try{
+    // Strip large image data from exercises to keep cache small (images load from Supabase)
+    const exLean=exercises.map(({image,...rest})=>rest);
+    localStorage.setItem(SK,JSON.stringify({exercises:exLean,sectionDescs,sectionCustomTags,savedPlans,ltpBlocks,blockLibrary,sectionClusters:SECTION_CLUSTERS}));
+  }catch(e){console.warn('localStorage voll – Cache übersprungen:',e);}
+}
 function loadLocal(){
   try{
     const r=localStorage.getItem(SK);
