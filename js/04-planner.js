@@ -192,5 +192,116 @@ function loadTemplate(tpl){
   showToast('Vorlage geladen');
 }
 
+// ══════════════════════════════════════════════════════
+// DRUCKEN
+// ══════════════════════════════════════════════════════
+function printPlan(){
+  // Collect all exercises in plan order
+  const items=[];
+  currentPlan.lanes.forEach((lane,si)=>{
+    (lane||[]).forEach(raw=>{
+      const item=_laneItem(raw);
+      const ex=exercises.find(e=>e.id===item.id);
+      if(ex) items.push({item,ex,si});
+    });
+  });
+  if(!items.length){showToast('Plan ist leer','err');return;}
+
+  // Aggregate materials (unique)
+  const matSet=new Set();
+  items.forEach(({item,ex})=>{
+    const mat=ex.material||'';
+    mat.split(',').map(m=>m.trim()).filter(Boolean).forEach(m=>matSet.add(m));
+  });
+  const materials=[...matSet];
+
+  // Total load
+  const totalMin=items.reduce((sum,{item,ex})=>{
+    const d=item.duration??ex.duration??null;
+    return sum+(d?parseInt(d)||0:0);
+  },0);
+
+  const planName=document.getElementById('planName').value.trim()||'Trainingsplan';
+  const today=new Date().toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
+
+  // Section color lookup
+  const secColor=si=>SECS[si]?.color||'#333';
+  const secName=si=>SECS[si]?.name||'';
+
+  const cardsHTML=items.map(({item,ex,si},idx)=>{
+    const players=item.players??ex.players??'';
+    const duration=item.duration??ex.duration??'';
+    const difficulty=item.difficulty??ex.difficulty??'';
+    const col=secColor(si);
+    return`<div class="ex-card">
+      <div class="ex-card-num" style="background:${col}">${idx+1}</div>
+      <div class="ex-card-sec" style="color:${col}">${secName(si)}</div>
+      <div class="ex-card-body">
+        ${ex.image?`<div class="ex-card-img"><img src="${ex.image}" alt="${ex.name}"></div>`:''}
+        <div class="ex-card-info">
+          <div class="ex-card-name">${ex.name}</div>
+          <div class="ex-card-meta">
+            ${players?`<span>👥 ${players}</span>`:''}
+            ${duration?`<span>⏱ ${duration} min</span>`:''}
+            ${difficulty?`<span>◉ ${difficulty}</span>`:''}
+          </div>
+          ${ex.desc?`<div class="ex-card-desc">${ex.desc}</div>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const matHTML=materials.length?`<div class="mat-box">
+    <div class="mat-box-title">Material</div>
+    <div class="mat-box-items">${materials.map(m=>`<span class="mat-pill">${m}</span>`).join('')}</div>
+  </div>`:'';
+
+  const totalHTML=totalMin?`<div class="total-box">
+    <span class="total-label">Gesamtbelastung</span>
+    <span class="total-val">${totalMin} Minuten</span>
+  </div>`:'';
+
+  const html=`<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8">
+<title>${planName}</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Helvetica Neue',Arial,sans-serif;color:#111;background:#fff;padding:20mm 18mm;}
+.print-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:10mm;padding-bottom:4mm;border-bottom:2px solid #111;}
+.print-title{font-size:22pt;font-weight:900;letter-spacing:.5px;}
+.print-date{font-size:9pt;color:#666;}
+.mat-box{background:#f5f5f5;border-radius:6px;padding:8px 12px;margin-bottom:8mm;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.mat-box-title{font-size:8pt;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#666;white-space:nowrap;}
+.mat-box-items{display:flex;flex-wrap:wrap;gap:6px;}
+.mat-pill{font-size:9pt;padding:3px 10px;border-radius:20px;background:#fff;border:1px solid #ccc;font-weight:600;}
+.ex-card{position:relative;margin-bottom:7mm;padding:10px 12px;border:1px solid #ddd;border-radius:8px;page-break-inside:avoid;}
+.ex-card-num{position:absolute;top:10px;left:-12px;width:22px;height:22px;border-radius:50%;color:#fff;font-size:8pt;font-weight:900;display:flex;align-items:center;justify-content:center;}
+.ex-card-sec{font-size:7pt;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.ex-card-body{display:flex;gap:14px;align-items:flex-start;}
+.ex-card-img{flex-shrink:0;width:160px;height:110px;border-radius:6px;overflow:hidden;border:1px solid #eee;}
+.ex-card-img img{width:100%;height:100%;object-fit:cover;}
+.ex-card-info{flex:1;min-width:0;}
+.ex-card-name{font-size:13pt;font-weight:900;margin-bottom:5px;}
+.ex-card-meta{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:7px;font-size:9pt;color:#444;font-weight:600;}
+.ex-card-desc{font-size:9pt;color:#333;line-height:1.6;white-space:pre-wrap;}
+.total-box{margin-top:10mm;padding:10px 16px;border-top:2px solid #111;display:flex;justify-content:space-between;align-items:center;}
+.total-label{font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#555;}
+.total-val{font-size:16pt;font-weight:900;}
+@media print{body{padding:0;}@page{margin:18mm;}}
+</style></head><body>
+<div class="print-header">
+  <div class="print-title">${planName}</div>
+  <div class="print-date">${today}</div>
+</div>
+${matHTML}
+${cardsHTML}
+${totalHTML}
+<script>window.onload=function(){window.print();}<\/script>
+</body></html>`;
+
+  const w=window.open('','_blank');
+  w.document.write(html);
+  w.document.close();
+}
+
 // SECTION RENDER
 // ══════════════════════════════════════════════════════
