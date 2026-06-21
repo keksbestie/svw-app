@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="UTF-8">
@@ -12,18 +12,18 @@
 
 
 <div id="ls" style="display:none;">
-  <div style="font-size:52px;line-height:1;">âš½</div>
+  <div style="font-size:52px;line-height:1;">⚽</div>
   <div class="ls-t">AssistCoach</div>
   <div class="ls-spin"></div>
 </div>
 
-<div class="apibar h" id="apibar"><span id="apibarMsg"></span><button class="api-retry" onclick="retryConn()">â†º Verbinden</button></div>
+<div class="apibar h" id="apibar"><span id="apibarMsg"></span><button class="api-retry" onclick="retryConn()">↺ Verbinden</button></div>
 
 <!-- Minimal topbar shown only on home page -->
 
 <header>
   <div class="logo">
-    <span style="font-size:28px;line-height:1;">âš½</span>
+    <span style="font-size:28px;line-height:1;">⚽</span>
     <div>
       <div style="display:flex;align-items:center;gap:6px;">
         <div class="logo-t">AssistCoach</div>
@@ -33,9 +33,9 @@
     </div>
   </div>
   <div class="gs-wrap">
-    <span class="gs-ico">âš½</span>
-    <input class="gs-in" id="gsIn" type="text" placeholder="Ãœbungen, Tags, Abschnitte durchsuchenâ€¦" oninput="onGS()" onkeydown="if(event.key==='Escape')clearGS()" autocomplete="off">
-    <button class="gs-x" id="gsX" onclick="clearGS()">âœ•</button>
+    <span class="gs-ico">⚽</span>
+    <input class="gs-in" id="gsIn" type="text" placeholder="Übungen, Tags, Abschnitte durchsuchen…" oninput="onGS()" onkeydown="if(event.key==='Escape')clearGS()" autocomplete="off">
+    <button class="gs-x" id="gsX" onclick="clearGS()">✕</button>
     <div class="gs-res" id="gsRes"></div>
   </div>
   <div class="hr">
@@ -45,30 +45,30 @@
     <!-- Language selector -->
     <div class="lang-sel" id="langSel">
       <button class="lang-btn" onclick="toggleLangDrop()" id="langBtn">
-        <span id="langFlag">ðŸ‡©ðŸ‡ª</span>
+        <span id="langFlag">🇩🇪</span>
         <span id="langCode">DE</span>
       </button>
       <div class="lang-drop" id="langDrop">
         <div class="lang-opt active" data-lang="de" onclick="setLang('de')">
-          <span class="flag">ðŸ‡©ðŸ‡ª</span> Deutsch
+          <span class="flag">🇩🇪</span> Deutsch
         </div>
         <div class="lang-opt lang-opt--soon" data-lang="en">
-          <span class="flag">ðŸ‡¬ðŸ‡§</span> English <span class="cfg-badge-soon" style="margin-left:auto;">bald</span>
+          <span class="flag">🇬🇧</span> English <span class="cfg-badge-soon" style="margin-left:auto;">bald</span>
         </div>
         <div class="lang-opt lang-opt--soon" data-lang="es">
-          <span class="flag">ðŸ‡ªðŸ‡¸</span> EspaÃ±ol <span class="cfg-badge-soon" style="margin-left:auto;">bald</span>
+          <span class="flag">🇪🇸</span> Español <span class="cfg-badge-soon" style="margin-left:auto;">bald</span>
         </div>
       </div>
     </div>
 
     <!-- Dark mode toggle -->
-    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Theme wechseln">ðŸŒ™</button>
+    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Theme wechseln">🌙</button>
 
     <!-- Feedback button -->
-    <button class="cfg-btn" onclick="openMod('feedbackMod')" title="Feedback senden" style="font-size:14px;">ðŸ’¬</button>
+    <button class="cfg-btn" onclick="openMod('feedbackMod')" title="Feedback senden" style="font-size:14px;">💬</button>
 
     <!-- Help button -->
-    <button class="cfg-btn" onclick="toggleHelpPanel()" title="Hilfe & ErklÃ¤rung" style="font-size:15px;font-weight:900;font-family:'Barlow Condensed',sans-serif;letter-spacing:-.5px;">?</button>
+    <button class="cfg-btn" onclick="toggleHelpPanel()" title="Hilfe & Erklärung" style="font-size:15px;font-weight:900;font-family:'Barlow Condensed',sans-serif;letter-spacing:-.5px;">?</button>
 
     <!-- Settings dropdown -->
     <div class="cfg-sel" id="cfgSel">
@@ -92,7 +92,7 @@
         </button>
         <button class="cfg-item" onclick="closeCfgDrop();goPage('account');setTimeout(()=>document.getElementById('accTabPlans')?.click(),100)">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          Meine PlÃ¤ne
+          Meine Pläne
         </button>
         <button class="cfg-item cfg-item--soon" disabled>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -103,11 +103,11 @@
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
           <span class="cfg-fontsize-label">Schrift</span>
           <div class="cfg-fontsize-ctrl">
-            <button class="cfg-fs-btn" onclick="adjustFontSize(-1)">Aâˆ’</button>
+            <button class="cfg-fs-btn" onclick="adjustFontSize(-1)">A−</button>
             <span class="cfg-fs-val" id="cfgFsVal">100%</span>
             <button class="cfg-fs-btn" onclick="adjustFontSize(1)">A+</button>
           </div>
-          <button class="cfg-fs-rst" onclick="adjustFontSize(0)" title="ZurÃ¼cksetzen">â†º</button>
+          <button class="cfg-fs-rst" onclick="adjustFontSize(0)" title="Zurücksetzen">↺</button>
         </div>
         <div class="cfg-sep"></div>
         <button class="cfg-item" onclick="closeCfgDrop();goPage('impressum')">
@@ -122,34 +122,34 @@
 </header>
 
 <div class="mnav" id="mnav">
-  <button class="mb" data-page="home" onclick="goPage('home',this)">ðŸ  Start</button>
+  <button class="mb" data-page="home" onclick="goPage('home',this)">🏠 Start</button>
   <button class="mb active" data-page="handbook" onclick="goPage('handbook',this)">Katalog</button>
   <button class="mb" data-page="planner" onclick="goPage('planner',this)">Trainingsplan</button>
   <button class="mb" data-page="longterm" onclick="goPage('longterm',this)">Langzeitplanung</button>
-  <button class="mb" data-page="submit" onclick="goPage('submit',this)">âœï¸ Einreichen</button>
+  <button class="mb" data-page="submit" onclick="goPage('submit',this)">✏️ Einreichen</button>
   <button class="mb admin-only" data-page="settings" onclick="goPage('settings',this)" style="display:none">Einstellungen</button>
 </div>
 
 <!-- Mobile Bottom Navigation -->
 <nav class="bottom-nav" id="bottomNav">
   <button class="bnav-item" data-page="home" onclick="goPage('home',this)">
-    <div class="bnav-icon">ðŸ </div>
+    <div class="bnav-icon">🏠</div>
     <div class="bnav-label" data-i18n="nav_home">Start</div>
     <div class="bnav-dot"></div>
   </button>
   <button class="bnav-item active" data-page="handbook" onclick="goPage('handbook',this)">
-    <div class="bnav-icon">ðŸ“š</div>
+    <div class="bnav-icon">📚</div>
     <div class="bnav-label" data-i18n="nav_catalog">Katalog</div>
     <div class="bnav-dot"></div>
   </button>
   <button class="bnav-item" data-page="planner" onclick="goPage('planner',this)">
-    <div class="bnav-icon">ðŸ“‹</div>
+    <div class="bnav-icon">📋</div>
     <div class="bnav-label" data-i18n="nav_plan">Planer</div>
     <div class="bnav-dot"></div>
   </button>
   <button class="bnav-item" data-page="longterm" onclick="goPage('longterm',this)">
-    <div class="bnav-icon">ðŸ“…</div>
-    <div class="bnav-label" data-i18n="nav_longterm">BlÃ¶cke</div>
+    <div class="bnav-icon">📅</div>
+    <div class="bnav-label" data-i18n="nav_longterm">Blöcke</div>
     <div class="bnav-dot"></div>
   </button>
 </nav>
@@ -160,24 +160,24 @@
   <div class="home-topbar" id="homeTopbar">
     <div class="lang-sel" id="homeLangSel">
       <button class="lang-btn" onclick="toggleLangDrop('home')" id="homeLangBtn">
-        <span id="homeLangFlag">ðŸ‡©ðŸ‡ª</span>
+        <span id="homeLangFlag">🇩🇪</span>
         <span id="homeLangCode">DE</span>
       </button>
       <div class="lang-drop" id="homeLangDrop">
-        <div class="lang-opt active" data-lang="de" onclick="setLang('de')"><span class="flag">ðŸ‡©ðŸ‡ª</span> Deutsch</div>
-        <div class="lang-opt" data-lang="en" onclick="setLang('en')"><span class="flag">ðŸ‡¬ðŸ‡§</span> English</div>
-        <div class="lang-opt" data-lang="es" onclick="setLang('es')"><span class="flag">ðŸ‡ªðŸ‡¸</span> EspaÃ±ol</div>
+        <div class="lang-opt active" data-lang="de" onclick="setLang('de')"><span class="flag">🇩🇪</span> Deutsch</div>
+        <div class="lang-opt" data-lang="en" onclick="setLang('en')"><span class="flag">🇬🇧</span> English</div>
+        <div class="lang-opt" data-lang="es" onclick="setLang('es')"><span class="flag">🇪🇸</span> Español</div>
       </div>
     </div>
-    <button class="theme-btn" onclick="toggleTheme()" title="Theme wechseln" id="homeThemeBtn">ðŸŒ™</button>
+    <button class="theme-btn" onclick="toggleTheme()" title="Theme wechseln" id="homeThemeBtn">🌙</button>
   </div>
   <!-- Hero -->
   <div class="home-hero">
     <div class="home-hero-eyebrow" data-i18n="home_eyebrow">Nachwuchs</div>
     <h1 class="home-hero-title" data-i18n="home_title">AssistCoach</h1>
     <div class="home-hero-tagline">Dein Trainingskatalog</div>
-    <div class="home-beta-banner">ðŸš§ Diese App befindet sich in der <strong>Beta-Phase</strong> â€“ Funktionen und Inhalte werden laufend erweitert.</div>
-    <p class="home-hero-sub" data-i18n="home_sub">Ãœbungen planen, strukturieren und langfristig periodisieren â€“ alles an einem Ort.</p>
+    <div class="home-beta-banner">🚧 Diese App befindet sich in der <strong>Beta-Phase</strong> – Funktionen und Inhalte werden laufend erweitert.</div>
+    <p class="home-hero-sub" data-i18n="home_sub">Übungen planen, strukturieren und langfristig periodisieren – alles an einem Ort.</p>
   </div>
 
   <!-- Feature Cards -->
@@ -188,8 +188,8 @@
         <div class="home-card-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
         </div>
-        <div class="home-card-title" data-i18n="home_card_catalog">Ãœbungskatalog</div>
-        <div class="home-card-desc" data-i18n="home_card_catalog_desc">Alle Ãœbungen nach Abschnitt, Thema und Schwierigkeitsgrad durchsuchen und filtern.</div>
+        <div class="home-card-title" data-i18n="home_card_catalog">Übungskatalog</div>
+        <div class="home-card-desc" data-i18n="home_card_catalog_desc">Alle Übungen nach Abschnitt, Thema und Schwierigkeitsgrad durchsuchen und filtern.</div>
       </div>
       <div class="home-card-arrow">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -217,7 +217,7 @@
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         </div>
         <div class="home-card-title" data-i18n="home_card_blocks">Langzeitplanung</div>
-        <div class="home-card-desc" data-i18n="home_card_blocks_desc">MehrwÃ¶chige TrainingsblÃ¶cke erstellen, verwalten und in die Saison einbinden.</div>
+        <div class="home-card-desc" data-i18n="home_card_blocks_desc">Mehrwöchige Trainingsblöcke erstellen, verwalten und in die Saison einbinden.</div>
       </div>
       <div class="home-card-arrow">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -244,8 +244,8 @@
         <div class="home-card-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
         </div>
-        <div class="home-card-title">Ãœbung einreichen</div>
-        <div class="home-card-desc">Eigene Ãœbungen erstellen und zur Aufnahme in den Katalog vorschlagen.</div>
+        <div class="home-card-title">Übung einreichen</div>
+        <div class="home-card-desc">Eigene Übungen erstellen und zur Aufnahme in den Katalog vorschlagen.</div>
       </div>
       <div class="home-card-arrow">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -254,18 +254,18 @@
   </div>
 </div>
 
-<!-- PAGE: SUBMIT â€” Ãœbung einreichen -->
+<!-- PAGE: SUBMIT — Übung einreichen -->
 <div id="page-submit" class="page">
   <div id="submitLoginWrap" style="display:none;">
     <div class="submit-login">
       <div class="submit-login-box">
-        <div class="submit-login-icon">âœï¸</div>
-        <div class="submit-login-title">Ãœbung einreichen</div>
-        <div class="submit-login-sub">Melde dich an, um eigene Ãœbungen zu erstellen und fÃ¼r den Katalog vorzuschlagen.</div>
+        <div class="submit-login-icon">✏️</div>
+        <div class="submit-login-title">Übung einreichen</div>
+        <div class="submit-login-sub">Melde dich an, um eigene Übungen zu erstellen und für den Katalog vorzuschlagen.</div>
         <div class="submit-login-form" id="loginForm">
           <input class="fc" id="loginEmail" type="email" placeholder="E-Mail-Adresse" autocomplete="email">
           <input class="fc" id="loginPass" type="password" placeholder="Passwort" onkeydown="if(event.key==='Enter')doLogin()" style="margin-top:8px;">
-          <input class="fc" id="loginUsername" type="text" placeholder="Anzeigename (z.B. Max MÃ¼ller)" autocomplete="off" style="display:none;margin-top:8px;">
+          <input class="fc" id="loginUsername" type="text" placeholder="Anzeigename (z.B. Max Müller)" autocomplete="off" style="display:none;margin-top:8px;">
           <button class="bpr" id="loginBtn" onclick="doLogin()" style="width:100%;padding:11px;font-size:13px;margin-top:10px;">Anmelden</button>
           <button class="bsc" id="registerBtn" onclick="toggleRegisterMode()" style="width:100%;padding:11px;font-size:13px;margin-top:6px;">Neu registrieren</button>
           <div style="text-align:center;margin-top:10px;">
@@ -274,21 +274,21 @@
         </div>
         <!-- Passwort-Reset-Formular (versteckt) -->
         <div id="forgotForm" style="display:none;">
-          <div style="font-size:13px;color:var(--text-2);margin-bottom:12px;text-align:center;">Gib deine E-Mail-Adresse ein â€“ wir schicken dir einen Link zum ZurÃ¼cksetzen.</div>
+          <div style="font-size:13px;color:var(--text-2);margin-bottom:12px;text-align:center;">Gib deine E-Mail-Adresse ein – wir schicken dir einen Link zum Zurücksetzen.</div>
           <input class="fc" id="resetEmail" type="email" placeholder="E-Mail-Adresse" autocomplete="email">
           <button class="bpr" onclick="doResetPassword()" style="width:100%;padding:11px;font-size:13px;margin-top:10px;">Link senden</button>
-          <button class="bsc" onclick="hideForgotPassword()" style="width:100%;padding:11px;font-size:13px;margin-top:6px;">ZurÃ¼ck zum Login</button>
+          <button class="bsc" onclick="hideForgotPassword()" style="width:100%;padding:11px;font-size:13px;margin-top:6px;">Zurück zum Login</button>
         </div>
-        <!-- E-Mail-BestÃ¤tigung ausstehend -->
+        <!-- E-Mail-Bestätigung ausstehend -->
         <div id="confirmPendingMsg" style="display:none;text-align:center;padding:16px 0 4px;">
-          <div style="font-size:32px;margin-bottom:10px;">ðŸ“¬</div>
+          <div style="font-size:32px;margin-bottom:10px;">📬</div>
           <div style="font-weight:700;font-size:15px;margin-bottom:6px;">Fast geschafft!</div>
-          <div style="font-size:13px;color:var(--text-2);margin-bottom:14px;">Wir haben dir eine BestÃ¤tigungs-E-Mail geschickt.<br>Bitte Ã¶ffne den Link in der Mail, um dein Konto zu aktivieren.</div>
-          <button class="bsc" onclick="backToLogin()" style="width:100%;padding:10px;font-size:13px;">ZurÃ¼ck zum Login</button>
+          <div style="font-size:13px;color:var(--text-2);margin-bottom:14px;">Wir haben dir eine Bestätigungs-E-Mail geschickt.<br>Bitte öffne den Link in der Mail, um dein Konto zu aktivieren.</div>
+          <button class="bsc" onclick="backToLogin()" style="width:100%;padding:10px;font-size:13px;">Zurück zum Login</button>
         </div>
         <!-- Neues Passwort setzen (nach Klick auf Reset-Link) -->
         <div id="setNewPasswordForm" style="display:none;">
-          <div style="font-size:32px;text-align:center;margin-bottom:10px;">ðŸ”</div>
+          <div style="font-size:32px;text-align:center;margin-bottom:10px;">🔐</div>
           <div style="font-weight:700;font-size:15px;text-align:center;margin-bottom:6px;">Neues Passwort setzen</div>
           <div style="font-size:13px;color:var(--text-2);text-align:center;margin-bottom:14px;">Gib dein neues Passwort ein. Mindestens 6 Zeichen.</div>
           <input class="fc" id="newPassword1" type="password" placeholder="Neues Passwort" autocomplete="new-password">
@@ -300,10 +300,10 @@
   </div>
   <div id="submitLoggedWrap" style="display:none;">
     <div class="submit-banner">
-      <div class="submit-banner-icon">âœï¸</div>
+      <div class="submit-banner-icon">✏️</div>
       <div>
-        <div class="submit-banner-title">Ãœbung einreichen</div>
-        <div class="submit-banner-sub">Erstelle eine neue Ãœbung mit allen Pflichtangaben. Das Admin-Team prÃ¼ft sie und gibt sie ggf. fÃ¼r den Katalog frei.</div>
+        <div class="submit-banner-title">Übung einreichen</div>
+        <div class="submit-banner-sub">Erstelle eine neue Übung mit allen Pflichtangaben. Das Admin-Team prüft sie und gibt sie ggf. für den Katalog frei.</div>
       </div>
       <div class="submit-banner-user">
         <div class="submit-user-tag" id="submitUserTag">Trainer</div>
@@ -313,83 +313,83 @@
     <div class="submit-layout">
       <div>
         <div class="submit-form-wrap">
-          <div class="submit-form-title"><div class="stf-ico">âš½</div>Neue Ãœbung erstellen</div>
+          <div class="submit-form-title"><div class="stf-ico">⚽</div>Neue Übung erstellen</div>
           <div class="fsec">Grunddaten</div>
-          <div class="fg"><label>Name der Ãœbung *</label><input class="fc" id="sName" type="text" placeholder="Ãœbungsnameâ€¦" oninput="updateSubmitChecklist()"></div>
-          <div class="fg"><label>Beschreibung (min. 20 Zeichen) *</label><textarea class="fc dta" id="sDesc" rows="4" placeholder="Wie funktioniert die Ãœbung? Was ist das Ziel?" oninput="updateSubmitChecklist()" style="resize:vertical;"></textarea>
+          <div class="fg"><label>Name der Übung *</label><input class="fc" id="sName" type="text" placeholder="Übungsname…" oninput="updateSubmitChecklist()"></div>
+          <div class="fg"><label>Beschreibung (min. 20 Zeichen) *</label><textarea class="fc dta" id="sDesc" rows="4" placeholder="Wie funktioniert die Übung? Was ist das Ziel?" oninput="updateSubmitChecklist()" style="resize:vertical;"></textarea>
             <div style="font-size:10px;color:var(--text-3);margin-top:3px;" id="sDescCount">0 Zeichen</div>
           </div>
           <div class="fr">
             <div class="fg"><label>Abschnitt *</label>
               <select class="fc" id="sSec" onchange="updateSubmitChecklist()">
-                <option value="">Bitte wÃ¤hlenâ€¦</option>
+                <option value="">Bitte wählen…</option>
                 <option value="0">Open Field</option><option value="1">Warm Up</option>
-                <option value="2">HinfÃ¼hrung</option><option value="3">Hauptteil</option>
+                <option value="2">Hinführung</option><option value="3">Hauptteil</option>
                 <option value="4">Abschlussspiel</option><option value="5">Sondertraining</option>
               </select>
             </div>
-            <div class="fg"><label>BelastungsintensitÃ¤t *</label>
+            <div class="fg"><label>Belastungsintensität *</label>
               <select class="fc" id="sIntensity" onchange="updateSubmitChecklist()">
-                <option value="">Bitte wÃ¤hlenâ€¦</option>
+                <option value="">Bitte wählen…</option>
                 <option value="Leicht">Leicht</option><option value="Mittel">Mittel</option><option value="Schwer">Schwer</option>
               </select>
             </div>
           </div>
           <div class="fr">
-            <div class="fg"><label>Spieleranzahl *</label><input class="fc" id="sPlayers" type="text" placeholder="z.B. 6â€“12" oninput="updateSubmitChecklist()"></div>
+            <div class="fg"><label>Spieleranzahl *</label><input class="fc" id="sPlayers" type="text" placeholder="z.B. 6–12" oninput="updateSubmitChecklist()"></div>
             <div class="fg"><label>Belastungszeit (min) *</label><input class="fc" id="sDuration" type="number" min="1" max="60" placeholder="z.B. 12" oninput="updateSubmitChecklist()"></div>
           </div>
           <div class="fg"><label>Material</label>
           <div id="sMatBuilder" style="border:1.5px solid var(--border);border-radius:7px;padding:10px;background:var(--surface-2);">
-            <div style="font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;">ZÃ¤hlbares Material (Anzahl wÃ¤hlen):</div>
+            <div style="font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;">Zählbares Material (Anzahl wählen):</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
               <div class="mat-select-row"><label class="mat-sel-lbl">Minitore</label>
                 <select class="fc mat-sel" data-smat="Minitore" style="padding:5px 8px;font-size:12px;" onchange="updateSMatField()">
-                  <option value="0">â€“</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                  <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
                 </select></div>
               <div class="mat-select-row"><label class="mat-sel-lbl">Stangen</label>
                 <select class="fc mat-sel" data-smat="Stangen" style="padding:5px 8px;font-size:12px;" onchange="updateSMatField()">
-                  <option value="0">â€“</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                  <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
                 </select></div>
               <div class="mat-select-row"><label class="mat-sel-lbl">Jugendtore</label>
                 <select class="fc mat-sel" data-smat="Jugendtore" style="padding:5px 8px;font-size:12px;" onchange="updateSMatField()">
-                  <option value="0">â€“</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                  <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>
                 </select></div>
               <div class="mat-select-row"><label class="mat-sel-lbl">Rebounder</label>
                 <select class="fc mat-sel" data-smat="Rebounder" style="padding:5px 8px;font-size:12px;" onchange="updateSMatField()">
-                  <option value="0">â€“</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+                  <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
                 </select></div>
-              <div class="mat-select-row"><label class="mat-sel-lbl">HÃ¼rden</label>
-                <select class="fc mat-sel" data-smat="HÃ¼rden" style="padding:5px 8px;font-size:12px;" onchange="updateSMatField()">
-                  <option value="0">â€“</option><option value="2">2</option><option value="4">4</option><option value="6">6</option><option value="8">8</option><option value="10">10</option><option value="12">12</option>
+              <div class="mat-select-row"><label class="mat-sel-lbl">Hürden</label>
+                <select class="fc mat-sel" data-smat="Hürden" style="padding:5px 8px;font-size:12px;" onchange="updateSMatField()">
+                  <option value="0">–</option><option value="2">2</option><option value="4">4</option><option value="6">6</option><option value="8">8</option><option value="10">10</option><option value="12">12</option>
                 </select></div>
               <div class="mat-select-row"><label class="mat-sel-lbl">Ringe</label>
                 <select class="fc mat-sel" data-smat="Ringe" style="padding:5px 8px;font-size:12px;" onchange="updateSMatField()">
-                  <option value="0">â€“</option><option value="4">4</option><option value="6">6</option><option value="8">8</option><option value="10">10</option><option value="12">12</option><option value="16">16</option>
+                  <option value="0">–</option><option value="4">4</option><option value="6">6</option><option value="8">8</option><option value="10">10</option><option value="12">12</option><option value="16">16</option>
                 </select></div>
               <div class="mat-select-row"><label class="mat-sel-lbl">Koord.leiter</label>
                 <select class="fc mat-sel" data-smat="Koordinationsleiter" style="padding:5px 8px;font-size:12px;" onchange="updateSMatField()">
-                  <option value="0">â€“</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+                  <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
                 </select></div>
             </div>
             <div style="font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:5px;">Weiteres Material:</div>
-            <input class="fc" id="sMatFree" type="text" placeholder="z.B. HÃ¼tchen, BÃ¤lle, Leibchen" style="font-size:12px;" oninput="updateSMatField()">
+            <input class="fc" id="sMatFree" type="text" placeholder="z.B. Hütchen, Bälle, Leibchen" style="font-size:12px;" oninput="updateSMatField()">
             <input type="hidden" id="sMat">
           </div>
           </div>
           <div class="fsec">Tags (min. 3) *</div>
           <div class="fg">
             <div style="display:flex;gap:8px;margin-bottom:8px;">
-              <input class="fc" id="sTagIn" type="text" placeholder="Tag eingebenâ€¦" onkeydown="if(event.key==='Enter'){addSTag();event.preventDefault();}">
+              <input class="fc" id="sTagIn" type="text" placeholder="Tag eingeben…" onkeydown="if(event.key==='Enter'){addSTag();event.preventDefault();}">
               <button onclick="addSTag()" style="padding:8px 13px;background:#8b5cf6;color:#fff;border:none;border-radius:7px;font-weight:700;cursor:pointer;font-size:12px;white-space:nowrap;">+ Tag</button>
             </div>
             <div id="sAtags" class="atags"></div>
             <div id="sStags" class="stags" style="margin-top:6px;"></div>
           </div>
-          <div class="fsec">Felddiagramm (Pflicht â€“ mind. 1 Objekt) *</div>
+          <div class="fsec">Felddiagramm (Pflicht – mind. 1 Objekt) *</div>
           <div class="fg">
             <div id="submitCanvasWrap">
-              <button onclick="openFieldOverlay('submit')" style="width:100%;padding:13px 10px;background:#1a2b1c;color:#a5d6a7;border:1.5px dashed rgba(165,214,167,.35);border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.3px;">âš½ Felddiagramm zeichnen / bearbeiten</button>
+              <button onclick="openFieldOverlay('submit')" style="width:100%;padding:13px 10px;background:#1a2b1c;color:#a5d6a7;border:1.5px dashed rgba(165,214,167,.35);border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.3px;">⚽ Felddiagramm zeichnen / bearbeiten</button>
               <div id="sPreviewWrap" style="display:none;margin-top:8px;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,.1);">
                 <img id="sPreviewImg" style="width:100%;display:block;" alt="Vorschau">
               </div>
@@ -406,17 +406,17 @@
         <div class="submit-checklist">
           <div class="submit-checklist-title">Checkliste</div>
           <div id="submitChecklist">
-            <div class="chk-item" id="chk-name"><div class="chk-dot"></div><div class="chk-label">Name ausgefÃ¼llt</div></div>
+            <div class="chk-item" id="chk-name"><div class="chk-dot"></div><div class="chk-label">Name ausgefüllt</div></div>
             <div class="chk-item" id="chk-desc"><div class="chk-dot"></div><div class="chk-label">Beschreibung (min. 20 Zeichen)</div></div>
             <div class="chk-item" id="chk-players"><div class="chk-dot"></div><div class="chk-label">Spieleranzahl angegeben</div></div>
             <div class="chk-item" id="chk-duration"><div class="chk-dot"></div><div class="chk-label">Belastungszeit angegeben</div></div>
-            <div class="chk-item" id="chk-intensity"><div class="chk-dot"></div><div class="chk-label">BelastungsintensitÃ¤t gewÃ¤hlt</div></div>
-            <div class="chk-item" id="chk-section"><div class="chk-dot"></div><div class="chk-label">Abschnitt gewÃ¤hlt</div></div>
-            <div class="chk-item" id="chk-tags"><div class="chk-dot"></div><div class="chk-label">Min. 3 Tags hinzugefÃ¼gt</div></div>
+            <div class="chk-item" id="chk-intensity"><div class="chk-dot"></div><div class="chk-label">Belastungsintensität gewählt</div></div>
+            <div class="chk-item" id="chk-section"><div class="chk-dot"></div><div class="chk-label">Abschnitt gewählt</div></div>
+            <div class="chk-item" id="chk-tags"><div class="chk-dot"></div><div class="chk-label">Min. 3 Tags hinzugefügt</div></div>
             <div class="chk-item" id="chk-canvas"><div class="chk-dot"></div><div class="chk-label">Felddiagramm gezeichnet</div></div>
           </div>
           <div class="submit-btn-wrap">
-            <button class="submit-btn-main" id="submitBtn" onclick="submitExercise()" disabled>Ãœbung einreichen</button>
+            <button class="submit-btn-main" id="submitBtn" onclick="submitExercise()" disabled>Übung einreichen</button>
           </div>
         </div>
       </div>
@@ -424,7 +424,7 @@
     <div class="page-section">
       <div class="page-section-divider"></div>
       <div class="queue-title">Meine Einreichungen</div>
-      <div class="queue-sub">Ãœbungen, die du eingereicht hast und noch auf PrÃ¼fung warten.</div>
+      <div class="queue-sub">Übungen, die du eingereicht hast und noch auf Prüfung warten.</div>
       <div id="mySubList" style="margin-top:16px;display:flex;flex-direction:column;gap:8px;"><div style="font-size:12px;color:var(--text-3);padding:8px 0;">Noch keine Einreichungen.</div></div>
     </div>
     <div id="adminUserWrap" class="page-section" style="display:none;">
@@ -438,9 +438,9 @@
       <div style="display:flex;align-items:center;justify-content:space-between;">
         <div>
           <div class="queue-title">Admin-Warteschlange</div>
-          <div class="queue-sub">Eingereichte Ãœbungen nach Abschnitt â€” klicke auf einen Bereich um die Ãœbungen zu prÃ¼fen.</div>
+          <div class="queue-sub">Eingereichte Übungen nach Abschnitt — klicke auf einen Bereich um die Übungen zu prüfen.</div>
         </div>
-        <button onclick="openTrash()" style="display:flex;align-items:center;gap:7px;padding:9px 16px;background:#fef2f2;border:1.5px solid #fca5a5;color:#b91c1c;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;">ðŸ—‘ Papierkorb</button>
+        <button onclick="openTrash()" style="display:flex;align-items:center;gap:7px;padding:9px 16px;background:#fef2f2;border:1.5px solid #fca5a5;color:#b91c1c;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;">🗑 Papierkorb</button>
       </div>
       <div class="queue-cards" id="queueCards"></div>
     </div>
@@ -451,17 +451,17 @@
 <div class="mbg h" id="feedbackMod">
   <div class="md" style="max-width:680px;width:92vw;">
     <div class="mhdr" style="padding:28px 32px 20px;">
-      <div class="mhdr-t">ðŸ’¬ Feedback senden</div>
-      <button class="mcls" onclick="closeMod('feedbackMod')">âœ•</button>
+      <div class="mhdr-t">💬 Feedback senden</div>
+      <button class="mcls" onclick="closeMod('feedbackMod')">✕</button>
     </div>
     <div class="mbd" style="padding:0 32px 32px;">
-      <p style="font-size:14px;color:var(--text-2);margin-bottom:24px;line-height:1.6;">Hast du einen Verbesserungsvorschlag, einen Bug gefunden oder eine Idee? Schreib uns â€“ wir freuen uns Ã¼ber jede RÃ¼ckmeldung.</p>
+      <p style="font-size:14px;color:var(--text-2);margin-bottom:24px;line-height:1.6;">Hast du einen Verbesserungsvorschlag, einen Bug gefunden oder eine Idee? Schreib uns – wir freuen uns über jede Rückmeldung.</p>
       <label class="flbl">Dein Name</label>
-      <input class="fc" id="fbName" type="text" placeholder="z.B. Max MÃ¼ller" style="margin-bottom:14px;">
-      <label class="flbl">E-Mail (optional, fÃ¼r RÃ¼ckmeldung)</label>
+      <input class="fc" id="fbName" type="text" placeholder="z.B. Max Müller" style="margin-bottom:14px;">
+      <label class="flbl">E-Mail (optional, für Rückmeldung)</label>
       <input class="fc" id="fbEmail" type="email" placeholder="deine@email.de" style="margin-bottom:14px;">
       <label class="flbl">Nachricht</label>
-      <textarea class="fc" id="fbMessage" rows="7" placeholder="Dein Feedbackâ€¦" style="resize:vertical;min-height:130px;"></textarea>
+      <textarea class="fc" id="fbMessage" rows="7" placeholder="Dein Feedback…" style="resize:vertical;min-height:130px;"></textarea>
       <button class="bpr" onclick="sendFeedback()" style="width:100%;margin-top:18px;padding:14px;font-size:14px;">Feedback absenden</button>
     </div>
   </div>
@@ -471,12 +471,12 @@
 <div class="mbg h" id="trashMod">
   <div class="md" style="max-width:600px;">
     <div class="mhdr">
-      <div class="mico" style="background:#fca5a5;">ðŸ—‘</div>
+      <div class="mico" style="background:#fca5a5;">🗑</div>
       <div class="mtit">Papierkorb</div>
-      <button class="mcl" onclick="closeMod('trashMod')">âœ•</button>
+      <button class="mcl" onclick="closeMod('trashMod')">✕</button>
     </div>
     <div class="mbody">
-      <div style="font-size:12px;color:var(--text-3);margin-bottom:12px;">GelÃ¶schte Ãœbungen kÃ¶nnen wiederhergestellt oder endgÃ¼ltig entfernt werden.</div>
+      <div style="font-size:12px;color:var(--text-3);margin-bottom:12px;">Gelöschte Übungen können wiederhergestellt oder endgültig entfernt werden.</div>
       <div id="trashList"></div>
     </div>
   </div>
@@ -494,7 +494,7 @@
     <div class="print-output" id="printOutput" style="display:none;"></div>
     <div class="print-hdr" id="printHdr"></div>
     <div class="plan-hdr no-print">
-      <input class="plan-in" id="planName" type="text" placeholder="Trainingseinheit benennenâ€¦">
+      <input class="plan-in" id="planName" type="text" placeholder="Trainingseinheit benennen…">
       <button class="bpl gr" onclick="savePlan()">Speichern</button>
       <button class="bpl gy" onclick="printPlan()">Drucken</button>
       <button class="bpl gy" onclick="clearPlan()">Leeren</button>
@@ -508,31 +508,31 @@
       </div>
       <div class="planner-sidebar no-print">
         <div class="tpl-box">
-          <div class="tpl-t">ðŸ“‹ Vorlagen laden</div>
+          <div class="tpl-t">📋 Vorlagen laden</div>
           <div class="tpl-item" onclick="loadTemplate('vorbereitung')">
-            <div class="tpl-ico">ðŸ•ï¸</div>
+            <div class="tpl-ico">🏕️</div>
             <div>
               <div class="tpl-name">4-Wochen Vorbereitung</div>
-              <div class="tpl-desc">Di/Do Technik Â· 2 Testspieltage</div>
+              <div class="tpl-desc">Di/Do Technik · 2 Testspieltage</div>
             </div>
           </div>
           <div class="tpl-item" onclick="loadTemplate('standard')">
-            <div class="tpl-ico">âš½</div>
+            <div class="tpl-ico">⚽</div>
             <div>
-              <div class="tpl-name">Standard Di/Do â€“ Technik</div>
-              <div class="tpl-desc">Klassische Einheit Â· alle Abschnitte</div>
+              <div class="tpl-name">Standard Di/Do – Technik</div>
+              <div class="tpl-desc">Klassische Einheit · alle Abschnitte</div>
             </div>
           </div>
           <div class="tpl-item" onclick="loadTemplate('schnelligkeit')">
-            <div class="tpl-ico">âš¡</div>
+            <div class="tpl-ico">⚡</div>
             <div>
-              <div class="tpl-name">6-Wochen Inseason Â· Schnelligkeit</div>
+              <div class="tpl-name">6-Wochen Inseason · Schnelligkeit</div>
               <div class="tpl-desc">COD, Sprint, Reaktion im Hauptteil</div>
             </div>
           </div>
         </div>
         <div class="tpl-box">
-          <div class="tpl-t">ðŸ’¾ Gespeicherte PlÃ¤ne</div>
+          <div class="tpl-t">💾 Gespeicherte Pläne</div>
           <div id="splist"></div>
         </div>
       </div>
@@ -553,7 +553,7 @@
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
         <div style="flex:1;">
           <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:var(--text-1);">Aktive Trainingsperiodisierung</h3>
-          <p style="font-size:12px;color:var(--text-3);margin-top:2px;">BlÃ¶cke erstellen, Wochen fÃ¼llen, Tage planen</p>
+          <p style="font-size:12px;color:var(--text-3);margin-top:2px;">Blöcke erstellen, Wochen füllen, Tage planen</p>
         </div>
         <button class="bpl gr" onclick="openNewBlockWizard()">+ Neuer Block</button>
         <button class="bpl gy" onclick="printLtp()">Drucken</button>
@@ -567,7 +567,7 @@
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
         <div style="flex:1;">
           <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:var(--text-1);">Block-Bibliothek</h3>
-          <p style="font-size:12px;color:var(--text-3);margin-top:2px;">Gespeicherte BlÃ¶cke fÃ¼r spÃ¤tere Verwendung</p>
+          <p style="font-size:12px;color:var(--text-3);margin-top:2px;">Gespeicherte Blöcke für spätere Verwendung</p>
         </div>
       </div>
       <div id="ltpLibGrid"></div>
@@ -588,7 +588,7 @@
         <input type="text" id="apiKeyIn" class="fc" style="margin-bottom:9px;" placeholder="Falls von der IT bereitgestellt">
         <button class="bpr" onclick="saveApiCfg()" style="width:100%">Speichern & testen</button>
       </div>
-      <div style="margin-top:9px;padding:9px;background:var(--off);border-radius:6px;font-size:11px;color:var(--gm);" id="apiDetail">â€“</div>
+      <div style="margin-top:9px;padding:9px;background:var(--off);border-radius:6px;font-size:11px;color:var(--gm);" id="apiDetail">–</div>
     </div>
     <div style="background:var(--surface);border-radius:12px;padding:20px;box-shadow:var(--sh);display:grid;grid-template-columns:1fr 1fr;gap:9px;">
       <div>
@@ -602,7 +602,7 @@
         <button onclick="exportCSV()" style="width:100%;padding:9px;background:var(--gray);color:var(--gd2);border:none;border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;margin-bottom:7px;">CSV exportieren</button>
         <button onclick="downloadITDoc()" style="width:100%;padding:9px;background:var(--gray);color:var(--gd2);border:none;border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;">IT-Dokument</button>
       </div>
-      <button onclick="if(confirm('Alle Ãœbungen lÃ¶schen und StandardÃ¼bungen neu laden?')){exercises=[];mergeNewDefaultExercises();save();renderSection();showToast('Ãœbungen zurÃ¼ckgesetzt');}"  style="grid-column:1/-1;padding:9px;background:#fce4ec;color:#880e4f;border:none;border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;">Alle Ãœbungen lÃ¶schen</button>
+      <button onclick="if(confirm('Alle Übungen löschen und Standardübungen neu laden?')){exercises=[];mergeNewDefaultExercises();save();renderSection();showToast('Übungen zurückgesetzt');}"  style="grid-column:1/-1;padding:9px;background:#fce4ec;color:#880e4f;border:none;border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;">Alle Übungen löschen</button>
     </div>
   </div>
 </div>
@@ -610,13 +610,13 @@
 <!-- ACCOUNT PAGE -->
 <div id="page-account" class="page">
   <div class="inner" style="max-width:680px;padding-bottom:60px;">
-    <button onclick="goPage('home')" style="display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--gd2);font-size:13px;cursor:pointer;margin-bottom:18px;padding:0;font-family:'Barlow',sans-serif;">â† ZurÃ¼ck</button>
+    <button onclick="goPage('home')" style="display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--gd2);font-size:13px;cursor:pointer;margin-bottom:18px;padding:0;font-family:'Barlow',sans-serif;">← Zurück</button>
     <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;margin:0 0 20px;">Mein Account</h1>
 
     <!-- Tabs -->
     <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:22px;">
       <button id="accTabProfile" class="acc-tab acc-tab--active" onclick="switchAccTab('profile')">Profil</button>
-      <button id="accTabPlans" class="acc-tab" onclick="switchAccTab('plans')">Meine PlÃ¤ne</button>
+      <button id="accTabPlans" class="acc-tab" onclick="switchAccTab('plans')">Meine Pläne</button>
     </div>
 
     <!-- Tab: Profil -->
@@ -626,24 +626,24 @@
         <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
           <div id="accAvatarBig" style="width:56px;height:56px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:#fff;flex-shrink:0;">?</div>
           <div>
-            <div id="accDisplayName" style="font-size:18px;font-weight:700;">â€“</div>
-            <div id="accDisplayEmail" style="font-size:12px;color:var(--gd2);">â€“</div>
+            <div id="accDisplayName" style="font-size:18px;font-weight:700;">–</div>
+            <div id="accDisplayEmail" style="font-size:12px;color:var(--gd2);">–</div>
           </div>
         </div>
         <label style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--gd2);display:block;margin-bottom:4px;">Benutzername</label>
         <input type="text" id="accUsernameIn" class="fc" style="margin-bottom:14px;" placeholder="Benutzername">
         <label style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--gd2);display:block;margin-bottom:4px;">E-Mail</label>
         <input type="email" id="accEmailIn" class="fc" style="margin-bottom:14px;" placeholder="E-Mail-Adresse">
-        <button class="bpr" onclick="saveAccountProfile()" style="width:100%;">Ã„nderungen speichern</button>
+        <button class="bpr" onclick="saveAccountProfile()" style="width:100%;">Änderungen speichern</button>
       </div>
 
       <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
-        <div class="fsec" style="margin-top:0;">Ã–ffentliche Sichtbarkeit</div>
+        <div class="fsec" style="margin-top:0;">Öffentliche Sichtbarkeit</div>
         <label style="display:flex;align-items:center;gap:12px;cursor:pointer;padding:4px 0;">
           <input type="checkbox" id="accPublicName" style="width:18px;height:18px;accent-color:var(--accent);cursor:pointer;">
-          <span style="font-size:14px;">Name Ã¶ffentlich im Katalog anzeigen</span>
+          <span style="font-size:14px;">Name öffentlich im Katalog anzeigen</span>
         </label>
-        <p style="font-size:12px;color:var(--gd2);margin:8px 0 14px;line-height:1.5;">Wenn aktiv, erscheint dein Benutzername bei deinen eingereichten Ãœbungen im Ã¶ffentlichen Katalog.</p>
+        <p style="font-size:12px;color:var(--gd2);margin:8px 0 14px;line-height:1.5;">Wenn aktiv, erscheint dein Benutzername bei deinen eingereichten Übungen im öffentlichen Katalog.</p>
         <button class="bpr" onclick="saveAccountVisibility()" style="width:100%;">Speichern</button>
       </div>
 
@@ -653,10 +653,10 @@
       </div>
     </div>
 
-    <!-- Tab: Meine PlÃ¤ne -->
+    <!-- Tab: Meine Pläne -->
     <div id="accPanelPlans" style="display:none;">
       <div id="accPlansList" style="display:flex;flex-direction:column;gap:10px;">
-        <div style="text-align:center;color:var(--gd2);font-size:14px;padding:40px 0;">Keine PlÃ¤ne vorhanden.</div>
+        <div style="text-align:center;color:var(--gd2);font-size:14px;padding:40px 0;">Keine Pläne vorhanden.</div>
       </div>
     </div>
   </div>
@@ -665,38 +665,38 @@
 <!-- IMPRESSUM PAGE -->
 <div id="page-impressum" class="page">
   <div class="inner" style="max-width:680px;padding-bottom:60px;">
-    <button onclick="history.back()||goPage('home')" style="display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--gd2);font-size:13px;cursor:pointer;margin-bottom:18px;padding:0;font-family:'Barlow',sans-serif;">â† ZurÃ¼ck</button>
+    <button onclick="history.back()||goPage('home')" style="display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--gd2);font-size:13px;cursor:pointer;margin-bottom:18px;padding:0;font-family:'Barlow',sans-serif;">← Zurück</button>
     <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;margin:0 0 6px;">Impressum</h1>
-    <p style="font-size:12px;color:var(--gd2);margin:0 0 28px;">Angaben gemÃ¤ÃŸ Â§ 5 TMG</p>
+    <p style="font-size:12px;color:var(--gd2);margin:0 0 28px;">Angaben gemäß § 5 TMG</p>
 
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
       <div class="fsec" style="margin-top:0;">Anbieter</div>
       <p style="margin:0 0 4px;font-weight:600;">Niklas Boenisch</p>
-      <p style="margin:0;color:var(--gd2);font-size:14px;">[StraÃŸe und Hausnummer]<br>[PLZ Stadt]<br>Deutschland</p>
+      <p style="margin:0;color:var(--gd2);font-size:14px;">[Straße und Hausnummer]<br>[PLZ Stadt]<br>Deutschland</p>
     </div>
 
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
       <div class="fsec" style="margin-top:0;">Kontakt</div>
       <table style="border-collapse:collapse;font-size:14px;width:100%;">
         <tr><td style="padding:3px 14px 3px 0;color:var(--gd2);white-space:nowrap;">E-Mail</td><td>assistcoach2026@gmail.com</td></tr>
-        <tr><td style="padding:3px 14px 3px 0;color:var(--gd2);">Telefon</td><td>[+49 â€¦]</td></tr>
+        <tr><td style="padding:3px 14px 3px 0;color:var(--gd2);">Telefon</td><td>[+49 …]</td></tr>
       </table>
     </div>
 
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
-      <div class="fsec" style="margin-top:0;">Verantwortlich fÃ¼r den Inhalt (Â§ 18 Abs. 2 MStV)</div>
-      <p style="margin:0;font-size:14px;">Niklas Boenisch<br>[StraÃŸe], [PLZ Stadt]</p>
+      <div class="fsec" style="margin-top:0;">Verantwortlich für den Inhalt (§ 18 Abs. 2 MStV)</div>
+      <p style="margin:0;font-size:14px;">Niklas Boenisch<br>[Straße], [PLZ Stadt]</p>
     </div>
 
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
       <div class="fsec" style="margin-top:0;">Haftungsausschluss</div>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Die Inhalte dieser Anwendung wurden mit grÃ¶ÃŸter Sorgfalt erstellt. FÃ¼r die Richtigkeit, VollstÃ¤ndigkeit und AktualitÃ¤t der Inhalte kann jedoch keine GewÃ¤hr Ã¼bernommen werden.</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Als Diensteanbieter sind wir gemÃ¤ÃŸ Â§ 7 Abs. 1 TMG fÃ¼r eigene Inhalte nach den allgemeinen Gesetzen verantwortlich. Nach Â§Â§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet, Ã¼bermittelte oder gespeicherte fremde Informationen zu Ã¼berwachen.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Die Inhalte dieser Anwendung wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte kann jedoch keine Gewähr übernommen werden.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Als Diensteanbieter sind wir gemäß § 7 Abs. 1 TMG für eigene Inhalte nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen.</p>
     </div>
 
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
       <div class="fsec" style="margin-top:0;">Urheberrecht</div>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Die durch die Betreiber erstellten Inhalte und Werke in dieser Anwendung unterliegen dem deutschen Urheberrecht. Die VervielfÃ¤ltigung, Bearbeitung, Verbreitung und jede Art der Verwertung auÃŸerhalb der Grenzen des Urheberrechts bedÃ¼rfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Die durch die Betreiber erstellten Inhalte und Werke in dieser Anwendung unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechts bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.</p>
     </div>
 
     <p style="font-size:11px;color:var(--gd2);text-align:center;margin-top:24px;">Stand: <span id="impressumDate"></span></p>
@@ -711,59 +711,59 @@
     <div style="width:32px;height:32px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#fff;flex-shrink:0;">?</div>
     <div>
       <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;letter-spacing:.3px;">Wie funktioniert AssistCoach?</div>
-      <div style="font-size:11px;color:var(--gd2);">SchnellÃ¼bersicht aller Funktionen</div>
+      <div style="font-size:11px;color:var(--gd2);">Schnellübersicht aller Funktionen</div>
     </div>
-    <button onclick="closeHelpPanel()" style="margin-left:auto;background:none;border:none;font-size:20px;cursor:pointer;color:var(--gd2);line-height:1;padding:4px;">âœ•</button>
+    <button onclick="closeHelpPanel()" style="margin-left:auto;background:none;border:none;font-size:20px;cursor:pointer;color:var(--gd2);line-height:1;padding:4px;">✕</button>
   </div>
 
   <div style="padding:20px;display:flex;flex-direction:column;gap:14px;">
 
     <!-- Katalog -->
     <div class="help-card">
-      <div class="help-card-icon" style="background:#1b5e20;">ðŸ“š</div>
+      <div class="help-card-icon" style="background:#1b5e20;">📚</div>
       <div>
-        <div class="help-card-title">Ãœbungskatalog</div>
-        <p class="help-card-text">Im <strong>Katalog</strong> findest du alle verfÃ¼gbaren Ãœbungen, sortiert nach Schwerpunkten (Technik, Taktik, Kondition â€¦). Nutze die Suche oder die Filter, um schnell die passende Ãœbung zu finden.</p>
-        <div class="help-step"><span class="help-num">1</span>Ãœbung im Katalog anklicken â†’ Details Ã¶ffnen sich</div>
-        <div class="help-step"><span class="help-num">2</span>Auf <strong style="color:var(--accent);">â€ž+ zum Plan hinzufÃ¼gen"</strong> klicken</div>
-        <div class="help-step"><span class="help-num">3</span>Trainingseinheit und Position wÃ¤hlen â€“ fertig</div>
+        <div class="help-card-title">Übungskatalog</div>
+        <p class="help-card-text">Im <strong>Katalog</strong> findest du alle verfügbaren Übungen, sortiert nach Schwerpunkten (Technik, Taktik, Kondition …). Nutze die Suche oder die Filter, um schnell die passende Übung zu finden.</p>
+        <div class="help-step"><span class="help-num">1</span>Übung im Katalog anklicken → Details öffnen sich</div>
+        <div class="help-step"><span class="help-num">2</span>Auf <strong style="color:var(--accent);">„+ zum Plan hinzufügen"</strong> klicken</div>
+        <div class="help-step"><span class="help-num">3</span>Trainingseinheit und Position wählen – fertig</div>
       </div>
     </div>
 
     <!-- Trainingsplan -->
     <div class="help-card">
-      <div class="help-card-icon" style="background:#0d3b6e;">ðŸ“‹</div>
+      <div class="help-card-icon" style="background:#0d3b6e;">📋</div>
       <div>
         <div class="help-card-title">Trainingsplan</div>
-        <p class="help-card-text">Der Trainingsplan zeigt deine Einheit als strukturierte Abfolge. FÃ¼r jede Ãœbung werden automatisch berechnet:</p>
+        <p class="help-card-text">Der Trainingsplan zeigt deine Einheit als strukturierte Abfolge. Für jede Übung werden automatisch berechnet:</p>
         <div class="help-pill-row">
-          <span class="help-pill">â± Belastungszeit</span>
-          <span class="help-pill">ðŸ”„ Wiederholungen</span>
-          <span class="help-pill">ðŸ“¦ Materialbedarf</span>
-          <span class="help-pill">ðŸ‘¥ Spielerzahl</span>
+          <span class="help-pill">⏱ Belastungszeit</span>
+          <span class="help-pill">🔄 Wiederholungen</span>
+          <span class="help-pill">📦 Materialbedarf</span>
+          <span class="help-pill">👥 Spielerzahl</span>
         </div>
-        <p class="help-card-text" style="margin-top:10px;">Per Drag &amp; Drop kannst du die Reihenfolge der Ãœbungen anpassen. Am Ende lÃ¤sst sich der Plan als PDF exportieren.</p>
+        <p class="help-card-text" style="margin-top:10px;">Per Drag &amp; Drop kannst du die Reihenfolge der Übungen anpassen. Am Ende lässt sich der Plan als PDF exportieren.</p>
       </div>
     </div>
 
     <!-- Langzeitplanung -->
     <div class="help-card">
-      <div class="help-card-icon" style="background:#4a148c;">ðŸ“…</div>
+      <div class="help-card-icon" style="background:#4a148c;">📅</div>
       <div>
         <div class="help-card-title">Langzeitplanung</div>
-        <p class="help-card-text">Die Langzeitplanung hilft dir, TrainingsblÃ¶cke Ã¼ber Wochen und Monate zu strukturieren. Du legst Phasen (z. B. Vorbereitung, Wettkampf, Regeneration) an und weist ihnen Schwerpunkte zu.</p>
+        <p class="help-card-text">Die Langzeitplanung hilft dir, Trainingsblöcke über Wochen und Monate zu strukturieren. Du legst Phasen (z. B. Vorbereitung, Wettkampf, Regeneration) an und weist ihnen Schwerpunkte zu.</p>
         <div class="help-step"><span class="help-num">1</span>Block anlegen: Zeitraum + Schwerpunkt festlegen</div>
-        <div class="help-step"><span class="help-num">2</span>Mehrere BlÃ¶cke ergeben eine Saison-Ãœbersicht</div>
-        <div class="help-step"><span class="help-num">3</span>Einzelne Einheiten lassen sich direkt aus dem Block Ã¶ffnen</div>
+        <div class="help-step"><span class="help-num">2</span>Mehrere Blöcke ergeben eine Saison-Übersicht</div>
+        <div class="help-step"><span class="help-num">3</span>Einzelne Einheiten lassen sich direkt aus dem Block öffnen</div>
       </div>
     </div>
 
     <!-- Vorlagen -->
     <div class="help-card">
-      <div class="help-card-icon" style="background:#b71c1c;">â­</div>
+      <div class="help-card-icon" style="background:#b71c1c;">⭐</div>
       <div>
         <div class="help-card-title">Fertige Vorlagen</div>
-        <p class="help-card-text">Unter <strong>â€žVorlagen"</strong> im Trainingsplan findest du fertig zusammengestellte Einheiten fÃ¼r gÃ¤ngige Schwerpunkte:</p>
+        <p class="help-card-text">Unter <strong>„Vorlagen"</strong> im Trainingsplan findest du fertig zusammengestellte Einheiten für gängige Schwerpunkte:</p>
         <div class="help-pill-row">
           <span class="help-pill">Passspiel</span>
           <span class="help-pill">Pressing</span>
@@ -771,33 +771,33 @@
           <span class="help-pill">Kondition</span>
           <span class="help-pill">Spielformen</span>
         </div>
-        <p class="help-card-text" style="margin-top:10px;">Eine Vorlage laden, anpassen und direkt nutzen â€“ oder als eigener Plan speichern.</p>
+        <p class="help-card-text" style="margin-top:10px;">Eine Vorlage laden, anpassen und direkt nutzen – oder als eigener Plan speichern.</p>
       </div>
     </div>
 
     <!-- Einreichen -->
     <div class="help-card">
-      <div class="help-card-icon" style="background:#e65100;">âœï¸</div>
+      <div class="help-card-icon" style="background:#e65100;">✏️</div>
       <div>
-        <div class="help-card-title">Eigene Ãœbung einreichen</div>
-        <p class="help-card-text">Du hast eine Ãœbung, die noch nicht im Katalog ist? Unter <strong>â€žEinreichen"</strong> kannst du sie fÃ¼r alle zugÃ¤nglich machen:</p>
+        <div class="help-card-title">Eigene Übung einreichen</div>
+        <p class="help-card-text">Du hast eine Übung, die noch nicht im Katalog ist? Unter <strong>„Einreichen"</strong> kannst du sie für alle zugänglich machen:</p>
         <div class="help-step"><span class="help-num">1</span>Konto erstellen oder anmelden</div>
-        <div class="help-step"><span class="help-num">2</span>Formular ausfÃ¼llen: Name, Beschreibung, Schwerpunkt, Material</div>
+        <div class="help-step"><span class="help-num">2</span>Formular ausfüllen: Name, Beschreibung, Schwerpunkt, Material</div>
         <div class="help-step"><span class="help-num">3</span>Optional: Felddiagramm mit dem eingebauten Editor zeichnen</div>
-        <div class="help-step"><span class="help-num">4</span>Einreichen â†’ das Team prÃ¼ft und schaltet die Ãœbung frei</div>
+        <div class="help-step"><span class="help-num">4</span>Einreichen → das Team prüft und schaltet die Übung frei</div>
       </div>
     </div>
 
   </div>
 </aside>
 
-<!-- MODAL: Ãœbung -->
+<!-- MODAL: Übung -->
 <div class="mbg h" id="exMod">
   <div class="md">
     <div class="mhdr">
       <div class="mico" id="mIco" style="background:var(--gp)">+</div>
-      <div class="mtit" id="mTit">Neue Ãœbung</div>
-      <button class="mcl" onclick="closeMod('exMod')">âœ•</button>
+      <div class="mtit" id="mTit">Neue Übung</div>
+      <button class="mcl" onclick="closeMod('exMod')">✕</button>
     </div>
     <div class="mbody">
       <input type="hidden" id="mId">
@@ -806,10 +806,10 @@
       <div class="fr">
         <div class="fg"><label>Abschnitt</label>
           <select class="fc" id="mSec">
-            <option value="0">1 Â· Open Field</option><option value="1">2 Â· Warm Up</option>
-            <option value="2">3 Â· HinfÃ¼hrung</option><option value="3">4 Â· Hauptteil</option>
-            <option value="4">5 Â· Abschlussspiel</option>
-            <option value="5">6 Â· Sondertraining</option>
+            <option value="0">1 · Open Field</option><option value="1">2 · Warm Up</option>
+            <option value="2">3 · Hinführung</option><option value="3">4 · Hauptteil</option>
+            <option value="4">5 · Abschlussspiel</option>
+            <option value="5">6 · Sondertraining</option>
           </select>
         </div>
         <div class="fg"><label>Spieleranzahl</label><input class="fc" id="mPl" type="text" placeholder="z.B. 6-12"></div>
@@ -818,39 +818,39 @@
         <div class="fg" style="display:none"><!-- placeholder --></div>
         <div class="fg"><label>Material</label>
         <div id="matBuilder" style="border:1.5px solid var(--border);border-radius:7px;padding:10px;background:var(--surface-2);">
-          <div style="font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--gm);margin-bottom:8px;">ZÃ¤hlbares Material (Anzahl wÃ¤hlen):</div>
+          <div style="font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--gm);margin-bottom:8px;">Zählbares Material (Anzahl wählen):</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
             <div class="mat-select-row"><label class="mat-sel-lbl">Minitore</label>
               <select class="fc mat-sel" data-mat="Minitore" style="padding:5px 8px;font-size:12px;" onchange="updateMatField()">
-                <option value="0">â€“</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
               </select></div>
             <div class="mat-select-row"><label class="mat-sel-lbl">Stangen</label>
               <select class="fc mat-sel" data-mat="Stangen" style="padding:5px 8px;font-size:12px;" onchange="updateMatField()">
-                <option value="0">â€“</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
               </select></div>
             <div class="mat-select-row"><label class="mat-sel-lbl">Jugendtore</label>
               <select class="fc mat-sel" data-mat="Jugendtore" style="padding:5px 8px;font-size:12px;" onchange="updateMatField()">
-                <option value="0">â€“</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
               </select></div>
             <div class="mat-select-row"><label class="mat-sel-lbl">Rebounder</label>
               <select class="fc mat-sel" data-mat="Rebounder" style="padding:5px 8px;font-size:12px;" onchange="updateMatField()">
-                <option value="0">â€“</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
               </select></div>
-            <div class="mat-select-row"><label class="mat-sel-lbl">HÃ¼rden</label>
-              <select class="fc mat-sel" data-mat="HÃ¼rden" style="padding:5px 8px;font-size:12px;" onchange="updateMatField()">
-                <option value="0">â€“</option><option value="2">2</option><option value="4">4</option><option value="6">6</option><option value="8">8</option><option value="10">10</option><option value="12">12</option>
+            <div class="mat-select-row"><label class="mat-sel-lbl">Hürden</label>
+              <select class="fc mat-sel" data-mat="Hürden" style="padding:5px 8px;font-size:12px;" onchange="updateMatField()">
+                <option value="0">–</option><option value="2">2</option><option value="4">4</option><option value="6">6</option><option value="8">8</option><option value="10">10</option><option value="12">12</option>
               </select></div>
             <div class="mat-select-row"><label class="mat-sel-lbl">Ringe</label>
               <select class="fc mat-sel" data-mat="Ringe" style="padding:5px 8px;font-size:12px;" onchange="updateMatField()">
-                <option value="0">â€“</option><option value="4">4</option><option value="6">6</option><option value="8">8</option><option value="10">10</option><option value="12">12</option><option value="16">16</option>
+                <option value="0">–</option><option value="4">4</option><option value="6">6</option><option value="8">8</option><option value="10">10</option><option value="12">12</option><option value="16">16</option>
               </select></div>
             <div class="mat-select-row"><label class="mat-sel-lbl">Koord.leiter</label>
               <select class="fc mat-sel" data-mat="Koordinationsleiter" style="padding:5px 8px;font-size:12px;" onchange="updateMatField()">
-                <option value="0">â€“</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+                <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
               </select></div>
           </div>
           <div style="font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--gm);margin-bottom:5px;">Weiteres Material:</div>
-          <input class="fc" id="mMatFree" type="text" placeholder="z.B. HÃ¼tchen, BÃ¤lle, Leibchen" style="font-size:12px;" oninput="updateMatField()">
+          <input class="fc" id="mMatFree" type="text" placeholder="z.B. Hütchen, Bälle, Leibchen" style="font-size:12px;" oninput="updateMatField()">
           <input type="hidden" id="mMat">
         </div>
       </div>
@@ -858,7 +858,7 @@
       <div class="fr">
         <div class="fg"><label>Belastungszeit</label>
           <select class="fc" id="mDur">
-            <option value="">â€“ wÃ¤hlen â€“</option>
+            <option value="">– wählen –</option>
             <option value="5">5 min</option>
             <option value="8">8 min</option>
             <option value="10">10 min</option>
@@ -869,32 +869,32 @@
             <option value="30">30 min</option>
           </select>
         </div>
-        <div class="fg"><label>BelastungsintensitÃ¤t</label>
+        <div class="fg"><label>Belastungsintensität</label>
           <select class="fc" id="mDif">
-            <option value="">â€“ wÃ¤hlen â€“</option><option value="Leicht">Leicht</option>
+            <option value="">– wählen –</option><option value="Leicht">Leicht</option>
             <option value="Mittel">Mittel</option><option value="Schwer">Schwer</option>
           </select>
         </div>
       </div>
-      <div class="fg"><label>Beschreibung</label><textarea class="fc" id="mDesc" rows="3" placeholder="Ablauf, Organisation, Coachingâ€¦"></textarea></div>
+      <div class="fg"><label>Beschreibung</label><textarea class="fc" id="mDesc" rows="3" placeholder="Ablauf, Organisation, Coaching…"></textarea></div>
       <div class="fsec">Felddiagramm</div>
       <div class="fg">
         <div style="display:flex;gap:0;border:1.5px solid var(--gray);border-radius:8px;overflow:hidden;margin-bottom:10px;">
-          <button id="imgTabUpload" onclick="switchImgTab('upload')" style="flex:1;padding:8px;border:none;background:var(--g);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;">ðŸ“· Foto hochladen</button>
-          <button id="imgTabDraw" onclick="switchImgTab('draw')" style="flex:1;padding:8px;border:none;background:none;color:var(--gd2);font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;">âš½ Felddiagramm</button>
+          <button id="imgTabUpload" onclick="switchImgTab('upload')" style="flex:1;padding:8px;border:none;background:var(--g);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;">📷 Foto hochladen</button>
+          <button id="imgTabDraw" onclick="switchImgTab('draw')" style="flex:1;padding:8px;border:none;background:none;color:var(--gd2);font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;">⚽ Felddiagramm</button>
         </div>
         <div id="imgPanelUpload">
           <!-- Image upload removed -->
         </div>
         <div id="imgPanelDraw" style="display:none;padding:8px 0;">
-          <button onclick="openFieldOverlay()" style="width:100%;padding:13px 10px;background:#1a2b1c;color:#a5d6a7;border:1.5px dashed rgba(165,214,167,.35);border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.3px;">âš½ Felddiagramm zeichnen / bearbeiten</button>
+          <button onclick="openFieldOverlay()" style="width:100%;padding:13px 10px;background:#1a2b1c;color:#a5d6a7;border:1.5px dashed rgba(165,214,167,.35);border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.3px;">⚽ Felddiagramm zeichnen / bearbeiten</button>
           <div id="cvPreview" style="display:none;margin-top:8px;border-radius:8px;overflow:hidden;"><img id="cvPreviewImg" style="width:100%;display:block;" alt="Vorschau"></div>
         </div>
       </div>
       <div class="fsec">Tags</div>
       <div class="fg">
         <div class="tr2">
-          <input class="fc" id="mTagIn" type="text" placeholder="Tag eingebenâ€¦" onkeydown="if(event.key==='Enter'){addMTag();event.preventDefault();}">
+          <input class="fc" id="mTagIn" type="text" placeholder="Tag eingeben…" onkeydown="if(event.key==='Enter'){addMTag();event.preventDefault();}">
           <button onclick="addMTag()" style="padding:8px 13px;background:var(--g);color:#fff;border:none;border-radius:7px;font-weight:700;cursor:pointer;font-size:12px;white-space:nowrap;">+ Tag</button>
         </div>
         <div id="mAtags" class="atags"></div>
@@ -912,13 +912,13 @@
 <div class="mbg h" id="descMod">
   <div class="md" style="max-width:900px;width:90vw;">
     <div class="mhdr">
-      <div class="mico" style="background:var(--gp)">âœï¸</div>
+      <div class="mico" style="background:var(--gp)">✏️</div>
       <div class="mtit" id="descModTit">Beschreibung</div>
-      <button class="mcl" onclick="closeMod('descMod')">âœ•</button>
+      <button class="mcl" onclick="closeMod('descMod')">✕</button>
     </div>
     <div class="mbody">
-      <div style="font-size:12px;color:var(--text-3);margin-bottom:8px;">Dieser Text erscheint im Abschnitts-Banner fÃ¼r alle Nutzer sichtbar.</div>
-      <textarea class="dta" id="descTa" placeholder="Beschreibungstextâ€¦" style="width:100%;min-height:280px;resize:vertical;font-size:14px;line-height:1.6;box-sizing:border-box;"></textarea>
+      <div style="font-size:12px;color:var(--text-3);margin-bottom:8px;">Dieser Text erscheint im Abschnitts-Banner für alle Nutzer sichtbar.</div>
+      <textarea class="dta" id="descTa" placeholder="Beschreibungstext…" style="width:100%;min-height:280px;resize:vertical;font-size:14px;line-height:1.6;box-sizing:border-box;"></textarea>
       <div class="macts"><button class="bpr" onclick="saveDesc()">Speichern</button><button class="bsc" onclick="closeMod('descMod')">Abbrechen</button></div>
     </div>
   </div>
@@ -928,20 +928,20 @@
 <div class="mbg h" id="tagMod">
   <div class="md">
     <div class="mhdr">
-      <div class="mico" style="background:var(--gp)">ðŸ·</div>
+      <div class="mico" style="background:var(--gp)">🏷</div>
       <div class="mtit" id="tagModTit">Tags</div>
-      <button class="mcl" onclick="closeMod('tagMod')">âœ•</button>
+      <button class="mcl" onclick="closeMod('tagMod')">✕</button>
     </div>
     <div class="mbody">
-      <div class="fsec">Tag hinzufÃ¼gen (global)</div>
+      <div class="fsec">Tag hinzufügen (global)</div>
       <div class="tr2" style="margin-bottom:9px;">
-        <input class="fc" id="newTagIn" type="text" placeholder="Tag eingebenâ€¦" onkeydown="if(event.key==='Enter'){addSecTag();event.preventDefault();}">
+        <input class="fc" id="newTagIn" type="text" placeholder="Tag eingeben…" onkeydown="if(event.key==='Enter'){addSecTag();event.preventDefault();}">
         <button onclick="addSecTag()" style="padding:8px 13px;background:var(--g);color:#fff;border:none;border-radius:7px;font-weight:700;cursor:pointer;font-size:12px;">+ Tag</button>
       </div>
-      <div class="fsec" style="margin-top:4px;">Alle Tags <span style="font-size:10px;font-weight:600;color:var(--gm);">(Ã— zum LÃ¶schen)</span></div>
+      <div class="fsec" style="margin-top:4px;">Alle Tags <span style="font-size:10px;font-weight:600;color:var(--gm);">(× zum Löschen)</span></div>
       <div id="sTagsList" class="atags" style="margin-bottom:16px;"></div>
       <div class="fsec">Tags Clustern zuordnen</div>
-      <p style="font-size:12px;color:var(--gm);margin-bottom:10px;line-height:1.5;">Klicke auf einen Tag, um ihn einem Cluster zuzuweisen. Tags ohne Cluster werden als â€žSonstige" angezeigt.</p>
+      <p style="font-size:12px;color:var(--gm);margin-bottom:10px;line-height:1.5;">Klicke auf einen Tag, um ihn einem Cluster zuzuweisen. Tags ohne Cluster werden als „Sonstige" angezeigt.</p>
       <div class="cluster-edit-grid" id="clusterEditGrid"></div>
     </div>
   </div>
@@ -951,15 +951,15 @@
 <div class="mbg h" id="ltpWeekMod">
   <div class="md sm">
     <div class="mhdr">
-      <div class="mico" style="background:var(--gp)">ðŸ“…</div>
+      <div class="mico" style="background:var(--gp)">📅</div>
       <div class="mtit" id="ltpWeekModTit">Woche bearbeiten</div>
-      <button class="mcl" onclick="closeMod('ltpWeekMod')">âœ•</button>
+      <button class="mcl" onclick="closeMod('ltpWeekMod')">✕</button>
     </div>
     <div class="mbody">
       <div class="fsec">Woche</div>
-      <div class="fg"><label>Wochenbezeichnung</label><input class="fc" id="ltpWLabel" type="text" placeholder="z.B. KW 18 Â· 29.04â€“03.05"></div>
+      <div class="fg"><label>Wochenbezeichnung</label><input class="fc" id="ltpWLabel" type="text" placeholder="z.B. KW 18 · 29.04–03.05"></div>
       <div class="fg"><label>Schwerpunkt</label><input class="fc" id="ltpWFocus" type="text" placeholder="z.B. 1vs1 offensiv, Pressing, Schusstechnik"></div>
-      <div class="fg"><label>Notizen / Progression</label><textarea class="dta" id="ltpWNotes" placeholder="z.B. Steigerung IntensitÃ¤t gegenÃ¼ber Vorwocheâ€¦" rows="3"></textarea></div>
+      <div class="fg"><label>Notizen / Progression</label><textarea class="dta" id="ltpWNotes" placeholder="z.B. Steigerung Intensität gegenüber Vorwoche…" rows="3"></textarea></div>
       <div class="macts"><button class="bpr" onclick="saveLtpWeek()">Speichern</button><button class="bsc" onclick="closeMod('ltpWeekMod')">Abbrechen</button></div>
     </div>
   </div>
@@ -969,12 +969,12 @@
 <div class="mbg h" id="lanePickerMod">
   <div class="md" style="max-width:620px;height:85vh;display:flex;flex-direction:column;">
     <div class="mhdr">
-      <div class="mico" style="font-size:16px;">âš½</div>
-      <div class="mtit" id="lanePickerTitle">Ãœbung wÃ¤hlen</div>
-      <button class="mcl" onclick="closeMod('lanePickerMod')">âœ•</button>
+      <div class="mico" style="font-size:16px;">⚽</div>
+      <div class="mtit" id="lanePickerTitle">Übung wählen</div>
+      <button class="mcl" onclick="closeMod('lanePickerMod')">✕</button>
     </div>
     <div style="padding:12px 20px;border-bottom:1px solid var(--border);flex-shrink:0;">
-      <input class="fc" id="lanePickerSearch" type="text" placeholder="Ãœbung suchenâ€¦" oninput="renderLanePickerList(this.value)" style="font-size:13px;">
+      <input class="fc" id="lanePickerSearch" type="text" placeholder="Übung suchen…" oninput="renderLanePickerList(this.value)" style="font-size:13px;">
     </div>
     <div style="flex:1;overflow-y:auto;padding:12px 20px;" id="lanePickerList"></div>
   </div>
@@ -984,9 +984,9 @@
 <div class="mbg h" id="exDetailMod">
   <div class="md" style="max-width:620px;max-height:90vh;overflow-y:auto;">
     <div class="mhdr">
-      <div class="mico" style="font-size:16px;">âš½</div>
-      <div class="mtit">Ãœbungsdetails</div>
-      <button class="mcl" onclick="closeMod('exDetailMod')">âœ•</button>
+      <div class="mico" style="font-size:16px;">⚽</div>
+      <div class="mtit">Übungsdetails</div>
+      <button class="mcl" onclick="closeMod('exDetailMod')">✕</button>
     </div>
     <div class="mbody" id="exDetailBody"></div>
   </div>
@@ -995,12 +995,12 @@
 <div class="mbg h" id="sectionPickMod">
   <div class="md" style="max-width:420px;">
     <div class="mhdr">
-      <div class="mico">ðŸ“‹</div>
+      <div class="mico">📋</div>
       <div class="mtit">In welchen Abschnitt?</div>
-      <button class="mcl" onclick="closeMod('sectionPickMod')">âœ•</button>
+      <button class="mcl" onclick="closeMod('sectionPickMod')">✕</button>
     </div>
     <div class="mbody">
-      <p style="font-size:13px;color:var(--text-2);margin-bottom:18px;">Diese Ãœbung stammt aus dem Sondertraining und kann in jeden Abschnitt eingeplant werden.</p>
+      <p style="font-size:13px;color:var(--text-2);margin-bottom:18px;">Diese Übung stammt aus dem Sondertraining und kann in jeden Abschnitt eingeplant werden.</p>
       <div id="sectionPickBtns" style="display:flex;flex-direction:column;gap:8px;"></div>
     </div>
   </div>
@@ -1010,12 +1010,12 @@
 <div class="mbg h" id="newBlockMod">
   <div class="md" style="max-width:500px;">
     <div class="mhdr">
-      <div class="mico" style="background:#e8f5e9;color:#1a7f4b;font-size:16px;">ðŸ“…</div>
+      <div class="mico" style="background:#e8f5e9;color:#1a7f4b;font-size:16px;">📅</div>
       <div class="mtit">Neuer Trainingsblock</div>
-      <button class="mcl" onclick="closeMod('newBlockMod')">âœ•</button>
+      <button class="mcl" onclick="closeMod('newBlockMod')">✕</button>
     </div>
     <div class="mbody">
-      <div class="fg"><label>Name des Blocks *</label><input class="fc" id="nb-name" type="text" placeholder="z.B. Vorbereitung FrÃ¼hjahr 2026"></div>
+      <div class="fg"><label>Name des Blocks *</label><input class="fc" id="nb-name" type="text" placeholder="z.B. Vorbereitung Frühjahr 2026"></div>
       <div class="fsec">Zeitraum</div>
       <div style="display:flex;gap:8px;margin-bottom:12px;">
         <button id="nb-mode-weeks" onclick="setNbMode('weeks')" style="flex:1;padding:9px;border-radius:8px;border:2px solid var(--accent);background:var(--accent);color:#fff;font-weight:800;font-size:12px;cursor:pointer;">Anzahl Wochen</button>
@@ -1023,9 +1023,9 @@
       </div>
       <div id="nb-weeks-wrap"><div class="fg"><label>Anzahl Wochen</label><input class="fc" id="nb-weeks" type="number" min="1" max="52" value="4"></div></div>
       <div id="nb-dates-wrap" style="display:none;"><div class="fr"><div class="fg"><label>Von</label><input class="fc" id="nb-from" type="date"></div><div class="fg"><label>Bis</label><input class="fc" id="nb-to" type="date"></div></div></div>
-      <div class="fg"><label>Ziele / Notizen</label><textarea class="fc dta" id="nb-notes" rows="3" placeholder="Schwerpunkte, Ziele, besondere Hinweiseâ€¦" style="resize:vertical;"></textarea></div>
+      <div class="fg"><label>Ziele / Notizen</label><textarea class="fc dta" id="nb-notes" rows="3" placeholder="Schwerpunkte, Ziele, besondere Hinweise…" style="resize:vertical;"></textarea></div>
       <div class="macts">
-        <button class="bpr" onclick="createNewBlock()" style="background:#1a7f4b;">Plan fÃ¼llen â†’</button>
+        <button class="bpr" onclick="createNewBlock()" style="background:#1a7f4b;">Plan füllen →</button>
         <button class="bsc" onclick="closeMod('newBlockMod')">Abbrechen</button>
       </div>
     </div>
@@ -1036,13 +1036,13 @@
 <div class="mbg h" id="ltpWeekMod">
   <div class="md" style="max-width:460px;">
     <div class="mhdr">
-      <div class="mico" style="font-size:16px;">ðŸ“‹</div>
+      <div class="mico" style="font-size:16px;">📋</div>
       <div class="mtit" id="ltpWeekModTit">Woche bearbeiten</div>
-      <button class="mcl" onclick="closeMod('ltpWeekMod')">âœ•</button>
+      <button class="mcl" onclick="closeMod('ltpWeekMod')">✕</button>
     </div>
     <div class="mbody">
       <div class="fg"><label>Bezeichnung</label><input class="fc" id="ltpWLabel" type="text" placeholder="z.B. KW 15"></div>
-      <div class="fg"><label>Schwerpunkt</label><input class="fc" id="ltpWFocus" type="text" placeholder="z.B. Passspielâ€¦"></div>
+      <div class="fg"><label>Schwerpunkt</label><input class="fc" id="ltpWFocus" type="text" placeholder="z.B. Passspiel…"></div>
       <div class="fg"><label>Notizen</label><textarea class="fc dta" id="ltpWNotes" rows="2" style="resize:vertical;"></textarea></div>
       <div id="ltpWeekCopyWrap" style="margin-top:4px;"></div>
       <div class="macts">
@@ -1057,9 +1057,9 @@
 <div class="mbg h" id="dayEditorMod">
   <div class="md" style="max-width:740px;height:90vh;display:flex;flex-direction:column;">
     <div class="mhdr">
-      <div class="mico" style="font-size:16px;">ðŸ—“</div>
+      <div class="mico" style="font-size:16px;">🗓</div>
       <div class="mtit" id="dayEditorTitle">Tag planen</div>
-      <button class="mcl" onclick="closeMod('dayEditorMod')">âœ•</button>
+      <button class="mcl" onclick="closeMod('dayEditorMod')">✕</button>
     </div>
     <div style="padding:10px 20px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--border);flex-shrink:0;">
       <button onclick="openEntryEdit('training')" style="padding:7px 13px;background:#1a7f4b;color:#fff;border:none;border-radius:7px;font-size:11px;font-weight:800;cursor:pointer;letter-spacing:.3px;">+ Trainingseinheit</button>
@@ -1081,9 +1081,9 @@
 <div class="mbg h" id="entryEditMod">
   <div class="md" style="max-width:480px;">
     <div class="mhdr">
-      <div class="mico" id="entryEditIco" style="font-size:16px;">ðŸ“‹</div>
+      <div class="mico" id="entryEditIco" style="font-size:16px;">📋</div>
       <div class="mtit" id="entryEditTitle">Eintrag</div>
-      <button class="mcl" onclick="closeMod('entryEditMod')">âœ•</button>
+      <button class="mcl" onclick="closeMod('entryEditMod')">✕</button>
     </div>
     <div class="mbody" id="entryEditBody"></div>
   </div>
@@ -1093,13 +1093,13 @@
 <div class="mbg h" id="saveBlockLibMod">
   <div class="md" style="max-width:420px;">
     <div class="mhdr">
-      <div class="mico" style="background:#e8f5e9;color:#1a7f4b;font-size:16px;">ðŸ’¾</div>
+      <div class="mico" style="background:#e8f5e9;color:#1a7f4b;font-size:16px;">💾</div>
       <div class="mtit">In Bibliothek speichern</div>
-      <button class="mcl" onclick="closeMod('saveBlockLibMod')">âœ•</button>
+      <button class="mcl" onclick="closeMod('saveBlockLibMod')">✕</button>
     </div>
     <div class="mbody">
-      <div class="fg"><label>Name</label><input class="fc" id="sbl-name" type="text" placeholder="Blocknameâ€¦"></div>
-      <div class="fg"><label>Beschreibung</label><input class="fc" id="sbl-desc" type="text" placeholder="Kurzbeschreibungâ€¦"></div>
+      <div class="fg"><label>Name</label><input class="fc" id="sbl-name" type="text" placeholder="Blockname…"></div>
+      <div class="fg"><label>Beschreibung</label><input class="fc" id="sbl-desc" type="text" placeholder="Kurzbeschreibung…"></div>
       <div class="macts">
         <button class="bpr" onclick="commitSaveBlockLib()">Speichern</button>
         <button class="bsc" onclick="closeMod('saveBlockLibMod')">Abbrechen</button>
@@ -1112,20 +1112,20 @@
 <div class="mbg h" id="dupPlanMod">
   <div class="md" style="max-width:420px;">
     <div class="mhdr">
-      <div class="mico" style="background:#fff3e0;color:#e65100;font-size:16px;">âš ï¸</div>
+      <div class="mico" style="background:#fff3e0;color:#e65100;font-size:16px;">⚠️</div>
       <div class="mtit">Plan bereits vorhanden</div>
-      <button class="mcl" onclick="closeMod('dupPlanMod')">âœ•</button>
+      <button class="mcl" onclick="closeMod('dupPlanMod')">✕</button>
     </div>
     <div class="mbody">
       <p style="font-size:13px;color:var(--text-2);margin-bottom:18px;line-height:1.6;">
-        Ein Plan mit dem Namen <strong id="dupPlanNameDisplay" style="color:var(--text-1);"></strong> existiert bereits. Was mÃ¶chtest du tun?
+        Ein Plan mit dem Namen <strong id="dupPlanNameDisplay" style="color:var(--text-1);"></strong> existiert bereits. Was möchtest du tun?
       </p>
       <div style="display:flex;flex-direction:column;gap:10px;">
         <button onclick="dupPlanOverwrite()" style="padding:12px;background:var(--accent);color:#fff;border:none;border-radius:9px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:background .15s;" onmouseover="this.style.background='#15703f'" onmouseout="this.style.background='var(--accent)'">
-          Bestehenden Plan Ã¼berschreiben
+          Bestehenden Plan überschreiben
         </button>
         <div style="display:flex;gap:8px;align-items:center;">
-          <input class="fc" id="dupPlanNewName" type="text" placeholder="Neuer Titelâ€¦" style="flex:1;font-size:13px;" onkeydown="if(event.key==='Enter')dupPlanRename()">
+          <input class="fc" id="dupPlanNewName" type="text" placeholder="Neuer Titel…" style="flex:1;font-size:13px;" onkeydown="if(event.key==='Enter')dupPlanRename()">
           <button onclick="dupPlanRename()" style="padding:11px 16px;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;color:var(--text-1);white-space:nowrap;">
             Neu speichern
           </button>
@@ -1139,9 +1139,9 @@
 <div class="mbg h" id="subListMod">
   <div class="md" style="max-width:580px;">
     <div class="mhdr">
-      <div class="mico" style="background:#f5f3ff;color:#8b5cf6;font-size:15px;">ðŸ“‹</div>
+      <div class="mico" style="background:#f5f3ff;color:#8b5cf6;font-size:15px;">📋</div>
       <div class="mtit" id="subListModTit">Einreichungen</div>
-      <button class="mcl" onclick="closeMod('subListMod')">âœ•</button>
+      <button class="mcl" onclick="closeMod('subListMod')">✕</button>
     </div>
     <div class="mbody">
       <div class="sub-list" id="subListContent"></div>
@@ -1149,16 +1149,16 @@
   </div>
 </div>
 
-<!-- MODAL: Admin Review einzelne Ãœbung -->
+<!-- MODAL: Admin Review einzelne Übung -->
 <div class="mbg h" id="reviewMod">
   <div class="md" style="max-width:660px;">
     <div class="mhdr">
-      <div class="mico" style="background:#f5f3ff;color:#8b5cf6;font-size:15px;">ðŸ”</div>
-      <div class="mtit" id="reviewModTit">Ãœbung prÃ¼fen</div>
-      <button class="mcl" onclick="closeMod('reviewMod')">âœ•</button>
+      <div class="mico" style="background:#f5f3ff;color:#8b5cf6;font-size:15px;">🔍</div>
+      <div class="mtit" id="reviewModTit">Übung prüfen</div>
+      <button class="mcl" onclick="closeMod('reviewMod')">✕</button>
     </div>
     <div class="mbody">
-      <div class="review-author" id="reviewAuthorBar"><span>ðŸ‘¤</span> <strong id="reviewAuthorName"></strong> &nbsp;Â·&nbsp; <span id="reviewDate"></span></div>
+      <div class="review-author" id="reviewAuthorBar"><span>👤</span> <strong id="reviewAuthorName"></strong> &nbsp;·&nbsp; <span id="reviewDate"></span></div>
       <div class="fsec">Grunddaten</div>
       <div class="fg"><label>Name</label><input class="fc" id="rv-name" type="text"></div>
       <div class="fg"><label>Beschreibung</label><textarea class="fc dta" id="rv-desc" rows="4" style="resize:vertical;"></textarea></div>
@@ -1166,11 +1166,11 @@
         <div class="fg"><label>Abschnitt</label>
           <select class="fc" id="rv-sec">
             <option value="0">Open Field</option><option value="1">Warm Up</option>
-            <option value="2">HinfÃ¼hrung</option><option value="3">Hauptteil</option>
+            <option value="2">Hinführung</option><option value="3">Hauptteil</option>
             <option value="4">Abschlussspiel</option><option value="5">Sondertraining</option>
           </select>
         </div>
-        <div class="fg"><label>BelastungsintensitÃ¤t</label>
+        <div class="fg"><label>Belastungsintensität</label>
           <select class="fc" id="rv-intensity">
             <option value="Leicht">Leicht</option><option value="Mittel">Mittel</option><option value="Schwer">Schwer</option>
           </select>
@@ -1184,9 +1184,9 @@
       <div class="fg"><label>Tags</label><input class="fc" id="rv-tags" type="text" placeholder="Kommagetrennt, z.B. DRIBBLING, 1VS1"></div>
       <div class="fg"><label>Felddiagramm</label><div id="rv-canvas-wrap" style="border:1px solid var(--border);border-radius:8px;overflow:hidden;"></div></div>
       <div class="review-actions">
-        <button class="review-btn del" onclick="reviewAction('delete')">ðŸ—‘ LÃ¶schen</button>
-        <button class="review-btn rev" onclick="reviewAction('review')">ðŸ” In Review</button>
-        <button class="review-btn free" onclick="reviewAction('approve')">âœ“ Freigeben</button>
+        <button class="review-btn del" onclick="reviewAction('delete')">🗑 Löschen</button>
+        <button class="review-btn rev" onclick="reviewAction('review')">🔍 In Review</button>
+        <button class="review-btn free" onclick="reviewAction('approve')">✓ Freigeben</button>
       </div>
     </div>
   </div>
@@ -1196,12 +1196,12 @@
 <div class="mbg h" id="sonderPlanMod">
   <div class="md sm">
     <div class="mhdr">
-      <div class="mico" style="background:#e0f2f1;color:#00695c;font-size:16px;">ðŸŽ¯</div>
+      <div class="mico" style="background:#e0f2f1;color:#00695c;font-size:16px;">🎯</div>
       <div class="mtit" id="sonderPlanTitle">Sondertraining einplanen</div>
-      <button class="mcl" onclick="document.getElementById('sonderPlanMod').classList.add('h')">âœ•</button>
+      <button class="mcl" onclick="document.getElementById('sonderPlanMod').classList.add('h')">✕</button>
     </div>
     <div class="mbody">
-      <p style="font-size:13px;color:var(--gm);margin-bottom:14px;line-height:1.6;">In welchen Abschnitt des Trainingsplans soll diese Ãœbung eingeplant werden?</p>
+      <p style="font-size:13px;color:var(--gm);margin-bottom:14px;line-height:1.6;">In welchen Abschnitt des Trainingsplans soll diese Übung eingeplant werden?</p>
       <div id="sonderPlanOpts"></div>
     </div>
   </div>
@@ -1210,14 +1210,14 @@
 <div class="toast" id="toast"></div>
 
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-     JAVASCRIPT â€” Ladereihenfolge ist wichtig!
-     1. Ãœbungsdaten zuerst (definieren defaultData())
-     2. i18n/Theme (keine AbhÃ¤ngigkeiten)
-     3. Core/State (definiert globale Variablen fÃ¼r alle weiteren Module)
+<!-- ════════════════════════════════════════════════════════════════
+     JAVASCRIPT — Ladereihenfolge ist wichtig!
+     1. Übungsdaten zuerst (definieren defaultData())
+     2. i18n/Theme (keine Abhängigkeiten)
+     3. Core/State (definiert globale Variablen für alle weiteren Module)
      4. Restliche Module (nutzen den globalen State aus core-state.js)
      5. App-Start (init()) als LETZTES
-     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+     ════════════════════════════════════════════════════════════════ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>emailjs.init('Gdp0v57LwSddbt-GE');</script>
@@ -1235,7 +1235,7 @@
 <script src="js/10-field-editor.js?v=20260624"></script>
 <script src="js/11-app-start.js?v=20260624"></script>
 
-<!-- FELDDIAGRAMM OVERLAY â€“ direkt in <body>, auÃŸerhalb aller Modals -->
+<!-- FELDDIAGRAMM OVERLAY – direkt in <body>, außerhalb aller Modals -->
 <div id="fieldOverlay" style="display:none;position:fixed;inset:0;z-index:10000;background:#1a2b1c;flex-direction:column;">
   <!-- Toolbar -->
   <div style="background:#0f1a10;padding:6px 10px;display:flex;flex-wrap:wrap;gap:5px;align-items:center;border-bottom:2px solid rgba(255,255,255,.1);flex-shrink:0;">
@@ -1258,12 +1258,12 @@
     <div style="display:flex;align-items:center;gap:2px;">
       <button class="tb" id="tb_equip" onclick="setTool('equip')" title="Equipment" style="background:#344736;font-size:12px;width:28px;height:28px;border:none;border-radius:5px;cursor:pointer;color:#fff;">&#x25B2;</button>
       <select id="equipType" onchange="setTool('equip')" style="padding:3px 4px;border-radius:5px;border:none;font-size:10px;background:#344736;color:#fff;cursor:pointer;height:28px;">
-        <option value="cone-orange">HÃ¼tchen Orange</option>
-        <option value="cone-yellow">HÃ¼tchen Gelb</option>
-        <option value="cone-blue">HÃ¼tchen Blau</option>
-        <option value="cone-red">HÃ¼tchen Rot</option>
+        <option value="cone-orange">Hütchen Orange</option>
+        <option value="cone-yellow">Hütchen Gelb</option>
+        <option value="cone-blue">Hütchen Blau</option>
+        <option value="cone-red">Hütchen Rot</option>
         <option value="pole">Stange</option>
-        <option value="hurdle">HÃ¼rde</option>
+        <option value="hurdle">Hürde</option>
         <option value="ladder">Leiter</option>
         <option value="ring">Ring</option>
       </select>
@@ -1295,7 +1295,7 @@
         <span style="font-size:10px;color:#aaa;">Winkel</span>
         <button onclick="rotateSel(-45)" style="padding:2px 6px;border-radius:4px;border:none;background:#344736;color:#fff;font-size:10px;cursor:pointer;">-45</button>
         <input type="range" id="angleSlider" min="0" max="360" step="45" value="0" style="width:80px;accent-color:#1a7f4b;" oninput="setSelAngle(this.value)">
-        <span id="angleVal" style="font-size:10px;color:#fff;min-width:28px;">0Â°</span>
+        <span id="angleVal" style="font-size:10px;color:#fff;min-width:28px;">0°</span>
         <button onclick="rotateSel(45)" style="padding:2px 6px;border-radius:4px;border:none;background:#344736;color:#fff;font-size:10px;cursor:pointer;">+45</button>
       </div>
       <button onclick="undoDraw()" style="padding:4px 9px;border-radius:6px;border:none;background:#344736;color:#fff;font-size:11px;font-weight:700;cursor:pointer;">&#x21A9;</button>
