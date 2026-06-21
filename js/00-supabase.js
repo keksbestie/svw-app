@@ -1,5 +1,5 @@
 const SUPABASE_URL = 'https://vgfboblfpulgvqiotlog.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_lguxIAD-SsQB8h9PTbe6VA_k_gphGJf';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZnZmJvYmxmcHVsZ3ZxaW90bG9nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4NTU5NjcsImV4cCI6MjA5NzQzMTk2N30.MPukjA0GXbBH3KVfUCeD6wuK1MuDUjsJbeykfTc5Vyg';
 let _supabase = null;
 let currentUser = null;
 
