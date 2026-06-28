@@ -49,6 +49,10 @@ async function loadAPI(){
     if(exErr)throw exErr;
     // Only overwrite local exercises if Supabase actually has data
     if(exData&&exData.length>0) exercises=exData.map(mapExercise);
+    const {data:descData}=await _supabase.from('section_descs').select('*');
+    if(descData&&descData.length>0){
+      descData.forEach(r=>{if(r.section_idx>=0&&r.section_idx<6)sectionDescs[r.section_idx]=r.description||'';});
+    }
     if(user){
       const {data:plansData}=await _supabase.from('plans').select('*').eq('owner_id',user.id);
       savedPlans=(plansData||[]).map(p=>p.lanes);
@@ -82,6 +86,10 @@ async function saveAPI(){
     await _supabase.from('ltp_blocks').delete().eq('owner_id',currentUser.id);
     if(ltpBlocks.length>0)
       await _supabase.from('ltp_blocks').insert(ltpBlocks.map(b=>({owner_id:currentUser.id,name:b.name||'Block',weeks:b})));
+    if(IS_ADMIN){
+      const rows=sectionDescs.map((description,section_idx)=>({section_idx,description:description||''}));
+      await _supabase.from('section_descs').upsert(rows,{onConflict:'section_idx'});
+    }
     apiOnline=true; setStat('ok'); cacheLocal();
   }catch{apiOnline=false; setStat('err'); showToast('Speichern fehlgeschlagen','warn');}
 }
