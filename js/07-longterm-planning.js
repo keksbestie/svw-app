@@ -117,7 +117,7 @@ function renderWeekRow(blockId, week, wi){
       </div>
       <div style="margin-left:auto;display:flex;gap:5px;">
         <button onclick="openWeekEdit('${blockId}',${wi})" style="padding:4px 8px;font-size:10px;font-weight:700;border:1px solid var(--border);background:var(--surface-2);border-radius:5px;cursor:pointer;color:var(--text-2);">✏️ Woche</button>
-        <button onclick="printLtpWeek('${blockId}',${wi})" style="padding:4px 8px;font-size:10px;font-weight:700;border:none;background:#1a7f4b;color:#fff;border-radius:5px;cursor:pointer;">🖨 Woche</button>
+        <button onclick="printLtpWeek('${blockId}',${wi})" style="padding:4px 8px;font-size:10px;font-weight:700;border:none;background:#1565c0;color:#fff;border-radius:5px;cursor:pointer;">Woche drucken</button>
         <button onclick="addDayToWeek('${blockId}',${wi})" style="padding:4px 8px;font-size:10px;font-weight:800;border:none;background:var(--accent);color:#fff;border-radius:5px;cursor:pointer;">+ Tag</button>
         <button onclick="deleteWeek('${blockId}',${wi})" style="padding:4px 6px;font-size:10px;border:1px solid var(--border);background:none;border-radius:5px;cursor:pointer;color:var(--text-3);">✕</button>
       </div>
@@ -137,7 +137,7 @@ function renderDayCard(blockId,wi,day,di){
     <div class="ltp-day-card-hdr">
       <span class="ltp-day-card-label">${day.label||'Tag '+(di+1)}</span>
       <div style="display:flex;gap:3px;">
-        <button onclick="event.stopPropagation();printLtpDay('${blockId}',${wi},${di})" style="background:#1a7f4b;border:none;cursor:pointer;color:#fff;font-size:9px;padding:2px 5px;border-radius:4px;font-weight:700;" title="Tag drucken">🖨</button>
+        <button onclick="event.stopPropagation();printLtpDay('${blockId}',${wi},${di})" style="background:#1565c0;border:none;cursor:pointer;color:#fff;font-size:9px;padding:2px 6px;border-radius:4px;font-weight:800;">Drucken</button>
         <button onclick="event.stopPropagation();deleteDay('${blockId}',${wi},${di})" style="background:none;border:none;cursor:pointer;color:var(--text-3);font-size:11px;padding:0 2px;">✕</button>
       </div>
     </div>
