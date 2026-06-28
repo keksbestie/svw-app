@@ -66,7 +66,11 @@ async function silentSync(){
   if(!_supabase)return;
   try{
     const {data:exData}=await _supabase.from('exercises').select('*').eq('status','approved');
-    exercises=exData.map(mapExercise);
+    if(exData&&exData.length>0) exercises=exData.map(mapExercise);
+    const {data:descData}=await _supabase.from('section_descs').select('*');
+    if(descData&&descData.length>0){
+      descData.forEach(r=>{if(r.section_idx>=0&&r.section_idx<6)sectionDescs[r.section_idx]=r.description||'';});
+    }
     if(currentUser){
       const {data:plansData}=await _supabase.from('plans').select('*').eq('owner_id',currentUser.id);
       savedPlans=(plansData||[]).map(p=>p.lanes);

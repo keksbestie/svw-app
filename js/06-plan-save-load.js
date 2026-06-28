@@ -43,14 +43,8 @@ function commitSavePlan(name){
   };
   savedPlans.unshift(plan);
   if(savedPlans.length>30) savedPlans.pop();
-  try{
-    localStorage.setItem(SK, JSON.stringify({exercises,sectionDescs,sectionCustomTags,savedPlans,ltpBlocks,blockLibrary,sectionClusters:SECTION_CLUSTERS}));
-    showToast('✓ Plan gespeichert');
-  } catch(e){
-    showToast('Speichern fehlgeschlagen','err');
-    console.error('savePlan localStorage error:', e);
-    return;
-  }
+  cacheLocal();
+  showToast('✓ Plan gespeichert');
   renderSavedPlans();
   renderLtpDayPlanSelect();
   save();
