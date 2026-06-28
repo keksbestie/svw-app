@@ -117,6 +117,7 @@ function renderWeekRow(blockId, week, wi){
       </div>
       <div style="margin-left:auto;display:flex;gap:5px;">
         <button onclick="openWeekEdit('${blockId}',${wi})" style="padding:4px 8px;font-size:10px;font-weight:700;border:1px solid var(--border);background:var(--surface-2);border-radius:5px;cursor:pointer;color:var(--text-2);">✏️ Woche</button>
+        <button onclick="printLtpWeek('${blockId}',${wi})" style="padding:4px 8px;font-size:10px;font-weight:700;border:1px solid var(--border);background:var(--surface-2);border-radius:5px;cursor:pointer;color:var(--text-2);">🖨 Woche</button>
         <button onclick="addDayToWeek('${blockId}',${wi})" style="padding:4px 8px;font-size:10px;font-weight:800;border:none;background:var(--accent);color:#fff;border-radius:5px;cursor:pointer;">+ Tag</button>
         <button onclick="deleteWeek('${blockId}',${wi})" style="padding:4px 6px;font-size:10px;border:1px solid var(--border);background:none;border-radius:5px;cursor:pointer;color:var(--text-3);">✕</button>
       </div>
@@ -135,7 +136,10 @@ function renderDayCard(blockId,wi,day,di){
   return `<div class="ltp-day-card" onclick="openDayEditor('${blockId}',${wi},${di})">
     <div class="ltp-day-card-hdr">
       <span class="ltp-day-card-label">${day.label||'Tag '+(di+1)}</span>
-      <button onclick="event.stopPropagation();deleteDay('${blockId}',${wi},${di})" style="background:none;border:none;cursor:pointer;color:var(--text-3);font-size:11px;padding:0 2px;">✕</button>
+      <div style="display:flex;gap:3px;">
+        <button onclick="event.stopPropagation();printLtpDay('${blockId}',${wi},${di})" style="background:none;border:none;cursor:pointer;color:var(--text-3);font-size:11px;padding:0 3px;" title="Tag drucken">🖨</button>
+        <button onclick="event.stopPropagation();deleteDay('${blockId}',${wi},${di})" style="background:none;border:none;cursor:pointer;color:var(--text-3);font-size:11px;padding:0 2px;">✕</button>
+      </div>
     </div>
     ${entries.length
       ? entries.slice(0,3).map(e=>`<div class="ltp-entry-pill" style="background:${entryColors[e.type]||'#666'}20;border-left:3px solid ${entryColors[e.type]||'#666'};">
@@ -567,6 +571,136 @@ function deleteBlockLib(idx){
 function saveLibrary(){save();}
 function renderLtpDayPlanSelect(){} // kept for compat
 function printLtp(){window.print();}
+
+// ── PRINT HELPERS ──────────────────────────────────────
+function _ltpPrintCSS(){
+  return`*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Helvetica Neue',Arial,sans-serif;color:#111;background:#fff;padding:14mm 16mm;}
+.brand{text-align:center;margin-bottom:5mm;}
+.brand-name{font-size:18pt;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:#1a7f4b;}
+.brand-sub{font-size:7pt;letter-spacing:3px;text-transform:uppercase;color:#888;margin-top:1px;}
+.doc-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:5mm;padding-bottom:3mm;border-bottom:2px solid #111;}
+.doc-title{font-size:15pt;font-weight:900;}
+.doc-sub{font-size:9pt;color:#666;text-align:right;}
+.day-section{margin-bottom:8mm;page-break-before:auto;}
+.day-section+.day-section{page-break-before:always;}
+.day-hdr{font-size:13pt;font-weight:900;margin-bottom:4mm;padding-bottom:2mm;border-bottom:2px solid #111;}
+.entry-block{margin-bottom:5mm;padding:8px 10px;border-radius:6px;border-left:4px solid #ccc;}
+.entry-block.training{border-left-color:#1a7f4b;background:#f0faf4;}
+.entry-block.game{border-left-color:#e65100;background:#fff8f5;}
+.entry-block.free{border-left-color:#1565c0;background:#f0f4ff;}
+.entry-title{font-size:11pt;font-weight:900;margin-bottom:3px;}
+.entry-meta{font-size:8.5pt;color:#555;margin-bottom:4px;}
+.entry-notes{font-size:8.5pt;color:#333;line-height:1.5;}
+.mat-box{background:#f5f5f5;border-radius:5px;padding:5px 10px;margin-bottom:5mm;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.mat-box-title{font-size:7pt;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#666;white-space:nowrap;}
+.mat-pill{font-size:8pt;padding:2px 9px;border-radius:20px;background:#fff;border:1px solid #ccc;font-weight:600;}
+.ex-card{display:flex;gap:12px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #e8e8e8;page-break-inside:avoid;}
+.ex-num{flex-shrink:0;width:18px;height:18px;border-radius:50%;color:#fff;font-size:7pt;font-weight:900;display:flex;align-items:center;justify-content:center;margin-top:2px;}
+.ex-img{flex-shrink:0;width:200px;height:140px;border-radius:5px;overflow:hidden;border:1px solid #e0e0e0;}
+.ex-img img{width:100%;height:100%;object-fit:contain;background:#f0f4f0;}
+.ex-sec{font-size:7pt;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+.ex-name{font-size:11pt;font-weight:900;margin-bottom:3px;}
+.ex-meta{display:flex;gap:8px;flex-wrap:wrap;font-size:8pt;color:#444;font-weight:600;margin-bottom:4px;}
+.ex-desc{font-size:8.5pt;color:#333;line-height:1.55;white-space:pre-wrap;}
+.total-box{margin-top:5mm;padding:7px 0;border-top:2px solid #111;display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.total-label{font-size:9pt;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#555;margin-bottom:3px;}
+.total-breakdown{display:flex;flex-wrap:wrap;gap:5px;}
+.diff-pill{font-size:8pt;font-weight:700;padding:2px 8px;border-radius:20px;}
+.total-val{font-size:15pt;font-weight:900;white-space:nowrap;}
+.plan-label{font-size:8pt;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#1a7f4b;margin:4mm 0 2mm;}
+@media print{body{padding:0;}@page{margin:14mm;}}`;
+}
+
+function _ltpPlanHTML(plan){
+  if(!plan) return '';
+  const items=[];
+  (plan.lanes||[]).forEach((lane,si)=>{
+    (lane||[]).forEach(raw=>{
+      const item=typeof raw==='string'?{id:raw}:raw;
+      const ex=exercises.find(e=>e.id===item.id);
+      if(ex) items.push({item,ex,si});
+    });
+  });
+  if(!items.length) return '';
+  const SECS_=typeof SECS!=='undefined'?SECS:[];
+  const secColor=si=>SECS_[si]?.color||'#333';
+  const secName=si=>SECS_[si]?.name||'';
+  const matSet=new Set();
+  items.forEach(({ex})=>(ex.material||'').split(',').map(m=>m.trim()).filter(Boolean).forEach(m=>matSet.add(m)));
+  const byDiff={Leicht:0,Mittel:0,Schwer:0,'':0};
+  items.forEach(({item,ex})=>{const d=parseInt(item.duration??ex.duration??0)||0;const diff=item.difficulty??ex.difficulty??'';byDiff[diff in byDiff?diff:'']+=d;});
+  const totalMin=Object.values(byDiff).reduce((a,b)=>a+b,0);
+  const matHTML=[...matSet].length?`<div class="mat-box"><div class="mat-box-title">Material</div><div style="display:flex;flex-wrap:wrap;gap:5px;">${[...matSet].map(m=>`<span class="mat-pill">${m}</span>`).join('')}</div></div>`:'';
+  const diffRows=[{label:'Leicht',color:'#1a7f4b',min:byDiff['Leicht']},{label:'Mittel',color:'#e65100',min:byDiff['Mittel']},{label:'Schwer',color:'#880e4f',min:byDiff['Schwer']}].filter(r=>r.min>0);
+  const totalHTML=totalMin?`<div class="total-box"><div><div class="total-label">Gesamtbelastung</div><div class="total-breakdown">${diffRows.map(r=>`<span class="diff-pill" style="background:${r.color}18;color:${r.color};border:1px solid ${r.color}40;">${r.label}: ${r.min} min</span>`).join('')}${byDiff['']>0?`<span class="diff-pill" style="background:#f5f5f5;color:#555;border:1px solid #ccc;">Ohne Angabe: ${byDiff['']} min</span>`:''}</div></div><span class="total-val">${totalMin} min</span></div>`:'';
+  const cardsHTML=items.map(({item,ex,si},idx)=>{
+    const players=item.players??ex.players??'';const duration=item.duration??ex.duration??'';const difficulty=item.difficulty??ex.difficulty??'';const col=secColor(si);
+    return`<div class="ex-card"><div class="ex-num" style="background:${col}">${idx+1}</div><div class="ex-img">${ex.image?`<img src="${ex.image}" alt="${ex.name}">`:'<div style="width:200px;height:140px;background:#f0f4f0;border-radius:5px;"></div>'}</div><div style="flex:1;min-width:0;"><div class="ex-sec" style="color:${col}">${secName(si)}</div><div class="ex-name">${ex.name}</div><div class="ex-meta">${players?`<span>👥 ${players}</span>`:''}${duration?`<span>⏱ ${duration} min</span>`:''}${difficulty?`<span>◉ ${difficulty}</span>`:''}</div>${ex.desc?`<div class="ex-desc">${ex.desc}</div>`:''}</div></div>`;
+  }).join('');
+  return matHTML+cardsHTML+totalHTML;
+}
+
+function _ltpDayHTML(blk, week, day){
+  const typeColors={training:'#1a7f4b',free:'#1565c0',game:'#e65100'};
+  const typeLabels={training:'Trainingseinheit',free:'Freier Block',game:'Spieltag'};
+  const typeIcos={training:'⚽',free:'☕',game:'🏆'};
+  const entries=day.entries||[];
+  let html=`<div class="day-hdr">${day.label||'Tag'}</div>`;
+  if(!entries.length){html+=`<div style="color:#999;font-size:9pt;font-style:italic;">Keine Einträge</div>`;return html;}
+  entries.forEach(e=>{
+    const col=typeColors[e.type]||'#666';
+    html+=`<div class="entry-block ${e.type}">
+      <div class="entry-title">${typeIcos[e.type]||'•'} ${e.title||typeLabels[e.type]||e.type}</div>
+      <div class="entry-meta">${e.startTime||e.endTime?`⏱ ${e.startTime||'?'}${e.endTime?' – '+e.endTime:''} &nbsp;`:''}${e.gameFormat?`📋 ${e.gameFormat} &nbsp;`:''}</div>
+      ${e.notes?`<div class="entry-notes">${e.notes}</div>`:''}
+    </div>`;
+    if(e.type==='training'&&e.planId){
+      const plan=savedPlans.find(p=>p.id===e.planId);
+      if(plan){
+        html+=`<div class="plan-label">📋 ${plan.name}</div>`;
+        html+=_ltpPlanHTML(plan);
+      }
+    }
+  });
+  return html;
+}
+
+function printLtpDay(blockId,wi,di){
+  const blk=ltpBlocks.find(b=>b.id===blockId); if(!blk)return;
+  const week=blk.weeks[wi]; const day=week.days[di];
+  const today=new Date().toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
+  const html=`<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><title>${day.label}</title>
+<style>${_ltpPrintCSS()}</style></head><body>
+<div class="brand"><div class="brand-name">AssistCoach</div><div class="brand-sub">Trainingsplanung</div></div>
+<div class="doc-header">
+  <div class="doc-title">${blk.name}</div>
+  <div class="doc-sub">${week.label||'Woche '+(wi+1)}<br>${today}</div>
+</div>
+<div class="day-section">${_ltpDayHTML(blk,week,day)}</div>
+<script>window.onload=function(){window.print();}<\/script>
+</body></html>`;
+  const w=window.open('','_blank'); w.document.write(html); w.document.close();
+}
+
+function printLtpWeek(blockId,wi){
+  const blk=ltpBlocks.find(b=>b.id===blockId); if(!blk)return;
+  const week=blk.weeks[wi];
+  if(!week.days.length){showToast('Woche hat keine Tage','err');return;}
+  const today=new Date().toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
+  const daysHTML=week.days.map(day=>`<div class="day-section">${_ltpDayHTML(blk,week,day)}</div>`).join('');
+  const html=`<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><title>${week.label||'Woche '+(wi+1)}</title>
+<style>${_ltpPrintCSS()}</style></head><body>
+<div class="brand"><div class="brand-name">AssistCoach</div><div class="brand-sub">Trainingsplanung</div></div>
+<div class="doc-header">
+  <div class="doc-title">${blk.name} – ${week.label||'Woche '+(wi+1)}</div>
+  <div class="doc-sub">${week.focus?week.focus+'<br>':''}${today}</div>
+</div>
+${daysHTML}
+<script>window.onload=function(){window.print();}<\/script>
+</body></html>`;
+  const w=window.open('','_blank'); w.document.write(html); w.document.close();
+}
 function addLtpBlock(){openNewBlockWizard();}
 
 function exportCSV(){const h='Name,Spieleranzahl,Material,Abschnitt,Schwierigkeit,Beschreibung,Tags';const rows=exercises.map(e=>[e.name,e.players||'',e.material||'',e.section,e.difficulty||'',e.desc||'',(e.tags||[]).join('|')].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','));dl('trainingsbuch.csv',[h,...rows].join('\n'),'text/csv');showToast('CSV exportiert');}
