@@ -62,16 +62,21 @@ async function doLogin(){
   const email=(document.getElementById('loginEmail').value||'').trim();
   const pass=document.getElementById('loginPass').value||'';
   if(!email||!pass){showToast('E-Mail und Passwort eingeben','err');return;}
+  const btn=document.getElementById('loginBtn');
+  if(btn){btn.disabled=true;btn.textContent='Anmelden…';}
   const {data,error}=await _supabase.auth.signInWithPassword({email,password:pass});
-  if(error){showToast('Login fehlgeschlagen: '+error.message,'err');return;}
+  if(error){
+    if(btn){btn.disabled=false;btn.textContent='Anmelden';}
+    showToast('Login fehlgeschlagen: '+error.message,'err');return;
+  }
   currentUser=data.user;
   const {data:profile}=await _supabase.from('profiles').select('role').eq('id',data.user.id).single();
   IS_ADMIN=profile?.role==='admin';
   document.body.classList.toggle('admin',IS_ADMIN);
   const displayName=data.user.user_metadata?.username||data.user.email;
   submitUser={name:displayName,isDemo:false,id:data.user.id};
-  await silentSync();
-  renderSubmitPage();
+  renderSubmitPage(); // show page immediately
+  silentSync();       // sync data in background
 }
 
 function toggleRegisterMode(){
