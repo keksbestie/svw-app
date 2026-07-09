@@ -432,6 +432,11 @@
       <div class="queue-title">Trainer verwalten</div>
       <div class="queue-sub">Hier kannst du Trainer-Accounts sehen und Admin-Rechte vergeben.</div>
       <div id="userList" style="margin-top:16px;display:flex;flex-direction:column;gap:8px;"></div>
+      <div style="margin-top:20px;">
+        <div class="queue-title" style="font-size:13px;">Wartung</div>
+        <button onclick="migrateImagesToStorage()" style="margin-top:8px;padding:8px 16px;background:#e57373;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">Übungsbilder zu Storage migrieren</button>
+        <div style="font-size:11px;color:var(--text-3);margin-top:4px;">Verschiebt vorhandene Base64-Bilder aus der Datenbank in den Supabase Storage (einmalig ausführen).</div>
+      </div>
     </div>
     <div id="adminQueueWrap" class="page-section" style="display:none;">
       <div class="page-section-divider"></div>

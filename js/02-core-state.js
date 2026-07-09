@@ -162,6 +162,38 @@ function updateApiBar(){
 }
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5);}
 
+async function uploadImageToStorage(dataUrl){
+  if(!_supabase||!dataUrl||!dataUrl.startsWith('data:'))return null;
+  try{
+    const res=await fetch(dataUrl);
+    const blob=await res.blob();
+    const filename=uid()+'.png';
+    const {error}=await _supabase.storage.from('exercise-images').upload(filename,blob,{contentType:'image/png'});
+    if(error)throw error;
+    const {data:{publicUrl}}=_supabase.storage.from('exercise-images').getPublicUrl(filename);
+    return publicUrl;
+  }catch(e){console.warn('Bild-Upload fehlgeschlagen:',e);return null;}
+}
+
+async function migrateImagesToStorage(){
+  if(!_supabase||!IS_ADMIN){showToast('Nur für Admins','err');return;}
+  const {data:exData}=await _supabase.from('exercises').select('id,image').neq('status','deleted');
+  if(!exData){showToast('Keine Übungen gefunden','err');return;}
+  const toMigrate=exData.filter(e=>e.image&&e.image.startsWith('data:'));
+  if(!toMigrate.length){showToast('Nichts zu migrieren');return;}
+  showToast(`Migriere ${toMigrate.length} Bilder…`,'');
+  let done=0,failed=0;
+  for(const ex of toMigrate){
+    const url=await uploadImageToStorage(ex.image);
+    if(url){
+      await _supabase.from('exercises').update({image:url}).eq('id',ex.id);
+      done++;
+    } else failed++;
+  }
+  showToast(`Migration abgeschlossen: ${done} ✓, ${failed} fehlgeschlagen`);
+  silentSync();
+}
+
 // ══════════════════════════════════════════════════════
 // PAGE NAV
 // ══════════════════════════════════════════════════════

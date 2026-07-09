@@ -265,6 +265,13 @@ function renderSTagDisplay(){
 async function submitExercise(){
   if(!submitUser||!currentUser)return;
   const sec=parseInt(document.getElementById('sSec').value);
+  // Upload image to Storage (avoid storing large base64 in DB)
+  let imageUrl=submitCanvasData||null;
+  if(submitCanvasData){
+    showToast('Bild wird hochgeladen…','');
+    const uploaded=await uploadImageToStorage(submitCanvasData);
+    if(uploaded)imageUrl=uploaded;
+  }
   const {error}=await _supabase.from('exercises').insert({
     name:document.getElementById('sName').value.trim(),
     description:document.getElementById('sDesc').value.trim(),
@@ -273,7 +280,7 @@ async function submitExercise(){
     section:sec,
     difficulty:document.getElementById('sIntensity').value,
     tags:submitTags,
-    image:submitCanvasData,
+    image:imageUrl,
     created_by:currentUser.id,
     status:'pending'
   });
