@@ -165,7 +165,7 @@ function renderSection(){
   (sectionCustomTags[activeSec]||[]).forEach(t=>allTagsInSec.add(t.toUpperCase()));
 
   const clusterCounts={};
-  allTagsInSec.forEach(t=>{const cl=getCluster(t,activeSec).name;clusterCounts[cl]=(clusterCounts[cl]||0)+1;});
+  sEx.forEach(e=>{const seen=new Set();(e.tags||[]).forEach(t=>{const cl=getCluster(t.toUpperCase(),activeSec).name;if(!seen.has(cl)){seen.add(cl);clusterCounts[cl]=(clusterCounts[cl]||0)+1;}});});
 
   const clusterLegend=Object.entries(clusterCounts).filter(([,c])=>c>0).map(([name])=>{
     const cl=(SECTION_CLUSTERS[activeSec]||SECTION_CLUSTERS[0])[name]||(SECTION_CLUSTERS[activeSec]||SECTION_CLUSTERS[0])['SONSTIGE'];
