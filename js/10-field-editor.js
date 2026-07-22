@@ -980,7 +980,7 @@ function clearCanvas(){if(!confirm('Diagramm leeren?'))return;pushUndo();canvasO
 // ── CROP DIALOG ──────────────────────────────────────
 let _cropImg=null, _cropRect={x:0,y:0,w:0,h:0};
 let _cropHandle=null, _cropDragStart=null, _cropRectStart=null;
-let _cropCallback=null, _cropCvEl=null, _cropCtx2=null;
+let _cropCallback=null, _cropCvEl=null, _cropCtx2=null, _cropSrcCanvas=null;
 const _HSIZE=12;
 
 function _getCropBounds(){
@@ -1058,6 +1058,7 @@ function _cropHit(px,py){
 
 function _openCropDialog(fullDataUrl, autoBounds, callback){
   _cropCallback=callback;
+  _cropSrcCanvas=canvasEl;
   openMod('cropMod');
   setTimeout(()=>{
     _cropCvEl=document.getElementById('cropCanvas');
@@ -1119,14 +1120,22 @@ function _openCropDialog(fullDataUrl, autoBounds, callback){
 }
 
 function confirmCrop(){
-  if(!_cropImg||!_cropCallback)return;
+  if(!_cropCallback)return;
+  const dpr=window.devicePixelRatio||1;
   const dW=_cropCvEl.offsetWidth, dH=_cropCvEl.offsetHeight;
-  const sx=_cropImg.width/dW, sy=_cropImg.height/dH;
-  const srcX=Math.round(_cropRect.x*sx), srcY=Math.round(_cropRect.y*sy);
-  const srcW=Math.round(_cropRect.w*sx), srcH=Math.round(_cropRect.h*sy);
+  // Map crop rect (in dialog display pixels) → original canvas CSS pixels
+  const origW=_cropSrcCanvas?_cropSrcCanvas.offsetWidth:(_cropImg?_cropImg.width/dpr:dW);
+  const origH=_cropSrcCanvas?_cropSrcCanvas.offsetHeight:(_cropImg?_cropImg.height/dpr:dH);
+  const scaleX=origW/dW, scaleY=origH/dH;
+  const cssCropX=_cropRect.x*scaleX, cssCropY=_cropRect.y*scaleY;
+  const cssCropW=_cropRect.w*scaleX, cssCropH=_cropRect.h*scaleY;
+  // Physical pixels on source canvas (full DPR resolution)
+  const sx=Math.round(cssCropX*dpr), sy=Math.round(cssCropY*dpr);
+  const sw=Math.round(cssCropW*dpr), sh=Math.round(cssCropH*dpr);
   const off=document.createElement('canvas');
-  off.width=srcW; off.height=srcH;
-  off.getContext('2d').drawImage(_cropImg,srcX,srcY,srcW,srcH,0,0,srcW,srcH);
+  off.width=sw; off.height=sh;
+  const src=_cropSrcCanvas||_cropImg;
+  off.getContext('2d').drawImage(src,sx,sy,sw,sh,0,0,sw,sh);
   const croppedUrl=off.toDataURL('image/png');
   closeMod('cropMod');
   _cropCallback(croppedUrl);
