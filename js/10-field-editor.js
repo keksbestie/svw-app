@@ -1154,6 +1154,15 @@ function exportCanvas(){
         e.image=croppedUrl;
         save();
         renderSection();
+        // Persist image + canvas_objects to Supabase
+        if(_supabase&&apiOnline){
+          uploadImageToStorage(croppedUrl).then(url=>{
+            const imgUrl=url||croppedUrl;
+            e.image=imgUrl;
+            _supabase.from('exercises').update({image:imgUrl,canvas_objects:canvasObjects}).eq('id',_catalogEditExId);
+            renderSection();
+          });
+        }
         showToast('Felddiagramm gespeichert');
       }
       closeFieldOverlay();

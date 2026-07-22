@@ -281,6 +281,7 @@ async function submitExercise(){
     difficulty:document.getElementById('sIntensity').value,
     tags:submitTags,
     image:imageUrl,
+    canvas_objects:canvasObjects.length?canvasObjects:null,
     created_by:currentUser.id,
     status:'pending'
   });

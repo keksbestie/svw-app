@@ -33,7 +33,8 @@ function hideLS(){const l=document.getElementById('ls');l.classList.add('fade');
 // ══════════════════════════════════════════════════════
 function mapExercise(e){
   return {id:e.id,name:e.name,players:e.players,material:e.material,section:e.section,
-    difficulty:e.difficulty,desc:e.description,tags:e.tags||[],image:e.image,status:e.status,duration:e.duration};
+    difficulty:e.difficulty,desc:e.description,tags:e.tags||[],image:e.image,status:e.status,duration:e.duration,
+    canvasObjects:e.canvas_objects||[]};
 }
 async function loadAPI(){
   if(!_supabase)return false;
