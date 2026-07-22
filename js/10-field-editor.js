@@ -977,37 +977,195 @@ function drawGoal(x,y,sub,sel,ang,sc){
 function pushUndo(){undoStack.push(JSON.stringify(canvasObjects));if(undoStack.length>40)undoStack.shift();}
 function undoDraw(){if(!undoStack.length){showToast('Nichts rückgängig');return;}canvasObjects=JSON.parse(undoStack.pop());redraw();}
 function clearCanvas(){if(!confirm('Diagramm leeren?'))return;pushUndo();canvasObjects=[];playerCounters={};linePhase=0;lineStart=null;isDribbling=false;dribblePoints=[];selectedObjIdx=null;redraw();}
+// ── CROP DIALOG ──────────────────────────────────────
+let _cropImg=null, _cropRect={x:0,y:0,w:0,h:0};
+let _cropHandle=null, _cropDragStart=null, _cropRectStart=null;
+let _cropCallback=null, _cropCvEl=null, _cropCtx2=null;
+const _HSIZE=12;
+
+function _getCropBounds(){
+  if(!canvasEl||!canvasObjects.length)return null;
+  const W=canvasEl.offsetWidth, H=canvasEl.offsetHeight;
+  let x0=W,y0=H,x1=0,y1=0;
+  canvasObjects.forEach(o=>{
+    if(o.type==='pass'||o.type==='run'||o.type==='dribble'){
+      x0=Math.min(x0,o.x1,o.x2);y0=Math.min(y0,o.y1,o.y2);
+      x1=Math.max(x1,o.x1,o.x2);y1=Math.max(y1,o.y1,o.y2);
+    } else if(o.x!==undefined){
+      const r=_baseR(o)*_objSc(o)+8;
+      x0=Math.min(x0,o.x-r);y0=Math.min(y0,o.y-r);
+      x1=Math.max(x1,o.x+r);y1=Math.max(y1,o.y+r);
+    }
+  });
+  const pad=48;
+  return{
+    x:Math.max(0,x0-pad), y:Math.max(0,y0-pad),
+    w:Math.min(W,x1+pad)-Math.max(0,x0-pad),
+    h:Math.min(H,y1+pad)-Math.max(0,y0-pad),
+    origW:W, origH:H
+  };
+}
+
+function _drawCropOverlay(){
+  if(!_cropCtx2||!_cropImg)return;
+  const dW=_cropCvEl.offsetWidth, dH=_cropCvEl.offsetHeight;
+  _cropCtx2.clearRect(0,0,dW,dH);
+  _cropCtx2.drawImage(_cropImg,0,0,dW,dH);
+  const{x,y,w,h}=_cropRect;
+  _cropCtx2.fillStyle='rgba(0,0,0,.55)';
+  _cropCtx2.fillRect(0,0,dW,dH);
+  // punch out crop area
+  _cropCtx2.save();
+  _cropCtx2.globalCompositeOperation='destination-out';
+  _cropCtx2.fillStyle='rgba(0,0,0,1)';
+  _cropCtx2.fillRect(x,y,w,h);
+  _cropCtx2.restore();
+  // redraw image in crop area on top
+  _cropCtx2.drawImage(_cropImg,
+    x/_cropCvEl.offsetWidth*_cropImg.width,
+    y/_cropCvEl.offsetHeight*_cropImg.height,
+    w/_cropCvEl.offsetWidth*_cropImg.width,
+    h/_cropCvEl.offsetHeight*_cropImg.height,
+    x,y,w,h);
+  // border
+  _cropCtx2.strokeStyle='#fff';
+  _cropCtx2.lineWidth=2;
+  _cropCtx2.strokeRect(x,y,w,h);
+  // corner handles
+  [[x,y],[x+w,y],[x,y+h],[x+w,y+h]].forEach(([hx,hy])=>{
+    _cropCtx2.fillStyle='#fff';
+    _cropCtx2.beginPath();
+    _cropCtx2.arc(hx,hy,_HSIZE/2,0,Math.PI*2);
+    _cropCtx2.fill();
+  });
+}
+
+function _cropPos(e){
+  const r=_cropCvEl.getBoundingClientRect();
+  const sx=_cropCvEl.offsetWidth/r.width;
+  return{x:(e.clientX-r.left)*sx, y:(e.clientY-r.top)*sx};
+}
+
+function _cropHit(px,py){
+  const{x,y,w,h}=_cropRect, t=_HSIZE;
+  if(Math.hypot(px-x,py-y)<t)return'nw';
+  if(Math.hypot(px-(x+w),py-y)<t)return'ne';
+  if(Math.hypot(px-x,py-(y+h))<t)return'sw';
+  if(Math.hypot(px-(x+w),py-(y+h))<t)return'se';
+  if(px>x&&px<x+w&&py>y&&py<y+h)return'move';
+  return null;
+}
+
+function _openCropDialog(fullDataUrl, autoBounds, callback){
+  _cropCallback=callback;
+  openMod('cropMod');
+  setTimeout(()=>{
+    _cropCvEl=document.getElementById('cropCanvas');
+    const img=new Image();
+    img.onload=()=>{
+      _cropImg=img;
+      const dpr=window.devicePixelRatio||1;
+      const dW=_cropCvEl.offsetWidth;
+      const dH=Math.round(dW*(img.height/img.width));
+      _cropCvEl.width=dW*dpr; _cropCvEl.height=dH*dpr;
+      _cropCvEl.style.height=dH+'px';
+      _cropCtx2=_cropCvEl.getContext('2d');
+      _cropCtx2.scale(dpr,dpr);
+      if(autoBounds){
+        const sx=dW/autoBounds.origW, sy=dH/autoBounds.origH;
+        _cropRect={x:autoBounds.x*sx,y:autoBounds.y*sy,w:autoBounds.w*sx,h:autoBounds.h*sy};
+      } else {
+        _cropRect={x:0,y:0,w:dW,h:dH};
+      }
+      _drawCropOverlay();
+      _cropCvEl.onmousedown=e=>{
+        const p=_cropPos(e);
+        _cropHandle=_cropHit(p.x,p.y);
+        _cropDragStart=p; _cropRectStart={..._cropRect};
+      };
+      _cropCvEl.onmousemove=e=>{
+        const p=_cropPos(e);
+        if(!_cropHandle){
+          const h=_cropHit(p.x,p.y);
+          _cropCvEl.style.cursor=h==='move'?'grab':h?'nwse-resize':'crosshair';
+          return;
+        }
+        const dx=p.x-_cropDragStart.x, dy=p.y-_cropDragStart.y;
+        const r={..._cropRectStart};
+        const dW2=_cropCvEl.offsetWidth, dH2=_cropCvEl.offsetHeight, MIN=40;
+        if(_cropHandle==='move'){
+          r.x=Math.max(0,Math.min(dW2-r.w,r.x+dx));
+          r.y=Math.max(0,Math.min(dH2-r.h,r.y+dy));
+        } else {
+          if(_cropHandle==='nw'){r.x+=dx;r.y+=dy;r.w-=dx;r.h-=dy;}
+          else if(_cropHandle==='ne'){r.w+=dx;r.y+=dy;r.h-=dy;}
+          else if(_cropHandle==='sw'){r.x+=dx;r.w-=dx;r.h+=dy;}
+          else if(_cropHandle==='se'){r.w+=dx;r.h+=dy;}
+          if(r.w<MIN){r.w=MIN;if(_cropHandle.includes('w'))r.x=_cropRectStart.x+_cropRectStart.w-MIN;}
+          if(r.h<MIN){r.h=MIN;if(_cropHandle.includes('n'))r.y=_cropRectStart.y+_cropRectStart.h-MIN;}
+          r.x=Math.max(0,r.x); r.y=Math.max(0,r.y);
+          if(r.x+r.w>dW2)r.w=dW2-r.x;
+          if(r.y+r.h>dH2)r.h=dH2-r.y;
+        }
+        _cropRect=r; _drawCropOverlay();
+      };
+      _cropCvEl.onmouseup=()=>{_cropHandle=null;};
+      _cropCvEl.ontouchstart=e=>{e.preventDefault();const t=e.touches[0];_cropCvEl.onmousedown({clientX:t.clientX,clientY:t.clientY});};
+      _cropCvEl.ontouchmove=e=>{e.preventDefault();const t=e.touches[0];_cropCvEl.onmousemove({clientX:t.clientX,clientY:t.clientY});};
+      _cropCvEl.ontouchend=()=>{_cropHandle=null;};
+    };
+    img.src=fullDataUrl;
+  },80);
+}
+
+function confirmCrop(){
+  if(!_cropImg||!_cropCallback)return;
+  const dW=_cropCvEl.offsetWidth, dH=_cropCvEl.offsetHeight;
+  const sx=_cropImg.width/dW, sy=_cropImg.height/dH;
+  const srcX=Math.round(_cropRect.x*sx), srcY=Math.round(_cropRect.y*sy);
+  const srcW=Math.round(_cropRect.w*sx), srcH=Math.round(_cropRect.h*sy);
+  const off=document.createElement('canvas');
+  off.width=srcW; off.height=srcH;
+  off.getContext('2d').drawImage(_cropImg,srcX,srcY,srcW,srcH,0,0,srcW,srcH);
+  const croppedUrl=off.toDataURL('image/png');
+  closeMod('cropMod');
+  _cropCallback(croppedUrl);
+}
+
 function exportCanvas(){
   if(!canvasEl){showToast('Kein Feld','err');return;}
   selectedObjIdx=null; selectedIndices=[]; redraw();
-  const dataUrl=canvasEl.toDataURL('image/png');
-  if(_cvMode==='submit'){
-    submitCanvasData=dataUrl;
-    const wrap=document.getElementById('sPreviewWrap');
-    const img=document.getElementById('sPreviewImg');
-    if(wrap&&img){img.src=dataUrl;wrap.style.display='block';}
-    if(typeof updateSubmitChecklist==='function') updateSubmitChecklist();
-    showToast('Felddiagramm übernommen');
-    closeFieldOverlay();
-  } else if(_cvMode==='catalog-edit'){
-    // Save directly to the exercise
-    const e=exercises.find(x=>x.id===_catalogEditExId);
-    if(e){
-      e.canvasObjects=[...canvasObjects];
-      e.image=dataUrl;
-      save();
-      renderSection();
-      showToast('Felddiagramm gespeichert');
+  const fullDataUrl=canvasEl.toDataURL('image/png');
+  const autoBounds=canvasObjects.length?_getCropBounds():null;
+
+  _openCropDialog(fullDataUrl, autoBounds, (croppedUrl)=>{
+    if(_cvMode==='submit'){
+      submitCanvasData=croppedUrl;
+      const wrap=document.getElementById('sPreviewWrap');
+      const img=document.getElementById('sPreviewImg');
+      if(wrap&&img){img.src=croppedUrl;wrap.style.display='block';}
+      if(typeof updateSubmitChecklist==='function') updateSubmitChecklist();
+      showToast('Felddiagramm übernommen');
+      closeFieldOverlay();
+    } else if(_cvMode==='catalog-edit'){
+      const e=exercises.find(x=>x.id===_catalogEditExId);
+      if(e){
+        e.canvasObjects=[...canvasObjects];
+        e.image=croppedUrl;
+        save();
+        renderSection();
+        showToast('Felddiagramm gespeichert');
+      }
+      closeFieldOverlay();
+    } else {
+      formImg=croppedUrl;
+      const prev=document.getElementById('cvPreview');
+      const prevImg=document.getElementById('cvPreviewImg');
+      if(prev&&prevImg){prevImg.src=formImg;prev.style.display='block';}
+      showToast('Felddiagramm übernommen');
+      closeFieldOverlay();
     }
-    closeFieldOverlay();
-  } else {
-    formImg=dataUrl;
-    const prev=document.getElementById('cvPreview');
-    const prevImg=document.getElementById('cvPreviewImg');
-    if(prev&&prevImg){prevImg.src=formImg;prev.style.display='block';}
-    showToast('Felddiagramm übernommen');
-    closeFieldOverlay();
-  }
+  });
 }
 
 // DeepL integration placeholder:

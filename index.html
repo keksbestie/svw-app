@@ -1216,6 +1216,21 @@
 <script src="js/10-field-editor.js?v=20260624"></script>
 <script src="js/11-app-start.js?v=20260624"></script>
 
+<!-- CROP DIALOG -->
+<div id="cropMod" class="h" style="position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;">
+  <div style="background:var(--card);border-radius:16px;padding:20px;width:min(95vw,820px);max-height:90vh;overflow:auto;display:flex;flex-direction:column;gap:14px;">
+    <div style="font-size:17px;font-weight:700;color:var(--text);">Ausschnitt anpassen</div>
+    <div style="font-size:13px;color:var(--text-3);">Ziehe die Ecken, um den Zuschnitt zu vergrößern oder zu verkleinern. Den ganzen Bereich verschieben indem du mittig ziehst.</div>
+    <div style="position:relative;">
+      <canvas id="cropCanvas" style="width:100%;border-radius:8px;display:block;touch-action:none;cursor:crosshair;"></canvas>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button onclick="closeMod('cropMod')" style="padding:10px 20px;border:1.5px solid var(--text-3);background:none;color:var(--text);border-radius:10px;font-size:14px;cursor:pointer;">Abbrechen</button>
+      <button onclick="confirmCrop()" style="padding:10px 22px;background:var(--g);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">Übernehmen</button>
+    </div>
+  </div>
+</div>
+
 <!-- FELDDIAGRAMM OVERLAY – direkt in <body>, außerhalb aller Modals -->
 <div id="fieldOverlay" style="display:none;position:fixed;inset:0;z-index:10000;background:#1a2b1c;flex-direction:column;">
   <!-- Toolbar -->
