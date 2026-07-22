@@ -279,6 +279,7 @@ async function submitExercise(){
     material:document.getElementById('sMat').value.trim(),
     section:sec,
     difficulty:document.getElementById('sIntensity').value,
+    duration:parseInt(document.getElementById('sDuration')?.value)||null,
     tags:submitTags,
     image:imageUrl,
     canvas_objects:canvasObjects.length?canvasObjects:null,
