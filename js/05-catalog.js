@@ -184,7 +184,7 @@ function renderSection(){
       <div class="hero-in">
         <div class="hero-num">${activeSec+1}</div>
         <div class="hero-body">
-          <div class="hero-lbl">Abschnitt ${activeSec+1} · Talentteam U8–U12</div>
+          <div class="hero-lbl">Abschnitt ${activeSec+1}</div>
           <div class="hero-title">${s.name}</div>
           <div class="hero-desc" id="heroDesc">${desc||'<em style="opacity:.45">Noch kein Text. Admins können diesen über „Bearbeiten" hinzufügen.</em>'}</div>
           <button class="hero-tog" id="heroTog" onclick="toggleDesc()" style="display:none;">▼ Mehr</button>
