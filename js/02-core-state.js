@@ -24,6 +24,7 @@ async function init(){
   const ok=await loadAPI();
   if(ok){ renderStbar(); renderSection(); renderSavedPlans(); renderLtp(); }
   updateApiBar();
+  if(typeof updateSignInBtn==='function') updateSignInBtn();
   setInterval(()=>{if(apiOnline)silentSync();},60000);
 }
 function hideLS(){const l=document.getElementById('ls');l.classList.add('fade');setTimeout(()=>l.style.display='none',400);}

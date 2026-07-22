@@ -32,6 +32,11 @@ if(error){console.error('loadSubmissions error:',error);submissions=[];return;}
 }
 function saveSubmissions(){}
 
+function updateSignInBtn(){
+  const btn=document.getElementById('homeSignInBtn');if(!btn)return;
+  if(submitUser){btn.textContent=submitUser.name;btn.onclick=()=>goPage('submit');}
+  else{btn.textContent='Anmelden';btn.onclick=()=>goPage('submit');}
+}
 async function renderSubmitPage(){
   // Restore submitUser from existing Supabase session if not set
   if(!submitUser && currentUser){
@@ -76,6 +81,7 @@ async function doLogin(){
   const displayName=data.user.user_metadata?.username||data.user.email;
   submitUser={name:displayName,isDemo:false,id:data.user.id};
   renderSubmitPage(); // show page immediately
+  updateSignInBtn();
   silentSync();       // sync data in background
 }
 
