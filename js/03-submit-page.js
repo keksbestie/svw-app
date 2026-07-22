@@ -25,7 +25,7 @@ if(error){console.error('loadSubmissions error:',error);submissions=[];return;}
     id:e.id,name:e.name,desc:e.description,players:e.players,
     duration:e.duration,material:e.material,section:e.section,
     intensity:e.difficulty,tags:e.tags||[],diagram:e.image,
-    author:e.created_by,status:e.status,
+    author:e.author_name||e.created_by,status:e.status,
     submittedAt:new Date(e.created_at).toLocaleDateString('de-DE'),
     submittedTs:new Date(e.created_at).getTime()
   }));
@@ -284,6 +284,7 @@ async function submitExercise(){
     image:imageUrl,
     canvas_objects:canvasObjects.length?canvasObjects:null,
     created_by:currentUser.id,
+    author_name:submitUser.name||null,
     status:'pending'
   });
   if(error){showToast('Fehler beim Einreichen','err');return;}
