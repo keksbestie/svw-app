@@ -390,7 +390,9 @@ function saveEx(){
     _supabase.from('exercises').update({
       name:ex.name,players:ex.players,material:ex.material,section:ex.section,
       difficulty:ex.difficulty,duration:ex.duration,description:ex.desc,tags:ex.tags
-    }).eq('id',editingId);
+    }).eq('id',editingId).then(({error})=>{
+      if(error){console.error('saveEx Supabase error:',error);showToast('Supabase: '+error.message,'err');}
+    });
   }
 }
 async function delEx(id){
