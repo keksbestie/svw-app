@@ -93,6 +93,7 @@ function openExDetail(id){
   const e=exercises.find(x=>x.id===id); if(!e)return;
   const s=SECS[e.section]||SECS[0];
   const dc=e.difficulty==='Leicht'?'#1a7f4b':e.difficulty==='Mittel'?'#e65100':'#880e4f';
+  const diffLbl=e.difficulty==='Schwer'?'Hoch':e.difficulty;
   const tags=(e.tags||[]).map(t=>`<span style="font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px;${tagStyle(t)};display:inline-block;margin:2px;">${t}</span>`).join('');
   const matPills=(e.material||'').split(',').filter(Boolean).map(m=>`<span style="font-size:11px;padding:3px 10px;border-radius:6px;background:var(--surface-2);border:1px solid var(--border);display:inline-block;margin:2px;">${m.trim()}</span>`).join('');
 
@@ -105,7 +106,7 @@ function openExDetail(id){
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
       ${e.players?`<span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px;background:#e8f5e9;color:#1a7f4b;">👥 ${e.players} Spieler</span>`:''}
       ${e.duration?`<span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px;background:#e8f0fe;color:#1a56c4;">⏱ ${e.duration} min</span>`:''}
-      ${e.difficulty?`<span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px;background:${dc}20;color:${dc};">◉ ${e.difficulty}</span>`:''}
+      ${e.difficulty?`<span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px;background:${dc}20;color:${dc};">◉ ${diffLbl}</span>`:''}
     </div>
     ${e.image?`<div style="margin-bottom:16px;border-radius:10px;overflow:hidden;border:1px solid var(--border);cursor:zoom-in;" onclick="openImgLightbox('${e.image}')"><img src="${e.image}" style="width:100%;display:block;max-height:320px;object-fit:cover;"></div>`:''}
     ${e.desc?`<div style="margin-bottom:16px;">
@@ -302,6 +303,7 @@ function filterByTag(tag){if(!selectedTags.map(t=>t.toUpperCase()).includes(tag.
 
 function cardHTML(e,col){
   const dc=e.difficulty==='Leicht'?'dl':e.difficulty==='Mittel'?'dm':e.difficulty==='Schwer'?'ds':'';
+const diffLabel=e.difficulty==='Schwer'?'Hoch':e.difficulty;
   const mats=e.material?e.material.split(',').map(m=>`<span class="matpill">${m.trim()}</span>`).join(''):'';
   const tags=(e.tags||[]).map(t=>`<span class="ctag" style="${tagStyle(t)}" onclick="event.stopPropagation();filterByTag('${t}')">${t}</span>`).join('');
   const authorLine = e.author ? `<div class="card-author">erstellt von ${e.author}</div>` : '';
@@ -316,7 +318,7 @@ function cardHTML(e,col){
       <div class="cname">${e.name}</div>
       <div class="cmeta">
         ${e.players?`<span class="mbadge p">👥 ${e.players}</span>`:''}
-        ${e.difficulty?`<span class="mbadge ${dc}">${e.difficulty}</span>`:''}
+        ${e.difficulty?`<span class="mbadge ${dc}">${diffLabel}</span>`:''}
         ${e.duration?`<span class="mbadge" style="background:#e8f0fe;color:#1a56c4;">⏱ ${e.duration} min</span>`:''}
       </div>
       ${mats?`<div class="matlist">${mats}</div>`:''}

@@ -632,7 +632,7 @@ function _ltpPlanHTML(plan){
   items.forEach(({item,ex})=>{const d=parseInt(item.duration??ex.duration??0)||0;const diff=item.difficulty??ex.difficulty??'';byDiff[diff in byDiff?diff:'']+=d;});
   const totalMin=Object.values(byDiff).reduce((a,b)=>a+b,0);
   const matHTML=[...matSet].length?`<div class="mat-box"><div class="mat-box-title">Material</div><div style="display:flex;flex-wrap:wrap;gap:5px;">${[...matSet].map(m=>`<span class="mat-pill">${m}</span>`).join('')}</div></div>`:'';
-  const diffRows=[{label:'Leicht',color:'#1a7f4b',min:byDiff['Leicht']},{label:'Mittel',color:'#e65100',min:byDiff['Mittel']},{label:'Schwer',color:'#880e4f',min:byDiff['Schwer']}].filter(r=>r.min>0);
+  const diffRows=[{label:'Leicht',color:'#1a7f4b',min:byDiff['Leicht']},{label:'Mittel',color:'#e65100',min:byDiff['Mittel']},{label:'Hoch',color:'#880e4f',min:byDiff['Schwer']}].filter(r=>r.min>0);
   const totalHTML=totalMin?`<div class="total-box"><div><div class="total-label">Gesamtbelastung</div><div class="total-breakdown">${diffRows.map(r=>`<span class="diff-pill" style="background:${r.color}18;color:${r.color};border:1px solid ${r.color}40;">${r.label}: ${r.min} min</span>`).join('')}${byDiff['']>0?`<span class="diff-pill" style="background:#f5f5f5;color:#555;border:1px solid #ccc;">Ohne Angabe: ${byDiff['']} min</span>`:''}</div></div><span class="total-val">${totalMin} min</span></div>`:'';
   const cardsHTML=items.map(({item,ex,si},idx)=>{
     const players=item.players??ex.players??'';const duration=item.duration??ex.duration??'';const difficulty=item.difficulty??ex.difficulty??'';const col=secColor(si);

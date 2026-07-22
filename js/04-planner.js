@@ -260,7 +260,7 @@ function printPlan(){
   const diffRows=[
     {label:'Leicht',color:'#1a7f4b',min:byDiff['Leicht']},
     {label:'Mittel',color:'#e65100',min:byDiff['Mittel']},
-    {label:'Schwer',color:'#880e4f',min:byDiff['Schwer']},
+    {label:'Hoch',color:'#880e4f',min:byDiff['Schwer']},
   ].filter(r=>r.min>0);
   const totalHTML=totalMin?`<div class="total-box">
     <div>
