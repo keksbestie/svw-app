@@ -385,6 +385,13 @@ function saveEx(){
   updateMatField();const ex={id:editingId||uid(),name,players:document.getElementById('mPl').value.trim(),material:document.getElementById('mMat').value.trim(),section:si,difficulty:document.getElementById('mDif').value,duration:document.getElementById('mDur')?parseInt(document.getElementById('mDur').value)||null:null,desc:document.getElementById('mDesc').value.trim(),tags:[...formTags],image:formImg,canvasObjects:[...canvasObjects]};
   if(editingId)exercises=exercises.map(e=>e.id===editingId?ex:e);else exercises.push(ex);
   save();activeSec=si;renderStbar();renderSection();closeMod('exMod');showToast(editingId?'Übung aktualisiert':'Übung gespeichert');
+  // Persist changes to Supabase so they survive a reload
+  if(editingId&&_supabase&&apiOnline){
+    _supabase.from('exercises').update({
+      name:ex.name,players:ex.players,material:ex.material,section:ex.section,
+      difficulty:ex.difficulty,duration:ex.duration,description:ex.desc,tags:ex.tags
+    }).eq('id',editingId);
+  }
 }
 async function delEx(id){
   if(!IS_ADMIN||!confirm('Übung in den Papierkorb verschieben?'))return;
