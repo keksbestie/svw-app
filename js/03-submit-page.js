@@ -33,10 +33,30 @@ if(error){console.error('loadSubmissions error:',error);submissions=[];return;}
 function saveSubmissions(){}
 
 function updateSignInBtn(){
-  const btn=document.getElementById('homeSignInBtn');if(!btn)return;
-  if(submitUser){btn.textContent=submitUser.name;btn.onclick=()=>goPage('submit');}
-  else{btn.textContent='Anmelden';btn.onclick=()=>goPage('submit');}
+  const btn=document.getElementById('authBtn');
+  const drop=document.getElementById('authDrop');
+  const nameEl=document.getElementById('authDropName');
+  const homeBtn=document.getElementById('homeSignInBtn');
+  if(submitUser){
+    if(btn){btn.textContent=submitUser.name;btn.style.background='var(--g)';}
+    if(drop)drop.querySelector('button:last-child').style.display='block';
+    if(nameEl)nameEl.textContent=submitUser.name;
+    if(homeBtn){homeBtn.textContent=submitUser.name;homeBtn.onclick=()=>goPage('submit');}
+  } else {
+    if(btn){btn.textContent='Anmelden';btn.onclick=undefined;}
+    if(drop)drop.style.display='none';
+    if(homeBtn){homeBtn.textContent='Anmelden';homeBtn.onclick=()=>goPage('submit');}
+  }
 }
+function toggleAuthDrop(){
+  if(!submitUser){goPage('submit');return;}
+  const d=document.getElementById('authDrop');
+  if(d)d.style.display=d.style.display==='none'?'block':'none';
+}
+function closeAuthDrop(){
+  const d=document.getElementById('authDrop');if(d)d.style.display='none';
+}
+document.addEventListener('click',e=>{if(!e.target.closest('#authBtnWrap'))closeAuthDrop();});
 async function renderSubmitPage(){
   // Restore submitUser from existing Supabase session if not set
   if(!submitUser && currentUser){
@@ -182,6 +202,7 @@ async function doSetNewPassword(){
     submitUser={name:displayName,isDemo:false,id:user.id};
   }
   renderSubmitPage();
+  updateSignInBtn();
 }
 
 async function doLogout(){
@@ -190,6 +211,7 @@ async function doLogout(){
   document.body.classList.remove('admin');
   submitUser=null; submitTags=[]; submitCanvasData=null;
   renderSubmitPage();
+  updateSignInBtn();
 }
 
 // ── Material builder for submit form ────────────────
