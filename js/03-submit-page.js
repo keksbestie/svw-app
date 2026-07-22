@@ -43,7 +43,7 @@ function updateSignInBtn(){
     if(nameEl)nameEl.textContent=submitUser.name;
     if(homeBtn){homeBtn.textContent=submitUser.name;homeBtn.onclick=()=>goPage('submit');}
   } else {
-    if(btn){btn.textContent='Anmelden';btn.onclick=undefined;}
+    if(btn){btn.textContent='Anmelden';btn.style.background='#fff';btn.style.color='#1a2b1c';}
     if(drop)drop.style.display='none';
     if(homeBtn){homeBtn.textContent='Anmelden';homeBtn.onclick=()=>goPage('submit');}
   }
