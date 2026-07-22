@@ -107,7 +107,7 @@ function openExDetail(id){
       ${e.duration?`<span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px;background:#e8f0fe;color:#1a56c4;">⏱ ${e.duration} min</span>`:''}
       ${e.difficulty?`<span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px;background:${dc}20;color:${dc};">◉ ${e.difficulty}</span>`:''}
     </div>
-    ${e.image?`<div style="margin-bottom:16px;border-radius:10px;overflow:hidden;border:1px solid var(--border);"><img src="${e.image}" style="width:100%;display:block;max-height:320px;object-fit:cover;"></div>`:''}
+    ${e.image?`<div style="margin-bottom:16px;border-radius:10px;overflow:hidden;border:1px solid var(--border);cursor:zoom-in;" onclick="openImgLightbox('${e.image}')"><img src="${e.image}" style="width:100%;display:block;max-height:320px;object-fit:cover;"></div>`:''}
     ${e.desc?`<div style="margin-bottom:16px;">
       <div style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:6px;">Beschreibung</div>
       <div style="font-size:13px;color:var(--text-1);line-height:1.7;white-space:pre-wrap;">${e.desc}</div>
@@ -367,6 +367,8 @@ function loadMatIntoBuilder(matStr){
 // ══════════════════════════════════════════════════════
 // EXERCISE CRUD
 // ══════════════════════════════════════════════════════
+function openImgLightbox(src){const lb=document.getElementById('imgLightbox');const img=document.getElementById('imgLightboxImg');if(!lb||!img)return;img.src=src;lb.style.display='flex';}
+function closeImgLightbox(){const lb=document.getElementById('imgLightbox');if(lb)lb.style.display='none';}
 function openNewEx(si){if(!IS_ADMIN)return;editingId=null;formTags=[];formImg=null;canvasObjects=[];playerCounters={};undoStack=[];selectedObjIdx=null;selectedIndices=[];['mName','mPl','mMat','mTagIn','mMatFree'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.querySelectorAll('.mat-sel').forEach(s=>s.value='0');document.getElementById('mDesc').value='';document.getElementById('mDif').value='';if(document.getElementById('mDur'))document.getElementById('mDur').value='';document.getElementById('mSec').value=si||activeSec;document.getElementById('mId').value='';document.getElementById('mTit').textContent='Neue Übung';document.getElementById('mIco').style.background=SECS[si||activeSec].color+'22';renderIZ();renderMTags();openMod('exMod');}
 function editEx(id){if(!IS_ADMIN)return;const e=exercises.find(x=>x.id===id);if(!e)return;editingId=e.id;formTags=[...(e.tags||[]).map(t=>t.toUpperCase())];formImg=e.image||null;document.getElementById('mName').value=e.name;document.getElementById('mPl').value=e.players||'';document.getElementById('mDesc').value=e.desc||'';document.getElementById('mDif').value=e.difficulty||'';if(document.getElementById('mDur'))document.getElementById('mDur').value=e.duration||'';loadMatIntoBuilder(e.material||'');document.getElementById('mSec').value=e.section||0;document.getElementById('mId').value=e.id;document.getElementById('mTit').textContent='Übung bearbeiten';renderIZ();renderMTags();openMod('exMod');
   // Restore canvas objects if saved
