@@ -23,6 +23,105 @@ let dragAnchor=null;
 let clipboardObjects=[];
 // Catalog-edit mode
 let _catalogEditExId=null;
+// Snap / alignment
+let _snapEnabled=false, _gridSize=40;
+let _activeSnapLines=[];
+
+// ── SNAP / ALIGNMENT ──────────────────────────────────
+function toggleGridSnap(){
+  _snapEnabled=!_snapEnabled;
+  const btn=document.getElementById('tb_snap');
+  if(btn){btn.style.background=_snapEnabled?'#1a7f4b':'#344736';btn.style.color=_snapEnabled?'#fff':'#aaa';}
+  redraw();
+}
+
+function _snapPoint(x,y,excludeIndices){
+  const THRESH=14;
+  let sx=x, sy=y;
+  _activeSnapLines=[];
+
+  if(_snapEnabled){
+    // 1. Grid snap
+    const gx=Math.round(x/_gridSize)*_gridSize;
+    const gy=Math.round(y/_gridSize)*_gridSize;
+    if(Math.abs(x-gx)<THRESH){sx=gx;}
+    if(Math.abs(y-gy)<THRESH){sy=gy;}
+
+    // 2. Alignment to other objects (overrides grid snap if closer)
+    const others=canvasObjects.filter((_,i)=>!excludeIndices.includes(i)&&canvasObjects[i]?.x!==undefined);
+    let bestDX=THRESH, bestDY=THRESH;
+    others.forEach(o=>{
+      const dx=Math.abs(x-o.x), dy=Math.abs(y-o.y);
+      if(dx<bestDX){bestDX=dx;sx=o.x;_activeSnapLines=_activeSnapLines.filter(l=>l.type!=='v');_activeSnapLines.push({type:'v',x:o.x});}
+      if(dy<bestDY){bestDY=dy;sy=o.y;_activeSnapLines=_activeSnapLines.filter(l=>l.type!=='h');_activeSnapLines.push({type:'h',y:o.y});}
+    });
+
+    // 3. Equal spacing detection (horizontal & vertical)
+    // For each pair of objects, if dragged position is at dist*2 from one of them → snap
+    for(let a=0;a<others.length;a++){
+      for(let b=a+1;b<others.length;b++){
+        const oa=others[a], ob=others[b];
+        // Horizontal spacing
+        const hdist=ob.x-oa.x;
+        if(Math.abs(hdist)>8){
+          const cand1=ob.x+hdist, cand2=oa.x-hdist;
+          if(Math.abs(x-cand1)<THRESH&&Math.abs(y-oa.y)<THRESH*2){sx=cand1;sy=oa.y;_activeSnapLines.push({type:'spacing',x1:oa.x,y1:oa.y,x2:cand1,y2:oa.y,gap:hdist});}
+          if(Math.abs(x-cand2)<THRESH&&Math.abs(y-oa.y)<THRESH*2){sx=cand2;sy=oa.y;_activeSnapLines.push({type:'spacing',x1:cand2,y1:oa.y,x2:ob.x,y2:ob.y,gap:-hdist});}
+        }
+        // Vertical spacing
+        const vdist=ob.y-oa.y;
+        if(Math.abs(vdist)>8){
+          const cand1=ob.y+vdist, cand2=oa.y-vdist;
+          if(Math.abs(y-cand1)<THRESH&&Math.abs(x-oa.x)<THRESH*2){sy=cand1;sx=oa.x;_activeSnapLines.push({type:'spacing',x1:oa.x,y1:oa.y,x2:oa.x,y2:cand1,gap:vdist});}
+          if(Math.abs(y-cand2)<THRESH&&Math.abs(x-oa.x)<THRESH*2){sy=cand2;sx=oa.x;_activeSnapLines.push({type:'spacing',x1:oa.x,y1:cand2,x2:ob.x,y2:ob.y,gap:-vdist});}
+        }
+      }
+    }
+  } else {
+    _activeSnapLines=[];
+  }
+  return{x:sx,y:sy};
+}
+
+function _drawGrid(){
+  if(!_snapEnabled||!canvasEl||!ctx) return;
+  const W=canvasEl.offsetWidth, H=canvasEl.offsetHeight;
+  ctx.save();
+  ctx.fillStyle='rgba(255,255,255,0.08)';
+  for(let x=_gridSize;x<W;x+=_gridSize){
+    for(let y=_gridSize;y<H;y+=_gridSize){
+      ctx.beginPath();ctx.arc(x,y,1.5,0,Math.PI*2);ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+
+function _drawSnapLines(){
+  if(!_activeSnapLines.length||!ctx||!canvasEl) return;
+  const W=canvasEl.offsetWidth, H=canvasEl.offsetHeight;
+  ctx.save();
+  ctx.strokeStyle='rgba(0,200,255,0.85)';
+  ctx.lineWidth=1;
+  ctx.setLineDash([4,3]);
+  _activeSnapLines.forEach(l=>{
+    if(l.type==='h'){ctx.beginPath();ctx.moveTo(0,l.y);ctx.lineTo(W,l.y);ctx.stroke();}
+    else if(l.type==='v'){ctx.beginPath();ctx.moveTo(l.x,0);ctx.lineTo(l.x,H);ctx.stroke();}
+    else if(l.type==='spacing'){
+      ctx.setLineDash([]);
+      ctx.strokeStyle='rgba(255,200,0,0.9)';
+      ctx.beginPath();ctx.moveTo(l.x1,l.y1);ctx.lineTo(l.x2,l.y2);ctx.stroke();
+      // Tick marks at ends
+      const ang=Math.atan2(l.y2-l.y1,l.x2-l.x1)+Math.PI/2;
+      [[l.x1,l.y1],[l.x2,l.y2]].forEach(([tx,ty])=>{
+        ctx.beginPath();ctx.moveTo(tx+Math.cos(ang)*5,ty+Math.sin(ang)*5);ctx.lineTo(tx-Math.cos(ang)*5,ty-Math.sin(ang)*5);ctx.stroke();
+      });
+      ctx.strokeStyle='rgba(0,200,255,0.85)';
+      ctx.setLineDash([4,3]);
+    }
+  });
+  ctx.setLineDash([]);
+  ctx.restore();
+}
 
 function switchImgTab(tab){
   const u=tab==='upload';
@@ -167,7 +266,8 @@ function cvDown({x,y}){
     else{canvasObjects.push({type:t,x1:lineStart.x,y1:lineStart.y,x2:x,y2:y});linePhase=0;lineStart=null;redraw();}
     return;
   }
-  pushUndo(); placeObj(t,x,y);
+  const sp=_snapPoint(x,y,[]);
+  pushUndo(); placeObj(t,sp.x,sp.y);
 }
 function cvMove({x,y}){
   if(isResizing&&resizeObjIdx!==null){
@@ -193,9 +293,13 @@ function cvMove({x,y}){
       });
       dragAnchor={x,y};
     } else if(selectedObjIdx!==null){
-      // Single-object absolute drag (existing behavior)
+      // Single-object absolute drag with snap
       const o=canvasObjects[selectedObjIdx];
-      if(o.x!==undefined){o.x=x-dragOffX;o.y=y-dragOffY;}
+      if(o.x!==undefined){
+        const raw={x:x-dragOffX,y:y-dragOffY};
+        const sn=_snapPoint(raw.x,raw.y,[selectedObjIdx]);
+        o.x=sn.x;o.y=sn.y;
+      }
       else if(o.x1!==undefined&&o.x2!==undefined){const dx=x-dragOffX-o.x1,dy=y-dragOffY-o.y1;o.x1+=dx;o.y1+=dy;o.x2+=dx;o.y2+=dy;}
       else if(o.pts){const dx=x-dragOffX-(o.pts[0].x||0),dy=y-dragOffY-(o.pts[0].y||0);o.pts=o.pts.map(p=>({x:p.x+dx,y:p.y+dy}));}
     }
@@ -217,7 +321,7 @@ function cvMove({x,y}){
 }
 function cvUp({x,y}){
   if(isResizing){isResizing=false;resizeObjIdx=null;redraw();return;}
-  if(isDraggingObj){isDraggingObj=false;dragAnchor=null;redraw();return;}
+  if(isDraggingObj){isDraggingObj=false;dragAnchor=null;_activeSnapLines=[];redraw();return;}
   if(isLasso){
     isLasso=false;
     if(lassoRect&&(lassoRect.x2-lassoRect.x1>5||lassoRect.y2-lassoRect.y1>5)){
@@ -390,7 +494,9 @@ function rotateSel(deltaDeg){
 function redraw(){
   if(!ctx||!canvasEl) return;
   drawField();
+  _drawGrid();
   canvasObjects.forEach((o,i)=>drawObj(o,selectedIndices.includes(i)||i===selectedObjIdx));
+  _drawSnapLines();
   // Resize handle only for single selection
   if(selectedIndices.length===1){
     const o=canvasObjects[selectedIndices[0]];
