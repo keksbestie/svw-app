@@ -154,7 +154,7 @@ function cvDown({x,y}){
       selectedObjIdx=null; selectedIndices=[];
       isLasso=true; lassoStart={x,y}; lassoRect=null;
     }
-    redraw(); return;
+    redraw(); updateRotCtrl(); return;
   }
   if(t==='erase'){pushUndo();const i=hitAt(x,y);if(i>=0){canvasObjects.splice(i,1);redraw();} return;}
   if(t==='dribble'){
@@ -226,7 +226,7 @@ function cvUp({x,y}){
       if(selectedIndices.length>0) showToast(selectedIndices.length+' Objekt'+( selectedIndices.length>1?'e':'')+' ausgewählt');
     }
     lassoRect=null; lassoStart=null;
-    redraw(); return;
+    redraw(); updateRotCtrl(); return;
   }
 }
 function cvRightClick({x,y}){
