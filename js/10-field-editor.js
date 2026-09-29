@@ -372,6 +372,17 @@ function setTool(t){
   const btn=document.getElementById('tb_'+t); if(btn)btn.classList.add('active');
   updatePlayerColorBtn();
   if(canvasEl)canvasEl.style.cursor=t==='select'?'default':t==='erase'?'cell':'crosshair';
+  _updateCtxBar(t);
+}
+
+function _updateCtxBar(t){
+  const ctxIds=['ctx_player','ctx_equip','ctx_goal','ctx_line','ctx_select'];
+  ctxIds.forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
+  const map={player:'ctx_player',ball:null,equip:'ctx_equip',goal:'ctx_goal',
+             pass:'ctx_line',run:'ctx_line',dribble:'ctx_line',select:'ctx_select',erase:null};
+  const target=map[t];
+  if(target){const el=document.getElementById(target);if(el)el.style.display='flex';}
+  // Rotation bleibt sichtbar wenn bereits aktiv – updateRotCtrl steuert das
 }
 
 function updatePlayerColorBtn(){

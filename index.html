@@ -1330,80 +1330,128 @@ function filterHelpCards(q){
 
 <!-- FELDDIAGRAMM OVERLAY – direkt in <body>, außerhalb aller Modals -->
 <div id="fieldOverlay" style="display:none;position:fixed;inset:0;z-index:10000;background:#1a2b1c;flex-direction:column;">
-  <!-- Toolbar -->
-  <div style="background:#0f1a10;padding:6px 10px;display:flex;flex-wrap:wrap;gap:5px;align-items:center;border-bottom:2px solid rgba(255,255,255,.1);flex-shrink:0;">
-    <select id="fieldType" onchange="initCanvas(true)" style="padding:4px 8px;border-radius:6px;border:none;font-size:11px;font-weight:700;background:#344736;color:#fff;cursor:pointer;height:28px;">
+
+  <!-- ── ZEILE 1: Werkzeuge + Aktionen (immer sichtbar) ── -->
+  <div style="background:#0f1a10;padding:5px 10px;display:flex;gap:6px;align-items:center;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0;flex-wrap:wrap;">
+
+    <!-- Feldtyp -->
+    <select id="fieldType" onchange="initCanvas(true)" title="Feldtyp" style="padding:4px 7px;border-radius:6px;border:none;font-size:11px;font-weight:700;background:#344736;color:#fff;cursor:pointer;height:30px;max-width:110px;">
       <option value="full">Vollfeld</option><option value="half">Halbfeld</option>
       <option value="small" selected>Kleinfeld</option><option value="neutral">Neutrales Feld</option>
-      <option value="penalty">Nur Strafraum</option><option value="sprint">Sprintbahn 30x5m</option>
+      <option value="penalty">Strafraum</option><option value="sprint">Sprintbahn</option>
     </select>
-    <div style="width:1px;height:20px;background:rgba(255,255,255,.15);"></div>
-    <div style="display:flex;align-items:center;gap:2px;">
-      <button class="tb active" id="tb_player" onclick="setTool('player')" title="Spieler" style="background:#1565c0;font-size:14px;font-weight:900;width:28px;height:28px;border:none;border-radius:5px;cursor:pointer;color:#fff;">&#x25CF;</button>
-      <select id="playerColor" onchange="setTool('player')" style="padding:3px 4px;border-radius:5px;border:none;font-size:10px;background:#344736;color:#fff;cursor:pointer;height:28px;">
-        <option value="#1565c0">Blau</option><option value="#b71c1c">Rot</option>
-        <option value="#1b5e20">Gruen</option><option value="#e65100">Orange</option>
-        <option value="#f9a825">Gelb/TW</option><option value="#4a148c">Lila</option>
-        <option value="#212121">Schwarz</option>
+
+    <div style="width:1px;height:22px;background:rgba(255,255,255,.12);flex-shrink:0;"></div>
+
+    <!-- Objekte -->
+    <div style="display:flex;gap:3px;align-items:center;" title="Objekte platzieren">
+      <span style="font-size:9px;color:rgba(255,255,255,.3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding-right:2px;">Objekte</span>
+      <button class="tb active" id="tb_player" onclick="setTool('player')" title="Spieler setzen" style="background:#1565c0;font-size:14px;font-weight:900;width:30px;height:30px;border:none;border-radius:6px;cursor:pointer;color:#fff;">&#x25CF;</button>
+      <button class="tb" id="tb_ball" onclick="setTool('ball')" title="Ball setzen" style="background:#344736;font-size:14px;width:30px;height:30px;border:none;border-radius:6px;cursor:pointer;color:#fff;">&#x26BD;</button>
+      <button class="tb" id="tb_equip" onclick="setTool('equip')" title="Equipment (Hütchen, Stange …)" style="background:#344736;font-size:12px;width:30px;height:30px;border:none;border-radius:6px;cursor:pointer;color:#e65100;">&#x25B2;</button>
+      <button class="tb" id="tb_goal" onclick="setTool('goal')" title="Tor setzen" style="background:#344736;padding:0 5px;height:30px;border:none;border-radius:6px;cursor:pointer;">
+        <svg width="18" height="12" viewBox="0 0 18 12"><rect x="1" y="1" width="16" height="8" fill="none" stroke="white" stroke-width="1.8"/><line x1="1" y1="9" x2="17" y2="9" stroke="white" stroke-width="1.5"/></svg>
+      </button>
+    </div>
+
+    <div style="width:1px;height:22px;background:rgba(255,255,255,.12);flex-shrink:0;"></div>
+
+    <!-- Linien -->
+    <div style="display:flex;gap:3px;align-items:center;">
+      <span style="font-size:9px;color:rgba(255,255,255,.3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding-right:2px;">Linien</span>
+      <button class="tb" id="tb_pass" onclick="setTool('pass')" title="Passweg (2× klicken)" style="background:#344736;height:30px;padding:0 7px;border:none;border-radius:6px;cursor:pointer;">
+        <svg width="32" height="12" viewBox="0 0 32 12"><line x1="2" y1="6" x2="23" y2="6" stroke="white" stroke-width="2" stroke-linecap="round"/><polygon points="22,2 30,6 22,10" fill="white"/></svg>
+      </button>
+      <button class="tb" id="tb_run" onclick="setTool('run')" title="Laufweg (2× klicken)" style="background:#344736;height:30px;padding:0 7px;border:none;border-radius:6px;cursor:pointer;">
+        <svg width="32" height="12" viewBox="0 0 32 12"><line x1="2" y1="6" x2="23" y2="6" stroke="#ffe082" stroke-width="2" stroke-linecap="round" stroke-dasharray="5,3"/><polygon points="22,2 30,6 22,10" fill="#ffe082"/></svg>
+      </button>
+      <button class="tb" id="tb_dribble" onclick="setTool('dribble')" title="Dribbelweg (2× klicken)" style="background:#344736;height:30px;padding:0 7px;border:none;border-radius:6px;cursor:pointer;">
+        <svg width="32" height="12" viewBox="0 0 32 12"><path d="M2,6 Q5,1 8,6 Q11,11 14,6 Q17,1 20,6" stroke="#81c784" stroke-width="2" fill="none" stroke-linecap="round"/><polygon points="19,2 27,6 19,10" fill="#81c784"/></svg>
+      </button>
+    </div>
+
+    <div style="width:1px;height:22px;background:rgba(255,255,255,.12);flex-shrink:0;"></div>
+
+    <!-- Auswahl / Tools -->
+    <div style="display:flex;gap:3px;align-items:center;">
+      <button class="tb" id="tb_select" onclick="setTool('select')" title="Auswählen & Verschieben" style="background:#344736;height:30px;width:30px;border:none;border-radius:6px;cursor:pointer;color:#fff;font-size:14px;">&#x2196;</button>
+      <button class="tb" id="tb_erase" onclick="setTool('erase')" title="Objekt löschen" style="background:#880e4f;height:30px;width:30px;border:none;border-radius:6px;cursor:pointer;color:#fff;font-size:12px;font-weight:700;">✕</button>
+      <button id="tb_snap" onclick="toggleGridSnap()" title="Einrasten & Ausrichtungshilfen" style="background:#344736;height:30px;padding:0 8px;border:none;border-radius:6px;cursor:pointer;color:#aaa;font-size:13px;">⛶</button>
+    </div>
+
+    <!-- Aktionen rechts -->
+    <div style="margin-left:auto;display:flex;gap:5px;align-items:center;">
+      <button onclick="undoDraw()" title="Rückgängig (Strg+Z)" style="padding:5px 10px;border-radius:6px;border:none;background:#344736;color:#fff;font-size:13px;cursor:pointer;line-height:1;">↩</button>
+      <button onclick="clearCanvas()" style="padding:5px 10px;border-radius:6px;border:none;background:#344736;color:rgba(255,100,100,.9);font-size:11px;font-weight:700;cursor:pointer;font-family:'Barlow Condensed',sans-serif;letter-spacing:.3px;">Leeren</button>
+      <button onclick="exportCanvas()" style="padding:6px 16px;border-radius:6px;border:none;background:#1a7f4b;color:#fff;font-size:12px;font-weight:800;cursor:pointer;font-family:'Barlow Condensed',sans-serif;letter-spacing:.3px;">✓ Übernehmen</button>
+      <button onclick="closeFieldOverlay()" style="padding:6px 12px;border-radius:6px;border:none;background:#2e3f30;color:#aaa;font-size:12px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;">✕</button>
+    </div>
+  </div>
+
+  <!-- ── ZEILE 2: Kontextsensitive Optionen (erscheint je nach aktivem Werkzeug) ── -->
+  <div id="cvCtxBar" style="background:#162018;border-bottom:1px solid rgba(255,255,255,.07);padding:4px 10px;display:flex;gap:8px;align-items:center;flex-shrink:0;min-height:34px;flex-wrap:wrap;">
+
+    <!-- Spieler-Kontext -->
+    <div id="ctx_player" style="display:flex;align-items:center;gap:6px;">
+      <span style="font-size:10px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.5px;">SPIELER</span>
+      <select id="playerColor" onchange="setTool('player')" title="Spielerfarbe" style="padding:3px 6px;border-radius:5px;border:none;font-size:11px;background:#344736;color:#fff;cursor:pointer;height:26px;">
+        <option value="#1565c0">● Blau</option>
+        <option value="#b71c1c">● Rot</option>
+        <option value="#1b5e20">● Grün</option>
+        <option value="#e65100">● Orange</option>
+        <option value="#f9a825">● Gelb / TW</option>
+        <option value="#4a148c">● Lila</option>
+        <option value="#212121">● Schwarz</option>
       </select>
     </div>
-    <button class="tb" id="tb_ball" onclick="setTool('ball')" title="Ball" style="background:#344736;font-size:14px;width:28px;height:28px;border:none;border-radius:5px;cursor:pointer;color:#fff;">&#x26BD;</button>
-    <div style="display:flex;align-items:center;gap:2px;">
-      <button class="tb" id="tb_equip" onclick="setTool('equip')" title="Equipment" style="background:#344736;font-size:12px;width:28px;height:28px;border:none;border-radius:5px;cursor:pointer;color:#fff;">&#x25B2;</button>
-      <select id="equipType" onchange="setTool('equip')" style="padding:3px 4px;border-radius:5px;border:none;font-size:10px;background:#344736;color:#fff;cursor:pointer;height:28px;">
-        <option value="cone-orange">Hütchen Orange</option>
-        <option value="cone-yellow">Hütchen Gelb</option>
-        <option value="cone-blue">Hütchen Blau</option>
-        <option value="cone-red">Hütchen Rot</option>
+
+    <!-- Equipment-Kontext -->
+    <div id="ctx_equip" style="display:none;align-items:center;gap:6px;">
+      <span style="font-size:10px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.5px;">EQUIPMENT</span>
+      <select id="equipType" onchange="setTool('equip')" title="Equipment-Typ" style="padding:3px 6px;border-radius:5px;border:none;font-size:11px;background:#344736;color:#fff;cursor:pointer;height:26px;">
+        <option value="cone-orange">🔶 Hütchen Orange</option>
+        <option value="cone-yellow">🟡 Hütchen Gelb</option>
+        <option value="cone-blue">🔵 Hütchen Blau</option>
+        <option value="cone-red">🔴 Hütchen Rot</option>
         <option value="pole">Stange</option>
         <option value="hurdle">Hürde</option>
-        <option value="ladder">Leiter</option>
+        <option value="ladder">Koordinationsleiter</option>
         <option value="ring">Ring</option>
       </select>
     </div>
-    <div style="display:flex;align-items:center;gap:2px;">
-      <button class="tb" id="tb_goal" onclick="setTool('goal')" title="Tor" style="background:#344736;padding:0 5px;height:28px;border:none;border-radius:5px;cursor:pointer;">
-        <svg width="16" height="11" viewBox="0 0 16 11"><rect x="1" y="1" width="14" height="8" fill="none" stroke="white" stroke-width="1.8"/><line x1="1" y1="9" x2="15" y2="9" stroke="white" stroke-width="1.5"/></svg>
-      </button>
-      <select id="goalType" onchange="setTool('goal')" style="padding:3px 4px;border-radius:5px;border:none;font-size:10px;background:#344736;color:#fff;cursor:pointer;height:28px;">
-        <option value="mini">Minitor</option><option value="youth">Jugendtor</option>
-        <option value="full">Grosstor</option>
+
+    <!-- Tor-Kontext -->
+    <div id="ctx_goal" style="display:none;align-items:center;gap:6px;">
+      <span style="font-size:10px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.5px;">TOR</span>
+      <select id="goalType" onchange="setTool('goal')" title="Torgröße" style="padding:3px 6px;border-radius:5px;border:none;font-size:11px;background:#344736;color:#fff;cursor:pointer;height:26px;">
+        <option value="mini">Minitor</option>
+        <option value="youth">Jugendtor</option>
+        <option value="full">Großtor</option>
       </select>
     </div>
-    <div style="width:1px;height:20px;background:rgba(255,255,255,.15);"></div>
-    <button class="tb" id="tb_pass" onclick="setTool('pass')" title="Pass (2x klicken)" style="background:#344736;height:36px;padding:0 8px;border:none;border-radius:5px;cursor:pointer;">
-      <svg width="36" height="14" viewBox="0 0 36 14"><line x1="2" y1="7" x2="27" y2="7" stroke="white" stroke-width="2.2" stroke-linecap="round"/><polygon points="26,3 34,7 26,11" fill="white"/></svg>
-    </button>
-    <button class="tb" id="tb_run" onclick="setTool('run')" title="Laufweg (2x klicken)" style="background:#344736;height:36px;padding:0 8px;border:none;border-radius:5px;cursor:pointer;">
-      <svg width="36" height="14" viewBox="0 0 36 14"><line x1="2" y1="7" x2="27" y2="7" stroke="#ffe082" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="5,3"/><polygon points="26,3 34,7 26,11" fill="#ffe082"/></svg>
-    </button>
-    <button class="tb" id="tb_dribble" onclick="setTool('dribble')" title="Dribbling (2x klicken)" style="background:#344736;height:36px;padding:0 8px;border:none;border-radius:5px;cursor:pointer;">
-      <svg width="36" height="14" viewBox="0 0 36 14"><path d="M2,7 Q6,1 10,7 Q14,13 18,7 Q22,1 26,7" stroke="#81c784" stroke-width="2.2" fill="none" stroke-linecap="round"/><polygon points="25,3 33,7 25,11" fill="#81c784"/><circle cx="2" cy="7" r="2" fill="#81c784"/></svg>
-    </button>
-    <div style="width:1px;height:20px;background:rgba(255,255,255,.15);"></div>
-    <button class="tb" id="tb_select" onclick="setTool('select')" title="Auswaehlen/Verschieben" style="background:#344736;height:28px;width:28px;border:none;border-radius:5px;cursor:pointer;color:#fff;font-size:13px;">&#x2196;</button>
-    <button class="tb" id="tb_erase" onclick="setTool('erase')" title="Loeschen" style="background:#880e4f;height:28px;width:28px;border:none;border-radius:5px;cursor:pointer;color:#fff;font-size:12px;">X</button>
-    <button id="tb_snap" onclick="toggleGridSnap()" title="Einrasten / Ausrichtungshilfen" style="background:#344736;height:28px;padding:0 7px;border:none;border-radius:5px;cursor:pointer;color:#aaa;font-size:11px;font-weight:700;letter-spacing:.3px;">&#x26F6;</button>
-    <div style="margin-left:auto;display:flex;gap:4px;align-items:center;">
-      <div id="rotCtrl" style="display:none;align-items:center;gap:4px;background:#1e3320;border-radius:6px;padding:2px 6px;">
-        <span style="font-size:10px;color:#aaa;">Winkel</span>
-        <button onclick="rotateSel(-45)" style="padding:2px 6px;border-radius:4px;border:none;background:#344736;color:#fff;font-size:10px;cursor:pointer;">-45</button>
-        <input type="range" id="angleSlider" min="0" max="360" step="45" value="0" style="width:80px;accent-color:#1a7f4b;" oninput="setSelAngle(this.value)">
-        <span id="angleVal" style="font-size:10px;color:#fff;min-width:28px;">0°</span>
-        <button onclick="rotateSel(45)" style="padding:2px 6px;border-radius:4px;border:none;background:#344736;color:#fff;font-size:10px;cursor:pointer;">+45</button>
-      </div>
-      <button onclick="undoDraw()" style="padding:4px 9px;border-radius:6px;border:none;background:#344736;color:#fff;font-size:11px;font-weight:700;cursor:pointer;">&#x21A9;</button>
-      <button onclick="clearCanvas()" style="padding:4px 9px;border-radius:6px;border:none;background:#344736;color:rgba(255,100,100,.9);font-size:11px;cursor:pointer;">Leeren</button>
-      <button onclick="exportCanvas()" style="padding:5px 14px;border-radius:6px;border:none;background:#1a7f4b;color:#fff;font-size:12px;font-weight:800;cursor:pointer;font-family:'Barlow Condensed',sans-serif;letter-spacing:.3px;">&#x2713; Uebernehmen</button>
-      <button onclick="closeFieldOverlay()" style="padding:5px 12px;border-radius:6px;border:none;background:#455a64;color:#ccc;font-size:12px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;">&#x2715; Schliessen</button>
+
+    <!-- Linien-Kontext -->
+    <div id="ctx_line" style="display:none;align-items:center;gap:6px;">
+      <span style="font-size:10px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.5px;">LINIE</span>
+      <span style="font-size:11px;color:rgba(255,255,255,.5);">1. Startpunkt klicken → 2. Endpunkt klicken</span>
     </div>
-  </div>
-  <!-- Legende -->
-  <div style="background:#162018;padding:3px 10px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.06);">
-    <span style="font-size:10px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:5px;"><svg width="24" height="8"><line x1="0" y1="4" x2="19" y2="4" stroke="#ccc" stroke-width="2"/><polygon points="18,1 24,4 18,7" fill="#ccc"/></svg>Passweg</span>
-    <span style="font-size:10px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:5px;"><svg width="24" height="8"><line x1="0" y1="4" x2="19" y2="4" stroke="#ccc" stroke-width="2" stroke-dasharray="5,3"/><polygon points="18,1 24,4 18,7" fill="#ccc"/></svg>Laufweg</span>
-    <span style="font-size:10px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:5px;"><svg width="24" height="8"><path d="M0,4 Q3,1 6,4 Q9,7 12,4 Q15,1 18,4" stroke="#ccc" stroke-width="1.5" fill="none"/><polygon points="17,2 23,4 17,6" fill="#ccc"/></svg>Dribbelweg</span>
-    <span style="font-size:10px;color:rgba(255,255,255,.3);margin-left:auto;">Auswahl + Rechtsklick = drehen</span>
+
+    <!-- Auswahl-Kontext: Winkelregler -->
+    <div id="ctx_select" style="display:none;align-items:center;gap:6px;">
+      <span style="font-size:10px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.5px;">AUSWAHL</span>
+      <span style="font-size:11px;color:rgba(255,255,255,.35);">Klicken zum Auswählen · Ziehen zum Verschieben · Rechtsklick = drehen</span>
+    </div>
+
+    <!-- Rotation (erscheint zusätzlich wenn drehbares Objekt selektiert) -->
+    <div id="rotCtrl" style="display:none;align-items:center;gap:5px;margin-left:auto;">
+      <div style="width:1px;height:18px;background:rgba(255,255,255,.12);"></div>
+      <span style="font-size:10px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.5px;">WINKEL</span>
+      <button onclick="rotateSel(-45)" title="-45°" style="padding:3px 7px;border-radius:5px;border:none;background:#344736;color:#fff;font-size:10px;font-weight:700;cursor:pointer;">−45</button>
+      <input type="range" id="angleSlider" min="0" max="360" step="45" value="0" style="width:90px;accent-color:#1a7f4b;" oninput="setSelAngle(this.value)">
+      <span id="angleVal" style="font-size:11px;color:#fff;min-width:30px;font-weight:700;">0°</span>
+      <button onclick="rotateSel(45)" title="+45°" style="padding:3px 7px;border-radius:5px;border:none;background:#344736;color:#fff;font-size:10px;font-weight:700;cursor:pointer;">+45</button>
+    </div>
+
   </div>
   <!-- Canvas -->
   <canvas id="fieldCanvas" style="flex:1;min-height:0;display:block;cursor:crosshair;touch-action:none;"></canvas>
