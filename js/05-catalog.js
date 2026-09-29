@@ -104,7 +104,7 @@ function openExDetail(id){
       ${e.author?`<div style="font-size:10px;color:rgba(255,255,255,.6);margin-top:4px;font-style:italic;">erstellt von ${e.author}</div>`:''}
     </div>
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
-      ${e.players?`<span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px;background:#e8f5e9;color:#1a7f4b;">👥 ${e.players} Spieler</span>`:''}
+      ${e.players?`<span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px;background:#e8f5e9;color:#1a7f4b;">👥 ${e.players} Spieler:innen</span>`:''}
       ${e.duration?`<span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px;background:#e8f0fe;color:#1a56c4;">⏱ ${e.duration} min</span>`:''}
       ${e.difficulty?`<span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px;background:${dc}20;color:${dc};">◉ ${diffLbl}</span>`:''}
     </div>

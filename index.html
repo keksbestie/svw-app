@@ -315,7 +315,7 @@
         <div class="submit-banner-sub">Erstelle eine neue Übung mit allen Pflichtangaben. Das Admin-Team prüft sie und gibt sie ggf. für den Katalog frei.</div>
       </div>
       <div class="submit-banner-user">
-        <div class="submit-user-tag" id="submitUserTag">Trainer</div>
+        <div class="submit-user-tag" id="submitUserTag">Trainer:in</div>
         <button class="submit-logout-btn" onclick="doLogout()">Abmelden</button>
       </div>
     </div>
@@ -345,7 +345,7 @@
             </div>
           </div>
           <div class="fr">
-            <div class="fg"><label>Spieleranzahl *</label><input class="fc" id="sPlayers" type="text" placeholder="z.B. 6–12" oninput="updateSubmitChecklist()"></div>
+            <div class="fg"><label>Anzahl Spieler:innen *</label><input class="fc" id="sPlayers" type="text" placeholder="z.B. 6–12" oninput="updateSubmitChecklist()"></div>
             <div class="fg"><label>Belastungszeit (min) *</label><input class="fc" id="sDuration" type="number" min="1" max="60" placeholder="z.B. 12" oninput="updateSubmitChecklist()"></div>
           </div>
           <div class="fg"><label>Material</label>
@@ -417,7 +417,7 @@
           <div id="submitChecklist">
             <div class="chk-item" id="chk-name"><div class="chk-dot"></div><div class="chk-label">Name ausgefüllt</div></div>
             <div class="chk-item" id="chk-desc"><div class="chk-dot"></div><div class="chk-label">Beschreibung (min. 20 Zeichen)</div></div>
-            <div class="chk-item" id="chk-players"><div class="chk-dot"></div><div class="chk-label">Spieleranzahl angegeben</div></div>
+            <div class="chk-item" id="chk-players"><div class="chk-dot"></div><div class="chk-label">Anzahl Spieler:innen angegeben</div></div>
             <div class="chk-item" id="chk-duration"><div class="chk-dot"></div><div class="chk-label">Belastungszeit angegeben</div></div>
             <div class="chk-item" id="chk-intensity"><div class="chk-dot"></div><div class="chk-label">Belastungsintensität gewählt</div></div>
             <div class="chk-item" id="chk-section"><div class="chk-dot"></div><div class="chk-label">Abschnitt gewählt</div></div>
@@ -438,8 +438,8 @@
     </div>
     <div id="adminUserWrap" class="page-section" style="display:none;">
       <div class="page-section-divider"></div>
-      <div class="queue-title">Trainer verwalten</div>
-      <div class="queue-sub">Hier kannst du Trainer-Accounts sehen und Admin-Rechte vergeben.</div>
+      <div class="queue-title">Trainer:innen verwalten</div>
+      <div class="queue-sub">Hier kannst du Trainer:innen-Accounts sehen und Admin-Rechte vergeben.</div>
       <div id="userList" style="margin-top:16px;display:flex;flex-direction:column;gap:8px;"></div>
     </div>
     <div id="adminQueueWrap" class="page-section" style="display:none;">
@@ -778,9 +778,9 @@
       <div class="help-card-icon" style="background:#e65100;">✏️</div>
       <div>
         <div class="help-card-title">Eigene Übung einreichen</div>
-        <p class="help-card-text">Jeder angemeldete Nutzer kann eigene Übungen einreichen. Nach einer kurzen Prüfung durch den Admin erscheint die Übung im Katalog – für alle sichtbar.</p>
+        <p class="help-card-text">Jede:r angemeldete Nutzer:in kann eigene Übungen einreichen. Nach einer kurzen Prüfung durch den Admin erscheint die Übung im Katalog – für alle sichtbar.</p>
         <div class="help-step"><span class="help-num">1</span>Oben rechts <strong>anmelden</strong> (Konto erforderlich)</div>
-        <div class="help-step"><span class="help-num">2</span>Pflichtfelder ausfüllen: Name, Abschnitt, Spieleranzahl, Beschreibung</div>
+        <div class="help-step"><span class="help-num">2</span>Pflichtfelder ausfüllen: Name, Abschnitt, Anzahl Spieler:innen, Beschreibung</div>
         <div class="help-step"><span class="help-num">3</span>Tags hinzufügen (helfen beim Finden im Katalog)</div>
         <div class="help-step"><span class="help-num">4</span>Belastungsintensität und -dauer (Minuten) angeben</div>
         <div class="help-step"><span class="help-num">5</span>Optional: <strong>Bild hochladen</strong> oder <strong>Felddiagramm zeichnen</strong></div>
@@ -794,7 +794,7 @@
       <div>
         <div class="help-card-title">Felddiagramm-Editor</div>
         <p class="help-card-text">Im Editor kannst du taktische Aufstellungen und Übungsabläufe direkt auf dem Spielfeld zeichnen. Das fertige Bild wird automatisch an die Übung angehängt.</p>
-        <div class="help-step"><span class="help-num">1</span><strong>Werkzeug wählen</strong> (Spieler, Ball, Tor, Hütchen, Passweg …)</div>
+        <div class="help-step"><span class="help-num">1</span><strong>Werkzeug wählen</strong> (Spieler:in, Ball, Tor, Hütchen, Passweg …)</div>
         <div class="help-step"><span class="help-num">2</span>Auf das Feld klicken → Objekt wird platziert</div>
         <div class="help-step"><span class="help-num">3</span><strong>Auswählen-Werkzeug (↖)</strong> → Objekte verschieben oder drehen</div>
         <div class="help-step"><span class="help-num">4</span><strong>Rechtsklick</strong> auf Objekt → um 22,5° drehen; Winkelregler erscheint oben</div>
@@ -804,7 +804,7 @@
         <div class="help-step"><span class="help-num">8</span>Entf / Backspace → ausgewählte Objekte löschen</div>
         <div class="help-step"><span class="help-num">9</span><strong>„✓ Übernehmen"</strong> → Zuschneidedialog öffnet sich – Ausschnitt prüfen, bestätigen</div>
         <div class="help-pill-row" style="margin-top:8px;">
-          <span class="help-pill">👥 Spieler</span><span class="help-pill">⚽ Ball</span><span class="help-pill">🥅 Tor</span><span class="help-pill">🔶 Hütchen</span><span class="help-pill">→ Passweg</span><span class="help-pill">⤳ Laufweg</span><span class="help-pill">〰 Dribbling</span>
+          <span class="help-pill">👥 Spieler:in</span><span class="help-pill">⚽ Ball</span><span class="help-pill">🥅 Tor</span><span class="help-pill">🔶 Hütchen</span><span class="help-pill">→ Passweg</span><span class="help-pill">⤳ Laufweg</span><span class="help-pill">〰 Dribbling</span>
         </div>
       </div>
     </div>
@@ -885,7 +885,7 @@ function filterHelpCards(q){
             <option value="5">6 · Sondertraining</option>
           </select>
         </div>
-        <div class="fg"><label>Spieleranzahl</label><input class="fc" id="mPl" type="text" placeholder="z.B. 6-12"></div>
+        <div class="fg"><label>Anzahl Spieler:innen</label><input class="fc" id="mPl" type="text" placeholder="z.B. 6-12"></div>
       </div>
       <div class="fr">
         <div class="fg" style="display:none"><!-- placeholder --></div>
@@ -990,7 +990,7 @@ function filterHelpCards(q){
       <button class="mcl" onclick="closeMod('descMod')">✕</button>
     </div>
     <div class="mbody">
-      <div style="font-size:12px;color:var(--text-3);margin-bottom:8px;">Dieser Text erscheint im Abschnitts-Banner für alle Nutzer sichtbar.</div>
+      <div style="font-size:12px;color:var(--text-3);margin-bottom:8px;">Dieser Text erscheint im Abschnitts-Banner für alle Nutzer:innen sichtbar.</div>
       <textarea class="dta" id="descTa" placeholder="Beschreibungstext…" style="width:100%;min-height:280px;resize:vertical;font-size:14px;line-height:1.6;box-sizing:border-box;"></textarea>
       <div class="macts"><button class="bpr" onclick="saveDesc()">Speichern</button><button class="bsc" onclick="closeMod('descMod')">Abbrechen</button></div>
     </div>
@@ -1250,7 +1250,7 @@ function filterHelpCards(q){
         </div>
       </div>
       <div class="fr">
-        <div class="fg"><label>Spieleranzahl</label><input class="fc" id="rv-players" type="text"></div>
+        <div class="fg"><label>Anzahl Spieler:innen</label><input class="fc" id="rv-players" type="text"></div>
         <div class="fg"><label>Belastungszeit (min)</label><input class="fc" id="rv-duration" type="number"></div>
       </div>
       <div class="fg"><label>Material</label><input class="fc" id="rv-mat" type="text"></div>
@@ -1346,7 +1346,7 @@ function filterHelpCards(q){
     <!-- Objekte -->
     <div style="display:flex;gap:3px;align-items:center;" title="Objekte platzieren">
       <span style="font-size:9px;color:rgba(255,255,255,.3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding-right:2px;">Objekte</span>
-      <button class="tb active" id="tb_player" onclick="setTool('player')" title="Spieler setzen" style="background:#1565c0;font-size:14px;font-weight:900;width:30px;height:30px;border:none;border-radius:6px;cursor:pointer;color:#fff;">&#x25CF;</button>
+      <button class="tb active" id="tb_player" onclick="setTool('player')" title="Spieler:in setzen" style="background:#1565c0;font-size:14px;font-weight:900;width:30px;height:30px;border:none;border-radius:6px;cursor:pointer;color:#fff;">&#x25CF;</button>
       <button class="tb" id="tb_ball" onclick="setTool('ball')" title="Ball setzen" style="background:#344736;font-size:14px;width:30px;height:30px;border:none;border-radius:6px;cursor:pointer;color:#fff;">&#x26BD;</button>
       <button class="tb" id="tb_equip" onclick="setTool('equip')" title="Equipment (Hütchen, Stange …)" style="background:#344736;font-size:12px;width:30px;height:30px;border:none;border-radius:6px;cursor:pointer;color:#e65100;">&#x25B2;</button>
       <button class="tb" id="tb_goal" onclick="setTool('goal')" title="Tor setzen" style="background:#344736;padding:0 5px;height:30px;border:none;border-radius:6px;cursor:pointer;">
@@ -1393,7 +1393,7 @@ function filterHelpCards(q){
 
     <!-- Spieler-Kontext -->
     <div id="ctx_player" style="display:flex;align-items:center;gap:6px;">
-      <span style="font-size:10px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.5px;">SPIELER</span>
+      <span style="font-size:10px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.5px;">SPIELER:IN</span>
       <select id="playerColor" onchange="setTool('player')" title="Spielerfarbe" style="padding:3px 6px;border-radius:5px;border:none;font-size:11px;background:#344736;color:#fff;cursor:pointer;height:26px;">
         <option value="#1565c0">● Blau</option>
         <option value="#b71c1c">● Rot</option>

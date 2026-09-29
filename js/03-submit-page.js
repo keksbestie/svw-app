@@ -451,12 +451,12 @@ function openReviewMod(id){
 async function renderUserList(){
   const el=document.getElementById('userList');if(!el)return;
   const {data:users}=await _supabase.from('profiles').select('id,email,role');
-  if(!users||!users.length){el.innerHTML='<div style="font-size:13px;color:var(--text-3);">Keine Trainer gefunden.</div>';return;}
+  if(!users||!users.length){el.innerHTML='<div style="font-size:13px;color:var(--text-3);">Keine Trainer:innen gefunden.</div>';return;}
   el.innerHTML=users.map(u=>`
     <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface-2);border-radius:9px;border:1px solid var(--border);">
       <div>
         <div style="font-size:13px;font-weight:700;color:var(--text-1);">${u.email||u.id}</div>
-        <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${u.role==='admin'?'Admin':'Trainer'}</div>
+        <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${u.role==='admin'?'Admin':'Trainer:in'}</div>
       </div>
       ${u.id===currentUser?.id?'<span style="font-size:11px;color:var(--text-3);">Du</span>':
         u.role==='admin'
