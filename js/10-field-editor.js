@@ -110,11 +110,18 @@ function _snapPoint(x,y,excludeIndices){
   _activeSnapLines=[];
 
   if(_snapEnabled){
-    // 1. Grid snap
-    const gx=Math.round(x/_gridSize)*_gridSize;
-    const gy=Math.round(y/_gridSize)*_gridSize;
-    if(Math.abs(x-gx)<THRESH){sx=gx;}
-    if(Math.abs(y-gy)<THRESH){sy=gy;}
+    // 1. Field-line grid snap (replaces fixed 40px grid)
+    const fg=_snapToFieldGrid(x,y);
+    if(fg){
+      if(fg.snapX) sx=fg.x;
+      if(fg.snapY) sy=fg.y;
+    } else {
+      // Fallback fixed grid
+      const gx=Math.round(x/_gridSize)*_gridSize;
+      const gy=Math.round(y/_gridSize)*_gridSize;
+      if(Math.abs(x-gx)<THRESH) sx=gx;
+      if(Math.abs(y-gy)<THRESH) sy=gy;
+    }
 
     // 2. Alignment to other objects (overrides grid snap if closer)
     const others=canvasObjects.filter((_,i)=>!excludeIndices.includes(i)&&canvasObjects[i]?.x!==undefined);
@@ -152,14 +159,76 @@ function _snapPoint(x,y,excludeIndices){
   return{x:sx,y:sy};
 }
 
+// Returns {xs, ys} arrays of pixel positions matching the actual field lines
+function _getFieldGrid(){
+  if(!canvasEl) return null;
+  const W=canvasEl.offsetWidth, H=canvasEl.offsetHeight;
+  const ft=document.getElementById('fieldType')?.value||'small';
+  const p=Math.round(Math.min(W,H)*0.04);
+  let xs=[], ys=[];
+
+  if(ft==='full'){
+    const fw=W-p*2, fh=H-p*2;
+    const sx=fw/105, sy=fh/68;
+    const paH=40.32*sy, paW=16.5*sx;
+    const gaH=18.32*sy, gaW=5.5*sx;
+    // vertical lines
+    xs=[p, p+gaW, p+paW, W/2, W-p-paW, W-p-gaW, W-p];
+    // horizontal lines
+    ys=[p, (H-paH)/2, (H-gaH)/2, H/2, (H+gaH)/2, (H+paH)/2, H-p];
+  } else if(ft==='half'){
+    const s=Math.min((W-p*2)/68,(H-p*2)/52.5);
+    const fw=68*s, fh=52.5*s;
+    const ox=(W-fw)/2, oy=(H-fh)/2;
+    const paW=40.32*s, paH=16.5*s;
+    const gaW=18.32*s, gaH=5.5*s;
+    xs=[ox, ox+(fw-paW)/2, ox+(fw-gaW)/2, ox+fw/2, ox+(fw+gaW)/2, ox+(fw+paW)/2, ox+fw];
+    ys=[oy, oy+fh-paH, oy+fh-gaH, oy+fh];
+  } else if(ft==='small'){
+    const fw=W-p*2, fh=H-p*2;
+    const sx=fw/30, sy=fh/20;
+    const gaW=3*sx, gaH=8*sy;
+    xs=[p, p+gaW, W/2, W-p-gaW, W-p];
+    ys=[p, (H-gaH)/2, H/2, (H+gaH)/2, H-p];
+  } else if(ft==='neutral'){
+    xs=[p, W/2, W-p];
+    ys=[p, H/2, H-p];
+  } else {
+    // penalty / sprint: fall back to generic grid
+    return null;
+  }
+  return {xs, ys};
+}
+
+// Snap x/y to nearest field grid point
+function _snapToFieldGrid(x, y){
+  const g=_getFieldGrid();
+  if(!g) return null;
+  const snap=20; // px tolerance
+  let sx=null, sy=null, dx=snap, dy=snap;
+  g.xs.forEach(gx=>{const d=Math.abs(x-gx);if(d<dx){dx=d;sx=gx;}});
+  g.ys.forEach(gy=>{const d=Math.abs(y-gy);if(d<dy){dy=d;sy=gy;}});
+  if(sx===null&&sy===null) return null;
+  return {x: sx!==null?sx:x, y: sy!==null?sy:y, snapX:sx!==null, snapY:sy!==null};
+}
+
 function _drawGrid(){
   if(!_snapEnabled||!canvasEl||!ctx) return;
-  const W=canvasEl.offsetWidth, H=canvasEl.offsetHeight;
+  const g=_getFieldGrid();
   ctx.save();
-  ctx.fillStyle='rgba(255,255,255,0.08)';
-  for(let x=_gridSize;x<W;x+=_gridSize){
-    for(let y=_gridSize;y<H;y+=_gridSize){
-      ctx.beginPath();ctx.arc(x,y,1.5,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,0.15)';
+  if(g){
+    // Draw dots at each intersection of field lines
+    g.xs.forEach(x=>g.ys.forEach(y=>{
+      ctx.beginPath();ctx.arc(x,y,2.5,0,Math.PI*2);ctx.fill();
+    }));
+  } else {
+    // Fallback: generic grid
+    const W=canvasEl.offsetWidth, H=canvasEl.offsetHeight;
+    for(let x=_gridSize;x<W;x+=_gridSize){
+      for(let y=_gridSize;y<H;y+=_gridSize){
+        ctx.beginPath();ctx.arc(x,y,1.5,0,Math.PI*2);ctx.fill();
+      }
     }
   }
   ctx.restore();
