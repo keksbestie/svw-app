@@ -93,12 +93,12 @@ function renderPlanCart(){
       }).join('')}
     </div>`).join('');
 
-  const targetRow=`<div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
-    <span style="font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--text-3);white-space:nowrap;">Zieldauer</span>
-    <input type="number" min="0" max="300" value="${_cartTargetMin||''}" placeholder="— min"
-      oninput="setCartTarget(this.value)"
-      style="width:54px;padding:2px 5px;border-radius:5px;border:1px solid var(--border);background:var(--surface-2);color:var(--text-1);font-size:11px;font-weight:700;outline:none;text-align:center;">
-    <span style="font-size:9px;color:var(--text-3);">min</span>
+  const targetRow=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:7px 10px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);">
+    <span style="font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--text-2);white-space:nowrap;">⏳ Zieldauer</span>
+    <input id="cartTargetInput" type="number" min="0" max="300" value="${_cartTargetMin||''}" placeholder="z. B. 90"
+      onchange="setCartTarget(this.value)"
+      style="flex:1;min-width:0;padding:5px 8px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:var(--text-1);font-size:13px;font-weight:700;outline:none;text-align:center;-moz-appearance:textfield;">
+    <span style="font-size:10px;font-weight:700;color:var(--text-3);">min</span>
   </div>`;
 
   const overWarn = over ? `<div style="display:flex;align-items:center;gap:5px;padding:5px 8px;border-radius:6px;background:#ffebee;border:1px solid #ef9a9a;margin-bottom:8px;">
