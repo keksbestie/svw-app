@@ -63,11 +63,19 @@ function renumberPlayers(){
   });
 }
 
-// Update the selected player's label from the context-bar input
+// Update the selected player's label (in circle) from the context-bar input
 function updateSelPlayerLabel(val){
   const idx=selectedIndices.length===1?selectedIndices[0]:selectedObjIdx;
   if(idx===null||idx<0||!canvasObjects[idx]||canvasObjects[idx].type!=='player') return;
   canvasObjects[idx].label=val;
+  redraw();
+}
+
+// Update the selected player's name (below circle)
+function updateSelPlayerName(val){
+  const idx=selectedIndices.length===1?selectedIndices[0]:selectedObjIdx;
+  if(idx===null||idx<0||!canvasObjects[idx]||canvasObjects[idx].type!=='player') return;
+  canvasObjects[idx].name=val;
   redraw();
 }
 
@@ -83,6 +91,8 @@ function _updatePlayerEdit(){
   if(isPlayer){
     const inp=document.getElementById('playerLabelInput');
     if(inp) inp.value=canvasObjects[idx].label||'';
+    const nameInp=document.getElementById('playerNameInput');
+    if(nameInp) nameInp.value=canvasObjects[idx].name||'';
   }
 }
 
@@ -416,7 +426,7 @@ function placeObj(t,x,y){
     if(col==='#f9a825') lbl='TW';
     else if(_autoNumber) lbl=String(playerCounters[col]++);
     else { lbl=''; playerCounters[col]++; }
-    canvasObjects.push({type:'player',x,y,color:col,label:lbl,angle:0});
+    canvasObjects.push({type:'player',x,y,color:col,label:lbl,name:'',angle:0});
   } else if(t==='ball'){
     canvasObjects.push({type:'ball',x,y,scale:0.5});
   } else if(t==='equip'){
@@ -823,7 +833,7 @@ function drawObj(o,sel){
   if(o.type==='pass')     drawArrowLine(o.x1,o.y1,o.x2,o.y2,'pass',sel);
   else if(o.type==='run') drawArrowLine(o.x1,o.y1,o.x2,o.y2,'run',sel);
   else if(o.type==='dribble') drawSnakeLine(o.x1,o.y1,o.x2,o.y2,sel);
-  else if(o.type==='player')  drawPlayer(o.x,o.y,o.label,o.color,sel,o.angle||0);
+  else if(o.type==='player')  drawPlayer(o.x,o.y,o.label,o.color,sel,o.angle||0,o.name||'');
   else if(o.type==='ball')    drawBall(o.x,o.y,sel,_objSc(o));
   else if(o.type==='equip')   drawEquip(o.x,o.y,o.subtype,sel,o.angle||0,_objSc(o));
   else if(o.type==='goal')    drawGoal(o.x,o.y,o.subtype,sel,o.angle||0,_objSc(o));
@@ -921,7 +931,7 @@ function drawRawPath(pts,col){
 }
 
 // ── Player ──
-function drawPlayer(x,y,lbl,col,sel,ang){
+function drawPlayer(x,y,lbl,col,sel,ang,name){
   const R=15;
   ctx.save();
   ctx.translate(x,y); ctx.rotate(ang);
@@ -961,6 +971,23 @@ function drawPlayer(x,y,lbl,col,sel,ang){
     ctx.beginPath(); ctx.arc(0,0,R+5,0,Math.PI*2); ctx.stroke();
     ctx.setLineDash([]);
   }
+
+  // Name below circle (unrotated — always horizontal)
+  if(name){
+    ctx.restore(); // undo rotation so name stays upright
+    ctx.save();
+    ctx.translate(x,y);
+    ctx.font='bold 10px "Barlow Condensed",sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='top';
+    // Readable outline
+    ctx.strokeStyle='rgba(255,255,255,0.85)'; ctx.lineWidth=3; ctx.lineJoin='round';
+    ctx.strokeText(name,0,R+3);
+    ctx.fillStyle='#111';
+    ctx.fillText(name,0,R+3);
+    ctx.restore();
+    return;
+  }
+
   ctx.restore();
 }
 
@@ -1123,12 +1150,10 @@ function drawGoal(x,y,sub,sel,ang,sc){
   ctx.beginPath(); ctx.moveTo(-gw/2+postR,0); ctx.lineTo(0,-gh*.55); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(gw/2-postR,0); ctx.lineTo(0,-gh*.55); ctx.stroke();
 
-  // Posts and crossbar — rounded, with gradient
-  const pg=ctx.createLinearGradient(-postR,0,postR,0);
-  pg.addColorStop(0,'#bdbdbd'); pg.addColorStop(.35,'#ffffff'); pg.addColorStop(1,'#9e9e9e');
-  ctx.strokeStyle=sel?'#ffe082':pg;
+  // Posts and crossbar — solid white
+  ctx.strokeStyle=sel?'#ffe082':'#ffffff';
   ctx.lineWidth=postR*2; ctx.lineCap='round'; ctx.lineJoin='round';
-  ctx.shadowColor='rgba(0,0,0,.4)'; ctx.shadowBlur=4; ctx.shadowOffsetY=2;
+  ctx.shadowColor='rgba(0,0,0,.5)'; ctx.shadowBlur=5; ctx.shadowOffsetY=2;
   // Left post
   ctx.beginPath(); ctx.moveTo(-gw/2,-gh); ctx.lineTo(-gw/2,0); ctx.stroke();
   // Right post
@@ -1138,7 +1163,7 @@ function drawGoal(x,y,sub,sel,ang,sc){
 
   // Post end caps
   ctx.shadowBlur=0; ctx.shadowOffsetY=0;
-  ctx.fillStyle=sel?'#ffe082':'#e0e0e0';
+  ctx.fillStyle=sel?'#ffe082':'#ffffff';
   ctx.beginPath(); ctx.arc(-gw/2,-gh,postR,0,Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(gw/2,-gh,postR,0,Math.PI*2); ctx.fill();
 
