@@ -303,9 +303,7 @@ header {
   opacity: .85;
 }
 .home-beta-banner {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  display: block;
   background: #fff3e0;
   color: #b84a00;
   border: 1.5px solid #ff6b00;
@@ -315,6 +313,8 @@ header {
   font-weight: 600;
   margin-bottom: 8px;
   max-width: 480px;
+  text-align: left;
+  line-height: 1.5;
 }
 [data-theme="dark"] .home-beta-banner {
   background: rgba(255, 107, 0, 0.12);
