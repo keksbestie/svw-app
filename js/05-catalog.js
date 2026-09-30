@@ -11,6 +11,21 @@ function renderStbar(){
       <span class="sn">${i+1}</span>${s.name}
     </button>`).join('');
 }
+// Persistent cart target duration (minutes, 0 = not set)
+let _cartTargetMin = 0;
+// Parallel item ids (set of exId strings)
+let _cartParallel = new Set();
+
+function setCartTarget(val){
+  _cartTargetMin = Math.max(0, parseInt(val)||0);
+  updatePlanCart();
+}
+function toggleCartParallel(exId){
+  if(_cartParallel.has(exId)) _cartParallel.delete(exId);
+  else _cartParallel.add(exId);
+  updatePlanCart();
+}
+
 function renderPlanCart(){
   const allItems = currentPlan.lanes.flat();
   const secNames = SECS.map(s=>s.name);
@@ -19,23 +34,32 @@ function renderPlanCart(){
   if(!allItems.length){
     return`<div class="plan-cart">
       <div class="plan-cart-title">🛒 Trainingsplan</div>
-      <div style="font-size:11px;color:var(--text-3);padding:12px 0;text-align:center;font-style:italic;">Noch keine Übungen im Plan.<br>Klicke "+ Plan" auf einer Übung.</div>
+      <div style="font-size:11px;color:var(--text-3);padding:12px 0;text-align:center;font-style:italic;">Noch keine Übungen im Plan.<br>Klicke „+ Plan" auf einer Übung.</div>
     </div>`;
   }
 
-  // Build per-section summary
   const _li=raw=>typeof raw==='string'?{id:raw}:raw;
+
+  // Build per-section summary
   const sections = currentPlan.lanes.map((lane, si)=>{
-    const exs = lane.map(raw=>{const it=_li(raw);const e=exercises.find(x=>x.id===it.id);return e?{...e,players:it.players??e.players,duration:it.duration??e.duration,difficulty:it.difficulty??e.difficulty}:null;}).filter(Boolean);
+    const exs = lane.map(raw=>{
+      const it=_li(raw);const e=exercises.find(x=>x.id===it.id);
+      return e?{...e,players:it.players??e.players,duration:it.duration??e.duration,difficulty:it.difficulty??e.difficulty}:null;
+    }).filter(Boolean);
     const totalMin = exs.reduce((a,e)=>a+(parseInt(e.duration)||0),0);
     return {si, exs, totalMin, name:secNames[si], color:secColors[si]};
   }).filter(s=>s.exs.length>0);
 
-  const totalMin = sections.reduce((a,s)=>a+s.totalMin,0);
+  // Count only non-parallel items for total
+  const totalMin = sections.reduce((a,s)=>a+s.exs.reduce((b,e)=>b+(_cartParallel.has(e.id)?0:parseInt(e.duration)||0),0),0);
+  const parallelMin = sections.reduce((a,s)=>a+s.exs.reduce((b,e)=>b+(_cartParallel.has(e.id)?parseInt(e.duration)||0:0),0),0);
 
-  // Intensity distribution
+  const over = _cartTargetMin>0 && totalMin>_cartTargetMin;
+  const overBy = over ? totalMin-_cartTargetMin : 0;
+
+  // Intensity distribution (non-parallel only)
   const intens = {Leicht:0, Mittel:0, Schwer:0};
-  allItems.forEach(raw=>{ const it=_li(raw); const e=exercises.find(x=>x.id===it.id); if(e){const diff=it.difficulty??e.difficulty;const dur=parseInt(it.duration??e.duration)||0;if(diff)intens[diff]=(intens[diff]||0)+dur;} });
+  allItems.forEach(raw=>{ const it=_li(raw); const e=exercises.find(x=>x.id===it.id); if(e&&!_cartParallel.has(it.id||it)){const diff=it.difficulty??e.difficulty;const dur=parseInt(it.duration??e.duration)||0;if(diff)intens[diff]=(intens[diff]||0)+dur;} });
   const intensColors = {Leicht:'#1a7f4b', Mittel:'#e65100', Schwer:'#880e4f'};
 
   const intensBars = Object.entries(intens).filter(([,m])=>m>0).map(([label,min])=>{
@@ -58,16 +82,42 @@ function renderPlanCart(){
         <span style="font-size:10px;font-weight:800;color:var(--text-1);text-transform:uppercase;letter-spacing:.5px;">${s.name}</span>
         <span style="margin-left:auto;font-size:10px;color:var(--text-3);">${s.totalMin>0?s.totalMin+' min':s.exs.length+' Übg.'}</span>
       </div>
-      ${s.exs.map(e=>`<div style="display:flex;align-items:center;gap:6px;padding:4px 6px;border-radius:6px;background:var(--surface-2);margin-bottom:3px;">
-        <span style="font-size:10px;color:var(--text-1);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.name}</span>
-        ${e.duration?`<span style="font-size:9px;color:var(--text-3);white-space:nowrap;">${e.duration}min</span>`:''}
-        <button onclick="removePlanItem('${e.id}')" style="background:none;border:none;cursor:pointer;color:var(--text-3);font-size:10px;padding:0;flex-shrink:0;">✕</button>
-      </div>`).join('')}
+      ${s.exs.map(e=>{
+        const isPar=_cartParallel.has(e.id);
+        return`<div style="display:flex;align-items:center;gap:5px;padding:4px 6px;border-radius:6px;background:var(--surface-2);margin-bottom:3px;${isPar?'border-left:3px solid #888;opacity:.7;':'border-left:3px solid transparent;'}">
+          <span style="font-size:10px;color:var(--text-1);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;${isPar?'text-decoration:line-through;color:var(--text-3);':''}">${e.name}</span>
+          ${e.duration?`<span style="font-size:9px;color:var(--text-3);white-space:nowrap;">${isPar?'~':'' }${e.duration}min</span>`:''}
+          <button onclick="toggleCartParallel('${e.id}')" title="${isPar?'Parallel aufheben':'Als parallel markieren (zählt nicht zur Gesamtzeit)'}" style="background:${isPar?'rgba(100,100,100,.2)':'none'};border:none;cursor:pointer;color:${isPar?'#aaa':'var(--text-3)'};font-size:9px;padding:1px 3px;border-radius:3px;flex-shrink:0;font-weight:900;line-height:1;">∥</button>
+          <button onclick="removePlanItem('${e.id}')" style="background:none;border:none;cursor:pointer;color:var(--text-3);font-size:10px;padding:0;flex-shrink:0;">✕</button>
+        </div>`;
+      }).join('')}
     </div>`).join('');
 
-  return`<div class="plan-cart">
-    <div class="plan-cart-title">🛒 Trainingsplan <span style="font-size:11px;font-weight:600;color:var(--text-3);">(${allItems.length} Übungen${totalMin>0?' · '+totalMin+' min':''})</span></div>
-    <div style="margin-bottom:12px;">${sectionList}</div>
+  const targetRow=`<div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
+    <span style="font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--text-3);white-space:nowrap;">Zieldauer</span>
+    <input type="number" min="0" max="300" value="${_cartTargetMin||''}" placeholder="— min"
+      oninput="setCartTarget(this.value)"
+      style="width:54px;padding:2px 5px;border-radius:5px;border:1px solid var(--border);background:var(--surface-2);color:var(--text-1);font-size:11px;font-weight:700;outline:none;text-align:center;">
+    <span style="font-size:9px;color:var(--text-3);">min</span>
+  </div>`;
+
+  const overWarn = over ? `<div style="display:flex;align-items:center;gap:5px;padding:5px 8px;border-radius:6px;background:#ffebee;border:1px solid #ef9a9a;margin-bottom:8px;">
+    <span style="font-size:13px;">⚠️</span>
+    <span style="font-size:10px;font-weight:700;color:#c62828;">+${overBy} min über Zieldauer</span>
+  </div>` : '';
+
+  const totalColor = over ? '#c62828' : 'var(--text-1)';
+  const totalBg = over ? 'rgba(198,40,40,.07)' : 'transparent';
+
+  return`<div class="plan-cart" style="${over?'border-color:#ef9a9a;':''}">
+    <div class="plan-cart-title" style="color:${totalColor};">🛒 Trainingsplan
+      <span style="font-size:11px;font-weight:600;color:${over?'#c62828':'var(--text-3)'};">
+        (${allItems.length} Übungen${totalMin>0?' · '+totalMin+' min':''}${parallelMin>0?' +'+parallelMin+' min parallel':''})
+      </span>
+    </div>
+    ${targetRow}
+    ${overWarn}
+    <div style="margin-bottom:12px;${over?'background:'+totalBg+';border-radius:6px;padding:4px;':''}">${sectionList}</div>
     <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px;">
       <div style="font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;">Belastungsverteilung</div>
       ${totalMin>0?intensBars:`<div style="font-size:10px;color:var(--text-3);">Keine Zeitangaben vorhanden</div>`}
