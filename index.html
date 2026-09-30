@@ -1381,6 +1381,7 @@ function filterHelpCards(q){
       <button class="tb" id="tb_select" onclick="setTool('select')" title="Auswählen & Verschieben" style="background:#344736;height:30px;width:30px;border:none;border-radius:6px;cursor:pointer;color:#fff;font-size:14px;">&#x2196;</button>
       <button class="tb" id="tb_erase" onclick="setTool('erase')" title="Objekt löschen" style="background:#880e4f;height:30px;width:30px;border:none;border-radius:6px;cursor:pointer;color:#fff;font-size:12px;font-weight:700;">✕</button>
       <button id="tb_snap" onclick="toggleGridSnap()" title="Einrasten & Ausrichtungshilfen" style="background:#344736;height:30px;padding:0 8px;border:none;border-radius:6px;cursor:pointer;color:#aaa;font-size:13px;">⛶</button>
+      <button id="tb_autonum" onclick="toggleAutoNumber()" title="Autonummerierung an/aus" style="background:#1a7f4b;height:30px;padding:0 8px;border:none;border-radius:6px;cursor:pointer;color:#fff;font-size:11px;font-weight:700;font-family:'Barlow Condensed',sans-serif;letter-spacing:.3px;">1,2,3…</button>
     </div>
 
     <!-- Aktionen rechts -->
@@ -1440,10 +1441,16 @@ function filterHelpCards(q){
       <span style="font-size:11px;color:rgba(255,255,255,.5);">1. Startpunkt klicken → 2. Endpunkt klicken</span>
     </div>
 
-    <!-- Auswahl-Kontext: Winkelregler -->
-    <div id="ctx_select" style="display:none;align-items:center;gap:6px;">
+    <!-- Auswahl-Kontext -->
+    <div id="ctx_select" style="display:none;align-items:center;gap:8px;flex-wrap:wrap;">
       <span style="font-size:10px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.5px;">AUSWAHL</span>
-      <span style="font-size:11px;color:rgba(255,255,255,.35);">Klicken zum Auswählen · Ziehen zum Verschieben · Rechtsklick = drehen</span>
+      <span id="ctx_sel_hint" style="font-size:11px;color:rgba(255,255,255,.35);">Klicken zum Auswählen · Ziehen zum Verschieben · Rechtsklick = drehen</span>
+      <!-- Spieler:in-Label-Editor: nur sichtbar wenn einzelne Spieler:in selektiert -->
+      <div id="ctx_player_edit" style="display:none;align-items:center;gap:5px;">
+        <div style="width:1px;height:16px;background:rgba(255,255,255,.12);"></div>
+        <span style="font-size:10px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.5px;">NR. / NAME</span>
+        <input id="playerLabelInput" type="text" maxlength="10" oninput="updateSelPlayerLabel(this.value)" placeholder="z.B. 7 oder Max" style="width:90px;padding:3px 8px;border-radius:5px;border:none;background:#344736;color:#fff;font-size:12px;font-weight:700;font-family:'Barlow Condensed',sans-serif;outline:none;">
+      </div>
     </div>
 
     <!-- Rotation (erscheint zusätzlich wenn drehbares Objekt selektiert) -->

@@ -26,6 +26,65 @@ let _catalogEditExId=null;
 // Snap / alignment
 let _snapEnabled=false, _gridSize=40;
 let _activeSnapLines=[];
+// Auto-numbering
+let _autoNumber=true;
+
+// ── AUTO-NUMBERING ────────────────────────────────────
+function toggleAutoNumber(){
+  _autoNumber=!_autoNumber;
+  const btn=document.getElementById('tb_autonum');
+  if(btn){
+    btn.style.background=_autoNumber?'#1a7f4b':'#344736';
+    btn.style.color=_autoNumber?'#fff':'#888';
+    btn.title=_autoNumber?'Autonummerierung aktiv – klicken zum Deaktivieren':'Autonummerierung aus – klicken zum Aktivieren';
+  }
+}
+
+function renumberPlayers(){
+  if(!_autoNumber) return;
+  // Group players by color in canvas order
+  const colorGroups={};
+  canvasObjects.forEach((o,i)=>{
+    if(o.type==='player'){
+      if(!colorGroups[o.color]) colorGroups[o.color]=[];
+      colorGroups[o.color].push(i);
+    }
+  });
+  // Renumber numeric labels sequentially per color group
+  Object.entries(colorGroups).forEach(([col,indices])=>{
+    if(col==='#f9a825') return; // TW stays TW
+    let n=1;
+    indices.forEach(idx=>{
+      const o=canvasObjects[idx];
+      if(/^\d+$/.test((o.label||'').trim())) o.label=String(n);
+      n++;
+    });
+    playerCounters[col]=indices.length+1;
+  });
+}
+
+// Update the selected player's label from the context-bar input
+function updateSelPlayerLabel(val){
+  const idx=selectedIndices.length===1?selectedIndices[0]:selectedObjIdx;
+  if(idx===null||idx<0||!canvasObjects[idx]||canvasObjects[idx].type!=='player') return;
+  canvasObjects[idx].label=val;
+  redraw();
+}
+
+// Show/hide player label editor in ctx_select based on current selection
+function _updatePlayerEdit(){
+  const editEl=document.getElementById('ctx_player_edit');
+  const hintEl=document.getElementById('ctx_sel_hint');
+  if(!editEl) return;
+  const idx=selectedIndices.length===1?selectedIndices[0]:(selectedObjIdx!==null&&selectedObjIdx>=0?selectedObjIdx:null);
+  const isPlayer=idx!==null&&canvasObjects[idx]?.type==='player';
+  editEl.style.display=isPlayer?'flex':'none';
+  if(hintEl) hintEl.style.display=isPlayer?'none':'inline';
+  if(isPlayer){
+    const inp=document.getElementById('playerLabelInput');
+    if(inp) inp.value=canvasObjects[idx].label||'';
+  }
+}
 
 // ── SNAP / ALIGNMENT ──────────────────────────────────
 function toggleGridSnap(){
@@ -255,7 +314,7 @@ function cvDown({x,y}){
     }
     redraw(); updateRotCtrl(); return;
   }
-  if(t==='erase'){pushUndo();const i=hitAt(x,y);if(i>=0){canvasObjects.splice(i,1);redraw();} return;}
+  if(t==='erase'){pushUndo();const i=hitAt(x,y);if(i>=0){canvasObjects.splice(i,1);renumberPlayers();redraw();} return;}
   if(t==='dribble'){
     if(!linePhase){pushUndo();linePhase=1;lineStart={x,y};}
     else{canvasObjects.push({type:'dribble',x1:lineStart.x,y1:lineStart.y,x2:x,y2:y});linePhase=0;lineStart=null;redraw();}
@@ -353,7 +412,10 @@ function placeObj(t,x,y){
   if(t==='player'){
     const col=document.getElementById('playerColor')?.value||'#1565c0';
     if(!playerCounters[col])playerCounters[col]=1;
-    const lbl=col==='#f9a825'?'TW':String(playerCounters[col]++);
+    let lbl;
+    if(col==='#f9a825') lbl='TW';
+    else if(_autoNumber) lbl=String(playerCounters[col]++);
+    else { lbl=''; playerCounters[col]++; }
     canvasObjects.push({type:'player',x,y,color:col,label:lbl,angle:0});
   } else if(t==='ball'){
     canvasObjects.push({type:'ball',x,y,scale:0.5});
@@ -420,10 +482,10 @@ document.addEventListener('keydown', function(e){
     const toDelete = selectedIndices.length > 0 ? [...selectedIndices] : (selectedObjIdx !== null && selectedObjIdx >= 0 ? [selectedObjIdx] : []);
     if(toDelete.length){
       pushUndo();
-      // Remove highest index first to not shift lower indices
       toDelete.sort((a,b)=>b-a).forEach(i=>canvasObjects.splice(i,1));
       selectedObjIdx=null; selectedIndices=[];
-      redraw();
+      renumberPlayers();
+      redraw(); _updatePlayerEdit();
       showToast(toDelete.length>1?toDelete.length+' Objekte gelöscht':'Objekt gelöscht');
     }
   }
@@ -472,10 +534,11 @@ function updateRotCtrl(){
       ctrl.style.display = 'flex';
       if(slider) slider.value = deg;
       if(valEl) valEl.textContent = deg + '°';
-      return;
+      _updatePlayerEdit(); return;
     }
   }
   ctrl.style.display = 'none';
+  _updatePlayerEdit();
 }
 
 function setSelAngle(deg){
