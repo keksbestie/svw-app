@@ -1346,9 +1346,13 @@ function filterHelpCards(q){
     <!-- Objekte -->
     <div style="display:flex;gap:3px;align-items:center;" title="Objekte platzieren">
       <span style="font-size:9px;color:rgba(255,255,255,.3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding-right:2px;">Objekte</span>
-      <button class="tb active" id="tb_player" onclick="setTool('player')" title="Spieler:in setzen" style="background:#1565c0;font-size:14px;font-weight:900;width:30px;height:30px;border:none;border-radius:6px;cursor:pointer;color:#fff;">&#x25CF;</button>
+      <button class="tb active" id="tb_player" onclick="setTool('player')" title="Spieler:in setzen" style="background:#1565c0;width:30px;height:30px;border:none;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;">
+        <svg width="16" height="18" viewBox="0 0 16 18" fill="white"><circle cx="8" cy="4.5" r="3.5"/><path d="M1,17.5 C1,11.5 4,9.5 8,9.5 C12,9.5 15,11.5 15,17.5Z"/></svg>
+      </button>
       <button class="tb" id="tb_ball" onclick="setTool('ball')" title="Ball setzen" style="background:#344736;font-size:14px;width:30px;height:30px;border:none;border-radius:6px;cursor:pointer;color:#fff;">&#x26BD;</button>
-      <button class="tb" id="tb_equip" onclick="setTool('equip')" title="Equipment (Hütchen, Stange …)" style="background:#344736;font-size:12px;width:30px;height:30px;border:none;border-radius:6px;cursor:pointer;color:#e65100;">&#x25B2;</button>
+      <button class="tb" id="tb_equip" onclick="setTool('equip')" title="Equipment (Hütchen, Stange …)" style="background:#344736;width:30px;height:30px;border:none;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;">
+        <svg width="16" height="18" viewBox="0 0 16 18"><polygon points="8,2 14,16 2,16" fill="#e65100"/><ellipse cx="8" cy="16" rx="6" ry="2" fill="rgba(0,0,0,0.35)"/><ellipse cx="8" cy="16" rx="5.5" ry="1.5" fill="#e65100"/></svg>
+      </button>
       <button class="tb" id="tb_goal" onclick="setTool('goal')" title="Tor setzen" style="background:#344736;padding:0 5px;height:30px;border:none;border-radius:6px;cursor:pointer;">
         <svg width="18" height="12" viewBox="0 0 18 12"><rect x="1" y="1" width="16" height="8" fill="none" stroke="white" stroke-width="1.8"/><line x1="1" y1="9" x2="17" y2="9" stroke="white" stroke-width="1.5"/></svg>
       </button>

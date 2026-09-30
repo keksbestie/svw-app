@@ -390,9 +390,12 @@ function updatePlayerColorBtn(){
   const pc=document.getElementById('tb_player');
   if(pc){
     pc.style.background=col;
-    // Textfarbe anpassen für helle Hintergründe
     const bright=['#f9a825','#ffffff','#fff176','#e0e0e0'].includes(col);
-    pc.style.color=bright?'#1a1a1a':'#ffffff';
+    const iconCol=bright?'#1a1a1a':'#ffffff';
+    pc.querySelectorAll('svg [fill="white"], svg [fill="#1a1a1a"]').forEach(el=>el.setAttribute('fill',iconCol));
+    // fallback: set fill on svg directly
+    const svg=pc.querySelector('svg');
+    if(svg)svg.setAttribute('fill',iconCol);
   }
 }
 
