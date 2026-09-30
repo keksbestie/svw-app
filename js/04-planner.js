@@ -212,6 +212,14 @@ function loadTemplate(tpl){
 // ══════════════════════════════════════════════════════
 // DRUCKEN
 // ══════════════════════════════════════════════════════
+function clearPlan(){
+  if(!confirm('Trainingsplan leeren? Alle Übungen werden entfernt.')) return;
+  currentPlan.lanes=[[],[],[],[],[]];
+  save();
+  renderPlanner();
+  updatePlanCart();
+}
+
 function printPlan(){
   // Collect all exercises in plan order
   const items=[];
