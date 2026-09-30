@@ -84,9 +84,9 @@ function renderPlanCart(){
       </div>
       ${s.exs.map(e=>{
         const isPar=_cartParallel.has(e.id);
-        return`<div style="display:flex;align-items:center;gap:5px;padding:4px 6px;border-radius:6px;background:var(--surface-2);margin-bottom:3px;${isPar?'border-left:3px solid #888;opacity:.7;':'border-left:3px solid transparent;'}">
-          <span style="font-size:10px;color:var(--text-1);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;${isPar?'text-decoration:line-through;color:var(--text-3);':''}">${e.name}</span>
-          ${e.duration?`<span style="font-size:9px;color:var(--text-3);white-space:nowrap;">${isPar?'~':'' }${e.duration}min</span>`:''}
+        return`<div style="display:flex;align-items:center;gap:5px;padding:4px 6px;border-radius:6px;background:var(--surface-2);margin-bottom:3px;${isPar?'border-left:3px solid #555;':'border-left:3px solid transparent;'}">
+          <span style="font-size:10px;color:${isPar?'var(--text-3)':'var(--text-1)'};flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.name}</span>
+          ${e.duration?`<span style="font-size:9px;color:var(--text-3);white-space:nowrap;">${isPar?'(∥) ':'' }${e.duration}min</span>`:''}
           <button onclick="toggleCartParallel('${e.id}')" title="${isPar?'Parallel aufheben':'Als parallel markieren (zählt nicht zur Gesamtzeit)'}" style="background:${isPar?'rgba(100,100,100,.2)':'none'};border:none;cursor:pointer;color:${isPar?'#aaa':'var(--text-3)'};font-size:9px;padding:1px 3px;border-radius:3px;flex-shrink:0;font-weight:900;line-height:1;">∥</button>
           <button onclick="removePlanItem('${e.id}')" style="background:none;border:none;cursor:pointer;color:var(--text-3);font-size:10px;padding:0;flex-shrink:0;">✕</button>
         </div>`;
