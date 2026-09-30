@@ -622,6 +622,8 @@ body.admin .hero-edit-btn { display: flex; }
 .atag button:hover { opacity: 1; }
 .atags { display: flex; flex-wrap: wrap; gap: 2px; margin: 6px 0 4px; min-height: 28px; }
 .stags { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-top: 4px; }
+.tag-suggest-chip { font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 20px; text-transform: uppercase; letter-spacing: .3px; cursor: pointer; border: none; opacity: .75; transition: opacity .12s, transform .12s; white-space: nowrap; }
+.tag-suggest-chip:hover { opacity: 1; transform: scale(1.05); }
 .ctag { font-size: 9px; font-weight: 800; padding: 3px 9px; border-radius: 20px; text-transform: uppercase; letter-spacing: .3px; cursor: pointer; transition: all .15s; white-space: nowrap; }
 .ctag:hover { opacity: .8; transform: scale(1.04); }
 .matlist { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 6px; }

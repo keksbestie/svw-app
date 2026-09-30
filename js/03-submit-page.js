@@ -276,17 +276,41 @@ function updateSubmitChecklist(){
 }
 
 // ── Tags for submit form ─────────────────────────────
-function addSTag(){
+function addSTag(val){
   const inp = document.getElementById('sTagIn');
-  if(!inp) return;
-  const v = inp.value.trim().toUpperCase();
-  if(v && !submitTags.includes(v)){ submitTags.push(v); inp.value=''; renderSTagDisplay(); updateSubmitChecklist(); }
-  else inp.value='';
+  const v = (val || (inp&&inp.value)||'').trim().toUpperCase();
+  if(v && !submitTags.includes(v)){ submitTags.push(v); if(inp&&!val) inp.value=''; renderSTagDisplay(); updateSubmitChecklist(); renderSTagSuggestions(); }
+  else if(inp&&!val) inp.value='';
 }
-function removeSTag(t){ submitTags = submitTags.filter(x=>x!==t); renderSTagDisplay(); updateSubmitChecklist(); }
+function removeSTag(t){ submitTags = submitTags.filter(x=>x!==t); renderSTagDisplay(); updateSubmitChecklist(); renderSTagSuggestions(); }
 function renderSTagDisplay(){
   const el = document.getElementById('sAtags'); if(!el) return;
   el.innerHTML = submitTags.map(t=>`<span class="atag" style="${tagStyle(t)}">${t}<button onclick="removeSTag('${t}')" style="color:inherit;background:none;border:none;cursor:pointer;margin-left:3px;font-size:11px;">×</button></span>`).join('');
+}
+
+function renderSTagSuggestions(){
+  const el = document.getElementById('sStags'); if(!el) return;
+  const query = (document.getElementById('sTagIn')?.value||'').trim().toUpperCase();
+  const sec = parseInt(document.getElementById('sSec')?.value);
+
+  // Count tag frequency from exercises in the same section (or all if no match)
+  const freq = {};
+  (exercises||[]).forEach(e=>{
+    if(!isNaN(sec) && e.section !== sec) return;
+    (e.tags||[]).forEach(t=>{ freq[t]=(freq[t]||0)+1; });
+  });
+
+  // Filter: not already added, optionally matching typed text
+  let suggestions = Object.entries(freq)
+    .filter(([t])=>!submitTags.includes(t) && (!query || t.includes(query)))
+    .sort((a,b)=>b[1]-a[1])
+    .slice(0,12)
+    .map(([t])=>t);
+
+  if(!suggestions.length){ el.innerHTML=''; return; }
+
+  el.innerHTML = `<div style="font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--text-3);margin-bottom:5px;">Vorschläge</div>`
+    + suggestions.map(t=>`<button class="tag-suggest-chip" onclick="addSTag('${t}')" style="${tagStyle(t)}">${t}</button>`).join('');
 }
 
 // ── Submit exercise ──────────────────────────────────

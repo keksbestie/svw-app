@@ -330,7 +330,7 @@
           </div>
           <div class="fr">
             <div class="fg"><label>Abschnitt *</label>
-              <select class="fc" id="sSec" onchange="updateSubmitChecklist()">
+              <select class="fc" id="sSec" onchange="updateSubmitChecklist();renderSTagSuggestions()">
                 <option value="">Bitte wählen…</option>
                 <option value="0">Open Field</option><option value="1">Warm Up</option>
                 <option value="2">Hinführung</option><option value="3">Hauptteil</option>
@@ -389,7 +389,7 @@
           <div class="fsec">Tags (min. 3) *</div>
           <div class="fg">
             <div style="display:flex;gap:8px;margin-bottom:8px;">
-              <input class="fc" id="sTagIn" type="text" placeholder="Tag eingeben…" onkeydown="if(event.key==='Enter'){addSTag();event.preventDefault();}">
+              <input class="fc" id="sTagIn" type="text" placeholder="Tag eingeben…" onkeydown="if(event.key==='Enter'){addSTag();event.preventDefault();}" oninput="renderSTagSuggestions()" onfocus="renderSTagSuggestions()">
               <button onclick="addSTag()" style="padding:8px 13px;background:#8b5cf6;color:#fff;border:none;border-radius:7px;font-weight:700;cursor:pointer;font-size:12px;white-space:nowrap;">+ Tag</button>
             </div>
             <div id="sAtags" class="atags"></div>
