@@ -311,7 +311,7 @@ header {
   padding: 10px 18px;
   font-size: 14px;
   font-weight: 600;
-  margin-bottom: 8px;
+  margin: 0 auto 8px;
   max-width: 480px;
   text-align: left;
   line-height: 1.5;
