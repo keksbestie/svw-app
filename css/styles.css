@@ -834,6 +834,10 @@ body:not(.on-home) .home-topbar { display: none; }
 .pi-ovr-in:focus { border-bottom:1px solid currentColor;background:rgba(0,0,0,.06);border-radius:3px; }
 .pi-ovr-rst { background:none;border:none;cursor:pointer;color:inherit;opacity:.5;font-size:11px;padding:0 1px;line-height:1; }
 .pi-ovr-rst:hover { opacity:1; }
+.pi-dur-step { background:rgba(26,86,196,.15);border:none;cursor:pointer;color:#1a56c4;font-size:13px;font-weight:700;line-height:1;padding:1px 5px;border-radius:4px;transition:background .1s; }
+.pi-dur-step:hover { background:rgba(26,86,196,.28); }
+.pi-dur-in { -moz-appearance:textfield; }
+.pi-dur-in::-webkit-inner-spin-button,.pi-dur-in::-webkit-outer-spin-button { -webkit-appearance:none;margin:0; }
 
 /* ══════════════════════════════════════════════════
    LANGZEIT-PLANER — Neu

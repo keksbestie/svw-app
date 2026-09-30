@@ -61,10 +61,14 @@ function piHTML(item,ex,si,col){
         </span>`:''}
         ${difficulty?`<span class="mbadge ${dc}">${difficulty}</span>`:''}
         ${duration?`<span class="mbadge pi-ovr-wrap" style="background:#e8f0fe;color:#1a56c4;" title="Klicken zum Anpassen">
-          ⏱ <input class="pi-ovr-in" value="${duration}" style="width:${Math.max(24,(String(duration).length)*9)}px;color:#1a56c4;"
+          ⏱
+          <button class="pi-dur-step" onclick="stepPlanDur('${ex.id}',${si},-1);event.stopPropagation()" title="−1 min">−</button>
+          <input class="pi-ovr-in pi-dur-in" value="${duration}" style="width:${Math.max(24,(String(duration).length)*9)}px;color:#1a56c4;"
             type="number" min="1" max="120"
             onchange="setPlanOverride('${ex.id}',${si},'duration',parseInt(this.value)||null)"
-            onclick="event.stopPropagation()" title="Leer lassen für Standardwert"> min
+            onclick="event.stopPropagation()" title="Leer lassen für Standardwert">
+          <button class="pi-dur-step" onclick="stepPlanDur('${ex.id}',${si},1);event.stopPropagation()" title="+1 min">+</button>
+          min
           ${hasDurOvr?`<button class="pi-ovr-rst" onclick="resetPlanOverride('${ex.id}',${si},'duration');event.stopPropagation()" title="Zurücksetzen">↺</button>`:''}
         </span>`:''}
       </div>
@@ -82,6 +86,19 @@ function setPlanOverride(id,si,field,val){
   lane[idx]=item;
   currentPlan.lanes[si]=lane;
   save();updatePlanCart();
+}
+
+function stepPlanDur(id,si,delta){
+  const lane=currentPlan.lanes[si]||[];
+  const idx=lane.findIndex(raw=>_laneItem(raw).id===id);
+  if(idx<0)return;
+  const item=_laneItem(lane[idx]);
+  const ex=exercises.find(e=>e.id===id)||{};
+  const cur=parseInt(item.duration??ex.duration??0)||0;
+  const next=Math.max(1,cur+delta);
+  item.duration=next; lane[idx]=item;
+  currentPlan.lanes[si]=lane;
+  save();updatePlanCart();renderLanes();
 }
 
 function resetPlanOverride(id,si,field){
