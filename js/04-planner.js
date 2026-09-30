@@ -224,13 +224,32 @@ function printPlan(){
   });
   if(!items.length){showToast('Plan ist leer','err');return;}
 
-  // Aggregate materials (unique)
-  const matSet=new Set();
+  // Aggregate materials: take the maximum simultaneous quantity needed.
+  // Parse "2x Hütchen" / "2× Hütchen" / "Hütchen" into {qty, name}.
+  // For sequential exercises the max across exercises suffices;
+  // parallel exercises (marked in _cartParallel) count on top of the rest.
+  function parseMat(str){
+    const m=str.match(/^(\d+)\s*[x×]\s*(.+)$/i);
+    return m?{qty:parseInt(m[1]),name:m[2].trim()}:{qty:1,name:str.trim()};
+  }
+  // Build max-qty map for non-parallel items, then add parallel on top
+  const matMax={};  // name → max qty among sequential exercises
+  const matPar={};  // name → sum of parallel quantities
   items.forEach(({item,ex})=>{
-    const mat=ex.material||'';
-    mat.split(',').map(m=>m.trim()).filter(Boolean).forEach(m=>matSet.add(m));
+    const isParallel=typeof _cartParallel!=='undefined'&&_cartParallel.has(ex.id);
+    (ex.material||'').split(',').map(m=>m.trim()).filter(Boolean).forEach(raw=>{
+      const {qty,name}=parseMat(raw);
+      if(isParallel){
+        matPar[name]=(matPar[name]||0)+qty;
+      } else {
+        matMax[name]=Math.max(matMax[name]||0,qty);
+      }
+    });
   });
-  const materials=[...matSet];
+  // Combine: sequential max + parallel sum
+  const matAll={...matMax};
+  Object.entries(matPar).forEach(([name,qty])=>{ matAll[name]=(matAll[name]||0)+qty; });
+  const materials=Object.entries(matAll).map(([name,qty])=>qty>1?`${qty}× ${name}`:name);
 
   // Total load by difficulty
   const byDiff={Leicht:0,Mittel:0,Schwer:0,'':0};
