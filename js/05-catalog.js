@@ -88,6 +88,10 @@ function _applyRatingOrder(arr){
   return[...top5,...rand5,...remaining];
 }
 
+// 'expanded' | 'collapsed'
+let _catalogView = localStorage.getItem('catalogView') || 'expanded';
+function setCatalogView(v){ _catalogView=v; localStorage.setItem('catalogView',v); renderSection(); }
+
 function renderStbar(){
   document.getElementById('stbar').innerHTML=SECS.map((s,i)=>`
     <button class="st ${i===activeSec?'active':''}" style="--sc:${s.color}" onclick="switchSec(${i})">
@@ -340,6 +344,10 @@ function renderSection(){
             <div class="ftop">
               <input class="fin" id="ss${activeSec}" type="text" placeholder="In ${s.name} suchen…" value="${q}" oninput="renderSection()">
               <button class="gbtn" onclick="selectedTags=[];activeCluster=null;clusterFilterTags=[];renderSection()">✕ Reset</button>
+              <div class="view-toggle">
+                <button class="view-toggle-btn ${_catalogView==='expanded'?'active':''}" onclick="setCatalogView('expanded')" title="Ausgeklappt">☰☰</button>
+                <button class="view-toggle-btn ${_catalogView==='collapsed'?'active':''}" onclick="setCatalogView('collapsed')" title="Eingeklappt">≡</button>
+              </div>
               ${IS_ADMIN?`<button class="gbtn" onclick="openNewEx(${activeSec})">+ Übung</button><button class="gbtn" onclick="openTagMod(${activeSec})">Tags</button>`:''}
             </div>
             <div class="tagrow">
@@ -351,7 +359,7 @@ function renderSection(){
             </div>
           </div>
           <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gm);margin-bottom:11px;">${filtered.length} von ${sEx.length} Übungen</div>
-          <div class="exgrid">
+          <div class="exgrid${_catalogView==='collapsed'?' collapsed':''}">
             ${filtered.length===0
               ?`<div class="empty-grid"><div class="ei">⚽</div><h3>Keine Übungen gefunden</h3><p>${IS_ADMIN?'Über „+ Übung" hinzufügen.':'Filter anpassen.'}</p></div>`
               :_applyRatingOrder(filtered).map(e=>cardHTML(e,col)).join('')
@@ -437,25 +445,37 @@ function filterByTag(tag){if(!selectedTags.map(t=>t.toUpperCase()).includes(tag.
 
 function cardHTML(e,col){
   const dc=e.difficulty==='Leicht'?'dl':e.difficulty==='Mittel'?'dm':e.difficulty==='Schwer'?'ds':'';
-const diffLabel=e.difficulty==='Schwer'?'Hoch':e.difficulty;
+  const diffLabel=e.difficulty==='Schwer'?'Hoch':e.difficulty;
   const mats=e.material?e.material.split(',').map(m=>`<span class="matpill">${m.trim()}</span>`).join(''):'';
   const tags=(e.tags||[]).map(t=>`<span class="ctag" style="${tagStyle(t)}" onclick="event.stopPropagation();filterByTag('${t}')">${t}</span>`).join('');
   const authorLine = e.author ? `<div class="card-author">erstellt von ${e.author}</div>` : '';
   const imgHtml = e.image
     ? `<img src="${e.image}" alt="${e.name}">`
     : `<div class="cimg-field"><div class="cimg-field-lines"></div><div class="cimg-ico">⚽</div></div>`;
+
+  if(_catalogView==='collapsed'){
+    return`<div class="card card-collapsed" data-id="${e.id}" onclick="openExDetail('${e.id}')">
+      <div class="cbody">
+        <div class="cname">${e.name}</div>
+        ${_ratingHTML(e.id)}
+      </div>
+      <button class="card-collapsed-add" onclick="event.stopPropagation();addToPlanOrPick('${e.id}',${e.section},false)">+ Plan</button>
+      ${IS_ADMIN?`<button onclick="event.stopPropagation();editEx('${e.id}')" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--text-3);">✏️</button>`:''}
+    </div>`;
+  }
+
   return`<div class="card" data-id="${e.id}" onclick="openExDetail('${e.id}')">
     <div class="dh" onclick="event.stopPropagation()">⠿</div>
     <div class="cimg">${imgHtml}</div>
     <div class="cbody">
       ${authorLine}
       <div class="cname">${e.name}</div>
+      ${_ratingHTML(e.id)}
       <div class="cmeta">
         ${e.players?`<span class="mbadge p">👥 ${e.players}</span>`:''}
         ${e.difficulty?`<span class="mbadge ${dc}">${diffLabel}</span>`:''}
         ${e.duration?`<span class="mbadge" style="background:#e8f0fe;color:#1a56c4;">⏱ ${e.duration} min</span>`:''}
       </div>
-      ${_ratingHTML(e.id)}
       ${mats?`<div class="matlist">${mats}</div>`:''}
       ${e.desc?`<div class="cdesc">${e.desc.length>110?e.desc.slice(0,110)+'…':e.desc}</div>`:''}
       <div class="ctags">${tags}</div>

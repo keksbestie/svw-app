@@ -572,7 +572,20 @@ body.admin .hero-edit-btn { display: flex; }
 /* ══════════════════════════════════════════════════
    EXERCISE GRID & CARDS
    ══════════════════════════════════════════════════ */
-.exgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.exgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+.exgrid.collapsed { display: flex; flex-direction: column; gap: 0; }
+.card.card-collapsed { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 0; border-bottom: 1px solid var(--border); border-left: none; border-right: none; border-top: none; box-shadow: none; cursor: pointer; }
+.card.card-collapsed:first-child { border-top: 1px solid var(--border); border-radius: 8px 8px 0 0; }
+.card.card-collapsed:last-child { border-radius: 0 0 8px 8px; }
+.card.card-collapsed:hover { transform: none; background: var(--surface-2); }
+.card-collapsed .cimg, .card-collapsed .cmeta, .card-collapsed .matlist, .card-collapsed .cdesc, .card-collapsed .ctags, .card-collapsed .cfoot, .card-collapsed .card-author { display: none; }
+.card-collapsed .cbody { padding: 0; display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.card-collapsed .cname { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; min-width: 0; }
+.card-collapsed .rating-row { margin: 0; }
+.card-collapsed-add { background: var(--accent); color: #fff; border: none; border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 800; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+.view-toggle { display: flex; gap: 4px; }
+.view-toggle-btn { background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; padding: 5px 9px; font-size: 13px; cursor: pointer; color: var(--text-2); transition: background .15s; }
+.view-toggle-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 .catalog-layout { display: grid; grid-template-columns: 1fr 280px; gap: 16px; align-items: start; }
 @media (max-width: 767px) { .catalog-layout { grid-template-columns: 1fr; } }
 .card { background: var(--surface); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow); transition: transform .18s, box-shadow .18s; position: relative; cursor: grab; border: 1px solid var(--border); }
