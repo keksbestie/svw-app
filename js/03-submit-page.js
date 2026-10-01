@@ -76,9 +76,11 @@ async function renderSubmitPage(){
     document.getElementById('sAuthorPreview').textContent = submitUser.name;
     renderSubmitChecklist_init();
     _renderMySubmissionsFromCache();
-    if(IS_ADMIN){ _renderAdminQueueFromCache(); renderUserList(); }
+    loadMySubmittedPlans();
+    if(IS_ADMIN){ _renderAdminQueueFromCache(); renderUserList(); loadAdminPlanQueue(); }
     document.getElementById('adminQueueWrap').style.display = IS_ADMIN ? 'block' : 'none';
     document.getElementById('adminUserWrap').style.display = IS_ADMIN ? 'block' : 'none';
+    document.getElementById('adminPlanQueueWrap').style.display = IS_ADMIN ? 'block' : 'none';
     // Canvas wird per Button im fieldOverlay geöffnet
   }
 }
