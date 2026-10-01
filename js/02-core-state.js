@@ -232,14 +232,8 @@ function goPage(name,btn){
   if(name==='submit')renderSubmitPage();
   if(name==='account')renderAccountPage();
 
-  // 3. Scroll to top (or stbar for catalog)
+  // 3. Scroll to top
   document.documentElement.scrollTop=0; document.body.scrollTop=0;
-  if(name==='handbook'){
-    requestAnimationFrame(()=>{
-      const stbar=document.getElementById('stbar');
-      if(stbar){document.documentElement.scrollTop=stbar.offsetTop+stbar.offsetHeight;document.body.scrollTop=stbar.offsetTop+stbar.offsetHeight;}
-    });
-  }
 
   // 4. Animate home overlay out (purely visual — state already updated above)
   if(fromHome){
