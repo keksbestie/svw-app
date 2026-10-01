@@ -637,7 +637,7 @@ body.admin .hero-edit-btn { display: flex; }
 .stags { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-top: 4px; }
 .tag-suggest-chip { font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 20px; text-transform: uppercase; letter-spacing: .3px; cursor: pointer; border: none; opacity: .75; transition: opacity .12s, transform .12s; white-space: nowrap; }
 .tag-suggest-chip:hover { opacity: 1; transform: scale(1.05); }
-.rating-row { display: flex; align-items: center; gap: 2px; margin-top: 4px; user-select: none; }
+.rating-row { display: flex; align-items: center; gap: 2px; margin-top: 7px; margin-bottom: 7px; user-select: none; }
 .star-btn { line-height: 1; transition: color .1s, transform .1s; display: inline-block; }
 .star-btn:hover { transform: scale(1.2); }
 .ctag { font-size: 9px; font-weight: 800; padding: 3px 9px; border-radius: 20px; text-transform: uppercase; letter-spacing: .3px; cursor: pointer; transition: all .15s; white-space: nowrap; }
