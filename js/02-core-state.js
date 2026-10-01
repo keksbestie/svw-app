@@ -57,7 +57,7 @@ async function loadAPI(){
     }
     if(user){
       const {data:plansData}=await _supabase.from('plans').select('*').eq('owner_id',user.id);
-      savedPlans=(plansData||[]).map(p=>p.lanes);
+      savedPlans=(plansData||[]).map(p=>({id:p.id||uid(),name:p.name||'Plan',date:p.date||'',lanes:p.lanes,totals:p.totals||[]}));
       const {data:ltpData}=await _supabase.from('ltp_blocks').select('*').eq('owner_id',user.id);
       ltpBlocks=(ltpData||[]).map(b=>b.weeks);
     }
@@ -75,7 +75,7 @@ async function silentSync(){
     }
     if(currentUser){
       const {data:plansData}=await _supabase.from('plans').select('*').eq('owner_id',currentUser.id);
-      savedPlans=(plansData||[]).map(p=>p.lanes);
+      savedPlans=(plansData||[]).map(p=>({id:p.id||uid(),name:p.name||'Plan',date:p.date||'',lanes:p.lanes,totals:p.totals||[]}));
       const {data:ltpData}=await _supabase.from('ltp_blocks').select('*').eq('owner_id',currentUser.id);
       ltpBlocks=(ltpData||[]).map(b=>b.weeks);
     }
@@ -88,7 +88,7 @@ async function saveAPI(){
   try{
     await _supabase.from('plans').delete().eq('owner_id',currentUser.id);
     if(savedPlans.length>0)
-      await _supabase.from('plans').insert(savedPlans.map(p=>({owner_id:currentUser.id,name:p.name||'Plan',lanes:p})));
+      await _supabase.from('plans').insert(savedPlans.map(p=>({owner_id:currentUser.id,name:p.name||'Plan',date:p.date||'',lanes:p.lanes,totals:p.totals||[]})));
     await _supabase.from('ltp_blocks').delete().eq('owner_id',currentUser.id);
     if(ltpBlocks.length>0)
       await _supabase.from('ltp_blocks').insert(ltpBlocks.map(b=>({owner_id:currentUser.id,name:b.name||'Block',weeks:b})));
