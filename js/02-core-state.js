@@ -61,6 +61,7 @@ async function loadAPI(){
       const {data:ltpData}=await _supabase.from('ltp_blocks').select('*').eq('owner_id',user.id);
       ltpBlocks=(ltpData||[]).map(b=>b.weeks);
     }
+    if(typeof loadRatings==='function') await loadRatings();
     apiOnline=true; setStat('ok'); cacheLocal(); return true;
   }catch(e){apiOnline=false; setStat('err'); return false;}
 }
@@ -79,6 +80,7 @@ async function silentSync(){
       const {data:ltpData}=await _supabase.from('ltp_blocks').select('*').eq('owner_id',currentUser.id);
       ltpBlocks=(ltpData||[]).map(b=>b.weeks);
     }
+    if(typeof loadRatings==='function') await loadRatings();
     apiOnline=true; setStat('ok'); updateCnt(); renderSection(); cacheLocal();
   }catch{apiOnline=false; setStat('err');}
 }

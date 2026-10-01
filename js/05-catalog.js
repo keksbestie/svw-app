@@ -5,6 +5,89 @@
 // Übungs-Detailansicht, Material-Baukasten, Übung anlegen/bearbeiten/
 // löschen (Admin), Materialfeld-Builder.
 // ══════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+// BEWERTUNGSSYSTEM
+// ══════════════════════════════════════════════════════
+// ratings: { [exerciseId]: { sum, count, userRating } }
+let _ratings = {};
+
+async function loadRatings(){
+  if(!_supabase) return;
+  const {data} = await _supabase.from('ratings').select('exercise_id,stars,user_id');
+  if(!data) return;
+  _ratings = {};
+  data.forEach(r=>{
+    if(!_ratings[r.exercise_id]) _ratings[r.exercise_id]={sum:0,count:0,userRating:0};
+    _ratings[r.exercise_id].sum += r.stars;
+    _ratings[r.exercise_id].count += 1;
+    if(currentUser && r.user_id===currentUser.id) _ratings[r.exercise_id].userRating=r.stars;
+  });
+}
+
+async function rateExercise(exId, stars, event){
+  if(event) event.stopPropagation();
+  if(!currentUser){showToast('Bitte anmelden um zu bewerten','err');return;}
+  const {error}=await _supabase.from('ratings').upsert(
+    {exercise_id:exId, user_id:currentUser.id, stars},
+    {onConflict:'exercise_id,user_id'}
+  );
+  if(error){showToast('Fehler beim Speichern','err');return;}
+  await loadRatings();
+  renderSection();
+  // Update detail modal if open
+  const det=document.getElementById('exDetailBody');
+  if(det) _updateDetailRating(exId);
+}
+
+function _ratingHTML(exId, inModal=false){
+  const r=_ratings[exId]||{sum:0,count:0,userRating:0};
+  const avg = r.count>=5 ? (r.sum/r.count) : null;
+  const userR = r.userRating;
+  const size = inModal ? '20px' : '14px';
+  const stars = [1,2,3,4,5].map(i=>`
+    <span class="star-btn" data-star="${i}" onclick="rateExercise('${exId}',${i},event)"
+      style="font-size:${size};cursor:pointer;color:${i<=(userR||Math.round(avg||0))?'#f59e0b':'var(--text-3)'};"
+      onmouseenter="this.parentElement.querySelectorAll('.star-btn').forEach((s,j)=>s.style.color=j<${i}?'#fbbf24':'var(--text-3)')"
+      onmouseleave="_resetStars('${exId}',this.parentElement)">★</span>`).join('');
+  const countLabel = r.count>=5
+    ? `<span style="font-size:10px;color:var(--text-3);margin-left:4px;">${avg.toFixed(1)} (${r.count})</span>`
+    : r.count>0
+      ? `<span style="font-size:10px;color:var(--text-3);margin-left:4px;">(${r.count}/5 Bewertungen)</span>`
+      : '';
+  return`<div class="rating-row" onclick="event.stopPropagation()" style="display:flex;align-items:center;gap:2px;margin-top:4px;">${stars}${countLabel}</div>`;
+}
+
+function _resetStars(exId, container){
+  const r=_ratings[exId]||{sum:0,count:0,userRating:0};
+  const avg=r.count>=5?(r.sum/r.count):null;
+  const active=r.userRating||Math.round(avg||0);
+  container.querySelectorAll('.star-btn').forEach((s,i)=>s.style.color=i<active?'#f59e0b':'var(--text-3)');
+}
+
+function _updateDetailRating(exId){
+  const wrap=document.getElementById(`detail-rating-${exId}`);
+  if(wrap) wrap.outerHTML=_ratingHTML(exId,true);
+}
+
+// ── Top-5 + Random-5 ordering ────────────────────────
+function _applyRatingOrder(arr){
+  if(arr.length<=10) return arr;
+  const qualified=arr.filter(e=>(_ratings[e.id]?.count||0)>=5);
+  const top5=[...qualified].sort((a,b)=>{
+    const ra=_ratings[a.id], rb=_ratings[b.id];
+    return (rb.sum/rb.count)-(ra.sum/ra.count);
+  }).slice(0,5);
+  const top5ids=new Set(top5.map(e=>e.id));
+  const rest=arr.filter(e=>!top5ids.has(e.id));
+  // Fisher-Yates shuffle for random 5
+  const shuffled=[...rest];
+  for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];}
+  const rand5=shuffled.slice(0,5);
+  const rand5ids=new Set(rand5.map(e=>e.id));
+  const remaining=rest.filter(e=>!rand5ids.has(e.id));
+  return[...top5,...rand5,...remaining];
+}
+
 function renderStbar(){
   document.getElementById('stbar').innerHTML=SECS.map((s,i)=>`
     <button class="st ${i===activeSec?'active':''}" style="--sc:${s.color}" onclick="switchSec(${i})">
@@ -171,6 +254,7 @@ function openExDetail(id){
       <div style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:6px;">Tags</div>
       <div>${tags}</div>
     </div>`:''}
+    <div id="detail-rating-${e.id}" style="margin-bottom:16px;">${_ratingHTML(e.id,true)}</div>
     <div style="display:flex;gap:8px;padding-top:12px;border-top:1px solid var(--border);">
       <button onclick="addToPlanOrPick('${e.id}',${e.section},true)" style="flex:1;padding:12px;background:${s.color};color:#fff;border:none;border-radius:9px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;">+ Zum Plan hinzufügen</button>
       ${IS_ADMIN?`<button onclick="closeMod('exDetailMod');openCatalogFieldEdit('${e.id}')" title="Felddiagramm bearbeiten" style="padding:12px 14px;border:1px solid var(--border);background:none;border-radius:9px;font-size:15px;cursor:pointer;color:var(--text-2);">🎨</button><button onclick="closeMod('exDetailMod');editEx('${e.id}')" title="Übung bearbeiten" style="padding:12px 14px;border:1px solid var(--border);background:none;border-radius:9px;font-size:13px;cursor:pointer;color:var(--text-2);">✏️</button>`:''}
@@ -270,7 +354,7 @@ function renderSection(){
           <div class="exgrid">
             ${filtered.length===0
               ?`<div class="empty-grid"><div class="ei">⚽</div><h3>Keine Übungen gefunden</h3><p>${IS_ADMIN?'Über „+ Übung" hinzufügen.':'Filter anpassen.'}</p></div>`
-              :filtered.map(e=>cardHTML(e,col)).join('')
+              :_applyRatingOrder(filtered).map(e=>cardHTML(e,col)).join('')
             }
           </div>
         </div>
@@ -371,6 +455,7 @@ const diffLabel=e.difficulty==='Schwer'?'Hoch':e.difficulty;
         ${e.difficulty?`<span class="mbadge ${dc}">${diffLabel}</span>`:''}
         ${e.duration?`<span class="mbadge" style="background:#e8f0fe;color:#1a56c4;">⏱ ${e.duration} min</span>`:''}
       </div>
+      ${_ratingHTML(e.id)}
       ${mats?`<div class="matlist">${mats}</div>`:''}
       ${e.desc?`<div class="cdesc">${e.desc.length>110?e.desc.slice(0,110)+'…':e.desc}</div>`:''}
       <div class="ctags">${tags}</div>
