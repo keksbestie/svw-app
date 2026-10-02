@@ -159,45 +159,36 @@ function _snapPoint(x,y,excludeIndices){
   return{x:sx,y:sy};
 }
 
-// Returns {xs, ys} arrays of pixel positions matching the actual field lines
+// Returns {xs, ys} arrays — fine meter-based grid snapped to field dimensions
 function _getFieldGrid(){
   if(!canvasEl) return null;
   const W=canvasEl.offsetWidth, H=canvasEl.offsetHeight;
   const ft=document.getElementById('fieldType')?.value||'small';
   const p=Math.round(Math.min(W,H)*0.04);
-  let xs=[], ys=[];
+
+  // Generate evenly-spaced grid points every `step` meters across field area
+  function meterGrid(ox, oy, fw, fh, mW, mH, step){
+    const sx=fw/mW, sy=fh/mH;
+    const xs=[], ys=[];
+    for(let m=0; m<=mW; m+=step) xs.push(ox+m*sx);
+    for(let m=0; m<=mH; m+=step) ys.push(oy+m*sy);
+    return {xs, ys};
+  }
 
   if(ft==='full'){
-    const fw=W-p*2, fh=H-p*2;
-    const sx=fw/105, sy=fh/68;
-    const paH=40.32*sy, paW=16.5*sx;
-    const gaH=18.32*sy, gaW=5.5*sx;
-    // vertical lines
-    xs=[p, p+gaW, p+paW, W/2, W-p-paW, W-p-gaW, W-p];
-    // horizontal lines
-    ys=[p, (H-paH)/2, (H-gaH)/2, H/2, (H+gaH)/2, (H+paH)/2, H-p];
+    return meterGrid(p, p, W-p*2, H-p*2, 105, 68, 5);
   } else if(ft==='half'){
     const s=Math.min((W-p*2)/68,(H-p*2)/52.5);
     const fw=68*s, fh=52.5*s;
     const ox=(W-fw)/2, oy=(H-fh)/2;
-    const paW=40.32*s, paH=16.5*s;
-    const gaW=18.32*s, gaH=5.5*s;
-    xs=[ox, ox+(fw-paW)/2, ox+(fw-gaW)/2, ox+fw/2, ox+(fw+gaW)/2, ox+(fw+paW)/2, ox+fw];
-    ys=[oy, oy+fh-paH, oy+fh-gaH, oy+fh];
+    return meterGrid(ox, oy, fw, fh, 68, 52.5, 5);
   } else if(ft==='small'){
-    const fw=W-p*2, fh=H-p*2;
-    const sx=fw/30, sy=fh/20;
-    const gaW=3*sx, gaH=8*sy;
-    xs=[p, p+gaW, W/2, W-p-gaW, W-p];
-    ys=[p, (H-gaH)/2, H/2, (H+gaH)/2, H-p];
+    return meterGrid(p, p, W-p*2, H-p*2, 30, 20, 2);
   } else if(ft==='neutral'){
-    xs=[p, W/2, W-p];
-    ys=[p, H/2, H-p];
+    return meterGrid(p, p, W-p*2, H-p*2, 40, 25, 5);
   } else {
-    // penalty / sprint: fall back to generic grid
-    return null;
+    return meterGrid(p, p, W-p*2, H-p*2, 40, 25, 5);
   }
-  return {xs, ys};
 }
 
 // Snap x/y to nearest field grid point
@@ -218,21 +209,15 @@ function _drawGrid(){
   ctx.save();
   if(g){
     // Draw crosshairs at each field line intersection
-    // Dashed grid lines along field lines
-    ctx.strokeStyle='rgba(255,255,255,0.35)';
-    ctx.lineWidth=1.5;
-    ctx.setLineDash([5,6]);
+    ctx.strokeStyle='rgba(255,255,255,0.22)';
+    ctx.lineWidth=0.75;
+    ctx.setLineDash([3,4]);
     g.xs.forEach(x=>{ctx.beginPath();ctx.moveTo(x,g.ys[0]);ctx.lineTo(x,g.ys[g.ys.length-1]);ctx.stroke();});
     g.ys.forEach(y=>{ctx.beginPath();ctx.moveTo(g.xs[0],y);ctx.lineTo(g.xs[g.xs.length-1],y);ctx.stroke();});
     ctx.setLineDash([]);
-    // Crosshairs at intersections
-    ctx.strokeStyle='rgba(255,255,255,0.75)';
-    ctx.lineWidth=1.5;
-    const arm=7;
-    g.xs.forEach(x=>g.ys.forEach(y=>{
-      ctx.beginPath();ctx.moveTo(x-arm,y);ctx.lineTo(x+arm,y);ctx.stroke();
-      ctx.beginPath();ctx.moveTo(x,y-arm);ctx.lineTo(x,y+arm);ctx.stroke();
-    }));
+    // Small dot at each intersection
+    ctx.fillStyle='rgba(255,255,255,0.5)';
+    g.xs.forEach(x=>g.ys.forEach(y=>{ctx.beginPath();ctx.arc(x,y,1.5,0,Math.PI*2);ctx.fill();}));
   } else {
     // Fallback: generic grid
     ctx.fillStyle='rgba(255,255,255,0.25)';
