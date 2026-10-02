@@ -1161,9 +1161,11 @@ body:not(.on-home) .home-topbar { display: none; }
   .gs-in { font-size: 13px; }
   .logo-s { display: none; }
   .hr .hbtn:not(.pri) { display: none; }
+  .hr .theme-btn, .hr .lang-btn, .hr .cfg-btn, .hr .cfg-sel { display: none; }
   .abadge { display: none; }
   .logo-t { font-size: 15px; }
   .hdr { padding: 0 10px; }
+  .hr { gap: 6px; }
 
   /* ── Section tabs ── */
   .stbar { top: var(--header-h); padding: 0 10px; }
