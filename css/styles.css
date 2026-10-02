@@ -1153,13 +1153,17 @@ body:not(.on-home) .home-topbar { display: none; }
 @media (max-width: 767px) {
   :root { --header-h: 56px; --nav-h: 44px; }
 
+  body { overflow-x: hidden; }
+
   /* ── Header ── */
   .mnav { display: none; }
-  .gs-wrap { max-width: 100%; margin: 0 8px; }
+  .gs-wrap { max-width: 180px; margin: 0 6px; flex: 1; }
+  .gs-in { font-size: 13px; }
   .logo-s { display: none; }
   .hr .hbtn:not(.pri) { display: none; }
   .abadge { display: none; }
-  .logo-t { font-size: 16px; }
+  .logo-t { font-size: 15px; }
+  .hdr { padding: 0 10px; }
 
   /* ── Section tabs ── */
   .stbar { top: var(--header-h); padding: 0 10px; }
@@ -1182,10 +1186,16 @@ body:not(.on-home) .home-topbar { display: none; }
   .home-card-icon { width: 42px; height: 42px; }
 
   /* ── Catalog cards ── */
-  .exgrid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .exgrid { grid-template-columns: 1fr; gap: 10px; }
+  .exgrid.collapsed { grid-template-columns: 1fr; }
   .card { border-radius: 10px; }
   .card-body { padding: 10px 10px 8px; }
   .card-name { font-size: 13px; }
+  .cbody { padding: 12px 12px 10px; }
+  .cname { font-size: 15px; }
+  .cdesc { -webkit-line-clamp: 2; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
+  .ftop { gap: 6px; }
+  .view-toggle { margin-left: auto; }
 
   /* ── Planner ── */
   .plan-layout { grid-template-columns: 1fr; }
@@ -1249,7 +1259,7 @@ body:not(.on-home) .home-topbar { display: none; }
 @media (max-width: 400px) {
   .home-cards { grid-template-columns: 1fr; }
   .home-cards.five { grid-template-columns: 1fr; }
-  .exgrid { grid-template-columns: 1fr 1fr; }
+  .exgrid { grid-template-columns: 1fr; }
 }
 
 /* ══════════════════════════════════════════════════
