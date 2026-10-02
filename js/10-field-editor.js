@@ -216,18 +216,28 @@ function _drawGrid(){
   if(!_snapEnabled||!canvasEl||!ctx) return;
   const g=_getFieldGrid();
   ctx.save();
-  ctx.fillStyle='rgba(255,255,255,0.15)';
   if(g){
-    // Draw dots at each intersection of field lines
+    // Draw crosshairs at each field line intersection
+    ctx.strokeStyle='rgba(255,255,255,0.45)';
+    ctx.lineWidth=1;
+    const arm=5;
     g.xs.forEach(x=>g.ys.forEach(y=>{
-      ctx.beginPath();ctx.arc(x,y,2.5,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.moveTo(x-arm,y);ctx.lineTo(x+arm,y);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(x,y-arm);ctx.lineTo(x,y+arm);ctx.stroke();
     }));
+    // Draw grid lines between intersections (very subtle)
+    ctx.strokeStyle='rgba(255,255,255,0.12)';
+    ctx.setLineDash([3,5]);
+    g.xs.forEach(x=>{ctx.beginPath();ctx.moveTo(x,g.ys[0]);ctx.lineTo(x,g.ys[g.ys.length-1]);ctx.stroke();});
+    g.ys.forEach(y=>{ctx.beginPath();ctx.moveTo(g.xs[0],y);ctx.lineTo(g.xs[g.xs.length-1],y);ctx.stroke();});
+    ctx.setLineDash([]);
   } else {
     // Fallback: generic grid
+    ctx.fillStyle='rgba(255,255,255,0.25)';
     const W=canvasEl.offsetWidth, H=canvasEl.offsetHeight;
     for(let x=_gridSize;x<W;x+=_gridSize){
       for(let y=_gridSize;y<H;y+=_gridSize){
-        ctx.beginPath();ctx.arc(x,y,1.5,0,Math.PI*2);ctx.fill();
+        ctx.beginPath();ctx.arc(x,y,2,0,Math.PI*2);ctx.fill();
       }
     }
   }
