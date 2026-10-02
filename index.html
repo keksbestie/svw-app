@@ -703,159 +703,265 @@
 
 <!-- HELP PANEL -->
 <div id="helpOverlay" onclick="closeHelpPanel()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:8000;backdrop-filter:blur(2px);"></div>
-<aside id="helpPanel" style="display:none;position:fixed;top:0;right:0;bottom:0;width:min(500px,100vw);background:var(--surface);z-index:8001;overflow-y:auto;box-shadow:-4px 0 32px rgba(0,0,0,.3);flex-direction:column;">
+<aside id="helpPanel" style="display:none;position:fixed;top:0;right:0;bottom:0;width:min(520px,100vw);background:var(--surface);z-index:8001;overflow-y:auto;box-shadow:-4px 0 32px rgba(0,0,0,.3);flex-direction:column;">
 
   <!-- Header -->
-  <div style="position:sticky;top:0;background:var(--surface);border-bottom:1px solid var(--border);padding:14px 18px;z-index:2;">
+  <div style="position:sticky;top:0;background:var(--surface);border-bottom:1px solid var(--border);padding:14px 18px 10px;z-index:2;">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
       <div style="width:30px;height:30px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#fff;flex-shrink:0;">?</div>
       <div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:900;letter-spacing:.3px;">Hilfe & Anleitung</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:900;letter-spacing:.3px;">Hilfe &amp; Anleitung</div>
         <div style="font-size:11px;color:var(--gd2);">AssistCoach – alle Funktionen erklärt</div>
       </div>
       <button onclick="closeHelpPanel()" style="margin-left:auto;background:none;border:none;font-size:20px;cursor:pointer;color:var(--gd2);line-height:1;padding:4px;">✕</button>
     </div>
-    <!-- Suchleiste -->
-    <div style="position:relative;">
-      <input id="helpSearch" type="text" placeholder="Stichwort suchen … z.B. „Felddiagramm", „Plan", „Anmelden"" oninput="filterHelpCards(this.value)" style="width:100%;box-sizing:border-box;padding:9px 34px 9px 12px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface-2);color:var(--text);font-size:13px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.2px;outline:none;">
-      <span style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--gd2);pointer-events:none;">🔍</span>
+    <!-- Tabs -->
+    <div style="display:flex;gap:4px;margin-bottom:10px;">
+      <button id="helpTab-quick" onclick="switchHelpTab('quick')" style="flex:1;padding:7px 10px;border-radius:7px;border:1.5px solid var(--accent);background:var(--accent);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.3px;">⚡ Kurzübersicht</button>
+      <button id="helpTab-detail" onclick="switchHelpTab('detail')" style="flex:1;padding:7px 10px;border-radius:7px;border:1.5px solid var(--border);background:none;color:var(--text-2);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.3px;">📖 Detailguide</button>
     </div>
-    <div id="helpNoResult" style="display:none;padding:10px 0 2px;font-size:12px;color:var(--gd2);text-align:center;">Kein Treffer – versuche ein anderes Stichwort.</div>
+    <!-- Bereichs-Filter (nur im Detailguide) -->
+    <div id="helpAreaFilter" style="display:none;flex-wrap:wrap;gap:5px;margin-bottom:8px;">
+      <button class="haf-btn active" onclick="filterHelpArea('all')">Alle</button>
+      <button class="haf-btn" onclick="filterHelpArea('katalog')">📚 Katalog</button>
+      <button class="haf-btn" onclick="filterHelpArea('plan')">📋 Trainingsplan</button>
+      <button class="haf-btn" onclick="filterHelpArea('editor')">⚽ Feldeditor</button>
+      <button class="haf-btn" onclick="filterHelpArea('einreichen')">✏️ Einreichen</button>
+      <button class="haf-btn" onclick="filterHelpArea('konto')">👤 Konto</button>
+      <button class="haf-btn" onclick="filterHelpArea('langzeit')">📅 Langzeit</button>
+    </div>
+    <!-- Suche (nur im Detailguide) -->
+    <div id="helpSearchWrap" style="display:none;position:relative;">
+      <input id="helpSearch" type="text" placeholder="Stichwort suchen …" oninput="filterHelpCards(this.value)" style="width:100%;box-sizing:border-box;padding:8px 32px 8px 11px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface-2);color:var(--text);font-size:13px;outline:none;">
+      <span style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--gd2);pointer-events:none;">🔍</span>
+    </div>
+    <div id="helpNoResult" style="display:none;padding:8px 0 2px;font-size:12px;color:var(--gd2);text-align:center;">Kein Treffer – versuche ein anderes Stichwort.</div>
   </div>
 
-  <div id="helpCardList" style="padding:16px;display:flex;flex-direction:column;gap:12px;">
+  <!-- ══ KURZÜBERSICHT ══ -->
+  <div id="helpTabQuick" style="padding:16px;display:flex;flex-direction:column;gap:8px;">
+    <p style="font-size:12px;color:var(--text-3);margin:0 0 4px;">Die wichtigsten Funktionen auf einen Blick. Für Details: Tab „Detailguide".</p>
 
-    <!-- 0. Einstieg -->
-    <div class="help-card" data-tags="start einstieg anfänger neu konto anmelden registrieren login übersicht home">
-      <div class="help-card-icon" style="background:#37474f;">🏠</div>
-      <div>
-        <div class="help-card-title">Einstieg & Startseite</div>
-        <p class="help-card-text">Nach dem Öffnen der App siehst du die <strong>Startseite</strong> mit vier Kacheln, die zu den Hauptbereichen führen. Oben rechts kannst du dich <strong>anmelden</strong> – das ist für das Einreichen von Übungen erforderlich.</p>
-        <div class="help-step"><span class="help-num">1</span>Kachel antippen → jeweiligen Bereich öffnen</div>
-        <div class="help-step"><span class="help-num">2</span>Oben rechts: <strong>„Anmelden"</strong> für ein Konto (E-Mail + Passwort)</div>
-        <div class="help-step"><span class="help-num">3</span>Unten: Navigationsleiste für schnellen Wechsel zwischen Bereichen</div>
-        <div class="help-pill-row" style="margin-top:8px;">
-          <span class="help-pill">📚 Katalog</span><span class="help-pill">📋 Trainingsplan</span><span class="help-pill">📅 Langzeitplanung</span><span class="help-pill">✏️ Einreichen</span>
-        </div>
+    <div class="hq-card" onclick="switchHelpTab('detail');filterHelpArea('katalog')">
+      <div class="hq-icon" style="background:#1b5e20;">📚</div>
+      <div class="hq-body">
+        <div class="hq-title">Übungskatalog</div>
+        <div class="hq-text">Übungen in 6 Abschnitten durchsuchen, nach Tags filtern, Sternebewertung abgeben und direkt in den Trainingsplan übernehmen. Ansicht: ausgeklappt oder als kompakte Liste.</div>
       </div>
+      <div class="hq-arrow">›</div>
     </div>
 
-    <!-- 1. Katalog -->
-    <div class="help-card" data-tags="katalog übung suche filter abschnitt schwerpunkt technik taktik kondition tag cluster details bild lightbox foto">
+    <div class="hq-card" onclick="switchHelpTab('detail');filterHelpArea('plan')">
+      <div class="hq-icon" style="background:#0d3b6e;">📋</div>
+      <div class="hq-body">
+        <div class="hq-title">Trainingsplan</div>
+        <div class="hq-text">Übungen per Drag &amp; Drop sortieren, Zeit mit − / + anpassen, Zieldauer setzen (rote Warnung bei Überschreitung), Übungen als parallel (∥) markieren, Plan speichern &amp; als PDF drucken.</div>
+      </div>
+      <div class="hq-arrow">›</div>
+    </div>
+
+    <div class="hq-card" onclick="switchHelpTab('detail');filterHelpArea('editor')">
+      <div class="hq-icon" style="background:#006064;">⚽</div>
+      <div class="hq-body">
+        <div class="hq-title">Felddiagramm-Editor</div>
+        <div class="hq-text">Spieler, Bälle, Tore, Hütchen und Laufwege auf dem Feld platzieren. Raster (⛶) aktivieren für gleichmäßige Abstände. Strg+C/V kopieren, Strg+Z rückgängig.</div>
+      </div>
+      <div class="hq-arrow">›</div>
+    </div>
+
+    <div class="hq-card" onclick="switchHelpTab('detail');filterHelpArea('einreichen')">
+      <div class="hq-icon" style="background:#e65100;">✏️</div>
+      <div class="hq-body">
+        <div class="hq-title">Übung einreichen</div>
+        <div class="hq-text">Eigene Übungen erstellen und einreichen. Passende Tags werden automatisch aus ähnlichen Übungen vorgeschlagen. Nach Admin-Prüfung im Katalog sichtbar.</div>
+      </div>
+      <div class="hq-arrow">›</div>
+    </div>
+
+    <div class="hq-card" onclick="switchHelpTab('detail');filterHelpArea('langzeit')">
+      <div class="hq-icon" style="background:#4a148c;">📅</div>
+      <div class="hq-body">
+        <div class="hq-title">Langzeitplanung</div>
+        <div class="hq-text">Trainingsblöcke für die gesamte Saison anlegen und Belastungsverläufe visualisieren.</div>
+      </div>
+      <div class="hq-arrow">›</div>
+    </div>
+
+    <div class="hq-card" onclick="switchHelpTab('detail');filterHelpArea('konto')">
+      <div class="hq-icon" style="background:#37474f;">👤</div>
+      <div class="hq-body">
+        <div class="hq-title">Konto &amp; Mein Bereich</div>
+        <div class="hq-text">Für Katalog und Planung kein Konto nötig. Zum Einreichen anmelden. Im „Mein Bereich" eigene Übungen und eingereichte Pläne verwalten.</div>
+      </div>
+      <div class="hq-arrow">›</div>
+    </div>
+
+    <div style="margin-top:4px;padding:10px 12px;border-radius:10px;background:var(--surface-2);border:1px solid var(--border);">
+      <div style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:6px;">⌨️ Tastenkürzel (Feldeditor)</div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;">
+        <span class="help-pill">Strg+Z · Rückgängig</span>
+        <span class="help-pill">Strg+C · Kopieren</span>
+        <span class="help-pill">Strg+V · Einfügen</span>
+        <span class="help-pill">Strg+A · Alles wählen</span>
+        <span class="help-pill">Entf · Löschen</span>
+        <span class="help-pill">Esc · Abwählen</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ DETAILGUIDE ══ -->
+  <div id="helpTabDetail" style="display:none;padding:16px;display:none;flex-direction:column;gap:12px;">
+
+    <!-- Katalog -->
+    <div class="help-card" data-area="katalog" data-tags="katalog übung suche filter abschnitt tag cluster bewertung sterne ansicht karte liste">
       <div class="help-card-icon" style="background:#1b5e20;">📚</div>
       <div>
-        <div class="help-card-title">Übungskatalog</div>
-        <p class="help-card-text">Der Katalog enthält alle freigegebenen Übungen. Sie sind in <strong>6 Abschnitte</strong> (Open Field, Warm Up, Hinführung, Hauptteil, Abschlussspiel, Sondertraining) und darin in thematische <strong>Cluster</strong> (z. B. Passspiel, Pressing) unterteilt.</p>
-        <div class="help-step"><span class="help-num">1</span>Abschnitt über die Reiter oben wählen</div>
-        <div class="help-step"><span class="help-num">2</span>Cluster-Tag anklicken → nur passende Übungen anzeigen</div>
-        <div class="help-step"><span class="help-num">3</span>Übungskarte anklicken → Details mit Beschreibung öffnen</div>
-        <div class="help-step"><span class="help-num">4</span>Bild anklicken → Vollbild-Ansicht des Felddiagramms</div>
-        <div class="help-step"><span class="help-num">5</span><strong style="color:var(--accent);">„+ zum Plan"</strong> → Übung direkt in den Trainingsplan übernehmen</div>
-        <p class="help-card-text" style="margin-top:8px;">Die <strong>globale Suche</strong> (Lupe oben) durchsucht alle Übungen gleichzeitig nach Name, Beschreibung oder Tags.</p>
+        <div class="help-card-title">Übungskatalog – Suchen &amp; Filtern</div>
+        <p class="help-card-text">Alle freigegebenen Übungen in 6 Abschnitten. Tags und Cluster helfen beim gezielten Filtern.</p>
+        <div class="help-step"><span class="help-num">1</span>Abschnitt über die Reiter oben wählen (Open Field, Warm Up, Hinführung …)</div>
+        <div class="help-step"><span class="help-num">2</span>Kategorie-Chip anklicken → nur Übungen dieser Kategorie zeigen</div>
+        <div class="help-step"><span class="help-num">3</span>Tags direkt auf der Karte anklicken → nach diesem Tag filtern</div>
+        <div class="help-step"><span class="help-num">4</span>Suchfeld: Text sucht in Name, Beschreibung und Tags</div>
+        <div class="help-step"><span class="help-num">5</span>Globale Suche (Lupe oben) findet Übungen aus <em>allen</em> Abschnitten</div>
+        <div class="help-step"><span class="help-num">6</span>☰☰ / ≡ Toggle: zwischen vollständigen Karten und kompakter Liste wechseln</div>
       </div>
     </div>
 
-    <!-- 2. Trainingsplan -->
-    <div class="help-card" data-tags="trainingsplan plan einheit session drag drop reihenfolge pdf export belastungszeit wiederholung material spieler zusammenfassung speichern laden zieldauer parallel zeitkontingent überschreitung warnung">
+    <div class="help-card" data-area="katalog" data-tags="katalog bewertung sterne rating abstimmung durchschnitt">
+      <div class="help-card-icon" style="background:#1b5e20;">⭐</div>
+      <div>
+        <div class="help-card-title">Übungen bewerten</div>
+        <p class="help-card-text">Jede Übung kann mit 1–5 Sternen bewertet werden. Jede:r Nutzer:in kann pro Übung einmal abstimmen (Änderung jederzeit möglich).</p>
+        <div class="help-step"><span class="help-num">1</span>Sterne direkt auf der Karte oder im Detail-Modal anklicken</div>
+        <div class="help-step"><span class="help-num">2</span>Durchschnitt wird erst ab 5 Bewertungen angezeigt</div>
+        <div class="help-step"><span class="help-num">3</span>Bei &gt;10 Ergebnissen: die 5 besten + 5 zufällige erscheinen immer ganz oben</div>
+      </div>
+    </div>
+
+    <!-- Trainingsplan -->
+    <div class="help-card" data-area="plan" data-tags="trainingsplan plan übung hinzufügen drag drop reihenfolge zeit anpassen speichern laden drucken pdf">
       <div class="help-card-icon" style="background:#0d3b6e;">📋</div>
       <div>
-        <div class="help-card-title">Trainingsplan</div>
-        <p class="help-card-text">Im Trainingsplan baust du eine komplette Trainingseinheit zusammen. Übungen aus dem Katalog werden hier aufgelistet und automatisch ausgewertet.</p>
-        <div class="help-step"><span class="help-num">1</span>Übungen per <strong>„+ zum Plan"</strong> aus dem Katalog hinzufügen</div>
-        <div class="help-step"><span class="help-num">2</span>Reihenfolge per <strong>Drag &amp; Drop</strong> anpassen (☰-Griff)</div>
-        <div class="help-step"><span class="help-num">3</span>Belastungszeit pro Übung mit <strong>− / +</strong> anpassen</div>
-        <div class="help-step"><span class="help-num">4</span>Plan <strong>speichern</strong> → bleibt nach dem Schließen erhalten</div>
-        <div class="help-step"><span class="help-num">5</span>Plan als <strong>PDF exportieren</strong> (Drucksymbol oben rechts)</div>
-        <p class="help-card-text" style="margin-top:10px;"><strong>Zieldauer:</strong> Trage oben in der Planliste eine Gesamtdauer ein (z. B. 90 min). Wird die Zeit überschritten, erscheint eine rote Warnung – so siehst du sofort, wenn du kürzen musst.</p>
-        <p class="help-card-text" style="margin-top:6px;"><strong>Parallel (∥):</strong> Klicke das ∥-Symbol neben einer Übung, um sie als parallel laufend zu markieren. Parallele Übungen zählen <em>nicht</em> zur Gesamtzeit – ideal für gleichzeitige Stationsarbeit oder Torwarttraining neben dem Hauptteam.</p>
+        <div class="help-card-title">Trainingsplan erstellen</div>
+        <p class="help-card-text">Übungen aus dem Katalog zu einer vollständigen Trainingseinheit zusammenstellen.</p>
+        <div class="help-step"><span class="help-num">1</span>Im Katalog auf <strong>„+ Plan"</strong> klicken → Übung landet im Plan</div>
+        <div class="help-step"><span class="help-num">2</span>Im Trainingsplan: Reihenfolge per <strong>Drag &amp; Drop</strong> (☰-Griff) anpassen</div>
+        <div class="help-step"><span class="help-num">3</span>Belastungszeit pro Übung mit <strong>− / +</strong> ändern</div>
+        <div class="help-step"><span class="help-num">4</span>„Speichern" (oben) → Plan mit Name sichern, bleibt nach Schließen erhalten</div>
+        <div class="help-step"><span class="help-num">5</span>Drucksymbol → Plan als PDF mit Materialliste exportieren</div>
+        <div class="help-step"><span class="help-num">6</span>„Leeren" → alle Übungen aus dem aktuellen Plan entfernen</div>
+      </div>
+    </div>
+
+    <div class="help-card" data-area="plan" data-tags="zieldauer parallel zeitkontingent überschreitung warnung rot material">
+      <div class="help-card-icon" style="background:#0d3b6e;">⏱</div>
+      <div>
+        <div class="help-card-title">Zieldauer &amp; Parallele Übungen</div>
+        <p class="help-card-text">Behalte die Einheitslänge im Blick und plane parallele Stationen effizient.</p>
+        <div class="help-step"><span class="help-num">1</span><strong>Zieldauer</strong> im Einkaufswagen eintragen (z. B. 90 min)</div>
+        <div class="help-step"><span class="help-num">2</span>Rote Warnung erscheint, wenn die Gesamtzeit überschritten ist</div>
+        <div class="help-step"><span class="help-num">3</span><strong>∥-Button</strong> neben einer Übung → als parallel markieren</div>
+        <div class="help-step"><span class="help-num">4</span>Parallele Übungen zählen <em>nicht</em> zur Gesamtzeit (z. B. Torwarttraining)</div>
+        <div class="help-step"><span class="help-num">5</span>Materialliste zeigt automatisch die benötigte Maximalanzahl (keine Doppelzählung)</div>
+      </div>
+    </div>
+
+    <div class="help-card" data-area="plan" data-tags="plan speichern laden veröffentlichen einreichen status prüfung mein bereich">
+      <div class="help-card-icon" style="background:#0d3b6e;">💾</div>
+      <div>
+        <div class="help-card-title">Pläne speichern &amp; veröffentlichen</div>
+        <p class="help-card-text">Gespeicherte Pläne bleiben in deinem Konto und können eingereicht werden.</p>
+        <div class="help-step"><span class="help-num">1</span>Plan benennen und auf „Speichern" klicken</div>
+        <div class="help-step"><span class="help-num">2</span>Gespeicherte Pläne erscheinen in der Liste darunter – anklicken zum Laden</div>
+        <div class="help-step"><span class="help-num">3</span>„↑ Veröffentlichen" → Plan zur Admin-Prüfung einreichen</div>
+        <div class="help-step"><span class="help-num">4</span>Status: <em>In Prüfung</em> → <em>Veröffentlicht</em> oder <em>Abgelehnt</em></div>
+        <div class="help-step"><span class="help-num">5</span>Im „Mein Bereich" alle eingereichten Pläne und deren Status sehen</div>
+      </div>
+    </div>
+
+    <!-- Feldeditor -->
+    <div class="help-card" data-area="editor" data-tags="felddiagramm editor zeichnen werkzeug spieler ball tor hütchen platzieren feldtyp vollfeld halbfeld klein">
+      <div class="help-card-icon" style="background:#006064;">⚽</div>
+      <div>
+        <div class="help-card-title">Feldeditor – Grundlagen</div>
+        <p class="help-card-text">Taktische Aufstellungen und Übungsabläufe direkt auf dem Spielfeld zeichnen.</p>
+        <div class="help-step"><span class="help-num">1</span><strong>Feldtyp</strong> oben links wählen: Vollfeld, Halbfeld, Kleines Feld, Neutralzone</div>
+        <div class="help-step"><span class="help-num">2</span>Werkzeug wählen (Spieler:in, Ball, Tor, Hütchen, Equipment)</div>
+        <div class="help-step"><span class="help-num">3</span>Ins Feld klicken → Objekt wird platziert</div>
+        <div class="help-step"><span class="help-num">4</span>Auswählen-Werkzeug (↖) → Objekte verschieben oder drehen</div>
+        <div class="help-step"><span class="help-num">5</span>Rechtsklick auf Objekt → um 22,5° drehen</div>
+        <div class="help-step"><span class="help-num">6</span>„✓ Übernehmen" → Zuschneidedialog → an Übung anhängen</div>
         <div class="help-pill-row" style="margin-top:8px;">
-          <span class="help-pill">⏱ Zieldauer</span><span class="help-pill">∥ Parallel</span><span class="help-pill">📦 Material</span><span class="help-pill">👥 Spielerzahl</span>
+          <span class="help-pill">👤 Spieler:in</span><span class="help-pill">⚽ Ball</span><span class="help-pill">🥅 Tor</span><span class="help-pill">🟠 Hütchen</span><span class="help-pill">→ Passweg</span><span class="help-pill">⤳ Laufweg</span><span class="help-pill">〰 Dribbling</span>
         </div>
       </div>
     </div>
 
-    <!-- 3. Langzeitplanung -->
-    <div class="help-card" data-tags="langzeitplanung saison block wochen monate vorbereitung wettkampf regeneration übersicht phase makrozyklus">
-      <div class="help-card-icon" style="background:#4a148c;">📅</div>
+    <div class="help-card" data-area="editor" data-tags="raster einrasten snap ausrichtung gleichmäßig abstände grid hilfslinien">
+      <div class="help-card-icon" style="background:#006064;">⛶</div>
       <div>
-        <div class="help-card-title">Langzeitplanung</div>
-        <p class="help-card-text">Plane deine gesamte Saison mit der Langzeitplanung. Du erstellst <strong>Trainingsblöcke</strong> (z. B. Vorbereitungsphase, Wettkampfphase) und siehst auf einen Blick, wie dein Jahr strukturiert ist.</p>
-        <div class="help-step"><span class="help-num">1</span><strong>„+ Block"</strong> antippen → Zeitraum und Schwerpunkt festlegen</div>
-        <div class="help-step"><span class="help-num">2</span>Mehrere Blöcke bilden die Saison-Übersicht</div>
-        <div class="help-step"><span class="help-num">3</span>Block antippen → Details und zugehörige Einheiten anzeigen</div>
-        <div class="help-step"><span class="help-num">4</span>Belastungsverlauf (Hoch/Mittel/Niedrig) wird farblich visualisiert</div>
+        <div class="help-card-title">Raster &amp; Einrasten</div>
+        <p class="help-card-text">Das Raster hilft, Objekte gleichmäßig und präzise zu platzieren.</p>
+        <div class="help-step"><span class="help-num">1</span><strong>⛶-Button</strong> in der Toolbar aktivieren → Raster wird eingeblendet</div>
+        <div class="help-step"><span class="help-num">2</span>Objekte rasten automatisch am nächsten Rasterpunkt ein</div>
+        <div class="help-step"><span class="help-num">3</span>Das Raster orientiert sich am gewählten Feldtyp (alle 5m beim Vollfeld, alle 2m beim kleinen Feld)</div>
+        <div class="help-step"><span class="help-num">4</span>Blaue Linien = Objekte fluchten miteinander; gelbe Linien = gleicher Abstand</div>
       </div>
     </div>
 
-    <!-- 4. Übung einreichen -->
-    <div class="help-card" data-tags="einreichen übung erstellen neu eigene konto anmelden formular beschreibung material schwerpunkt abschnitt tag felddiagramm bild foto upload freischalten admin prüfen belastungszeit autor name">
+    <div class="help-card" data-area="editor" data-tags="mehrfachauswahl lasso kopieren einfügen strg tastenkürzel keyboard undo rückgängig löschen">
+      <div class="help-card-icon" style="background:#006064;">⌨️</div>
+      <div>
+        <div class="help-card-title">Mehrfachauswahl &amp; Tastenkürzel</div>
+        <div class="help-step"><span class="help-num">1</span><strong>Lasso</strong>: im Auswählen-Modus klicken &amp; ziehen → mehrere Objekte markieren</div>
+        <div class="help-step"><span class="help-num">2</span><strong>Strg+A</strong>: alle Objekte auswählen</div>
+        <div class="help-step"><span class="help-num">3</span><strong>Strg+C / Strg+V</strong>: Kopieren &amp; Einfügen</div>
+        <div class="help-step"><span class="help-num">4</span><strong>Strg+Z</strong>: letzten Schritt rückgängig machen</div>
+        <div class="help-step"><span class="help-num">5</span><strong>Entf / Backspace</strong>: ausgewählte Objekte löschen</div>
+        <div class="help-step"><span class="help-num">6</span><strong>Esc</strong>: Auswahl aufheben</div>
+        <div class="help-step"><span class="help-num">7</span><strong>Doppelklick</strong>: Linie abschließen (beim Zeichnen)</div>
+      </div>
+    </div>
+
+    <!-- Einreichen -->
+    <div class="help-card" data-area="einreichen" data-tags="einreichen übung erstellen neu formular beschreibung material tag vorschläge felddiagramm freischalten admin">
       <div class="help-card-icon" style="background:#e65100;">✏️</div>
       <div>
         <div class="help-card-title">Eigene Übung einreichen</div>
-        <p class="help-card-text">Jede:r angemeldete Nutzer:in kann eigene Übungen einreichen. Nach einer kurzen Prüfung durch den Admin erscheint die Übung im Katalog – für alle sichtbar.</p>
-        <div class="help-step"><span class="help-num">1</span>Oben rechts <strong>anmelden</strong> (Konto erforderlich)</div>
-        <div class="help-step"><span class="help-num">2</span>Pflichtfelder ausfüllen: Name, Abschnitt, Anzahl Spieler:innen, Beschreibung</div>
-        <div class="help-step"><span class="help-num">3</span>Tags hinzufügen (helfen beim Finden im Katalog)</div>
-        <div class="help-step"><span class="help-num">4</span>Belastungsintensität und -dauer (Minuten) angeben</div>
-        <div class="help-step"><span class="help-num">5</span>Optional: <strong>Bild hochladen</strong> oder <strong>Felddiagramm zeichnen</strong></div>
-        <div class="help-step"><span class="help-num">6</span>„Einreichen" → Admin wird benachrichtigt und schaltet frei</div>
+        <p class="help-card-text">Angemeldete Nutzer:innen können eigene Übungen einreichen. Nach Admin-Prüfung erscheinen sie im Katalog.</p>
+        <div class="help-step"><span class="help-num">1</span>Anmelden (Konto erforderlich)</div>
+        <div class="help-step"><span class="help-num">2</span>Pflichtfelder ausfüllen: Name, Abschnitt, Spieler:innenzahl, Beschreibung</div>
+        <div class="help-step"><span class="help-num">3</span>Tags eingeben – <strong>Vorschläge</strong> aus ähnlichen Übungen werden automatisch angezeigt</div>
+        <div class="help-step"><span class="help-num">4</span>Belastungsintensität und -dauer angeben</div>
+        <div class="help-step"><span class="help-num">5</span>Optional: Felddiagramm im Editor zeichnen</div>
+        <div class="help-step"><span class="help-num">6</span>„Einreichen" → wird geprüft und freigeschaltet</div>
       </div>
     </div>
 
-    <!-- 5. Felddiagramm-Editor -->
-    <div class="help-card" data-tags="felddiagramm editor zeichnen spieler tor hütchen ball laufweg passweg dribbling pfeil rückgängig löschen drehen winkel rotieren zuschneiden crop raster einrasten snap ausrichtung kopieren einfügen auswählen">
-      <div class="help-card-icon" style="background:#006064;">⚽</div>
-      <div>
-        <div class="help-card-title">Felddiagramm-Editor</div>
-        <p class="help-card-text">Im Editor kannst du taktische Aufstellungen und Übungsabläufe direkt auf dem Spielfeld zeichnen. Das fertige Bild wird automatisch an die Übung angehängt.</p>
-        <div class="help-step"><span class="help-num">1</span><strong>Werkzeug wählen</strong> (Spieler:in, Ball, Tor, Hütchen, Passweg …)</div>
-        <div class="help-step"><span class="help-num">2</span>Auf das Feld klicken → Objekt wird platziert</div>
-        <div class="help-step"><span class="help-num">3</span><strong>Auswählen-Werkzeug (↖)</strong> → Objekte verschieben oder drehen</div>
-        <div class="help-step"><span class="help-num">4</span><strong>Rechtsklick</strong> auf Objekt → um 22,5° drehen; Winkelregler erscheint oben</div>
-        <div class="help-step"><span class="help-num">5</span><strong>⛶ Einrasten</strong> aktivieren → Objekte rasten am Raster ein und richten sich an anderen aus (blaue Linien = Ausrichtung, gelb = gleicher Abstand)</div>
-        <div class="help-step"><span class="help-num">6</span>Mehrere Objekte: <strong>Lasso</strong> (klicken &amp; ziehen im Auswahl-Modus) oder Strg+A</div>
-        <div class="help-step"><span class="help-num">7</span>Strg+C / Strg+V → Objekte kopieren &amp; einfügen</div>
-        <div class="help-step"><span class="help-num">8</span>Entf / Backspace → ausgewählte Objekte löschen</div>
-        <div class="help-step"><span class="help-num">9</span><strong>„✓ Übernehmen"</strong> → Zuschneidedialog öffnet sich – Ausschnitt prüfen, bestätigen</div>
-        <div class="help-pill-row" style="margin-top:8px;">
-          <span class="help-pill">👥 Spieler:in</span><span class="help-pill">⚽ Ball</span><span class="help-pill">🥅 Tor</span><span class="help-pill">🔶 Hütchen</span><span class="help-pill">→ Passweg</span><span class="help-pill">⤳ Laufweg</span><span class="help-pill">〰 Dribbling</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- 6. Konto & Anmeldung -->
-    <div class="help-card" data-tags="konto anmelden abmelden registrieren login passwort profil mein bereich admin rolle">
+    <!-- Konto -->
+    <div class="help-card" data-area="konto" data-tags="konto anmelden abmelden registrieren login passwort profil mein bereich admin einreichungen pläne status">
       <div class="help-card-icon" style="background:#37474f;">👤</div>
       <div>
-        <div class="help-card-title">Konto &amp; Anmeldung</div>
-        <p class="help-card-text">Ein Konto ist für den Katalog und die Planung <strong>nicht erforderlich</strong> – alle Übungen sind öffentlich zugänglich. Angemeldet sein brauchst du nur zum Einreichen eigener Übungen.</p>
-        <div class="help-step"><span class="help-num">1</span>Oben rechts auf <strong>„Anmelden"</strong> klicken</div>
-        <div class="help-step"><span class="help-num">2</span>E-Mail und Passwort eingeben oder neues Konto erstellen</div>
-        <div class="help-step"><span class="help-num">3</span>Nach der Anmeldung zeigt der Button deinen Namen</div>
-        <div class="help-step"><span class="help-num">4</span>Klick auf deinen Namen → Dropdown mit „Mein Bereich" und „Abmelden"</div>
-        <p class="help-card-text" style="margin-top:8px;">Im <strong>„Mein Bereich"</strong> siehst du alle deine eingereichten Übungen und deren Status (In Prüfung / Freigegeben).</p>
+        <div class="help-card-title">Konto &amp; Mein Bereich</div>
+        <p class="help-card-text">Konto ist <strong>nicht</strong> für Katalog und Planung nötig – nur zum Einreichen.</p>
+        <div class="help-step"><span class="help-num">1</span>Oben rechts „Anmelden" → E-Mail + Passwort oder neues Konto</div>
+        <div class="help-step"><span class="help-num">2</span>Nach Anmeldung: Name erscheint oben rechts</div>
+        <div class="help-step"><span class="help-num">3</span>Klick auf Name → „Mein Bereich" oder „Abmelden"</div>
+        <div class="help-step"><span class="help-num">4</span><strong>Mein Bereich:</strong> eigene Übungen mit Status (In Prüfung / Freigegeben)</div>
+        <div class="help-step"><span class="help-num">5</span><strong>Mein Bereich:</strong> eingereichte Trainingspläne verwalten &amp; zurückziehen</div>
       </div>
     </div>
 
-    <!-- 7. Tipps & Tastenkürzel -->
-    <div class="help-card" data-tags="tastenkürzel shortcut tipp trick strg undo rückgängig delete löschen escape suche schnell keyboard">
-      <div class="help-card-icon" style="background:#1a237e;">⌨️</div>
+    <!-- Langzeitplanung -->
+    <div class="help-card" data-area="langzeit" data-tags="langzeitplanung saison block wochen monate vorbereitung wettkampf regeneration phase belastung">
+      <div class="help-card-icon" style="background:#4a148c;">📅</div>
       <div>
-        <div class="help-card-title">Tipps &amp; Tastenkürzel</div>
-        <p class="help-card-text">Schneller arbeiten im Felddiagramm-Editor:</p>
-        <div class="help-pill-row">
-          <span class="help-pill">Strg+Z · Rückgängig</span>
-          <span class="help-pill">Strg+C · Kopieren</span>
-          <span class="help-pill">Strg+V · Einfügen</span>
-          <span class="help-pill">Entf · Löschen</span>
-          <span class="help-pill">Esc · Auswahl aufheben</span>
-          <span class="help-pill">Doppelklick · Linie abbrechen</span>
-        </div>
-        <p class="help-card-text" style="margin-top:10px;">Allgemeine Tipps:</p>
-        <div class="help-step"><span class="help-num">💡</span>Die <strong>Suche</strong> oben (Lupe) findet Übungen aus allen Abschnitten gleichzeitig</div>
-        <div class="help-step"><span class="help-num">💡</span>Pläne werden automatisch gespeichert – kein manuelles Speichern nötig</div>
-        <div class="help-step"><span class="help-num">💡</span>Das Felddiagramm-Bild bleibt nach dem Neuladen erhalten (wird in der Cloud gespeichert)</div>
-        <div class="help-step"><span class="help-num">💡</span>Auf Mobilgeräten: Lasso-Auswahl durch Wischen im Auswahl-Modus</div>
+        <div class="help-card-title">Langzeitplanung</div>
+        <p class="help-card-text">Gesamte Saison in Trainingsblöcken strukturieren und Belastungsverläufe visualisieren.</p>
+        <div class="help-step"><span class="help-num">1</span>„+ Block" → Zeitraum, Schwerpunkt und Belastungsstufe festlegen</div>
+        <div class="help-step"><span class="help-num">2</span>Mehrere Blöcke bilden die Saison-Übersicht</div>
+        <div class="help-step"><span class="help-num">3</span>Block anklicken → Wochen und Trainingseinheiten bearbeiten</div>
+        <div class="help-step"><span class="help-num">4</span>Belastungsverlauf (Hoch / Mittel / Niedrig) wird farblich dargestellt</div>
       </div>
     </div>
 
@@ -863,18 +969,45 @@
 </aside>
 
 <script>
+let _helpCurrentTab='quick';
+let _helpCurrentArea='all';
+
+function switchHelpTab(tab){
+  _helpCurrentTab=tab;
+  document.getElementById('helpTabQuick').style.display=tab==='quick'?'flex':'none';
+  document.getElementById('helpTabDetail').style.display=tab==='detail'?'flex':'none';
+  document.getElementById('helpAreaFilter').style.display=tab==='detail'?'flex':'none';
+  document.getElementById('helpSearchWrap').style.display=tab==='detail'?'block':'none';
+  document.getElementById('helpTab-quick').style.background=tab==='quick'?'var(--accent)':'none';
+  document.getElementById('helpTab-quick').style.color=tab==='quick'?'#fff':'var(--text-2)';
+  document.getElementById('helpTab-quick').style.borderColor=tab==='quick'?'var(--accent)':'var(--border)';
+  document.getElementById('helpTab-detail').style.background=tab==='detail'?'var(--accent)':'none';
+  document.getElementById('helpTab-detail').style.color=tab==='detail'?'#fff':'var(--text-2)';
+  document.getElementById('helpTab-detail').style.borderColor=tab==='detail'?'var(--accent)':'var(--border)';
+  if(tab==='detail') filterHelpArea(_helpCurrentArea);
+  const p=document.getElementById('helpPanel');if(p)p.scrollTop=0;
+}
+
+function filterHelpArea(area){
+  _helpCurrentArea=area;
+  document.querySelectorAll('.haf-btn').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase().includes(area)||area==='all'&&b.textContent==='Alle'));
+  filterHelpCards((document.getElementById('helpSearch')||{value:''}).value);
+}
+
 function filterHelpCards(q){
-  const cards=document.querySelectorAll('#helpCardList .help-card');
+  const cards=document.querySelectorAll('#helpTabDetail .help-card');
   const ql=q.trim().toLowerCase();
   let visible=0;
   cards.forEach(c=>{
+    const areaMatch=_helpCurrentArea==='all'||(c.dataset.area||'')=== _helpCurrentArea;
     const tags=(c.dataset.tags||'').toLowerCase();
     const text=c.textContent.toLowerCase();
-    const match=!ql||tags.includes(ql)||text.includes(ql);
-    c.style.display=match?'':'none';
-    if(match)visible++;
+    const textMatch=!ql||tags.includes(ql)||text.includes(ql);
+    const show=areaMatch&&textMatch;
+    c.style.display=show?'':'none';
+    if(show)visible++;
   });
-  document.getElementById('helpNoResult').style.display=(!ql||visible>0)?'none':'block';
+  document.getElementById('helpNoResult').style.display=(visible===0&&(ql||_helpCurrentArea!=='all'))?'block':'none';
 }
 </script>
 
