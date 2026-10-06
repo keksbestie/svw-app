@@ -38,12 +38,12 @@ function updateSignInBtn(){
   const nameEl=document.getElementById('authDropName');
   const homeBtn=document.getElementById('homeSignInBtn');
   if(submitUser){
-    if(btn){btn.textContent=submitUser.name;btn.style.background='var(--g)';}
-    if(drop)drop.querySelector('button:last-child').style.display='block';
+    if(btn){btn.textContent='Abmelden';btn.style.background='rgba(255,255,255,.15)';btn.style.color='var(--text-1)';btn.onclick=doLogout;}
+    if(drop)drop.style.display='none';
     if(nameEl)nameEl.textContent=submitUser.name;
-    if(homeBtn){homeBtn.textContent=submitUser.name;homeBtn.onclick=()=>goPage('submit');}
+    if(homeBtn){homeBtn.textContent='Abmelden';homeBtn.onclick=doLogout;}
   } else {
-    if(btn){btn.textContent='Anmelden';btn.style.background='#fff';btn.style.color='#1a2b1c';}
+    if(btn){btn.textContent='Anmelden';btn.style.background='#fff';btn.style.color='#1a2b1c';btn.onclick=toggleAuthDrop;}
     if(drop)drop.style.display='none';
     if(homeBtn){homeBtn.textContent='Anmelden';homeBtn.onclick=()=>goPage('submit');}
   }
