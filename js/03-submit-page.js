@@ -43,9 +43,9 @@ function updateSignInBtn(){
     if(nameEl)nameEl.textContent=submitUser.name;
     if(homeBtn){homeBtn.textContent='Abmelden';homeBtn.onclick=doLogout;}
   } else {
-    if(btn){btn.textContent='Anmelden';btn.style.background='#fff';btn.style.color='#1a2b1c';btn.onclick=toggleAuthDrop;}
+    if(btn){btn.textContent='Anmelden';btn.style.background='#fff';btn.style.color='#1a2b1c';btn.onclick=openLoginMod;}
     if(drop)drop.style.display='none';
-    if(homeBtn){homeBtn.textContent='Anmelden';homeBtn.onclick=()=>goPage('submit');}
+    if(homeBtn){homeBtn.textContent='Anmelden';homeBtn.onclick=openLoginMod;}
   }
 }
 function toggleAuthDrop(){
@@ -659,4 +659,69 @@ function closeHelpPanel(){
   panel.classList.remove('open');
   overlay.style.display='none';
   setTimeout(()=>{ if(!panel.classList.contains('open')) panel.style.display='none'; },300);
+}
+
+// ── LOGIN MODAL (Header-Button) ──────────────────────
+function openLoginMod(){
+  document.getElementById('loginModEmail').value='';
+  document.getElementById('loginModPass').value='';
+  document.getElementById('loginModUsername').value='';
+  document.getElementById('loginModUsernameWrap').style.display='none';
+  document.getElementById('loginModBtn').textContent='Anmelden';
+  document.getElementById('loginModBtn').onclick=doLoginMod;
+  document.getElementById('loginModToggle').textContent='Neu registrieren';
+  document.getElementById('loginModTitle').textContent='Anmelden';
+  document.getElementById('loginModErr').style.display='none';
+  document.getElementById('loginMod').classList.remove('h');
+  setTimeout(()=>document.getElementById('loginModEmail').focus(),100);
+}
+async function doLoginMod(){
+  const email=(document.getElementById('loginModEmail').value||'').trim();
+  const pass=document.getElementById('loginModPass').value||'';
+  const errEl=document.getElementById('loginModErr');
+  const btn=document.getElementById('loginModBtn');
+  if(!email||!pass){errEl.textContent='E-Mail und Passwort eingeben.';errEl.style.display='block';return;}
+  btn.disabled=true;btn.textContent='Anmelden…';
+  const {data,error}=await _supabase.auth.signInWithPassword({email,password:pass});
+  btn.disabled=false;btn.textContent='Anmelden';
+  if(error){errEl.textContent=error.message;errEl.style.display='block';return;}
+  currentUser=data.user;
+  const {data:profile}=await _supabase.from('profiles').select('role').eq('id',data.user.id).single();
+  IS_ADMIN=profile?.role==='admin';
+  document.body.classList.toggle('admin',IS_ADMIN);
+  const displayName=data.user.user_metadata?.username||data.user.email;
+  submitUser={name:displayName,isDemo:false,id:data.user.id};
+  closeMod('loginMod');
+  updateSignInBtn();
+  renderSubmitPage();
+  silentSync();
+  showToast('Willkommen, '+displayName+'!');
+}
+async function doRegisterMod(){
+  const email=(document.getElementById('loginModEmail').value||'').trim();
+  const pass=document.getElementById('loginModPass').value||'';
+  const username=(document.getElementById('loginModUsername').value||'').trim();
+  const errEl=document.getElementById('loginModErr');
+  const btn=document.getElementById('loginModBtn');
+  if(!email||!pass||!username){errEl.textContent='Alle Felder ausfüllen.';errEl.style.display='block';return;}
+  btn.disabled=true;btn.textContent='Registrieren…';
+  const {error}=await _supabase.auth.signUp({email,password:pass,options:{data:{username}}});
+  btn.disabled=false;btn.textContent='Registrieren';
+  if(error){errEl.textContent=error.message;errEl.style.display='block';return;}
+  errEl.style.color='#a5d6a7';errEl.textContent='Bestätigungs-E-Mail gesendet. Bitte E-Mail-Adresse bestätigen.';errEl.style.display='block';
+}
+function toggleLoginModMode(){
+  const wrap=document.getElementById('loginModUsernameWrap');
+  const btn=document.getElementById('loginModBtn');
+  const toggle=document.getElementById('loginModToggle');
+  const title=document.getElementById('loginModTitle');
+  const isReg=wrap.style.display!=='none';
+  if(isReg){
+    wrap.style.display='none';btn.textContent='Anmelden';btn.onclick=doLoginMod;
+    toggle.textContent='Neu registrieren';title.textContent='Anmelden';
+  } else {
+    wrap.style.display='block';btn.textContent='Registrieren';btn.onclick=doRegisterMod;
+    toggle.textContent='Zurück zum Login';title.textContent='Registrieren';
+  }
+  document.getElementById('loginModErr').style.display='none';
 }
