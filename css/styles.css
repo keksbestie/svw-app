@@ -518,24 +518,12 @@ body.app-loading .home-card { pointer-events: none; }
 .home-motto {
   text-align: center;
   font-style: italic;
-  font-size: 15px;
-  color: var(--text-2);
-  line-height: 1.8;
-  padding: 36px 28px 56px;
-  max-width: 520px;
-  margin: 0 auto;
-  border-top: 1px solid var(--border);
-  position: relative;
-}
-.home-motto::before {
-  content: '\201E';
-  display: block;
-  font-size: 48px;
-  color: var(--accent);
-  line-height: .6;
-  margin-bottom: 12px;
-  font-style: normal;
-  opacity: .5;
+  font-size: 13px;
+  color: rgba(255,255,255,.45);
+  line-height: 1.75;
+  margin: 16px auto 0;
+  max-width: 460px;
+  padding: 0 16px;
 }
 .home-card-arrow {
   margin-top: 24px;
