@@ -109,16 +109,19 @@ async function doLogin(){
 
 function toggleRegisterMode(){
   const usernameField=document.getElementById('loginUsername');
+  const agbWrap=document.getElementById('agbWrap');
   const loginBtn=document.getElementById('loginBtn');
   const registerBtn=document.getElementById('registerBtn');
   const isRegMode=usernameField.style.display!=='none';
   if(isRegMode){
     usernameField.style.display='none';
+    if(agbWrap)agbWrap.style.display='none';
     loginBtn.textContent='Anmelden';
     loginBtn.onclick=doLogin;
     registerBtn.textContent='Neu registrieren';
   } else {
     usernameField.style.display='block';
+    if(agbWrap)agbWrap.style.display='flex';
     loginBtn.textContent='Registrieren';
     loginBtn.onclick=doRegister;
     registerBtn.textContent='Zurück zum Login';
@@ -130,6 +133,7 @@ async function doRegister(){
   const pass=document.getElementById('loginPass').value||'';
   const username=(document.getElementById('loginUsername').value||'').trim();
   if(!email||!pass||!username){showToast('Alle Felder ausfüllen','err');return;}
+  if(!document.getElementById('agbCheck')?.checked){showToast('Bitte AGB und Datenschutzerklärung bestätigen','err');return;}
   const {error}=await _supabase.auth.signUp({email,password:pass,options:{data:{username}}});
   if(error){showToast('Registrierung fehlgeschlagen: '+error.message,'err');return;}
   // Show confirmation pending screen instead of toast
