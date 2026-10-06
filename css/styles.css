@@ -694,6 +694,7 @@ body.admin .hero-edit-btn { display: flex; }
 .plan-layout { display: grid; grid-template-columns: 1fr 290px; gap: 16px; align-items: start; }
 .plan-hdr { display: flex; align-items: center; gap: 9px; margin-bottom: 16px; flex-wrap: wrap; }
 .plan-in { flex: 1; min-width: 180px; font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 900; border: none; border-bottom: 2px solid var(--border); background: none; color: var(--text-1); padding: 5px 0; outline: none; letter-spacing: .5px; }
+.plan-date-in { flex: 0 0 auto; min-width: unset; width: 150px; font-size: 14px; font-weight: 700; color-scheme: dark; }
 .plan-in:focus { border-bottom-color: var(--accent); }
 .bpl { padding: 8px 16px; border-radius: var(--radius-sm); border: none; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; white-space: nowrap; transition: all .15s; }
 .bpl.gr { background: var(--accent); color: #fff; } .bpl.gr:hover { background: var(--accent-d); }

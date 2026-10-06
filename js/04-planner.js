@@ -4,7 +4,11 @@
 // Enthält: Übungen per Drag&Drop in Trainingsabschnitte (Lanes)
 // ziehen, Plan speichern/laden/löschen, Trainings-Vorlagen.
 // ══════════════════════════════════════════════════════════════════
-function renderPlanner(){renderLanes();renderSavedPlans();}
+function renderPlanner(){
+  renderLanes();renderSavedPlans();
+  const d=document.getElementById('planDate');
+  if(d&&!d.value) d.value=new Date().toISOString().slice(0,10);
+}
 
 // Normalize lane items: support old format (string id) and new format ({id,...})
 function _laneItem(raw){ return typeof raw==='string'?{id:raw}:raw; }
@@ -269,7 +273,8 @@ function printPlan(){
   const totalMin=Object.values(byDiff).reduce((a,b)=>a+b,0);
 
   const planName=document.getElementById('planName').value.trim()||'Trainingsplan';
-  const today=new Date().toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
+  const dateVal=document.getElementById('planDate')?.value;
+  const printDate=dateVal?new Date(dateVal).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'}):'';
 
   // Section color lookup
   const secColor=si=>SECS[si]?.color||'#333';
@@ -322,9 +327,11 @@ function printPlan(){
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Helvetica Neue',Arial,sans-serif;color:#111;background:#fff;padding:14mm 16mm;}
-.brand{text-align:center;margin-bottom:5mm;}
+.doc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5mm;}
+.brand{text-align:center;}
 .brand-name{font-size:18pt;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:#1a7f4b;}
 .brand-sub{font-size:7pt;letter-spacing:3px;text-transform:uppercase;color:#888;margin-top:1px;}
+.club-logo{max-height:40px;max-width:100px;object-fit:contain;}
 .print-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:5mm;padding-bottom:3mm;border-bottom:2px solid #111;}
 .print-title{font-size:16pt;font-weight:900;}
 .print-date{font-size:9pt;color:#666;}
@@ -349,13 +356,16 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;color:#111;background:#fff;pa
 .total-val{font-size:16pt;font-weight:900;white-space:nowrap;}
 @media print{body{padding:0;}@page{margin:14mm;}}
 </style></head><body>
-<div class="brand">
-  <div class="brand-name">AssistCoach</div>
-  <div class="brand-sub">Trainingsplanung</div>
+<div class="doc-top">
+  <div class="brand">
+    <div class="brand-name">AssistCoach</div>
+    <div class="brand-sub">Trainingsplanung</div>
+  </div>
+  ${typeof clubLogoUrl!=='undefined'&&clubLogoUrl?`<img class="club-logo" src="${clubLogoUrl}" alt="Vereinslogo">`:''}
 </div>
 <div class="print-header">
   <div class="print-title">${planName}</div>
-  <div class="print-date">${today}</div>
+  ${printDate?`<div class="print-date">${printDate}</div>`:''}
 </div>
 ${matHTML}
 ${cardsHTML}
