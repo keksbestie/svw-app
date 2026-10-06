@@ -350,13 +350,13 @@ function renderSection(){
               </div>
               ${IS_ADMIN?`<button class="gbtn" onclick="openNewEx(${activeSec})">+ Übung</button><button class="gbtn" onclick="openTagMod(${activeSec})">Tags</button>`:''}
             </div>
-            <div class="tagrow">
-              <span class="tlbl">Tags:</span>
-              ${allTags.map(t=>{const sel=selectedTags.map(x=>x.toUpperCase()).includes(t.toUpperCase());
-                return`<span class="tchip ${sel?'sel':''}" style="${tagStyle(t,sel)}" onclick="toggleTag('${t}')">${t}</span>`;
-              }).join('')}
-              ${!allTags.length?'<span style="font-size:10px;color:var(--gm);">Noch keine Tags</span>':''}
-            </div>
+          </div>
+          <div class="tag-bar">
+            <span class="tlbl">Tags:</span>
+            ${allTags.map(t=>{const sel=selectedTags.map(x=>x.toUpperCase()).includes(t.toUpperCase());
+              return`<span class="tchip ${sel?'sel':''}" style="${tagStyle(t,sel)}" onclick="toggleTag('${t}')">${t}</span>`;
+            }).join('')}
+            ${!allTags.length?'<span style="font-size:10px;color:var(--gm);">Noch keine Tags</span>':''}
           </div>
           <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gm);margin-bottom:11px;">${filtered.length} von ${sEx.length} Übungen</div>
           <div class="exgrid${_catalogView==='collapsed'?' collapsed':''}">
