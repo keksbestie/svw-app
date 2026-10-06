@@ -515,6 +515,17 @@ body.app-loading .home-card { pointer-events: none; }
   color: var(--text-2);
   line-height: 1.65;
 }
+.home-motto {
+  text-align: center;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--text-3);
+  line-height: 1.7;
+  padding: 28px 24px 48px;
+  max-width: 480px;
+  margin: 0 auto;
+  opacity: .75;
+}
 .home-card-arrow {
   margin-top: 24px;
   color: var(--text-3);
