@@ -12,18 +12,18 @@
 
 
 <div id="ls" style="display:none;">
-  <div style="font-size:52px;line-height:1;">âš½</div>
+  <div style="font-size:52px;line-height:1;">⚽</div>
   <div class="ls-t">AssistCoach</div>
   <div class="ls-spin"></div>
 </div>
 
-<div class="apibar h" id="apibar"><span id="apibarMsg"></span><button class="api-retry" onclick="retryConn()">â†º Verbinden</button></div>
+<div class="apibar h" id="apibar"><span id="apibarMsg"></span><button class="api-retry" onclick="retryConn()">↺ Verbinden</button></div>
 
 <!-- Minimal topbar shown only on home page -->
 
 <header>
   <div class="logo">
-    <span style="font-size:28px;line-height:1;">âš½</span>
+    <span style="font-size:28px;line-height:1;">⚽</span>
     <div>
       <div style="display:flex;align-items:center;gap:6px;">
         <div class="logo-t">AssistCoach</div>
@@ -33,9 +33,9 @@
     </div>
   </div>
   <div class="gs-wrap">
-    <span class="gs-ico">âš½</span>
-    <input class="gs-in" id="gsIn" type="text" placeholder="Ãœbungen, Tags, Abschnitte durchsuchenâ€¦" oninput="onGS()" onkeydown="if(event.key==='Escape')clearGS()" autocomplete="off">
-    <button class="gs-x" id="gsX" onclick="clearGS()">âœ•</button>
+    <span class="gs-ico">⚽</span>
+    <input class="gs-in" id="gsIn" type="text" placeholder="Übungen, Tags, Abschnitte durchsuchen…" oninput="onGS()" onkeydown="if(event.key==='Escape')clearGS()" autocomplete="off">
+    <button class="gs-x" id="gsX" onclick="clearGS()">✕</button>
     <div class="gs-res" id="gsRes"></div>
   </div>
   <div class="hr">
@@ -45,30 +45,30 @@
     <!-- Language selector -->
     <div class="lang-sel" id="langSel">
       <button class="lang-btn" onclick="toggleLangDrop()" id="langBtn">
-        <span id="langFlag">ðŸ‡©ðŸ‡ª</span>
+        <span id="langFlag">🇩🇪</span>
         <span id="langCode">DE</span>
       </button>
       <div class="lang-drop" id="langDrop">
         <div class="lang-opt active" data-lang="de" onclick="setLang('de')">
-          <span class="flag">ðŸ‡©ðŸ‡ª</span> Deutsch
+          <span class="flag">🇩🇪</span> Deutsch
         </div>
         <div class="lang-opt lang-opt--soon" data-lang="en">
-          <span class="flag">ðŸ‡¬ðŸ‡§</span> English <span class="cfg-badge-soon" style="margin-left:auto;">bald</span>
+          <span class="flag">🇬🇧</span> English <span class="cfg-badge-soon" style="margin-left:auto;">bald</span>
         </div>
         <div class="lang-opt lang-opt--soon" data-lang="es">
-          <span class="flag">ðŸ‡ªðŸ‡¸</span> EspaÃ±ol <span class="cfg-badge-soon" style="margin-left:auto;">bald</span>
+          <span class="flag">🇪🇸</span> Español <span class="cfg-badge-soon" style="margin-left:auto;">bald</span>
         </div>
       </div>
     </div>
 
     <!-- Dark mode toggle -->
-    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Theme wechseln">ðŸŒ™</button>
+    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Theme wechseln">🌙</button>
 
     <!-- Feedback button -->
-    <button class="cfg-btn" onclick="openMod('feedbackMod')" title="Feedback senden" style="font-size:14px;">ðŸ’¬</button>
+    <button class="cfg-btn" onclick="openMod('feedbackMod')" title="Feedback senden" style="font-size:14px;">💬</button>
 
     <!-- Help button -->
-    <button class="cfg-btn" onclick="toggleHelpPanel()" title="Hilfe & ErklÃ¤rung" style="font-size:15px;font-weight:900;font-family:'Barlow Condensed',sans-serif;letter-spacing:-.5px;">?</button>
+    <button class="cfg-btn" onclick="toggleHelpPanel()" title="Hilfe & Erklärung" style="font-size:15px;font-weight:900;font-family:'Barlow Condensed',sans-serif;letter-spacing:-.5px;">?</button>
 
     <!-- Settings dropdown -->
     <div class="cfg-sel" id="cfgSel">
@@ -92,7 +92,7 @@
         </button>
         <button class="cfg-item" onclick="closeCfgDrop();goPage('account');setTimeout(()=>document.getElementById('accTabPlans')?.click(),100)">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          Meine PlÃ¤ne
+          Meine Pläne
         </button>
         <button class="cfg-item cfg-item--soon" disabled>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -103,11 +103,11 @@
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
           <span class="cfg-fontsize-label">Schrift</span>
           <div class="cfg-fontsize-ctrl">
-            <button class="cfg-fs-btn" onclick="adjustFontSize(-1)">Aâˆ’</button>
+            <button class="cfg-fs-btn" onclick="adjustFontSize(-1)">A−</button>
             <span class="cfg-fs-val" id="cfgFsVal">100%</span>
             <button class="cfg-fs-btn" onclick="adjustFontSize(1)">A+</button>
           </div>
-          <button class="cfg-fs-rst" onclick="adjustFontSize(0)" title="ZurÃ¼cksetzen">â†º</button>
+          <button class="cfg-fs-rst" onclick="adjustFontSize(0)" title="Zurücksetzen">↺</button>
         </div>
         <div class="cfg-sep"></div>
         <button class="cfg-item" onclick="closeCfgDrop();goPage('impressum')">
@@ -129,8 +129,8 @@
       <button id="authBtn" onclick="toggleAuthDrop()" style="padding:7px 16px;background:#fff;color:#1a2b1c;border:none;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:.5px;cursor:pointer;white-space:nowrap;box-shadow:0 1px 4px rgba(0,0,0,.15);">Anmelden</button>
       <div id="authDrop" style="display:none;position:absolute;right:0;top:calc(100% + 6px);background:#fff;border:1px solid #ddd;border-radius:12px;min-width:180px;box-shadow:0 8px 24px rgba(0,0,0,.25);z-index:1000;overflow:hidden;padding:6px;">
         <div id="authDropName" style="padding:6px 10px 8px;font-size:11px;font-weight:700;letter-spacing:.5px;color:#888;text-transform:uppercase;"></div>
-        <button onclick="closeAuthDrop();goPage('submit')" style="width:100%;padding:9px 10px;background:none;border:none;border-radius:8px;text-align:left;font-size:13px;font-weight:600;color:#1a2b1c;cursor:pointer;">ðŸ‘¤ Mein Bereich</button>
-        <button onclick="closeAuthDrop();doLogout()" style="width:100%;padding:9px 10px;background:none;border:none;border-radius:8px;text-align:left;font-size:13px;font-weight:600;color:#e53935;cursor:pointer;margin-top:2px;">â†© Abmelden</button>
+        <button onclick="closeAuthDrop();goPage('submit')" style="width:100%;padding:9px 10px;background:none;border:none;border-radius:8px;text-align:left;font-size:13px;font-weight:600;color:#1a2b1c;cursor:pointer;">👤 Mein Bereich</button>
+        <button onclick="closeAuthDrop();doLogout()" style="width:100%;padding:9px 10px;background:none;border:none;border-radius:8px;text-align:left;font-size:13px;font-weight:600;color:#e53935;cursor:pointer;margin-top:2px;">↩ Abmelden</button>
       </div>
     </div>
     <button class="hbtn pri" onclick="goPage('planner')" id="hcnt">Trainingsplan</button>
@@ -138,34 +138,34 @@
 </header>
 
 <div class="mnav" id="mnav">
-  <button class="mb" data-page="home" onclick="goPage('home',this)">ðŸ  Start</button>
+  <button class="mb" data-page="home" onclick="goPage('home',this)">🏠 Start</button>
   <button class="mb active" data-page="handbook" onclick="goPage('handbook',this)">Katalog</button>
   <button class="mb" data-page="planner" onclick="goPage('planner',this)">Trainingsplan</button>
   <button class="mb" data-page="longterm" onclick="goPage('longterm',this)">Langzeitplanung</button>
-  <button class="mb" data-page="submit" onclick="goPage('submit',this)">âœï¸ Einreichen</button>
+  <button class="mb" data-page="submit" onclick="goPage('submit',this)">✏️ Einreichen</button>
   <button class="mb admin-only" data-page="settings" onclick="goPage('settings',this)" style="display:none">Einstellungen</button>
 </div>
 
 <!-- Mobile Bottom Navigation -->
 <nav class="bottom-nav" id="bottomNav">
   <button class="bnav-item" data-page="home" onclick="goPage('home',this)">
-    <div class="bnav-icon">ðŸ </div>
+    <div class="bnav-icon">🏠</div>
     <div class="bnav-label" data-i18n="nav_home">Start</div>
     <div class="bnav-dot"></div>
   </button>
   <button class="bnav-item active" data-page="handbook" onclick="goPage('handbook',this)">
-    <div class="bnav-icon">ðŸ“š</div>
+    <div class="bnav-icon">📚</div>
     <div class="bnav-label" data-i18n="nav_catalog">Katalog</div>
     <div class="bnav-dot"></div>
   </button>
   <button class="bnav-item" data-page="planner" onclick="goPage('planner',this)">
-    <div class="bnav-icon">ðŸ“‹</div>
+    <div class="bnav-icon">📋</div>
     <div class="bnav-label" data-i18n="nav_plan">Planer</div>
     <div class="bnav-dot"></div>
   </button>
   <button class="bnav-item" data-page="longterm" onclick="goPage('longterm',this)">
-    <div class="bnav-icon">ðŸ“…</div>
-    <div class="bnav-label" data-i18n="nav_longterm">BlÃ¶cke</div>
+    <div class="bnav-icon">📅</div>
+    <div class="bnav-label" data-i18n="nav_longterm">Blöcke</div>
     <div class="bnav-dot"></div>
   </button>
 </nav>
@@ -176,16 +176,16 @@
   <div class="home-topbar" id="homeTopbar">
     <div class="lang-sel" id="homeLangSel">
       <button class="lang-btn" onclick="toggleLangDrop('home')" id="homeLangBtn">
-        <span id="homeLangFlag">ðŸ‡©ðŸ‡ª</span>
+        <span id="homeLangFlag">🇩🇪</span>
         <span id="homeLangCode">DE</span>
       </button>
       <div class="lang-drop" id="homeLangDrop">
-        <div class="lang-opt active" data-lang="de" onclick="setLang('de')"><span class="flag">ðŸ‡©ðŸ‡ª</span> Deutsch</div>
-        <div class="lang-opt" data-lang="en" onclick="setLang('en')"><span class="flag">ðŸ‡¬ðŸ‡§</span> English</div>
-        <div class="lang-opt" data-lang="es" onclick="setLang('es')"><span class="flag">ðŸ‡ªðŸ‡¸</span> EspaÃ±ol</div>
+        <div class="lang-opt active" data-lang="de" onclick="setLang('de')"><span class="flag">🇩🇪</span> Deutsch</div>
+        <div class="lang-opt" data-lang="en" onclick="setLang('en')"><span class="flag">🇬🇧</span> English</div>
+        <div class="lang-opt" data-lang="es" onclick="setLang('es')"><span class="flag">🇪🇸</span> Español</div>
       </div>
     </div>
-    <button class="theme-btn" onclick="toggleTheme()" title="Theme wechseln" id="homeThemeBtn">ðŸŒ™</button>
+    <button class="theme-btn" onclick="toggleTheme()" title="Theme wechseln" id="homeThemeBtn">🌙</button>
     <button id="homeSignInBtn" onclick="goPage('submit')" style="padding:7px 18px;background:#fff;color:#1a2b1c;border:none;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;letter-spacing:.5px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15);">Anmelden</button>
   </div>
   <!-- Hero -->
@@ -193,9 +193,9 @@
     <div class="home-hero-eyebrow" data-i18n="home_eyebrow">Nachwuchs</div>
     <h1 class="home-hero-title" data-i18n="home_title">AssistCoach</h1>
     <div class="home-hero-tagline">Dein Trainingskatalog</div>
-    <div class="home-beta-banner">ðŸš§ Diese App befindet sich in der <strong>Beta-Phase</strong> â€“ Funktionen und Inhalte werden laufend erweitert.</div>
-    <p class="home-hero-sub" data-i18n="home_sub">Ãœbungen planen, strukturieren und langfristig periodisieren â€“ alles an einem Ort.</p>
-    <p class="home-motto">und wenn es einem Kind, einer Spielerin, einem Coach oder Betreuer geholfen hat â€¦ dann hat sich die ganze MÃ¼he gelohnt</p>
+    <div class="home-beta-banner">🚧 Diese App befindet sich in der <strong>Beta-Phase</strong> – Funktionen und Inhalte werden laufend erweitert.</div>
+    <p class="home-hero-sub" data-i18n="home_sub">Übungen planen, strukturieren und langfristig periodisieren – alles an einem Ort.</p>
+    <p class="home-motto">und wenn es einem Kind, einer Spielerin, einem Coach oder Betreuer geholfen hat … dann hat sich die ganze Mühe gelohnt</p>
   </div>
 
   <!-- Feature Cards -->
@@ -206,8 +206,8 @@
         <div class="home-card-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
         </div>
-        <div class="home-card-title" data-i18n="home_card_catalog">Ãœbungskatalog</div>
-        <div class="home-card-desc" data-i18n="home_card_catalog_desc">Alle Ãœbungen nach Abschnitt, Thema und Schwierigkeitsgrad durchsuchen und filtern.</div>
+        <div class="home-card-title" data-i18n="home_card_catalog">Übungskatalog</div>
+        <div class="home-card-desc" data-i18n="home_card_catalog_desc">Alle Übungen nach Abschnitt, Thema und Schwierigkeitsgrad durchsuchen und filtern.</div>
       </div>
       <div class="home-card-arrow">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -235,7 +235,7 @@
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         </div>
         <div class="home-card-title" data-i18n="home_card_blocks">Langzeitplanung</div>
-        <div class="home-card-desc" data-i18n="home_card_blocks_desc">MehrwÃ¶chige TrainingsblÃ¶cke erstellen, verwalten und in die Saison einbinden.</div>
+        <div class="home-card-desc" data-i18n="home_card_blocks_desc">Mehrwöchige Trainingsblöcke erstellen, verwalten und in die Saison einbinden.</div>
       </div>
       <div class="home-card-arrow">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -262,8 +262,8 @@
         <div class="home-card-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
         </div>
-        <div class="home-card-title">Ãœbung einreichen</div>
-        <div class="home-card-desc">Eigene Ãœbungen erstellen und zur Aufnahme in den Katalog vorschlagen.</div>
+        <div class="home-card-title">Übung einreichen</div>
+        <div class="home-card-desc">Eigene Übungen erstellen und zur Aufnahme in den Katalog vorschlagen.</div>
       </div>
       <div class="home-card-arrow">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -272,21 +272,21 @@
   </div>
 </div>
 
-<!-- PAGE: SUBMIT â€” Ãœbung einreichen -->
+<!-- PAGE: SUBMIT — Übung einreichen -->
 <div id="page-submit" class="page">
   <div id="submitLoginWrap" style="display:none;">
     <div class="submit-login">
       <div class="submit-login-box">
-        <div class="submit-login-icon">âœï¸</div>
-        <div class="submit-login-title">Ãœbung einreichen</div>
-        <div class="submit-login-sub">Melde dich an, um eigene Ãœbungen zu erstellen und fÃ¼r den Katalog vorzuschlagen.</div>
+        <div class="submit-login-icon">✏️</div>
+        <div class="submit-login-title">Übung einreichen</div>
+        <div class="submit-login-sub">Melde dich an, um eigene Übungen zu erstellen und für den Katalog vorzuschlagen.</div>
         <div class="submit-login-form" id="loginForm">
           <input class="fc" id="loginEmail" type="email" placeholder="E-Mail-Adresse" autocomplete="email">
           <input class="fc" id="loginPass" type="password" placeholder="Passwort" onkeydown="if(event.key==='Enter')doLogin()" style="margin-top:8px;">
-          <input class="fc" id="loginUsername" type="text" placeholder="Anzeigename (z.B. Max MÃ¼ller)" autocomplete="off" style="display:none;margin-top:8px;">
+          <input class="fc" id="loginUsername" type="text" placeholder="Anzeigename (z.B. Max Müller)" autocomplete="off" style="display:none;margin-top:8px;">
           <label id="agbWrap" style="display:none;align-items:flex-start;gap:8px;margin-top:12px;font-size:12px;color:var(--gd2);line-height:1.5;cursor:pointer;">
             <input type="checkbox" id="agbCheck" style="margin-top:2px;flex-shrink:0;accent-color:var(--accent);">
-            Ich habe die <button type="button" onclick="closeCfgDrop?.();goPage('agb')" style="background:none;border:none;color:var(--accent);font-size:12px;cursor:pointer;padding:0;text-decoration:underline;">AGB</button> und die <button type="button" onclick="closeCfgDrop?.();goPage('datenschutz')" style="background:none;border:none;color:var(--accent);font-size:12px;cursor:pointer;padding:0;text-decoration:underline;">Datenschutzerklärung</button> gelesen und stimme ihnen zu.
+            Ich habe die <button type="button" onclick="goPage('agb')" style="background:none;border:none;color:var(--accent);font-size:12px;cursor:pointer;padding:0;text-decoration:underline;">AGB</button> und die <button type="button" onclick="goPage('datenschutz')" style="background:none;border:none;color:var(--accent);font-size:12px;cursor:pointer;padding:0;text-decoration:underline;">Datenschutzerklärung</button> gelesen und stimme ihnen zu.
           </label>
           <button class="bpr" id="loginBtn" onclick="doLogin()" style="width:100%;padding:11px;font-size:13px;margin-top:10px;">Anmelden</button>
           <button class="bsc" id="registerBtn" onclick="toggleRegisterMode()" style="width:100%;padding:11px;font-size:13px;margin-top:6px;">Neu registrieren</button>
@@ -296,21 +296,21 @@
         </div>
         <!-- Passwort-Reset-Formular (versteckt) -->
         <div id="forgotForm" style="display:none;">
-          <div style="font-size:13px;color:var(--text-2);margin-bottom:12px;text-align:center;">Gib deine E-Mail-Adresse ein â€“ wir schicken dir einen Link zum ZurÃ¼cksetzen.</div>
+          <div style="font-size:13px;color:var(--text-2);margin-bottom:12px;text-align:center;">Gib deine E-Mail-Adresse ein – wir schicken dir einen Link zum Zurücksetzen.</div>
           <input class="fc" id="resetEmail" type="email" placeholder="E-Mail-Adresse" autocomplete="email">
           <button class="bpr" onclick="doResetPassword()" style="width:100%;padding:11px;font-size:13px;margin-top:10px;">Link senden</button>
-          <button class="bsc" onclick="hideForgotPassword()" style="width:100%;padding:11px;font-size:13px;margin-top:6px;">ZurÃ¼ck zum Login</button>
+          <button class="bsc" onclick="hideForgotPassword()" style="width:100%;padding:11px;font-size:13px;margin-top:6px;">Zurück zum Login</button>
         </div>
-        <!-- E-Mail-BestÃ¤tigung ausstehend -->
+        <!-- E-Mail-Bestätigung ausstehend -->
         <div id="confirmPendingMsg" style="display:none;text-align:center;padding:16px 0 4px;">
-          <div style="font-size:32px;margin-bottom:10px;">ðŸ“¬</div>
+          <div style="font-size:32px;margin-bottom:10px;">📬</div>
           <div style="font-weight:700;font-size:15px;margin-bottom:6px;">Fast geschafft!</div>
-          <div style="font-size:13px;color:var(--text-2);margin-bottom:14px;">Wir haben dir eine BestÃ¤tigungs-E-Mail geschickt.<br>Bitte Ã¶ffne den Link in der Mail, um dein Konto zu aktivieren.</div>
-          <button class="bsc" onclick="backToLogin()" style="width:100%;padding:10px;font-size:13px;">ZurÃ¼ck zum Login</button>
+          <div style="font-size:13px;color:var(--text-2);margin-bottom:14px;">Wir haben dir eine Bestätigungs-E-Mail geschickt.<br>Bitte öffne den Link in der Mail, um dein Konto zu aktivieren.</div>
+          <button class="bsc" onclick="backToLogin()" style="width:100%;padding:10px;font-size:13px;">Zurück zum Login</button>
         </div>
         <!-- Neues Passwort setzen (nach Klick auf Reset-Link) -->
         <div id="setNewPasswordForm" style="display:none;">
-          <div style="font-size:32px;text-align:center;margin-bottom:10px;">ðŸ”</div>
+          <div style="font-size:32px;text-align:center;margin-bottom:10px;">🔐</div>
           <div style="font-weight:700;font-size:15px;text-align:center;margin-bottom:6px;">Neues Passwort setzen</div>
           <div style="font-size:13px;color:var(--text-2);text-align:center;margin-bottom:14px;">Gib dein neues Passwort ein. Mindestens 6 Zeichen.</div>
           <input class="fc" id="newPassword1" type="password" placeholder="Neues Passwort" autocomplete="new-password">
@@ -322,10 +322,10 @@
   </div>
   <div id="submitLoggedWrap" style="display:none;">
     <div class="submit-banner">
-      <div class="submit-banner-icon">âœï¸</div>
+      <div class="submit-banner-icon">✏️</div>
       <div>
-        <div class="submit-banner-title">Ãœbung einreichen</div>
-        <div class="submit-banner-sub">Erstelle eine neue Ãœbung mit allen Pflichtangaben. Das Admin-Team prÃ¼ft sie und gibt sie ggf. fÃ¼r den Katalog frei.</div>
+        <div class="submit-banner-title">Übung einreichen</div>
+        <div class="submit-banner-sub">Erstelle eine neue Übung mit allen Pflichtangaben. Das Admin-Team prüft sie und gibt sie ggf. für den Katalog frei.</div>
       </div>
       <div class="submit-banner-user">
         <div class="submit-user-tag" id="submitUserTag">Trainer:in</div>
@@ -335,83 +335,83 @@
     <div class="submit-layout">
       <div>
         <div class="submit-form-wrap">
-          <div class="submit-form-title"><div class="stf-ico">âš½</div>Neue Ãœbung erstellen</div>
+          <div class="submit-form-title"><div class="stf-ico">⚽</div>Neue Übung erstellen</div>
           <div class="fsec">Grunddaten</div>
-          <div class="fg"><label>Name der Ãœbung *</label><input class="fc" id="sName" type="text" placeholder="Ãœbungsnameâ€¦" oninput="updateSubmitChecklist()"></div>
-          <div class="fg"><label>Beschreibung (min. 20 Zeichen) *</label><textarea class="fc dta" id="sDesc" rows="4" placeholder="Wie funktioniert die Ãœbung? Was ist das Ziel?" oninput="updateSubmitChecklist()" style="resize:vertical;"></textarea>
+          <div class="fg"><label>Name der Übung *</label><input class="fc" id="sName" type="text" placeholder="Übungsname…" oninput="updateSubmitChecklist()"></div>
+          <div class="fg"><label>Beschreibung (min. 20 Zeichen) *</label><textarea class="fc dta" id="sDesc" rows="4" placeholder="Wie funktioniert die Übung? Was ist das Ziel?" oninput="updateSubmitChecklist()" style="resize:vertical;"></textarea>
             <div style="font-size:10px;color:var(--text-3);margin-top:3px;" id="sDescCount">0 Zeichen</div>
           </div>
           <div class="fr">
             <div class="fg"><label>Abschnitt *</label>
               <select class="fc" id="sSec" onchange="updateSubmitChecklist();renderSTagSuggestions()">
-                <option value="">Bitte wÃ¤hlenâ€¦</option>
+                <option value="">Bitte wählen…</option>
                 <option value="0">Open Field</option><option value="1">Warm Up</option>
-                <option value="2">HinfÃ¼hrung</option><option value="3">Hauptteil</option>
+                <option value="2">Hinführung</option><option value="3">Hauptteil</option>
                 <option value="4">Abschlussspiel</option><option value="5">Sondertraining</option>
               </select>
             </div>
-            <div class="fg"><label>BelastungsintensitÃ¤t *</label>
+            <div class="fg"><label>Belastungsintensität *</label>
               <select class="fc" id="sIntensity" onchange="updateSubmitChecklist()">
-                <option value="">Bitte wÃ¤hlenâ€¦</option>
+                <option value="">Bitte wählen…</option>
                 <option value="Leicht">Leicht</option><option value="Mittel">Mittel</option><option value="Schwer">Hoch</option>
               </select>
             </div>
           </div>
           <div class="fr">
-            <div class="fg"><label>Anzahl Spieler:innen *</label><input class="fc" id="sPlayers" type="text" placeholder="z.B. 6â€“12" oninput="updateSubmitChecklist()"></div>
+            <div class="fg"><label>Anzahl Spieler:innen *</label><input class="fc" id="sPlayers" type="text" placeholder="z.B. 6–12" oninput="updateSubmitChecklist()"></div>
             <div class="fg"><label>Belastungszeit (min) *</label><input class="fc" id="sDuration" type="number" min="1" max="60" placeholder="z.B. 12" oninput="updateSubmitChecklist()"></div>
           </div>
           <div class="fg"><label>Material</label>
           <div id="sMatBuilder" style="border:1.5px solid var(--border);border-radius:7px;padding:10px;background:var(--surface-2);">
-            <div style="font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;">ZÃ¤hlbares Material (Anzahl wÃ¤hlen):</div>
+            <div style="font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;">Zählbares Material (Anzahl wählen):</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
               <div class="mat-select-row"><label class="mat-sel-lbl">Minitore</label>
                 <select class="fc mat-sel" data-smat="Minitore" style="padding:5px 8px;font-size:12px;" onchange="updateSMatField()">
-                  <option value="0">â€“</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                  <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
                 </select></div>
               <div class="mat-select-row"><label class="mat-sel-lbl">Stangen</label>
                 <select class="fc mat-sel" data-smat="Stangen" style="padding:5px 8px;font-size:12px;" onchange="updateSMatField()">
-                  <option value="0">â€“</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                  <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
                 </select></div>
               <div class="mat-select-row"><label class="mat-sel-lbl">Jugendtore</label>
                 <select class="fc mat-sel" data-smat="Jugendtore" style="padding:5px 8px;font-size:12px;" onchange="updateSMatField()">
-                  <option value="0">â€“</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                  <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>
                 </select></div>
               <div class="mat-select-row"><label class="mat-sel-lbl">Rebounder</label>
                 <select class="fc mat-sel" data-smat="Rebounder" style="padding:5px 8px;font-size:12px;" onchange="updateSMatField()">
-                  <option value="0">â€“</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+                  <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
                 </select></div>
-              <div class="mat-select-row"><label class="mat-sel-lbl">HÃ¼rden</label>
-                <select class="fc mat-sel" data-smat="HÃ¼rden" style="padding:5px 8px;font-size:12px;" onchange="updateSMatField()">
-                  <option value="0">â€“</option><option value="2">2</option><option value="4">4</option><option value="6">6</option><option value="8">8</option><option value="10">10</option><option value="12">12</option>
+              <div class="mat-select-row"><label class="mat-sel-lbl">Hürden</label>
+                <select class="fc mat-sel" data-smat="Hürden" style="padding:5px 8px;font-size:12px;" onchange="updateSMatField()">
+                  <option value="0">–</option><option value="2">2</option><option value="4">4</option><option value="6">6</option><option value="8">8</option><option value="10">10</option><option value="12">12</option>
                 </select></div>
               <div class="mat-select-row"><label class="mat-sel-lbl">Ringe</label>
                 <select class="fc mat-sel" data-smat="Ringe" style="padding:5px 8px;font-size:12px;" onchange="updateSMatField()">
-                  <option value="0">â€“</option><option value="4">4</option><option value="6">6</option><option value="8">8</option><option value="10">10</option><option value="12">12</option><option value="16">16</option>
+                  <option value="0">–</option><option value="4">4</option><option value="6">6</option><option value="8">8</option><option value="10">10</option><option value="12">12</option><option value="16">16</option>
                 </select></div>
               <div class="mat-select-row"><label class="mat-sel-lbl">Koord.leiter</label>
                 <select class="fc mat-sel" data-smat="Koordinationsleiter" style="padding:5px 8px;font-size:12px;" onchange="updateSMatField()">
-                  <option value="0">â€“</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+                  <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
                 </select></div>
             </div>
             <div style="font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:5px;">Weiteres Material:</div>
-            <input class="fc" id="sMatFree" type="text" placeholder="z.B. HÃ¼tchen, BÃ¤lle, Leibchen" style="font-size:12px;" oninput="updateSMatField()">
+            <input class="fc" id="sMatFree" type="text" placeholder="z.B. Hütchen, Bälle, Leibchen" style="font-size:12px;" oninput="updateSMatField()">
             <input type="hidden" id="sMat">
           </div>
           </div>
           <div class="fsec">Tags (min. 3) *</div>
           <div class="fg">
             <div style="display:flex;gap:8px;margin-bottom:8px;">
-              <input class="fc" id="sTagIn" type="text" placeholder="Tag eingebenâ€¦" onkeydown="if(event.key==='Enter'){addSTag();event.preventDefault();}" oninput="renderSTagSuggestions()" onfocus="renderSTagSuggestions()">
+              <input class="fc" id="sTagIn" type="text" placeholder="Tag eingeben…" onkeydown="if(event.key==='Enter'){addSTag();event.preventDefault();}" oninput="renderSTagSuggestions()" onfocus="renderSTagSuggestions()">
               <button onclick="addSTag()" style="padding:8px 13px;background:#8b5cf6;color:#fff;border:none;border-radius:7px;font-weight:700;cursor:pointer;font-size:12px;white-space:nowrap;">+ Tag</button>
             </div>
             <div id="sAtags" class="atags"></div>
             <div id="sStags" class="stags" style="margin-top:6px;"></div>
           </div>
-          <div class="fsec">Felddiagramm (Pflicht â€“ mind. 1 Objekt) *</div>
+          <div class="fsec">Felddiagramm (Pflicht – mind. 1 Objekt) *</div>
           <div class="fg">
             <div id="submitCanvasWrap">
-              <button onclick="openFieldOverlay('submit')" style="width:100%;padding:13px 10px;background:#1a2b1c;color:#a5d6a7;border:1.5px dashed rgba(165,214,167,.35);border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.3px;">âš½ Felddiagramm zeichnen / bearbeiten</button>
+              <button onclick="openFieldOverlay('submit')" style="width:100%;padding:13px 10px;background:#1a2b1c;color:#a5d6a7;border:1.5px dashed rgba(165,214,167,.35);border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.3px;">⚽ Felddiagramm zeichnen / bearbeiten</button>
               <div id="sPreviewWrap" style="display:none;margin-top:8px;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,.1);">
                 <img id="sPreviewImg" style="width:100%;display:block;" alt="Vorschau">
               </div>
@@ -428,17 +428,17 @@
         <div class="submit-checklist">
           <div class="submit-checklist-title">Checkliste</div>
           <div id="submitChecklist">
-            <div class="chk-item" id="chk-name"><div class="chk-dot"></div><div class="chk-label">Name ausgefÃ¼llt</div></div>
+            <div class="chk-item" id="chk-name"><div class="chk-dot"></div><div class="chk-label">Name ausgefüllt</div></div>
             <div class="chk-item" id="chk-desc"><div class="chk-dot"></div><div class="chk-label">Beschreibung (min. 20 Zeichen)</div></div>
             <div class="chk-item" id="chk-players"><div class="chk-dot"></div><div class="chk-label">Anzahl Spieler:innen angegeben</div></div>
             <div class="chk-item" id="chk-duration"><div class="chk-dot"></div><div class="chk-label">Belastungszeit angegeben</div></div>
-            <div class="chk-item" id="chk-intensity"><div class="chk-dot"></div><div class="chk-label">BelastungsintensitÃ¤t gewÃ¤hlt</div></div>
-            <div class="chk-item" id="chk-section"><div class="chk-dot"></div><div class="chk-label">Abschnitt gewÃ¤hlt</div></div>
-            <div class="chk-item" id="chk-tags"><div class="chk-dot"></div><div class="chk-label">Min. 3 Tags hinzugefÃ¼gt</div></div>
+            <div class="chk-item" id="chk-intensity"><div class="chk-dot"></div><div class="chk-label">Belastungsintensität gewählt</div></div>
+            <div class="chk-item" id="chk-section"><div class="chk-dot"></div><div class="chk-label">Abschnitt gewählt</div></div>
+            <div class="chk-item" id="chk-tags"><div class="chk-dot"></div><div class="chk-label">Min. 3 Tags hinzugefügt</div></div>
             <div class="chk-item" id="chk-canvas"><div class="chk-dot"></div><div class="chk-label">Felddiagramm gezeichnet</div></div>
           </div>
           <div class="submit-btn-wrap">
-            <button class="submit-btn-main" id="submitBtn" onclick="submitExercise()" disabled>Ãœbung einreichen</button>
+            <button class="submit-btn-main" id="submitBtn" onclick="submitExercise()" disabled>Übung einreichen</button>
           </div>
         </div>
       </div>
@@ -446,14 +446,14 @@
     <div class="page-section">
       <div class="page-section-divider"></div>
       <div class="queue-title">Meine Einreichungen</div>
-      <div class="queue-sub">Ãœbungen, die du eingereicht hast und noch auf PrÃ¼fung warten.</div>
+      <div class="queue-sub">Übungen, die du eingereicht hast und noch auf Prüfung warten.</div>
       <div id="mySubList" style="margin-top:16px;display:flex;flex-direction:column;gap:8px;"><div style="font-size:12px;color:var(--text-3);padding:8px 0;">Noch keine Einreichungen.</div></div>
     </div>
     <div class="page-section">
       <div class="page-section-divider"></div>
-      <div class="queue-title">Meine TrainingsplÃ¤ne</div>
-      <div class="queue-sub">PlÃ¤ne, die du eingereicht hast oder die bereits verÃ¶ffentlicht wurden.</div>
-      <div id="myPlanList" style="margin-top:16px;display:flex;flex-direction:column;gap:8px;"><div style="font-size:12px;color:var(--text-3);padding:8px 0;">Noch keine eingereichten PlÃ¤ne.</div></div>
+      <div class="queue-title">Meine Trainingspläne</div>
+      <div class="queue-sub">Pläne, die du eingereicht hast oder die bereits veröffentlicht wurden.</div>
+      <div id="myPlanList" style="margin-top:16px;display:flex;flex-direction:column;gap:8px;"><div style="font-size:12px;color:var(--text-3);padding:8px 0;">Noch keine eingereichten Pläne.</div></div>
     </div>
     <div id="adminUserWrap" class="page-section" style="display:none;">
       <div class="page-section-divider"></div>
@@ -465,17 +465,17 @@
       <div class="page-section-divider"></div>
       <div style="display:flex;align-items:center;justify-content:space-between;">
         <div>
-          <div class="queue-title">Admin-Warteschlange â€“ Ãœbungen</div>
-          <div class="queue-sub">Eingereichte Ãœbungen nach Abschnitt â€” klicke auf einen Bereich um die Ãœbungen zu prÃ¼fen.</div>
+          <div class="queue-title">Admin-Warteschlange – Übungen</div>
+          <div class="queue-sub">Eingereichte Übungen nach Abschnitt — klicke auf einen Bereich um die Übungen zu prüfen.</div>
         </div>
-        <button onclick="openTrash()" style="display:flex;align-items:center;gap:7px;padding:9px 16px;background:#fef2f2;border:1.5px solid #fca5a5;color:#b91c1c;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;">ðŸ—‘ Papierkorb</button>
+        <button onclick="openTrash()" style="display:flex;align-items:center;gap:7px;padding:9px 16px;background:#fef2f2;border:1.5px solid #fca5a5;color:#b91c1c;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;">🗑 Papierkorb</button>
       </div>
       <div class="queue-cards" id="queueCards"></div>
     </div>
     <div id="adminPlanQueueWrap" class="page-section" style="display:none;">
       <div class="page-section-divider"></div>
-      <div class="queue-title">Admin-Warteschlange â€“ TrainingsplÃ¤ne</div>
-      <div class="queue-sub">Eingereichte TrainingsplÃ¤ne zur PrÃ¼fung und Freigabe.</div>
+      <div class="queue-title">Admin-Warteschlange – Trainingspläne</div>
+      <div class="queue-sub">Eingereichte Trainingspläne zur Prüfung und Freigabe.</div>
       <div id="adminPlanQueue" style="margin-top:16px;display:flex;flex-direction:column;gap:8px;"></div>
     </div>
   </div>
@@ -485,17 +485,17 @@
 <div class="mbg h" id="feedbackMod">
   <div class="md" style="max-width:680px;width:92vw;">
     <div class="mhdr" style="padding:28px 32px 20px;">
-      <div class="mhdr-t">ðŸ’¬ Feedback senden</div>
-      <button class="mcls" onclick="closeMod('feedbackMod')">âœ•</button>
+      <div class="mhdr-t">💬 Feedback senden</div>
+      <button class="mcls" onclick="closeMod('feedbackMod')">✕</button>
     </div>
     <div class="mbd" style="padding:0 32px 32px;">
-      <p style="font-size:14px;color:var(--text-2);margin-bottom:24px;line-height:1.6;">Hast du einen Verbesserungsvorschlag, einen Bug gefunden oder eine Idee? Schreib uns â€“ wir freuen uns Ã¼ber jede RÃ¼ckmeldung.</p>
+      <p style="font-size:14px;color:var(--text-2);margin-bottom:24px;line-height:1.6;">Hast du einen Verbesserungsvorschlag, einen Bug gefunden oder eine Idee? Schreib uns – wir freuen uns über jede Rückmeldung.</p>
       <label class="flbl">Dein Name</label>
-      <input class="fc" id="fbName" type="text" placeholder="z.B. Max MÃ¼ller" style="margin-bottom:14px;">
-      <label class="flbl">E-Mail (optional, fÃ¼r RÃ¼ckmeldung)</label>
+      <input class="fc" id="fbName" type="text" placeholder="z.B. Max Müller" style="margin-bottom:14px;">
+      <label class="flbl">E-Mail (optional, für Rückmeldung)</label>
       <input class="fc" id="fbEmail" type="email" placeholder="deine@email.de" style="margin-bottom:14px;">
       <label class="flbl">Nachricht</label>
-      <textarea class="fc" id="fbMessage" rows="7" placeholder="Dein Feedbackâ€¦" style="resize:vertical;min-height:130px;"></textarea>
+      <textarea class="fc" id="fbMessage" rows="7" placeholder="Dein Feedback…" style="resize:vertical;min-height:130px;"></textarea>
       <button class="bpr" onclick="sendFeedback()" style="width:100%;margin-top:18px;padding:14px;font-size:14px;">Feedback absenden</button>
     </div>
   </div>
@@ -505,12 +505,12 @@
 <div class="mbg h" id="trashMod">
   <div class="md" style="max-width:600px;">
     <div class="mhdr">
-      <div class="mico" style="background:#fca5a5;">ðŸ—‘</div>
+      <div class="mico" style="background:#fca5a5;">🗑</div>
       <div class="mtit">Papierkorb</div>
-      <button class="mcl" onclick="closeMod('trashMod')">âœ•</button>
+      <button class="mcl" onclick="closeMod('trashMod')">✕</button>
     </div>
     <div class="mbody">
-      <div style="font-size:12px;color:var(--text-3);margin-bottom:12px;">GelÃ¶schte Ãœbungen kÃ¶nnen wiederhergestellt oder endgÃ¼ltig entfernt werden.</div>
+      <div style="font-size:12px;color:var(--text-3);margin-bottom:12px;">Gelöschte Übungen können wiederhergestellt oder endgültig entfernt werden.</div>
       <div id="trashList"></div>
     </div>
   </div>
@@ -528,7 +528,7 @@
     <div class="print-output" id="printOutput" style="display:none;"></div>
     <div class="print-hdr" id="printHdr"></div>
     <div class="plan-hdr no-print">
-      <input class="plan-in" id="planName" type="text" placeholder="Trainingseinheit benennenâ€¦">
+      <input class="plan-in" id="planName" type="text" placeholder="Trainingseinheit benennen…">
       <input class="plan-in plan-date-in" id="planDate" type="date" title="Datum der Trainingseinheit">
       <button class="bpl gr" onclick="savePlan()">Speichern</button>
       <button class="bpl gy" onclick="printPlan()">Drucken</button>
@@ -543,7 +543,7 @@
       </div>
       <div class="planner-sidebar no-print">
         <div class="tpl-box">
-          <div class="tpl-t">ðŸ’¾ Gespeicherte PlÃ¤ne</div>
+          <div class="tpl-t">💾 Gespeicherte Pläne</div>
           <div id="splist"></div>
         </div>
       </div>
@@ -564,7 +564,7 @@
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
         <div style="flex:1;">
           <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:var(--text-1);">Aktive Trainingsperiodisierung</h3>
-          <p style="font-size:12px;color:var(--text-3);margin-top:2px;">BlÃ¶cke erstellen, Wochen fÃ¼llen, Tage planen</p>
+          <p style="font-size:12px;color:var(--text-3);margin-top:2px;">Blöcke erstellen, Wochen füllen, Tage planen</p>
         </div>
         <button class="bpl gr" onclick="openNewBlockWizard()">+ Neuer Block</button>
         <button class="bpl gy" onclick="printLtp()">Drucken</button>
@@ -578,7 +578,7 @@
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
         <div style="flex:1;">
           <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:var(--text-1);">Block-Bibliothek</h3>
-          <p style="font-size:12px;color:var(--text-3);margin-top:2px;">Gespeicherte BlÃ¶cke fÃ¼r spÃ¤tere Verwendung</p>
+          <p style="font-size:12px;color:var(--text-3);margin-top:2px;">Gespeicherte Blöcke für spätere Verwendung</p>
         </div>
       </div>
       <div id="ltpLibGrid"></div>
@@ -599,7 +599,7 @@
         <input type="text" id="apiKeyIn" class="fc" style="margin-bottom:9px;" placeholder="Falls von der IT bereitgestellt">
         <button class="bpr" onclick="saveApiCfg()" style="width:100%">Speichern & testen</button>
       </div>
-      <div style="margin-top:9px;padding:9px;background:var(--off);border-radius:6px;font-size:11px;color:var(--gm);" id="apiDetail">â€“</div>
+      <div style="margin-top:9px;padding:9px;background:var(--off);border-radius:6px;font-size:11px;color:var(--gm);" id="apiDetail">–</div>
     </div>
     <div style="background:var(--surface);border-radius:12px;padding:20px;box-shadow:var(--sh);display:grid;grid-template-columns:1fr 1fr;gap:9px;">
       <div>
@@ -613,7 +613,7 @@
         <button onclick="exportCSV()" style="width:100%;padding:9px;background:var(--gray);color:var(--gd2);border:none;border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;margin-bottom:7px;">CSV exportieren</button>
         <button onclick="downloadITDoc()" style="width:100%;padding:9px;background:var(--gray);color:var(--gd2);border:none;border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;">IT-Dokument</button>
       </div>
-      <button onclick="if(confirm('Alle Ãœbungen lÃ¶schen und StandardÃ¼bungen neu laden?')){exercises=[];mergeNewDefaultExercises();save();renderSection();showToast('Ãœbungen zurÃ¼ckgesetzt');}"  style="grid-column:1/-1;padding:9px;background:#fce4ec;color:#880e4f;border:none;border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;">Alle Ãœbungen lÃ¶schen</button>
+      <button onclick="if(confirm('Alle Übungen löschen und Standardübungen neu laden?')){exercises=[];mergeNewDefaultExercises();save();renderSection();showToast('Übungen zurückgesetzt');}"  style="grid-column:1/-1;padding:9px;background:#fce4ec;color:#880e4f;border:none;border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;">Alle Übungen löschen</button>
     </div>
   </div>
 </div>
@@ -621,13 +621,13 @@
 <!-- ACCOUNT PAGE -->
 <div id="page-account" class="page">
   <div class="inner" style="max-width:680px;padding-bottom:60px;">
-    <button onclick="goPage('home')" style="display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--gd2);font-size:13px;cursor:pointer;margin-bottom:18px;padding:0;font-family:'Barlow',sans-serif;">â† ZurÃ¼ck</button>
+    <button onclick="goPage('home')" style="display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--gd2);font-size:13px;cursor:pointer;margin-bottom:18px;padding:0;font-family:'Barlow',sans-serif;">← Zurück</button>
     <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;margin:0 0 20px;">Mein Account</h1>
 
     <!-- Tabs -->
     <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:22px;">
       <button id="accTabProfile" class="acc-tab acc-tab--active" onclick="switchAccTab('profile')">Profil</button>
-      <button id="accTabPlans" class="acc-tab" onclick="switchAccTab('plans')">Meine PlÃ¤ne</button>
+      <button id="accTabPlans" class="acc-tab" onclick="switchAccTab('plans')">Meine Pläne</button>
     </div>
 
     <!-- Tab: Profil -->
@@ -637,24 +637,24 @@
         <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
           <div id="accAvatarBig" style="width:56px;height:56px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:#fff;flex-shrink:0;">?</div>
           <div>
-            <div id="accDisplayName" style="font-size:18px;font-weight:700;">â€“</div>
-            <div id="accDisplayEmail" style="font-size:12px;color:var(--gd2);">â€“</div>
+            <div id="accDisplayName" style="font-size:18px;font-weight:700;">–</div>
+            <div id="accDisplayEmail" style="font-size:12px;color:var(--gd2);">–</div>
           </div>
         </div>
         <label style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--gd2);display:block;margin-bottom:4px;">Benutzername</label>
         <input type="text" id="accUsernameIn" class="fc" style="margin-bottom:14px;" placeholder="Benutzername">
         <label style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--gd2);display:block;margin-bottom:4px;">E-Mail</label>
         <input type="email" id="accEmailIn" class="fc" style="margin-bottom:14px;" placeholder="E-Mail-Adresse">
-        <button class="bpr" onclick="saveAccountProfile()" style="width:100%;">Ã„nderungen speichern</button>
+        <button class="bpr" onclick="saveAccountProfile()" style="width:100%;">Änderungen speichern</button>
       </div>
 
       <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
-        <div class="fsec" style="margin-top:0;">Ã–ffentliche Sichtbarkeit</div>
+        <div class="fsec" style="margin-top:0;">Öffentliche Sichtbarkeit</div>
         <label style="display:flex;align-items:center;gap:12px;cursor:pointer;padding:4px 0;">
           <input type="checkbox" id="accPublicName" style="width:18px;height:18px;accent-color:var(--accent);cursor:pointer;">
-          <span style="font-size:14px;">Name Ã¶ffentlich im Katalog anzeigen</span>
+          <span style="font-size:14px;">Name öffentlich im Katalog anzeigen</span>
         </label>
-        <p style="font-size:12px;color:var(--gd2);margin:8px 0 14px;line-height:1.5;">Wenn aktiv, erscheint dein Benutzername bei deinen eingereichten Ãœbungen im Ã¶ffentlichen Katalog.</p>
+        <p style="font-size:12px;color:var(--gd2);margin:8px 0 14px;line-height:1.5;">Wenn aktiv, erscheint dein Benutzername bei deinen eingereichten Übungen im öffentlichen Katalog.</p>
         <button class="bpr" onclick="saveAccountVisibility()" style="width:100%;">Speichern</button>
       </div>
 
@@ -664,10 +664,10 @@
       </div>
     </div>
 
-    <!-- Tab: Meine PlÃ¤ne -->
+    <!-- Tab: Meine Pläne -->
     <div id="accPanelPlans" style="display:none;">
       <div id="accPlansList" style="display:flex;flex-direction:column;gap:10px;">
-        <div style="text-align:center;color:var(--gd2);font-size:14px;padding:40px 0;">Keine PlÃ¤ne vorhanden.</div>
+        <div style="text-align:center;color:var(--gd2);font-size:14px;padding:40px 0;">Keine Pläne vorhanden.</div>
       </div>
     </div>
   </div>
@@ -676,37 +676,38 @@
 <!-- IMPRESSUM PAGE -->
 <div id="page-impressum" class="page">
   <div class="inner" style="max-width:680px;padding-bottom:60px;">
-    <button onclick="history.back()||goPage('home')" style="display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--gd2);font-size:13px;cursor:pointer;margin-bottom:18px;padding:0;font-family:'Barlow',sans-serif;">â† ZurÃ¼ck</button>
+    <button onclick="history.back()||goPage('home')" style="display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--gd2);font-size:13px;cursor:pointer;margin-bottom:18px;padding:0;font-family:'Barlow',sans-serif;">← Zurück</button>
     <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;margin:0 0 6px;">Impressum</h1>
-    <p style="font-size:12px;color:var(--gd2);margin:0 0 28px;">Angaben gemÃ¤ÃŸ Â§ 5 TMG</p>
+    <p style="font-size:12px;color:var(--gd2);margin:0 0 28px;">Angaben gemäß § 5 TMG</p>
 
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
       <div class="fsec" style="margin-top:0;">Anbieter</div>
       <p style="margin:0 0 4px;font-weight:600;">Niklas Boenisch</p>
-      <p style="margin:0;color:var(--gd2);font-size:14px;">[StraÃŸe und Hausnummer]<br>[PLZ Stadt]<br>Deutschland</p>
+      <p style="margin:0;color:var(--gd2);font-size:14px;">PLACEHOLDER_ADDR<br>[PLZ Stadt]<br>Deutschland</p>
     </div>
 
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
       <div class="fsec" style="margin-top:0;">Kontakt</div>
       <table style="border-collapse:collapse;font-size:14px;width:100%;">
         <tr><td style="padding:3px 14px 3px 0;color:var(--gd2);white-space:nowrap;">E-Mail</td><td>assistcoach2026@gmail.com</td></tr>
+        
       </table>
     </div>
 
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
-      <div class="fsec" style="margin-top:0;">Verantwortlich fÃ¼r den Inhalt (Â§ 18 Abs. 2 MStV)</div>
-      <p style="margin:0;font-size:14px;">Niklas Boenisch<br>[StraÃŸe], [PLZ Stadt]</p>
+      <div class="fsec" style="margin-top:0;">Verantwortlich für den Inhalt (§ 18 Abs. 2 MStV)</div>
+      <p style="margin:0;font-size:14px;">Niklas Boenisch<br>Hansaring 111-113, 50670 Köln</p>
     </div>
 
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
       <div class="fsec" style="margin-top:0;">Haftungsausschluss</div>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Die Inhalte dieser Anwendung wurden mit grÃ¶ÃŸter Sorgfalt erstellt. FÃ¼r die Richtigkeit, VollstÃ¤ndigkeit und AktualitÃ¤t der Inhalte kann jedoch keine GewÃ¤hr Ã¼bernommen werden.</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Als Diensteanbieter sind wir gemÃ¤ÃŸ Â§ 7 Abs. 1 TMG fÃ¼r eigene Inhalte nach den allgemeinen Gesetzen verantwortlich. Nach Â§Â§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet, Ã¼bermittelte oder gespeicherte fremde Informationen zu Ã¼berwachen.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Die Inhalte dieser Anwendung wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte kann jedoch keine Gewähr übernommen werden.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Als Diensteanbieter sind wir gemäß § 7 Abs. 1 TMG für eigene Inhalte nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen.</p>
     </div>
 
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
       <div class="fsec" style="margin-top:0;">Urheberrecht</div>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Die durch die Betreiber erstellten Inhalte und Werke in dieser Anwendung unterliegen dem deutschen Urheberrecht. Die VervielfÃ¤ltigung, Bearbeitung, Verbreitung und jede Art der Verwertung auÃŸerhalb der Grenzen des Urheberrechts bedÃ¼rfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Die durch die Betreiber erstellten Inhalte und Werke in dieser Anwendung unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechts bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.</p>
     </div>
 
     <p style="font-size:11px;color:var(--gd2);text-align:center;margin-top:24px;">Stand: <span id="impressumDate"></span></p>
@@ -714,115 +715,68 @@
   </div>
 </div>
 
+
 <!-- DATENSCHUTZ PAGE -->
 <div id="page-datenschutz" class="page">
   <div class="inner" style="max-width:680px;padding-bottom:60px;">
-    <button onclick="history.back()||goPage('home')" style="display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--gd2);font-size:13px;cursor:pointer;margin-bottom:18px;padding:0;font-family:'Barlow',sans-serif;">â† ZurÃ¼ck</button>
-    <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;margin:0 0 6px;">DatenschutzerklÃ¤rung</h1>
-    <p style="font-size:12px;color:var(--gd2);margin:0 0 28px;">GemÃ¤ÃŸ DSGVO und TDDDG</p>
+    <button onclick="history.back()||goPage('home')" style="display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--gd2);font-size:13px;cursor:pointer;margin-bottom:18px;padding:0;font-family:'Barlow',sans-serif;">&#8592; Zur&uuml;ck</button>
+    <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;margin:0 0 6px;">Datenschutzerkl&auml;rung</h1>
+    <p style="font-size:12px;color:var(--gd2);margin:0 0 28px;">Gem&auml;&szlig; DSGVO und TDDDG</p>
 
-    <!-- 1. Datenschutz auf einen Blick -->
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
       <div class="fsec" style="margin-top:0;">1. Datenschutz auf einen Blick</div>
       <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Allgemeine Hinweise</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 14px;">Die folgenden Hinweise geben einen einfachen Ãœberblick darÃ¼ber, was mit Ihren personenbezogenen Daten passiert, wenn Sie diese Website besuchen. Personenbezogene Daten sind alle Daten, mit denen Sie persÃ¶nlich identifiziert werden kÃ¶nnen. AusfÃ¼hrliche Informationen zum Thema Datenschutz entnehmen Sie unserer unter diesem Text aufgefÃ¼hrten DatenschutzerklÃ¤rung.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 14px;">Die folgenden Hinweise geben einen einfachen &Uuml;berblick dar&uuml;ber, was mit Ihren personenbezogenen Daten passiert, wenn Sie diese Website besuchen. Personenbezogene Daten sind alle Daten, mit denen Sie pers&ouml;nlich identifiziert werden k&ouml;nnen. Ausf&uuml;hrliche Informationen zum Thema Datenschutz entnehmen Sie unserer unter diesem Text aufgef&uuml;hrten Datenschutzerkl&auml;rung.</p>
       <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Datenerfassung auf dieser Website</p>
-      <p style="font-size:13px;font-weight:600;margin:0 0 4px;color:var(--gd2);">Wer ist verantwortlich fÃ¼r die Datenerfassung auf dieser Website?</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber. Dessen Kontaktdaten kÃ¶nnen Sie dem Abschnitt â€žHinweis zur verantwortlichen Stelle" in dieser DatenschutzerklÃ¤rung entnehmen.</p>
+      <p style="font-size:13px;font-weight:600;margin:0 0 4px;color:var(--gd2);">Wer ist verantwortlich f&uuml;r die Datenerfassung auf dieser Website?</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber. Dessen Kontaktdaten k&ouml;nnen Sie dem Abschnitt &bdquo;Hinweis zur verantwortlichen Stelle&ldquo; in dieser Datenschutzerkl&auml;rung entnehmen.</p>
       <p style="font-size:13px;font-weight:600;margin:0 0 4px;color:var(--gd2);">Wie erfassen wir Ihre Daten?</p>
       <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Ihre Daten werden zum einen dadurch erhoben, dass Sie uns diese mitteilen. Hierbei kann es sich z.&nbsp;B. um Daten handeln, die Sie in ein Kontaktformular eingeben.</p>
       <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Andere Daten werden automatisch oder nach Ihrer Einwilligung beim Besuch der Website durch unsere IT-Systeme erfasst. Das sind vor allem technische Daten (z.&nbsp;B. Internetbrowser, Betriebssystem oder Uhrzeit des Seitenaufrufs). Die Erfassung dieser Daten erfolgt automatisch, sobald Sie diese Website betreten.</p>
-      <p style="font-size:13px;font-weight:600;margin:0 0 4px;color:var(--gd2);">WofÃ¼r nutzen wir Ihre Daten?</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Ein Teil der Daten wird erhoben, um eine fehlerfreie Bereitstellung der Website zu gewÃ¤hrleisten. Andere Daten kÃ¶nnen zur Analyse Ihres Nutzerverhaltens verwendet werden. Sofern Ã¼ber die Website VertrÃ¤ge geschlossen oder angebahnt werden kÃ¶nnen, werden die Ã¼bermittelten Daten auch fÃ¼r Vertragsangebote, Bestellungen oder sonstige Auftragsanfragen verarbeitet.</p>
-      <p style="font-size:13px;font-weight:600;margin:0 0 4px;color:var(--gd2);">Welche Rechte haben Sie bezÃ¼glich Ihrer Daten?</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Sie haben jederzeit das Recht, unentgeltlich Auskunft Ã¼ber Herkunft, EmpfÃ¤nger und Zweck Ihrer gespeicherten personenbezogenen Daten zu erhalten. Sie haben auÃŸerdem ein Recht, die Berichtigung oder LÃ¶schung dieser Daten zu verlangen. Wenn Sie eine Einwilligung zur Datenverarbeitung erteilt haben, kÃ¶nnen Sie diese Einwilligung jederzeit fÃ¼r die Zukunft widerrufen. AuÃŸerdem haben Sie das Recht, unter bestimmten UmstÃ¤nden die EinschrÃ¤nkung der Verarbeitung Ihrer personenbezogenen Daten zu verlangen. Des Weiteren steht Ihnen ein Beschwerderecht bei der zustÃ¤ndigen AufsichtsbehÃ¶rde zu.</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Hierzu sowie zu weiteren Fragen zum Thema Datenschutz kÃ¶nnen Sie sich jederzeit an uns wenden.</p>
+      <p style="font-size:13px;font-weight:600;margin:0 0 4px;color:var(--gd2);">Wof&uuml;r nutzen wir Ihre Daten?</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Ein Teil der Daten wird erhoben, um eine fehlerfreie Bereitstellung der Website zu gew&auml;hrleisten. Andere Daten k&ouml;nnen zur Analyse Ihres Nutzerverhaltens verwendet werden. Sofern &uuml;ber die Website Vertr&auml;ge geschlossen oder angebahnt werden k&ouml;nnen, werden die &uuml;bermittelten Daten auch f&uuml;r Vertragsangebote, Bestellungen oder sonstige Auftragsanfragen verarbeitet.</p>
+      <p style="font-size:13px;font-weight:600;margin:0 0 4px;color:var(--gd2);">Welche Rechte haben Sie bez&uuml;glich Ihrer Daten?</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Sie haben jederzeit das Recht, unentgeltlich Auskunft &uuml;ber Herkunft, Empf&auml;nger und Zweck Ihrer gespeicherten personenbezogenen Daten zu erhalten. Sie haben au&szlig;erdem ein Recht, die Berichtigung oder L&ouml;schung dieser Daten zu verlangen. Wenn Sie eine Einwilligung zur Datenverarbeitung erteilt haben, k&ouml;nnen Sie diese Einwilligung jederzeit f&uuml;r die Zukunft widerrufen. Au&szlig;erdem haben Sie das Recht, unter bestimmten Umst&auml;nden die Einschr&auml;nkung der Verarbeitung Ihrer personenbezogenen Daten zu verlangen. Des Weiteren steht Ihnen ein Beschwerderecht bei der zust&auml;ndigen Aufsichtsbeh&ouml;rde zu.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Hierzu sowie zu weiteren Fragen zum Thema Datenschutz k&ouml;nnen Sie sich jederzeit an uns wenden.</p>
     </div>
 
-    <!-- 2. Hosting -->
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
       <div class="fsec" style="margin-top:0;">2. Hosting</div>
       <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 12px;">Wir hosten die Inhalte unserer Website bei folgendem Anbieter:</p>
       <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Externes Hosting</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Diese Website wird extern gehostet. Die personenbezogenen Daten, die auf dieser Website erfasst werden, werden auf den Servern des Hosters / der Hoster gespeichert. Hierbei kann es sich v.&nbsp;a. um IP-Adressen, Kontaktanfragen, Meta- und Kommunikationsdaten, Vertragsdaten, Kontaktdaten, Namen, Websitezugriffe und sonstige Daten, die Ã¼ber eine Website generiert werden, handeln.</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Das externe Hosting erfolgt zum Zwecke der VertragserfÃ¼llung gegenÃ¼ber unseren potenziellen und bestehenden Kunden (Art. 6 Abs. 1 lit. b DSGVO) und im Interesse einer sicheren, schnellen und effizienten Bereitstellung unseres Online-Angebots durch einen professionellen Anbieter (Art. 6 Abs. 1 lit. f DSGVO). Sofern eine entsprechende Einwilligung abgefragt wurde, erfolgt die Verarbeitung ausschlieÃŸlich auf Grundlage von Art. 6 Abs. 1 lit. a DSGVO und Â§ 25 Abs. 1 TDDDG, soweit die Einwilligung die Speicherung von Cookies oder den Zugriff auf Informationen im EndgerÃ¤t des Nutzers (z.&nbsp;B. Device-Fingerprinting) im Sinne des TDDDG umfasst. Die Einwilligung ist jederzeit widerrufbar.</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Unser(e) Hoster wird bzw. werden Ihre Daten nur insoweit verarbeiten, wie dies zur ErfÃ¼llung seiner Leistungspflichten erforderlich ist und unsere Weisungen in Bezug auf diese Daten befolgen.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Diese Website wird extern gehostet. Die personenbezogenen Daten, die auf dieser Website erfasst werden, werden auf den Servern des Hosters / der Hoster gespeichert. Hierbei kann es sich v.&nbsp;a. um IP-Adressen, Kontaktanfragen, Meta- und Kommunikationsdaten, Vertragsdaten, Kontaktdaten, Namen, Websitezugriffe und sonstige Daten, die &uuml;ber eine Website generiert werden, handeln.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Das externe Hosting erfolgt zum Zwecke der Vertragserf&uuml;llung gegen&uuml;ber unseren potenziellen und bestehenden Kunden (Art. 6 Abs. 1 lit. b DSGVO) und im Interesse einer sicheren, schnellen und effizienten Bereitstellung unseres Online-Angebots durch einen professionellen Anbieter (Art. 6 Abs. 1 lit. f DSGVO).</p>
       <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 4px;">Wir setzen folgende(n) Hoster ein:</p>
       <p style="font-size:13px;color:var(--gd2);margin:0 0 12px;">Vercel Inc., 340 Pine Street, Suite 701, San Francisco, CA 94104, USA<br>Grundlage: EU-Standardvertragsklauseln (Standard Contractual Clauses)</p>
       <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Auftragsverarbeitung</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 18px;">Wir haben einen Vertrag Ã¼ber Auftragsverarbeitung (AVV) zur Nutzung des oben genannten Dienstes geschlossen. Hierbei handelt es sich um einen datenschutzrechtlich vorgeschriebenen Vertrag, der gewÃ¤hrleistet, dass dieser die personenbezogenen Daten unserer Websitebesucher nur nach unseren Weisungen und unter Einhaltung der DSGVO verarbeitet.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 18px;">Wir haben einen Vertrag &uuml;ber Auftragsverarbeitung (AVV) zur Nutzung des oben genannten Dienstes geschlossen.</p>
       <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Backend-Dienste (Supabase)</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">FÃ¼r Authentifizierung, Datenspeicherung und Datenbankfunktionen nutzen wir den Dienst Supabase der Supabase Inc., 970 Toa Payoh North, #07-04, Singapur 318992. Dabei werden personenbezogene Daten (z.&nbsp;B. E-Mail-Adresse, Nutzungsdaten) auf Servern in der EuropÃ¤ischen Union (Frankfurt, Deutschland) gespeichert und verarbeitet.</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Rechtsgrundlage der Verarbeitung ist Art. 6 Abs. 1 lit. b DSGVO (VertragserfÃ¼llung) sowie Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einem sicheren und stabilen Betrieb). Wir haben mit Supabase einen Auftragsverarbeitungsvertrag (Data Processing Agreement) abgeschlossen. Weitere Informationen: <a href="https://supabase.com/privacy" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">supabase.com/privacy</a>.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">F&uuml;r Authentifizierung, Datenspeicherung und Datenbankfunktionen nutzen wir den Dienst Supabase der Supabase Inc., 970 Toa Payoh North, #07-04, Singapur 318992. Dabei werden personenbezogene Daten (z.&nbsp;B. E-Mail-Adresse, Nutzungsdaten) auf Servern in der Europ&auml;ischen Union (Frankfurt, Deutschland) gespeichert und verarbeitet.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Rechtsgrundlage der Verarbeitung ist Art. 6 Abs. 1 lit. b DSGVO sowie Art. 6 Abs. 1 lit. f DSGVO. Weitere Informationen: <a href="https://supabase.com/privacy" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">supabase.com/privacy</a>.</p>
     </div>
 
-    <!-- 3. Allgemeine Hinweise und Pflichtinformationen -->
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
       <div class="fsec" style="margin-top:0;">3. Allgemeine Hinweise und Pflichtinformationen</div>
-      <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Datenschutz</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Die Betreiber dieser Seiten nehmen den Schutz Ihrer persÃ¶nlichen Daten sehr ernst. Wir behandeln Ihre personenbezogenen Daten vertraulich und entsprechend den gesetzlichen Datenschutzvorschriften sowie dieser DatenschutzerklÃ¤rung.</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Wenn Sie diese Website benutzen, werden verschiedene personenbezogene Daten erhoben. Personenbezogene Daten sind Daten, mit denen Sie persÃ¶nlich identifiziert werden kÃ¶nnen. Die vorliegende DatenschutzerklÃ¤rung erlÃ¤utert, welche Daten wir erheben und wofÃ¼r wir sie nutzen. Sie erlÃ¤utert auch, wie und zu welchem Zweck das geschieht.</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 16px;">Wir weisen darauf hin, dass die DatenÃ¼bertragung im Internet (z.&nbsp;B. bei der Kommunikation per E-Mail) SicherheitslÃ¼cken aufweisen kann. Ein lÃ¼ckenloser Schutz der Daten vor dem Zugriff durch Dritte ist nicht mÃ¶glich.</p>
-
       <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Hinweis zur verantwortlichen Stelle</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 6px;">Die verantwortliche Stelle fÃ¼r die Datenverarbeitung auf dieser Website ist:</p>
-      <p style="font-size:13px;color:var(--gd2);margin:0 0 6px;">Niklas Boenisch<br>Hansaring 111-113<br>50670 KÃ¶ln<br>Deutschland</p>
-      <p style="font-size:13px;color:var(--gd2);margin:0 0 16px;">E-Mail: assistcoach2026@gmail.com</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 16px;">Verantwortliche Stelle ist die natÃ¼rliche oder juristische Person, die allein oder gemeinsam mit anderen Ã¼ber die Zwecke und Mittel der Verarbeitung von personenbezogenen Daten (z.&nbsp;B. Namen, E-Mail-Adressen o.&nbsp;Ã„.) entscheidet.</p>
-
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 6px;">Die verantwortliche Stelle f&uuml;r die Datenverarbeitung auf dieser Website ist:</p>
+      <p style="font-size:13px;color:var(--gd2);margin:0 0 12px;">Niklas Boenisch<br>Hansaring 111-113<br>50670 K&ouml;ln<br>Deutschland<br>E-Mail: assistcoach2026@gmail.com</p>
       <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Speicherdauer</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 16px;">Soweit innerhalb dieser DatenschutzerklÃ¤rung keine speziellere Speicherdauer genannt wurde, verbleiben Ihre personenbezogenen Daten bei uns, bis der Zweck fÃ¼r die Datenverarbeitung entfÃ¤llt. Wenn Sie ein berechtigtes LÃ¶schersuchen geltend machen oder eine Einwilligung zur Datenverarbeitung widerrufen, werden Ihre Daten gelÃ¶scht, sofern wir keine anderen rechtlich zulÃ¤ssigen GrÃ¼nde fÃ¼r die Speicherung Ihrer personenbezogenen Daten haben (z.&nbsp;B. steuer- oder handelsrechtliche Aufbewahrungsfristen); im letztgenannten Fall erfolgt die LÃ¶schung nach Fortfall dieser GrÃ¼nde.</p>
-
-      <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Allgemeine Hinweise zu den Rechtsgrundlagen der Datenverarbeitung auf dieser Website</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 16px;">Sofern Sie in die Datenverarbeitung eingewilligt haben, verarbeiten wir Ihre personenbezogenen Daten auf Grundlage von Art. 6 Abs. 1 lit. a DSGVO bzw. Art. 9 Abs. 2 lit. a DSGVO, sofern besondere Datenkategorien nach Art. 9 Abs. 1 DSGVO verarbeitet werden. Im Falle einer ausdrÃ¼cklichen Einwilligung in die Ãœbertragung personenbezogener Daten in Drittstaaten erfolgt die Datenverarbeitung auÃŸerdem auf Grundlage von Art. 49 Abs. 1 lit. a DSGVO. Sofern Sie in die Speicherung von Cookies oder in den Zugriff auf Informationen in Ihr EndgerÃ¤t (z.&nbsp;B. via Device-Fingerprinting) eingewilligt haben, erfolgt die Datenverarbeitung zusÃ¤tzlich auf Grundlage von Â§ 25 Abs. 1 TDDDG. Die Einwilligung ist jederzeit widerrufbar. Sind Ihre Daten zur VertragserfÃ¼llung oder zur DurchfÃ¼hrung vorvertraglicher MaÃŸnahmen erforderlich, verarbeiten wir Ihre Daten auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO. Des Weiteren verarbeiten wir Ihre Daten, sofern diese zur ErfÃ¼llung einer rechtlichen Verpflichtung erforderlich sind, auf Grundlage von Art. 6 Abs. 1 lit. c DSGVO. Die Datenverarbeitung kann ferner auf Grundlage unseres berechtigten Interesses nach Art. 6 Abs. 1 lit. f DSGVO erfolgen.</p>
-
-      <p style="font-size:13px;font-weight:600;margin:0 0 6px;">EmpfÃ¤nger von personenbezogenen Daten</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 16px;">Im Rahmen unserer GeschÃ¤ftstÃ¤tigkeit arbeiten wir mit verschiedenen externen Stellen zusammen. Dabei ist teilweise auch eine Ãœbermittlung von personenbezogenen Daten an diese externen Stellen erforderlich. Wir geben personenbezogene Daten nur dann an externe Stellen weiter, wenn dies im Rahmen einer VertragserfÃ¼llung erforderlich ist, wenn wir gesetzlich hierzu verpflichtet sind (z.&nbsp;B. Weitergabe von Daten an SteuerbehÃ¶rden), wenn wir ein berechtigtes Interesse nach Art. 6 Abs. 1 lit. f DSGVO an der Weitergabe haben oder wenn eine sonstige Rechtsgrundlage die Datenweitergabe erlaubt. Beim Einsatz von Auftragsverarbeitern geben wir personenbezogene Daten unserer Kunden nur auf Grundlage eines gÃ¼ltigen Vertrags Ã¼ber Auftragsverarbeitung weiter. Im Falle einer gemeinsamen Verarbeitung wird ein Vertrag Ã¼ber gemeinsame Verarbeitung geschlossen.</p>
-
-      <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Widerruf Ihrer Einwilligung zur Datenverarbeitung</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 16px;">Viele DatenverarbeitungsvorgÃ¤nge sind nur mit Ihrer ausdrÃ¼cklichen Einwilligung mÃ¶glich. Sie kÃ¶nnen eine bereits erteilte Einwilligung jederzeit widerrufen. Die RechtmÃ¤ÃŸigkeit der bis zum Widerruf erfolgten Datenverarbeitung bleibt vom Widerruf unberÃ¼hrt.</p>
-
-      <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Widerspruchsrecht gegen die Datenerhebung in besonderen FÃ¤llen sowie gegen Direktwerbung (Art. 21 DSGVO)</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;text-transform:uppercase;">Wenn die Datenverarbeitung auf Grundlage von Art. 6 Abs. 1 lit. e oder f DSGVO erfolgt, haben Sie jederzeit das Recht, aus GrÃ¼nden, die sich aus Ihrer besonderen Situation ergeben, gegen die Verarbeitung Ihrer personenbezogenen Daten Widerspruch einzulegen; dies gilt auch fÃ¼r ein auf diese Bestimmungen gestÃ¼tztes Profiling. Die jeweilige Rechtsgrundlage, auf denen eine Verarbeitung beruht, entnehmen Sie dieser DatenschutzerklÃ¤rung. Wenn Sie Widerspruch einlegen, werden wir Ihre betroffenen personenbezogenen Daten nicht mehr verarbeiten, es sei denn, wir kÃ¶nnen zwingende schutzwÃ¼rdige GrÃ¼nde fÃ¼r die Verarbeitung nachweisen, die Ihre Interessen, Rechte und Freiheiten Ã¼berwiegen oder die Verarbeitung dient der Geltendmachung, AusÃ¼bung oder Verteidigung von RechtsansprÃ¼chen (Widerspruch nach Art. 21 Abs. 1 DSGVO).</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 16px;text-transform:uppercase;">Werden Ihre personenbezogenen Daten verarbeitet, um Direktwerbung zu betreiben, so haben Sie das Recht, jederzeit Widerspruch gegen die Verarbeitung Sie betreffender personenbezogener Daten zum Zwecke derartiger Werbung einzulegen; dies gilt auch fÃ¼r das Profiling, soweit es mit solcher Direktwerbung in Verbindung steht. Wenn Sie widersprechen, werden Ihre personenbezogenen Daten anschlieÃŸend nicht mehr zum Zwecke der Direktwerbung verwendet (Widerspruch nach Art. 21 Abs. 2 DSGVO).</p>
-
-      <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Beschwerderecht bei der zustÃ¤ndigen AufsichtsbehÃ¶rde</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 16px;">Im Falle von VerstÃ¶ÃŸen gegen die DSGVO steht den Betroffenen ein Beschwerderecht bei einer AufsichtsbehÃ¶rde, insbesondere in dem Mitgliedstaat ihres gewÃ¶hnlichen Aufenthalts, ihres Arbeitsplatzes oder des Orts des mutmaÃŸlichen VerstoÃŸes zu. Das Beschwerderecht besteht unbeschadet anderweitiger verwaltungsrechtlicher oder gerichtlicher Rechtsbehelfe.</p>
-
-      <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Recht auf DatenÃ¼bertragbarkeit</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 16px;">Sie haben das Recht, Daten, die wir auf Grundlage Ihrer Einwilligung oder in ErfÃ¼llung eines Vertrags automatisiert verarbeiten, an sich oder an einen Dritten in einem gÃ¤ngigen, maschinenlesbaren Format aushÃ¤ndigen zu lassen. Sofern Sie die direkte Ãœbertragung der Daten an einen anderen Verantwortlichen verlangen, erfolgt dies nur, soweit es technisch machbar ist.</p>
-
-      <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Auskunft, Berichtigung und LÃ¶schung</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 16px;">Sie haben im Rahmen der geltenden gesetzlichen Bestimmungen jederzeit das Recht auf unentgeltliche Auskunft Ã¼ber Ihre gespeicherten personenbezogenen Daten, deren Herkunft und EmpfÃ¤nger und den Zweck der Datenverarbeitung und ggf. ein Recht auf Berichtigung oder LÃ¶schung dieser Daten. Hierzu sowie zu weiteren Fragen zum Thema personenbezogene Daten kÃ¶nnen Sie sich jederzeit an uns wenden.</p>
-
-      <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Recht auf EinschrÃ¤nkung der Verarbeitung</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 6px;">Sie haben das Recht, die EinschrÃ¤nkung der Verarbeitung Ihrer personenbezogenen Daten zu verlangen. Hierzu kÃ¶nnen Sie sich jederzeit an uns wenden. Das Recht auf EinschrÃ¤nkung der Verarbeitung besteht in folgenden FÃ¤llen:</p>
-      <ul style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;padding-left:20px;">
-        <li style="margin-bottom:6px;">Wenn Sie die Richtigkeit Ihrer bei uns gespeicherten personenbezogenen Daten bestreiten, benÃ¶tigen wir in der Regel Zeit, um dies zu Ã¼berprÃ¼fen. FÃ¼r die Dauer der PrÃ¼fung haben Sie das Recht, die EinschrÃ¤nkung der Verarbeitung Ihrer personenbezogenen Daten zu verlangen.</li>
-        <li style="margin-bottom:6px;">Wenn die Verarbeitung Ihrer personenbezogenen Daten unrechtmÃ¤ÃŸig geschah/geschieht, kÃ¶nnen Sie statt der LÃ¶schung die EinschrÃ¤nkung der Datenverarbeitung verlangen.</li>
-        <li style="margin-bottom:6px;">Wenn wir Ihre personenbezogenen Daten nicht mehr benÃ¶tigen, Sie sie jedoch zur AusÃ¼bung, Verteidigung oder Geltendmachung von RechtsansprÃ¼chen benÃ¶tigen, haben Sie das Recht, statt der LÃ¶schung die EinschrÃ¤nkung der Verarbeitung Ihrer personenbezogenen Daten zu verlangen.</li>
-        <li>Wenn Sie einen Widerspruch nach Art. 21 Abs. 1 DSGVO eingelegt haben, muss eine AbwÃ¤gung zwischen Ihren und unseren Interessen vorgenommen werden. Solange noch nicht feststeht, wessen Interessen Ã¼berwiegen, haben Sie das Recht, die EinschrÃ¤nkung der Verarbeitung Ihrer personenbezogenen Daten zu verlangen.</li>
-      </ul>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 16px;">Wenn Sie die Verarbeitung Ihrer personenbezogenen Daten eingeschrÃ¤nkt haben, dÃ¼rfen diese Daten â€“ von ihrer Speicherung abgesehen â€“ nur mit Ihrer Einwilligung oder zur Geltendmachung, AusÃ¼bung oder Verteidigung von RechtsansprÃ¼chen oder zum Schutz der Rechte einer anderen natÃ¼rlichen oder juristischen Person oder aus GrÃ¼nden eines wichtigen Ã¶ffentlichen Interesses der EuropÃ¤ischen Union oder eines Mitgliedstaats verarbeitet werden.</p>
-
-      <p style="font-size:13px;font-weight:600;margin:0 0 6px;">SSL- bzw. TLS-VerschlÃ¼sselung</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Diese Seite nutzt aus SicherheitsgrÃ¼nden und zum Schutz der Ãœbertragung vertraulicher Inhalte, wie zum Beispiel Bestellungen oder Anfragen, die Sie an uns als Seitenbetreiber senden, eine SSL- bzw. TLS-VerschlÃ¼sselung. Eine verschlÃ¼sselte Verbindung erkennen Sie daran, dass die Adresszeile des Browsers von â€žhttp://" auf â€žhttps://" wechselt und an dem Schloss-Symbol in Ihrer Browserzeile.</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 16px;">Wenn die SSL- bzw. TLS-VerschlÃ¼sselung aktiviert ist, kÃ¶nnen die Daten, die Sie an uns Ã¼bermitteln, nicht von Dritten mitgelesen werden.</p>
-
-      <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Widerspruch gegen Werbe-E-Mails</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Der Nutzung von im Rahmen der Impressumspflicht verÃ¶ffentlichten Kontaktdaten zur Ãœbersendung von nicht ausdrÃ¼cklich angeforderter Werbung und Informationsmaterialien wird hiermit widersprochen. Die Betreiber der Seiten behalten sich ausdrÃ¼cklich rechtliche Schritte im Falle der unverlangten Zusendung von Werbeinformationen, etwa durch Spam-E-Mails, vor.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 16px;">Soweit innerhalb dieser Datenschutzerkl&auml;rung keine speziellere Speicherdauer genannt wurde, verbleiben Ihre personenbezogenen Daten bei uns, bis der Zweck f&uuml;r die Datenverarbeitung entf&auml;llt.</p>
+      <p style="font-size:13px;font-weight:600;margin:0 0 6px;">SSL- bzw. TLS-Verschl&uuml;sselung</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 16px;">Diese Seite nutzt aus Sicherheitsgr&uuml;nden eine SSL- bzw. TLS-Verschl&uuml;sselung. Eine verschl&uuml;sselte Verbindung erkennen Sie daran, dass die Adresszeile des Browsers von &bdquo;http://&ldquo; auf &bdquo;https://&ldquo; wechselt.</p>
+      <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Ihre Rechte</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Sie haben jederzeit das Recht auf Auskunft, Berichtigung, L&ouml;schung, Einschr&auml;nkung der Verarbeitung sowie Daten&uuml;bertragbarkeit Ihrer gespeicherten personenbezogenen Daten. Au&szlig;erdem k&ouml;nnen Sie eine erteilte Einwilligung jederzeit widerrufen und haben ein Beschwerderecht bei der zust&auml;ndigen Datenschutzaufsichtsbeh&ouml;rde.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Zur Aus&uuml;bung Ihrer Rechte wenden Sie sich an: assistcoach2026@gmail.com</p>
     </div>
 
-    <!-- 4. Datenerfassung auf dieser Website -->
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
       <div class="fsec" style="margin-top:0;">4. Datenerfassung auf dieser Website</div>
       <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Anfrage per E-Mail</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Wenn Sie uns per E-Mail kontaktieren, wird Ihre Anfrage inklusive aller daraus hervorgehenden personenbezogenen Daten (Name, Anfrage) zum Zwecke der Bearbeitung Ihres Anliegens bei uns gespeichert und verarbeitet. Diese Daten geben wir nicht ohne Ihre Einwilligung weiter.</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Die Verarbeitung dieser Daten erfolgt auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO, sofern Ihre Anfrage mit der ErfÃ¼llung eines Vertrags zusammenhÃ¤ngt oder zur DurchfÃ¼hrung vorvertraglicher MaÃŸnahmen erforderlich ist. In allen Ã¼brigen FÃ¤llen beruht die Verarbeitung auf unserem berechtigten Interesse an der effektiven Bearbeitung der an uns gerichteten Anfragen (Art. 6 Abs. 1 lit. f DSGVO) oder auf Ihrer Einwilligung (Art. 6 Abs. 1 lit. a DSGVO) sofern diese abgefragt wurde; die Einwilligung ist jederzeit widerrufbar.</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Die von Ihnen an uns per Kontaktanfragen Ã¼bersandten Daten verbleiben bei uns, bis Sie uns zur LÃ¶schung auffordern, Ihre Einwilligung zur Speicherung widerrufen oder der Zweck fÃ¼r die Datenspeicherung entfÃ¤llt (z.&nbsp;B. nach abgeschlossener Bearbeitung Ihres Anliegens). Zwingende gesetzliche Bestimmungen â€“ insbesondere gesetzliche Aufbewahrungsfristen â€“ bleiben unberÃ¼hrt.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Wenn Sie uns per E-Mail kontaktieren, wird Ihre Anfrage inklusive aller daraus hervorgehenden personenbezogenen Daten zum Zwecke der Bearbeitung Ihres Anliegens bei uns gespeichert und verarbeitet. Diese Daten geben wir nicht ohne Ihre Einwilligung weiter.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Rechtsgrundlage: Art. 6 Abs. 1 lit. b und f DSGVO.</p>
     </div>
 
-    <p style="font-size:11px;color:var(--gd2);text-align:center;margin-top:24px;">Quelle: <a href="https://www.e-recht24.de" target="_blank" rel="noopener noreferrer" style="color:var(--gd2);">e-recht24.de</a> &nbsp;Â·&nbsp; Stand: <span id="datenschutzDate"></span></p>
+    <p style="font-size:11px;color:var(--gd2);text-align:center;margin-top:24px;">Quelle: <a href="https://www.e-recht24.de" target="_blank" rel="noopener noreferrer" style="color:var(--gd2);">e-recht24.de</a> &nbsp;&middot;&nbsp; Stand: <span id="datenschutzDate"></span></p>
     <script>document.getElementById('datenschutzDate').textContent=new Date().toLocaleDateString('de-DE',{month:'long',year:'numeric'});</script>
   </div>
 </div>
@@ -830,70 +784,58 @@
 <!-- AGB PAGE -->
 <div id="page-agb" class="page">
   <div class="inner" style="max-width:680px;padding-bottom:60px;">
-    <button onclick="history.back()||goPage('home')" style="display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--gd2);font-size:13px;cursor:pointer;margin-bottom:18px;padding:0;font-family:'Barlow',sans-serif;">← Zurück</button>
-    <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;margin:0 0 6px;">Allgemeine Geschäftsbedingungen (AGB)</h1>
-    <p style="font-size:12px;color:var(--gd2);margin:0 0 28px;">AssistCoach – assistcoach.app</p>
-
+    <button onclick="history.back()||goPage('home')" style="display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--gd2);font-size:13px;cursor:pointer;margin-bottom:18px;padding:0;font-family:'Barlow',sans-serif;">&#8592; Zur&uuml;ck</button>
+    <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;margin:0 0 6px;">Allgemeine Gesch&auml;ftsbedingungen (AGB)</h1>
+    <p style="font-size:12px;color:var(--gd2);margin:0 0 28px;">AssistCoach &ndash; assistcoach.app</p>
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
-      <div class="fsec" style="margin-top:0;">§ 1 Geltungsbereich</div>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Diese Allgemeinen Geschäftsbedingungen gelten für die Nutzung der Web-App AssistCoach (assistcoach.app), betrieben von Niklas Boenisch, Hansaring 111-113, 50670 Köln (nachfolgend „Anbieter"). Mit der Registrierung oder Nutzung der App erkennen Sie diese AGB an.</p>
+      <div class="fsec" style="margin-top:0;">&sect; 1 Geltungsbereich</div>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Diese AGB gelten f&uuml;r die Nutzung der Web-App AssistCoach (assistcoach.app), betrieben von Niklas Boenisch, Hansaring 111-113, 50670 K&ouml;ln. Mit der Registrierung oder Nutzung der App erkennen Sie diese AGB an.</p>
     </div>
-
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
-      <div class="fsec" style="margin-top:0;">§ 2 Leistungsbeschreibung</div>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">AssistCoach stellt Trainern und Sportinteressierten eine digitale Plattform zur Erstellung, Verwaltung und Planung von Trainingseinheiten und Übungen zur Verfügung.</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Die Basisfunktionen sind kostenlos nutzbar. Erweiterte Funktionen können zukünftig kostenpflichtig angeboten werden. Änderungen des Leistungsumfangs werden den Nutzern rechtzeitig mitgeteilt.</p>
+      <div class="fsec" style="margin-top:0;">&sect; 2 Leistungsbeschreibung</div>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">AssistCoach stellt Trainern und Sportinteressierten eine digitale Plattform zur Erstellung, Verwaltung und Planung von Trainingseinheiten und &Uuml;bungen zur Verf&uuml;gung.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Die Basisfunktionen sind kostenlos nutzbar. Erweiterte Funktionen k&ouml;nnen zuk&uuml;nftig kostenpflichtig angeboten werden.</p>
     </div>
-
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
-      <div class="fsec" style="margin-top:0;">§ 3 Registrierung und Nutzerkonto</div>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Die Nutzung bestimmter Funktionen setzt eine Registrierung voraus. Nutzer müssen bei der Registrierung wahrheitsgemäße Angaben machen und ihr Konto vor unbefugtem Zugriff schützen.</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Der Anbieter behält sich vor, Konten bei Verstoß gegen diese AGB zu sperren oder zu löschen. Ein Anspruch auf Aufrechterhaltung des Kontos besteht nicht.</p>
+      <div class="fsec" style="margin-top:0;">&sect; 3 Registrierung und Nutzerkonto</div>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Die Nutzung bestimmter Funktionen setzt eine Registrierung voraus. Nutzer m&uuml;ssen bei der Registrierung wahrheitsgem&auml;&szlig;e Angaben machen und ihr Konto vor unbefugtem Zugriff sch&uuml;tzen.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Der Anbieter beh&auml;lt sich vor, Konten bei Versto&szlig; gegen diese AGB zu sperren oder zu l&ouml;schen.</p>
     </div>
-
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
-      <div class="fsec" style="margin-top:0;">§ 4 Einreichung von Inhalten (Übungen und Trainingspläne)</div>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Nutzer können eigene Übungen und Trainingspläne zur Aufnahme in den öffentlichen Katalog einreichen. Mit der Einreichung räumt der Nutzer dem Anbieter das nicht-exklusive, unentgeltliche Recht ein, die eingereichten Inhalte auf der Plattform zu veröffentlichen, zu bearbeiten und zu nutzen.</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Der Nutzer versichert, dass eingereichte Inhalte keine Rechte Dritter verletzen. Für Rechtsverletzungen durch eingereichte Inhalte haftet der einreichende Nutzer.</p>
+      <div class="fsec" style="margin-top:0;">&sect; 4 Einreichung von Inhalten</div>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Mit der Einreichung von &Uuml;bungen oder Trainingsp&auml;nen r&auml;umt der Nutzer dem Anbieter das nicht-exklusive, unentgeltliche Recht ein, diese Inhalte auf der Plattform zu ver&ouml;ffentlichen und zu bearbeiten.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Der Nutzer versichert, dass eingereichte Inhalte keine Rechte Dritter verletzen.</p>
     </div>
-
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
-      <div class="fsec" style="margin-top:0;">§ 5 Vereinszugang und Logonutzung</div>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Vereine können einen Vereinszugang erwerben, der u.&nbsp;a. das Hochladen eines Vereinslogos ermöglicht. Mit dem Hochladen eines Logos versichert der Nutzer, zur Nutzung und Veröffentlichung des Logos berechtigt zu sein.</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Sofern der Nutzer der optionalen Anzeige des Logos auf der AssistCoach-Startseite zustimmt, erteilt er dem Anbieter ausdrücklich die Erlaubnis, das Vereinslogo zu Referenzzwecken (Darstellung kooperierender Vereine) auf der Startseite zu verwenden. Diese Zustimmung kann jederzeit widerrufen werden.</p>
+      <div class="fsec" style="margin-top:0;">&sect; 5 Vereinszugang und Logonutzung</div>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Mit dem Hochladen eines Logos versichert der Nutzer, zur Nutzung und Ver&ouml;ffentlichung berechtigt zu sein.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Sofern der Nutzer der optionalen Anzeige des Logos auf der AssistCoach-Startseite zustimmt, erteilt er dem Anbieter ausdr&uuml;cklich die Erlaubnis, das Vereinslogo zu Referenzzwecken auf der Startseite zu verwenden. Diese Zustimmung kann jederzeit widerrufen werden.</p>
     </div>
-
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
-      <div class="fsec" style="margin-top:0;">§ 6 Nutzungspflichten</div>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 8px;">Nutzer verpflichten sich, die Plattform nicht missbräuchlich zu verwenden. Untersagt sind insbesondere:</p>
+      <div class="fsec" style="margin-top:0;">&sect; 6 Nutzungspflichten</div>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 8px;">Untersagt sind insbesondere:</p>
       <ul style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;padding-left:20px;">
-        <li style="margin-bottom:4px;">Das Einreichen rechtswidriger, beleidigender oder irreführender Inhalte</li>
+        <li style="margin-bottom:4px;">Das Einreichen rechtswidriger, beleidigender oder irref&uuml;hrender Inhalte</li>
         <li style="margin-bottom:4px;">Automatisierter Zugriff auf die Plattform (Scraping, Bots)</li>
-        <li>Jede Handlung, die den Betrieb der Plattform beeinträchtigt</li>
+        <li>Jede Handlung, die den Betrieb der Plattform beeintr&auml;chtigt</li>
       </ul>
     </div>
-
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
-      <div class="fsec" style="margin-top:0;">§ 7 Verfügbarkeit und Haftung</div>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Der Anbieter ist bemüht, die Plattform möglichst unterbrechungsfrei zur Verfügung zu stellen, übernimmt jedoch keine Garantie für eine ununterbrochene Verfügbarkeit.</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Die Haftung des Anbieters ist auf Vorsatz und grobe Fahrlässigkeit beschränkt, soweit nicht Leben, Körper oder Gesundheit betroffen sind oder zwingende gesetzliche Regelungen entgegenstehen.</p>
+      <div class="fsec" style="margin-top:0;">&sect; 7 Haftung</div>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Die Haftung des Anbieters ist auf Vorsatz und grobe Fahrl&auml;ssigkeit beschr&auml;nkt, soweit nicht Leben, K&ouml;rper oder Gesundheit betroffen sind oder zwingende gesetzliche Regelungen entgegenstehen.</p>
     </div>
-
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
-      <div class="fsec" style="margin-top:0;">§ 8 Änderungen der AGB</div>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Der Anbieter behält sich vor, diese AGB mit angemessener Vorankündigung (mind. 4 Wochen) zu ändern. Widerspricht der Nutzer der Änderung nicht innerhalb dieser Frist, gelten die neuen AGB als akzeptiert. Bei Widerspruch steht dem Nutzer ein Sonderkündigungsrecht zu.</p>
+      <div class="fsec" style="margin-top:0;">&sect; 8 &Auml;nderungen der AGB</div>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Der Anbieter beh&auml;lt sich vor, diese AGB mit angemessener Vork&uuml;ndigung (mind. 4 Wochen) zu &auml;ndern. Bei Widerspruch steht dem Nutzer ein Sonderk&uuml;ndigungsrecht zu.</p>
     </div>
-
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
-      <div class="fsec" style="margin-top:0;">§ 9 Anwendbares Recht und Gerichtsstand</div>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Es gilt das Recht der Bundesrepublik Deutschland. Gerichtsstand für alle Streitigkeiten mit Kaufleuten, juristischen Personen des öffentlichen Rechts oder öffentlich-rechtlichen Sondervermögen ist Köln.</p>
+      <div class="fsec" style="margin-top:0;">&sect; 9 Anwendbares Recht und Gerichtsstand</div>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Es gilt das Recht der Bundesrepublik Deutschland. Gerichtsstand f&uuml;r Kaufleute und juristische Personen des &ouml;ffentlichen Rechts ist K&ouml;ln.</p>
     </div>
-
     <p style="font-size:11px;color:var(--gd2);text-align:center;margin-top:24px;">Stand: <span id="agbDate"></span></p>
     <script>document.getElementById('agbDate').textContent=new Date().toLocaleDateString('de-DE',{month:'long',year:'numeric'});</script>
   </div>
 </div>
-
 <!-- HELP PANEL -->
 <div id="helpOverlay" onclick="closeHelpPanel()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:8000;backdrop-filter:blur(2px);"></div>
 <aside id="helpPanel" style="display:none;position:fixed;top:0;right:0;bottom:0;width:min(520px,100vw);background:var(--surface);z-index:8001;overflow-y:auto;box-shadow:-4px 0 32px rgba(0,0,0,.3);flex-direction:column;">
@@ -904,256 +846,256 @@
       <div style="width:30px;height:30px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#fff;flex-shrink:0;">?</div>
       <div>
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:900;letter-spacing:.3px;">Hilfe &amp; Anleitung</div>
-        <div style="font-size:11px;color:var(--gd2);">AssistCoach â€“ alle Funktionen erklÃ¤rt</div>
+        <div style="font-size:11px;color:var(--gd2);">AssistCoach – alle Funktionen erklärt</div>
       </div>
-      <button onclick="closeHelpPanel()" style="margin-left:auto;background:none;border:none;font-size:20px;cursor:pointer;color:var(--gd2);line-height:1;padding:4px;">âœ•</button>
+      <button onclick="closeHelpPanel()" style="margin-left:auto;background:none;border:none;font-size:20px;cursor:pointer;color:var(--gd2);line-height:1;padding:4px;">✕</button>
     </div>
     <!-- Tabs -->
     <div style="display:flex;gap:4px;margin-bottom:10px;">
-      <button id="helpTab-quick" onclick="switchHelpTab('quick')" style="flex:1;padding:7px 10px;border-radius:7px;border:1.5px solid var(--accent);background:var(--accent);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.3px;">âš¡ KurzÃ¼bersicht</button>
-      <button id="helpTab-detail" onclick="switchHelpTab('detail')" style="flex:1;padding:7px 10px;border-radius:7px;border:1.5px solid var(--border);background:none;color:var(--text-2);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.3px;">ðŸ“– Detailguide</button>
+      <button id="helpTab-quick" onclick="switchHelpTab('quick')" style="flex:1;padding:7px 10px;border-radius:7px;border:1.5px solid var(--accent);background:var(--accent);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.3px;">⚡ Kurzübersicht</button>
+      <button id="helpTab-detail" onclick="switchHelpTab('detail')" style="flex:1;padding:7px 10px;border-radius:7px;border:1.5px solid var(--border);background:none;color:var(--text-2);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.3px;">📖 Detailguide</button>
     </div>
     <!-- Bereichs-Filter (nur im Detailguide) -->
     <div id="helpAreaFilter" style="display:none;flex-wrap:wrap;gap:5px;margin-bottom:8px;">
       <button class="haf-btn active" onclick="filterHelpArea('all')">Alle</button>
-      <button class="haf-btn" onclick="filterHelpArea('katalog')">ðŸ“š Katalog</button>
-      <button class="haf-btn" onclick="filterHelpArea('plan')">ðŸ“‹ Trainingsplan</button>
-      <button class="haf-btn" onclick="filterHelpArea('editor')">âš½ Feldeditor</button>
-      <button class="haf-btn" onclick="filterHelpArea('einreichen')">âœï¸ Einreichen</button>
-      <button class="haf-btn" onclick="filterHelpArea('konto')">ðŸ‘¤ Konto</button>
-      <button class="haf-btn" onclick="filterHelpArea('langzeit')">ðŸ“… Langzeit</button>
+      <button class="haf-btn" onclick="filterHelpArea('katalog')">📚 Katalog</button>
+      <button class="haf-btn" onclick="filterHelpArea('plan')">📋 Trainingsplan</button>
+      <button class="haf-btn" onclick="filterHelpArea('editor')">⚽ Feldeditor</button>
+      <button class="haf-btn" onclick="filterHelpArea('einreichen')">✏️ Einreichen</button>
+      <button class="haf-btn" onclick="filterHelpArea('konto')">👤 Konto</button>
+      <button class="haf-btn" onclick="filterHelpArea('langzeit')">📅 Langzeit</button>
     </div>
     <!-- Suche (nur im Detailguide) -->
     <div id="helpSearchWrap" style="display:none;position:relative;">
-      <input id="helpSearch" type="text" placeholder="Stichwort suchen â€¦" oninput="filterHelpCards(this.value)" style="width:100%;box-sizing:border-box;padding:8px 32px 8px 11px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface-2);color:var(--text);font-size:13px;outline:none;">
-      <span style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--gd2);pointer-events:none;">ðŸ”</span>
+      <input id="helpSearch" type="text" placeholder="Stichwort suchen …" oninput="filterHelpCards(this.value)" style="width:100%;box-sizing:border-box;padding:8px 32px 8px 11px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface-2);color:var(--text);font-size:13px;outline:none;">
+      <span style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--gd2);pointer-events:none;">🔍</span>
     </div>
-    <div id="helpNoResult" style="display:none;padding:8px 0 2px;font-size:12px;color:var(--gd2);text-align:center;">Kein Treffer â€“ versuche ein anderes Stichwort.</div>
+    <div id="helpNoResult" style="display:none;padding:8px 0 2px;font-size:12px;color:var(--gd2);text-align:center;">Kein Treffer – versuche ein anderes Stichwort.</div>
   </div>
 
-  <!-- â•â• KURZÃœBERSICHT â•â• -->
+  <!-- ══ KURZÜBERSICHT ══ -->
   <div id="helpTabQuick" style="padding:16px;display:flex;flex-direction:column;gap:8px;">
-    <p style="font-size:12px;color:var(--text-3);margin:0 0 4px;">Die wichtigsten Funktionen auf einen Blick. FÃ¼r Details: Tab â€žDetailguide".</p>
+    <p style="font-size:12px;color:var(--text-3);margin:0 0 4px;">Die wichtigsten Funktionen auf einen Blick. Für Details: Tab „Detailguide".</p>
 
     <div class="hq-card" onclick="switchHelpTab('detail');filterHelpArea('katalog')">
-      <div class="hq-icon" style="background:#1b5e20;">ðŸ“š</div>
+      <div class="hq-icon" style="background:#1b5e20;">📚</div>
       <div class="hq-body">
-        <div class="hq-title">Ãœbungskatalog</div>
-        <div class="hq-text">Ãœbungen in 6 Abschnitten durchsuchen, nach Tags filtern, Sternebewertung abgeben und direkt in den Trainingsplan Ã¼bernehmen. Ansicht: ausgeklappt oder als kompakte Liste.</div>
+        <div class="hq-title">Übungskatalog</div>
+        <div class="hq-text">Übungen in 6 Abschnitten durchsuchen, nach Tags filtern, Sternebewertung abgeben und direkt in den Trainingsplan übernehmen. Ansicht: ausgeklappt oder als kompakte Liste.</div>
       </div>
-      <div class="hq-arrow">â€º</div>
+      <div class="hq-arrow">›</div>
     </div>
 
     <div class="hq-card" onclick="switchHelpTab('detail');filterHelpArea('plan')">
-      <div class="hq-icon" style="background:#0d3b6e;">ðŸ“‹</div>
+      <div class="hq-icon" style="background:#0d3b6e;">📋</div>
       <div class="hq-body">
         <div class="hq-title">Trainingsplan</div>
-        <div class="hq-text">Ãœbungen per Drag &amp; Drop sortieren, Zeit mit âˆ’ / + anpassen, Zieldauer setzen (rote Warnung bei Ãœberschreitung), Ãœbungen als parallel (âˆ¥) markieren, Plan speichern &amp; als PDF drucken.</div>
+        <div class="hq-text">Übungen per Drag &amp; Drop sortieren, Zeit mit − / + anpassen, Zieldauer setzen (rote Warnung bei Überschreitung), Übungen als parallel (∥) markieren, Plan speichern &amp; als PDF drucken.</div>
       </div>
-      <div class="hq-arrow">â€º</div>
+      <div class="hq-arrow">›</div>
     </div>
 
     <div class="hq-card" onclick="switchHelpTab('detail');filterHelpArea('editor')">
-      <div class="hq-icon" style="background:#006064;">âš½</div>
+      <div class="hq-icon" style="background:#006064;">⚽</div>
       <div class="hq-body">
         <div class="hq-title">Felddiagramm-Editor</div>
-        <div class="hq-text">Spieler, BÃ¤lle, Tore, HÃ¼tchen und Laufwege auf dem Feld platzieren. Raster (â›¶) aktivieren fÃ¼r gleichmÃ¤ÃŸige AbstÃ¤nde. Strg+C/V kopieren, Strg+Z rÃ¼ckgÃ¤ngig.</div>
+        <div class="hq-text">Spieler, Bälle, Tore, Hütchen und Laufwege auf dem Feld platzieren. Raster (⛶) aktivieren für gleichmäßige Abstände. Strg+C/V kopieren, Strg+Z rückgängig.</div>
       </div>
-      <div class="hq-arrow">â€º</div>
+      <div class="hq-arrow">›</div>
     </div>
 
     <div class="hq-card" onclick="switchHelpTab('detail');filterHelpArea('einreichen')">
-      <div class="hq-icon" style="background:#e65100;">âœï¸</div>
+      <div class="hq-icon" style="background:#e65100;">✏️</div>
       <div class="hq-body">
-        <div class="hq-title">Ãœbung einreichen</div>
-        <div class="hq-text">Eigene Ãœbungen erstellen und einreichen. Passende Tags werden automatisch aus Ã¤hnlichen Ãœbungen vorgeschlagen. Nach Admin-PrÃ¼fung im Katalog sichtbar.</div>
+        <div class="hq-title">Übung einreichen</div>
+        <div class="hq-text">Eigene Übungen erstellen und einreichen. Passende Tags werden automatisch aus ähnlichen Übungen vorgeschlagen. Nach Admin-Prüfung im Katalog sichtbar.</div>
       </div>
-      <div class="hq-arrow">â€º</div>
+      <div class="hq-arrow">›</div>
     </div>
 
     <div class="hq-card" onclick="switchHelpTab('detail');filterHelpArea('langzeit')">
-      <div class="hq-icon" style="background:#4a148c;">ðŸ“…</div>
+      <div class="hq-icon" style="background:#4a148c;">📅</div>
       <div class="hq-body">
         <div class="hq-title">Langzeitplanung</div>
-        <div class="hq-text">TrainingsblÃ¶cke fÃ¼r die gesamte Saison anlegen und BelastungsverlÃ¤ufe visualisieren.</div>
+        <div class="hq-text">Trainingsblöcke für die gesamte Saison anlegen und Belastungsverläufe visualisieren.</div>
       </div>
-      <div class="hq-arrow">â€º</div>
+      <div class="hq-arrow">›</div>
     </div>
 
     <div class="hq-card" onclick="switchHelpTab('detail');filterHelpArea('konto')">
-      <div class="hq-icon" style="background:#37474f;">ðŸ‘¤</div>
+      <div class="hq-icon" style="background:#37474f;">👤</div>
       <div class="hq-body">
         <div class="hq-title">Konto &amp; Mein Bereich</div>
-        <div class="hq-text">FÃ¼r Katalog und Planung kein Konto nÃ¶tig. Zum Einreichen anmelden. Im â€žMein Bereich" eigene Ãœbungen und eingereichte PlÃ¤ne verwalten.</div>
+        <div class="hq-text">Für Katalog und Planung kein Konto nötig. Zum Einreichen anmelden. Im „Mein Bereich" eigene Übungen und eingereichte Pläne verwalten.</div>
       </div>
-      <div class="hq-arrow">â€º</div>
+      <div class="hq-arrow">›</div>
     </div>
 
     <div style="margin-top:4px;padding:10px 12px;border-radius:10px;background:var(--surface-2);border:1px solid var(--border);">
-      <div style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:6px;">âŒ¨ï¸ TastenkÃ¼rzel (Feldeditor)</div>
+      <div style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:6px;">⌨️ Tastenkürzel (Feldeditor)</div>
       <div style="display:flex;flex-wrap:wrap;gap:5px;">
-        <span class="help-pill">Strg+Z Â· RÃ¼ckgÃ¤ngig</span>
-        <span class="help-pill">Strg+C Â· Kopieren</span>
-        <span class="help-pill">Strg+V Â· EinfÃ¼gen</span>
-        <span class="help-pill">Strg+A Â· Alles wÃ¤hlen</span>
-        <span class="help-pill">Entf Â· LÃ¶schen</span>
-        <span class="help-pill">Esc Â· AbwÃ¤hlen</span>
+        <span class="help-pill">Strg+Z · Rückgängig</span>
+        <span class="help-pill">Strg+C · Kopieren</span>
+        <span class="help-pill">Strg+V · Einfügen</span>
+        <span class="help-pill">Strg+A · Alles wählen</span>
+        <span class="help-pill">Entf · Löschen</span>
+        <span class="help-pill">Esc · Abwählen</span>
       </div>
     </div>
   </div>
 
-  <!-- â•â• DETAILGUIDE â•â• -->
+  <!-- ══ DETAILGUIDE ══ -->
   <div id="helpTabDetail" style="display:none;padding:16px;display:none;flex-direction:column;gap:12px;">
 
     <!-- Katalog -->
-    <div class="help-card" data-area="katalog" data-tags="katalog Ã¼bung suche filter abschnitt tag cluster bewertung sterne ansicht karte liste">
-      <div class="help-card-icon" style="background:#1b5e20;">ðŸ“š</div>
+    <div class="help-card" data-area="katalog" data-tags="katalog übung suche filter abschnitt tag cluster bewertung sterne ansicht karte liste">
+      <div class="help-card-icon" style="background:#1b5e20;">📚</div>
       <div>
-        <div class="help-card-title">Ãœbungskatalog â€“ Suchen &amp; Filtern</div>
-        <p class="help-card-text">Alle freigegebenen Ãœbungen in 6 Abschnitten. Tags und Cluster helfen beim gezielten Filtern.</p>
-        <div class="help-step"><span class="help-num">1</span>Abschnitt Ã¼ber die Reiter oben wÃ¤hlen (Open Field, Warm Up, HinfÃ¼hrung â€¦)</div>
-        <div class="help-step"><span class="help-num">2</span>Kategorie-Chip anklicken â†’ nur Ãœbungen dieser Kategorie zeigen</div>
-        <div class="help-step"><span class="help-num">3</span>Tags direkt auf der Karte anklicken â†’ nach diesem Tag filtern</div>
+        <div class="help-card-title">Übungskatalog – Suchen &amp; Filtern</div>
+        <p class="help-card-text">Alle freigegebenen Übungen in 6 Abschnitten. Tags und Cluster helfen beim gezielten Filtern.</p>
+        <div class="help-step"><span class="help-num">1</span>Abschnitt über die Reiter oben wählen (Open Field, Warm Up, Hinführung …)</div>
+        <div class="help-step"><span class="help-num">2</span>Kategorie-Chip anklicken → nur Übungen dieser Kategorie zeigen</div>
+        <div class="help-step"><span class="help-num">3</span>Tags direkt auf der Karte anklicken → nach diesem Tag filtern</div>
         <div class="help-step"><span class="help-num">4</span>Suchfeld: Text sucht in Name, Beschreibung und Tags</div>
-        <div class="help-step"><span class="help-num">5</span>Globale Suche (Lupe oben) findet Ãœbungen aus <em>allen</em> Abschnitten</div>
-        <div class="help-step"><span class="help-num">6</span>â˜°â˜° / â‰¡ Toggle: zwischen vollstÃ¤ndigen Karten und kompakter Liste wechseln</div>
+        <div class="help-step"><span class="help-num">5</span>Globale Suche (Lupe oben) findet Übungen aus <em>allen</em> Abschnitten</div>
+        <div class="help-step"><span class="help-num">6</span>☰☰ / ≡ Toggle: zwischen vollständigen Karten und kompakter Liste wechseln</div>
       </div>
     </div>
 
     <div class="help-card" data-area="katalog" data-tags="katalog bewertung sterne rating abstimmung durchschnitt">
-      <div class="help-card-icon" style="background:#1b5e20;">â­</div>
+      <div class="help-card-icon" style="background:#1b5e20;">⭐</div>
       <div>
-        <div class="help-card-title">Ãœbungen bewerten</div>
-        <p class="help-card-text">Jede Ãœbung kann mit 1â€“5 Sternen bewertet werden. Jede:r Nutzer:in kann pro Ãœbung einmal abstimmen (Ã„nderung jederzeit mÃ¶glich).</p>
+        <div class="help-card-title">Übungen bewerten</div>
+        <p class="help-card-text">Jede Übung kann mit 1–5 Sternen bewertet werden. Jede:r Nutzer:in kann pro Übung einmal abstimmen (Änderung jederzeit möglich).</p>
         <div class="help-step"><span class="help-num">1</span>Sterne direkt auf der Karte oder im Detail-Modal anklicken</div>
         <div class="help-step"><span class="help-num">2</span>Durchschnitt wird erst ab 5 Bewertungen angezeigt</div>
-        <div class="help-step"><span class="help-num">3</span>Bei &gt;10 Ergebnissen: die 5 besten + 5 zufÃ¤llige erscheinen immer ganz oben</div>
+        <div class="help-step"><span class="help-num">3</span>Bei &gt;10 Ergebnissen: die 5 besten + 5 zufällige erscheinen immer ganz oben</div>
       </div>
     </div>
 
     <!-- Trainingsplan -->
-    <div class="help-card" data-area="plan" data-tags="trainingsplan plan Ã¼bung hinzufÃ¼gen drag drop reihenfolge zeit anpassen speichern laden drucken pdf">
-      <div class="help-card-icon" style="background:#0d3b6e;">ðŸ“‹</div>
+    <div class="help-card" data-area="plan" data-tags="trainingsplan plan übung hinzufügen drag drop reihenfolge zeit anpassen speichern laden drucken pdf">
+      <div class="help-card-icon" style="background:#0d3b6e;">📋</div>
       <div>
         <div class="help-card-title">Trainingsplan erstellen</div>
-        <p class="help-card-text">Ãœbungen aus dem Katalog zu einer vollstÃ¤ndigen Trainingseinheit zusammenstellen.</p>
-        <div class="help-step"><span class="help-num">1</span>Im Katalog auf <strong>â€ž+ Plan"</strong> klicken â†’ Ãœbung landet im Plan</div>
-        <div class="help-step"><span class="help-num">2</span>Im Trainingsplan: Reihenfolge per <strong>Drag &amp; Drop</strong> (â˜°-Griff) anpassen</div>
-        <div class="help-step"><span class="help-num">3</span>Belastungszeit pro Ãœbung mit <strong>âˆ’ / +</strong> Ã¤ndern</div>
-        <div class="help-step"><span class="help-num">4</span>â€žSpeichern" (oben) â†’ Plan mit Name sichern, bleibt nach SchlieÃŸen erhalten</div>
-        <div class="help-step"><span class="help-num">5</span>Drucksymbol â†’ Plan als PDF mit Materialliste exportieren</div>
-        <div class="help-step"><span class="help-num">6</span>â€žLeeren" â†’ alle Ãœbungen aus dem aktuellen Plan entfernen</div>
+        <p class="help-card-text">Übungen aus dem Katalog zu einer vollständigen Trainingseinheit zusammenstellen.</p>
+        <div class="help-step"><span class="help-num">1</span>Im Katalog auf <strong>„+ Plan"</strong> klicken → Übung landet im Plan</div>
+        <div class="help-step"><span class="help-num">2</span>Im Trainingsplan: Reihenfolge per <strong>Drag &amp; Drop</strong> (☰-Griff) anpassen</div>
+        <div class="help-step"><span class="help-num">3</span>Belastungszeit pro Übung mit <strong>− / +</strong> ändern</div>
+        <div class="help-step"><span class="help-num">4</span>„Speichern" (oben) → Plan mit Name sichern, bleibt nach Schließen erhalten</div>
+        <div class="help-step"><span class="help-num">5</span>Drucksymbol → Plan als PDF mit Materialliste exportieren</div>
+        <div class="help-step"><span class="help-num">6</span>„Leeren" → alle Übungen aus dem aktuellen Plan entfernen</div>
       </div>
     </div>
 
-    <div class="help-card" data-area="plan" data-tags="zieldauer parallel zeitkontingent Ã¼berschreitung warnung rot material">
-      <div class="help-card-icon" style="background:#0d3b6e;">â±</div>
+    <div class="help-card" data-area="plan" data-tags="zieldauer parallel zeitkontingent überschreitung warnung rot material">
+      <div class="help-card-icon" style="background:#0d3b6e;">⏱</div>
       <div>
-        <div class="help-card-title">Zieldauer &amp; Parallele Ãœbungen</div>
-        <p class="help-card-text">Behalte die EinheitslÃ¤nge im Blick und plane parallele Stationen effizient.</p>
+        <div class="help-card-title">Zieldauer &amp; Parallele Übungen</div>
+        <p class="help-card-text">Behalte die Einheitslänge im Blick und plane parallele Stationen effizient.</p>
         <div class="help-step"><span class="help-num">1</span><strong>Zieldauer</strong> im Einkaufswagen eintragen (z. B. 90 min)</div>
-        <div class="help-step"><span class="help-num">2</span>Rote Warnung erscheint, wenn die Gesamtzeit Ã¼berschritten ist</div>
-        <div class="help-step"><span class="help-num">3</span><strong>âˆ¥-Button</strong> neben einer Ãœbung â†’ als parallel markieren</div>
-        <div class="help-step"><span class="help-num">4</span>Parallele Ãœbungen zÃ¤hlen <em>nicht</em> zur Gesamtzeit (z. B. Torwarttraining)</div>
-        <div class="help-step"><span class="help-num">5</span>Materialliste zeigt automatisch die benÃ¶tigte Maximalanzahl (keine DoppelzÃ¤hlung)</div>
+        <div class="help-step"><span class="help-num">2</span>Rote Warnung erscheint, wenn die Gesamtzeit überschritten ist</div>
+        <div class="help-step"><span class="help-num">3</span><strong>∥-Button</strong> neben einer Übung → als parallel markieren</div>
+        <div class="help-step"><span class="help-num">4</span>Parallele Übungen zählen <em>nicht</em> zur Gesamtzeit (z. B. Torwarttraining)</div>
+        <div class="help-step"><span class="help-num">5</span>Materialliste zeigt automatisch die benötigte Maximalanzahl (keine Doppelzählung)</div>
       </div>
     </div>
 
-    <div class="help-card" data-area="plan" data-tags="plan speichern laden verÃ¶ffentlichen einreichen status prÃ¼fung mein bereich">
-      <div class="help-card-icon" style="background:#0d3b6e;">ðŸ’¾</div>
+    <div class="help-card" data-area="plan" data-tags="plan speichern laden veröffentlichen einreichen status prüfung mein bereich">
+      <div class="help-card-icon" style="background:#0d3b6e;">💾</div>
       <div>
-        <div class="help-card-title">PlÃ¤ne speichern &amp; verÃ¶ffentlichen</div>
-        <p class="help-card-text">Gespeicherte PlÃ¤ne bleiben in deinem Konto und kÃ¶nnen eingereicht werden.</p>
-        <div class="help-step"><span class="help-num">1</span>Plan benennen und auf â€žSpeichern" klicken</div>
-        <div class="help-step"><span class="help-num">2</span>Gespeicherte PlÃ¤ne erscheinen in der Liste darunter â€“ anklicken zum Laden</div>
-        <div class="help-step"><span class="help-num">3</span>â€žâ†‘ VerÃ¶ffentlichen" â†’ Plan zur Admin-PrÃ¼fung einreichen</div>
-        <div class="help-step"><span class="help-num">4</span>Status: <em>In PrÃ¼fung</em> â†’ <em>VerÃ¶ffentlicht</em> oder <em>Abgelehnt</em></div>
-        <div class="help-step"><span class="help-num">5</span>Im â€žMein Bereich" alle eingereichten PlÃ¤ne und deren Status sehen</div>
+        <div class="help-card-title">Pläne speichern &amp; veröffentlichen</div>
+        <p class="help-card-text">Gespeicherte Pläne bleiben in deinem Konto und können eingereicht werden.</p>
+        <div class="help-step"><span class="help-num">1</span>Plan benennen und auf „Speichern" klicken</div>
+        <div class="help-step"><span class="help-num">2</span>Gespeicherte Pläne erscheinen in der Liste darunter – anklicken zum Laden</div>
+        <div class="help-step"><span class="help-num">3</span>„↑ Veröffentlichen" → Plan zur Admin-Prüfung einreichen</div>
+        <div class="help-step"><span class="help-num">4</span>Status: <em>In Prüfung</em> → <em>Veröffentlicht</em> oder <em>Abgelehnt</em></div>
+        <div class="help-step"><span class="help-num">5</span>Im „Mein Bereich" alle eingereichten Pläne und deren Status sehen</div>
       </div>
     </div>
 
     <!-- Feldeditor -->
-    <div class="help-card" data-area="editor" data-tags="felddiagramm editor zeichnen werkzeug spieler ball tor hÃ¼tchen platzieren feldtyp vollfeld halbfeld klein">
-      <div class="help-card-icon" style="background:#006064;">âš½</div>
+    <div class="help-card" data-area="editor" data-tags="felddiagramm editor zeichnen werkzeug spieler ball tor hütchen platzieren feldtyp vollfeld halbfeld klein">
+      <div class="help-card-icon" style="background:#006064;">⚽</div>
       <div>
-        <div class="help-card-title">Feldeditor â€“ Grundlagen</div>
-        <p class="help-card-text">Taktische Aufstellungen und ÃœbungsablÃ¤ufe direkt auf dem Spielfeld zeichnen.</p>
-        <div class="help-step"><span class="help-num">1</span><strong>Feldtyp</strong> oben links wÃ¤hlen: Vollfeld, Halbfeld, Kleines Feld, Neutralzone</div>
-        <div class="help-step"><span class="help-num">2</span>Werkzeug wÃ¤hlen (Spieler:in, Ball, Tor, HÃ¼tchen, Equipment)</div>
-        <div class="help-step"><span class="help-num">3</span>Ins Feld klicken â†’ Objekt wird platziert</div>
-        <div class="help-step"><span class="help-num">4</span>AuswÃ¤hlen-Werkzeug (â†–) â†’ Objekte verschieben oder drehen</div>
-        <div class="help-step"><span class="help-num">5</span>Rechtsklick auf Objekt â†’ um 22,5Â° drehen</div>
-        <div class="help-step"><span class="help-num">6</span>â€žâœ“ Ãœbernehmen" â†’ Zuschneidedialog â†’ an Ãœbung anhÃ¤ngen</div>
+        <div class="help-card-title">Feldeditor – Grundlagen</div>
+        <p class="help-card-text">Taktische Aufstellungen und Übungsabläufe direkt auf dem Spielfeld zeichnen.</p>
+        <div class="help-step"><span class="help-num">1</span><strong>Feldtyp</strong> oben links wählen: Vollfeld, Halbfeld, Kleines Feld, Neutralzone</div>
+        <div class="help-step"><span class="help-num">2</span>Werkzeug wählen (Spieler:in, Ball, Tor, Hütchen, Equipment)</div>
+        <div class="help-step"><span class="help-num">3</span>Ins Feld klicken → Objekt wird platziert</div>
+        <div class="help-step"><span class="help-num">4</span>Auswählen-Werkzeug (↖) → Objekte verschieben oder drehen</div>
+        <div class="help-step"><span class="help-num">5</span>Rechtsklick auf Objekt → um 22,5° drehen</div>
+        <div class="help-step"><span class="help-num">6</span>„✓ Übernehmen" → Zuschneidedialog → an Übung anhängen</div>
         <div class="help-pill-row" style="margin-top:8px;">
-          <span class="help-pill">ðŸ‘¤ Spieler:in</span><span class="help-pill">âš½ Ball</span><span class="help-pill">ðŸ¥… Tor</span><span class="help-pill">ðŸŸ  HÃ¼tchen</span><span class="help-pill">â†’ Passweg</span><span class="help-pill">â¤³ Laufweg</span><span class="help-pill">ã€° Dribbling</span>
+          <span class="help-pill">👤 Spieler:in</span><span class="help-pill">⚽ Ball</span><span class="help-pill">🥅 Tor</span><span class="help-pill">🟠 Hütchen</span><span class="help-pill">→ Passweg</span><span class="help-pill">⤳ Laufweg</span><span class="help-pill">〰 Dribbling</span>
         </div>
       </div>
     </div>
 
-    <div class="help-card" data-area="editor" data-tags="raster einrasten snap ausrichtung gleichmÃ¤ÃŸig abstÃ¤nde grid hilfslinien">
-      <div class="help-card-icon" style="background:#006064;">â›¶</div>
+    <div class="help-card" data-area="editor" data-tags="raster einrasten snap ausrichtung gleichmäßig abstände grid hilfslinien">
+      <div class="help-card-icon" style="background:#006064;">⛶</div>
       <div>
         <div class="help-card-title">Raster &amp; Einrasten</div>
-        <p class="help-card-text">Das Raster hilft, Objekte gleichmÃ¤ÃŸig und prÃ¤zise zu platzieren.</p>
-        <div class="help-step"><span class="help-num">1</span><strong>â›¶-Button</strong> in der Toolbar aktivieren â†’ Raster wird eingeblendet</div>
-        <div class="help-step"><span class="help-num">2</span>Objekte rasten automatisch am nÃ¤chsten Rasterpunkt ein</div>
-        <div class="help-step"><span class="help-num">3</span>Das Raster orientiert sich am gewÃ¤hlten Feldtyp (alle 5m beim Vollfeld, alle 2m beim kleinen Feld)</div>
+        <p class="help-card-text">Das Raster hilft, Objekte gleichmäßig und präzise zu platzieren.</p>
+        <div class="help-step"><span class="help-num">1</span><strong>⛶-Button</strong> in der Toolbar aktivieren → Raster wird eingeblendet</div>
+        <div class="help-step"><span class="help-num">2</span>Objekte rasten automatisch am nächsten Rasterpunkt ein</div>
+        <div class="help-step"><span class="help-num">3</span>Das Raster orientiert sich am gewählten Feldtyp (alle 5m beim Vollfeld, alle 2m beim kleinen Feld)</div>
         <div class="help-step"><span class="help-num">4</span>Blaue Linien = Objekte fluchten miteinander; gelbe Linien = gleicher Abstand</div>
       </div>
     </div>
 
-    <div class="help-card" data-area="editor" data-tags="mehrfachauswahl lasso kopieren einfÃ¼gen strg tastenkÃ¼rzel keyboard undo rÃ¼ckgÃ¤ngig lÃ¶schen">
-      <div class="help-card-icon" style="background:#006064;">âŒ¨ï¸</div>
+    <div class="help-card" data-area="editor" data-tags="mehrfachauswahl lasso kopieren einfügen strg tastenkürzel keyboard undo rückgängig löschen">
+      <div class="help-card-icon" style="background:#006064;">⌨️</div>
       <div>
-        <div class="help-card-title">Mehrfachauswahl &amp; TastenkÃ¼rzel</div>
-        <div class="help-step"><span class="help-num">1</span><strong>Lasso</strong>: im AuswÃ¤hlen-Modus klicken &amp; ziehen â†’ mehrere Objekte markieren</div>
-        <div class="help-step"><span class="help-num">2</span><strong>Strg+A</strong>: alle Objekte auswÃ¤hlen</div>
-        <div class="help-step"><span class="help-num">3</span><strong>Strg+C / Strg+V</strong>: Kopieren &amp; EinfÃ¼gen</div>
-        <div class="help-step"><span class="help-num">4</span><strong>Strg+Z</strong>: letzten Schritt rÃ¼ckgÃ¤ngig machen</div>
-        <div class="help-step"><span class="help-num">5</span><strong>Entf / Backspace</strong>: ausgewÃ¤hlte Objekte lÃ¶schen</div>
+        <div class="help-card-title">Mehrfachauswahl &amp; Tastenkürzel</div>
+        <div class="help-step"><span class="help-num">1</span><strong>Lasso</strong>: im Auswählen-Modus klicken &amp; ziehen → mehrere Objekte markieren</div>
+        <div class="help-step"><span class="help-num">2</span><strong>Strg+A</strong>: alle Objekte auswählen</div>
+        <div class="help-step"><span class="help-num">3</span><strong>Strg+C / Strg+V</strong>: Kopieren &amp; Einfügen</div>
+        <div class="help-step"><span class="help-num">4</span><strong>Strg+Z</strong>: letzten Schritt rückgängig machen</div>
+        <div class="help-step"><span class="help-num">5</span><strong>Entf / Backspace</strong>: ausgewählte Objekte löschen</div>
         <div class="help-step"><span class="help-num">6</span><strong>Esc</strong>: Auswahl aufheben</div>
-        <div class="help-step"><span class="help-num">7</span><strong>Doppelklick</strong>: Linie abschlieÃŸen (beim Zeichnen)</div>
+        <div class="help-step"><span class="help-num">7</span><strong>Doppelklick</strong>: Linie abschließen (beim Zeichnen)</div>
       </div>
     </div>
 
     <!-- Einreichen -->
-    <div class="help-card" data-area="einreichen" data-tags="einreichen Ã¼bung erstellen neu formular beschreibung material tag vorschlÃ¤ge felddiagramm freischalten admin">
-      <div class="help-card-icon" style="background:#e65100;">âœï¸</div>
+    <div class="help-card" data-area="einreichen" data-tags="einreichen übung erstellen neu formular beschreibung material tag vorschläge felddiagramm freischalten admin">
+      <div class="help-card-icon" style="background:#e65100;">✏️</div>
       <div>
-        <div class="help-card-title">Eigene Ãœbung einreichen</div>
-        <p class="help-card-text">Angemeldete Nutzer:innen kÃ¶nnen eigene Ãœbungen einreichen. Nach Admin-PrÃ¼fung erscheinen sie im Katalog.</p>
+        <div class="help-card-title">Eigene Übung einreichen</div>
+        <p class="help-card-text">Angemeldete Nutzer:innen können eigene Übungen einreichen. Nach Admin-Prüfung erscheinen sie im Katalog.</p>
         <div class="help-step"><span class="help-num">1</span>Anmelden (Konto erforderlich)</div>
-        <div class="help-step"><span class="help-num">2</span>Pflichtfelder ausfÃ¼llen: Name, Abschnitt, Spieler:innenzahl, Beschreibung</div>
-        <div class="help-step"><span class="help-num">3</span>Tags eingeben â€“ <strong>VorschlÃ¤ge</strong> aus Ã¤hnlichen Ãœbungen werden automatisch angezeigt</div>
-        <div class="help-step"><span class="help-num">4</span>BelastungsintensitÃ¤t und -dauer angeben</div>
+        <div class="help-step"><span class="help-num">2</span>Pflichtfelder ausfüllen: Name, Abschnitt, Spieler:innenzahl, Beschreibung</div>
+        <div class="help-step"><span class="help-num">3</span>Tags eingeben – <strong>Vorschläge</strong> aus ähnlichen Übungen werden automatisch angezeigt</div>
+        <div class="help-step"><span class="help-num">4</span>Belastungsintensität und -dauer angeben</div>
         <div class="help-step"><span class="help-num">5</span>Optional: Felddiagramm im Editor zeichnen</div>
-        <div class="help-step"><span class="help-num">6</span>â€žEinreichen" â†’ wird geprÃ¼ft und freigeschaltet</div>
+        <div class="help-step"><span class="help-num">6</span>„Einreichen" → wird geprüft und freigeschaltet</div>
       </div>
     </div>
 
     <!-- Konto -->
-    <div class="help-card" data-area="konto" data-tags="konto anmelden abmelden registrieren login passwort profil mein bereich admin einreichungen plÃ¤ne status">
-      <div class="help-card-icon" style="background:#37474f;">ðŸ‘¤</div>
+    <div class="help-card" data-area="konto" data-tags="konto anmelden abmelden registrieren login passwort profil mein bereich admin einreichungen pläne status">
+      <div class="help-card-icon" style="background:#37474f;">👤</div>
       <div>
         <div class="help-card-title">Konto &amp; Mein Bereich</div>
-        <p class="help-card-text">Konto ist <strong>nicht</strong> fÃ¼r Katalog und Planung nÃ¶tig â€“ nur zum Einreichen.</p>
-        <div class="help-step"><span class="help-num">1</span>Oben rechts â€žAnmelden" â†’ E-Mail + Passwort oder neues Konto</div>
+        <p class="help-card-text">Konto ist <strong>nicht</strong> für Katalog und Planung nötig – nur zum Einreichen.</p>
+        <div class="help-step"><span class="help-num">1</span>Oben rechts „Anmelden" → E-Mail + Passwort oder neues Konto</div>
         <div class="help-step"><span class="help-num">2</span>Nach Anmeldung: Name erscheint oben rechts</div>
-        <div class="help-step"><span class="help-num">3</span>Klick auf Name â†’ â€žMein Bereich" oder â€žAbmelden"</div>
-        <div class="help-step"><span class="help-num">4</span><strong>Mein Bereich:</strong> eigene Ãœbungen mit Status (In PrÃ¼fung / Freigegeben)</div>
-        <div class="help-step"><span class="help-num">5</span><strong>Mein Bereich:</strong> eingereichte TrainingsplÃ¤ne verwalten &amp; zurÃ¼ckziehen</div>
+        <div class="help-step"><span class="help-num">3</span>Klick auf Name → „Mein Bereich" oder „Abmelden"</div>
+        <div class="help-step"><span class="help-num">4</span><strong>Mein Bereich:</strong> eigene Übungen mit Status (In Prüfung / Freigegeben)</div>
+        <div class="help-step"><span class="help-num">5</span><strong>Mein Bereich:</strong> eingereichte Trainingspläne verwalten &amp; zurückziehen</div>
       </div>
     </div>
 
     <!-- Langzeitplanung -->
     <div class="help-card" data-area="langzeit" data-tags="langzeitplanung saison block wochen monate vorbereitung wettkampf regeneration phase belastung">
-      <div class="help-card-icon" style="background:#4a148c;">ðŸ“…</div>
+      <div class="help-card-icon" style="background:#4a148c;">📅</div>
       <div>
         <div class="help-card-title">Langzeitplanung</div>
-        <p class="help-card-text">Gesamte Saison in TrainingsblÃ¶cken strukturieren und BelastungsverlÃ¤ufe visualisieren.</p>
-        <div class="help-step"><span class="help-num">1</span>â€ž+ Block" â†’ Zeitraum, Schwerpunkt und Belastungsstufe festlegen</div>
-        <div class="help-step"><span class="help-num">2</span>Mehrere BlÃ¶cke bilden die Saison-Ãœbersicht</div>
-        <div class="help-step"><span class="help-num">3</span>Block anklicken â†’ Wochen und Trainingseinheiten bearbeiten</div>
+        <p class="help-card-text">Gesamte Saison in Trainingsblöcken strukturieren und Belastungsverläufe visualisieren.</p>
+        <div class="help-step"><span class="help-num">1</span>„+ Block" → Zeitraum, Schwerpunkt und Belastungsstufe festlegen</div>
+        <div class="help-step"><span class="help-num">2</span>Mehrere Blöcke bilden die Saison-Übersicht</div>
+        <div class="help-step"><span class="help-num">3</span>Block anklicken → Wochen und Trainingseinheiten bearbeiten</div>
         <div class="help-step"><span class="help-num">4</span>Belastungsverlauf (Hoch / Mittel / Niedrig) wird farblich dargestellt</div>
       </div>
     </div>
@@ -1208,9 +1150,9 @@ function filterHelpCards(q){
 <div class="mbg h" id="loginMod" onclick="if(event.target===this)closeMod('loginMod')">
   <div class="md sm">
     <div class="mhdr">
-      <div class="mico" style="background:var(--accent)">ðŸ”‘</div>
+      <div class="mico" style="background:var(--accent)">🔑</div>
       <div class="mhdr-t" id="loginModTitle">Anmelden</div>
-      <button class="mcl" onclick="closeMod('loginMod')">âœ•</button>
+      <button class="mcl" onclick="closeMod('loginMod')">✕</button>
     </div>
     <div class="mbd">
       <div id="loginModUsernameWrap" style="display:none;margin-bottom:10px;">
@@ -1232,13 +1174,13 @@ function filterHelpCards(q){
   </div>
 </div>
 
-<!-- MODAL: Ãœbung -->
+<!-- MODAL: Übung -->
 <div class="mbg h" id="exMod">
   <div class="md">
     <div class="mhdr">
       <div class="mico" id="mIco" style="background:var(--gp)">+</div>
-      <div class="mtit" id="mTit">Neue Ãœbung</div>
-      <button class="mcl" onclick="closeMod('exMod')">âœ•</button>
+      <div class="mtit" id="mTit">Neue Übung</div>
+      <button class="mcl" onclick="closeMod('exMod')">✕</button>
     </div>
     <div class="mbody">
       <input type="hidden" id="mId">
@@ -1247,10 +1189,10 @@ function filterHelpCards(q){
       <div class="fr">
         <div class="fg"><label>Abschnitt</label>
           <select class="fc" id="mSec">
-            <option value="0">1 Â· Open Field</option><option value="1">2 Â· Warm Up</option>
-            <option value="2">3 Â· HinfÃ¼hrung</option><option value="3">4 Â· Hauptteil</option>
-            <option value="4">5 Â· Abschlussspiel</option>
-            <option value="5">6 Â· Sondertraining</option>
+            <option value="0">1 · Open Field</option><option value="1">2 · Warm Up</option>
+            <option value="2">3 · Hinführung</option><option value="3">4 · Hauptteil</option>
+            <option value="4">5 · Abschlussspiel</option>
+            <option value="5">6 · Sondertraining</option>
           </select>
         </div>
         <div class="fg"><label>Anzahl Spieler:innen</label><input class="fc" id="mPl" type="text" placeholder="z.B. 6-12"></div>
@@ -1259,39 +1201,39 @@ function filterHelpCards(q){
         <div class="fg" style="display:none"><!-- placeholder --></div>
         <div class="fg"><label>Material</label>
         <div id="matBuilder" style="border:1.5px solid var(--border);border-radius:7px;padding:10px;background:var(--surface-2);">
-          <div style="font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--gm);margin-bottom:8px;">ZÃ¤hlbares Material (Anzahl wÃ¤hlen):</div>
+          <div style="font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--gm);margin-bottom:8px;">Zählbares Material (Anzahl wählen):</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
             <div class="mat-select-row"><label class="mat-sel-lbl">Minitore</label>
               <select class="fc mat-sel" data-mat="Minitore" style="padding:5px 8px;font-size:12px;" onchange="updateMatField()">
-                <option value="0">â€“</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
               </select></div>
             <div class="mat-select-row"><label class="mat-sel-lbl">Stangen</label>
               <select class="fc mat-sel" data-mat="Stangen" style="padding:5px 8px;font-size:12px;" onchange="updateMatField()">
-                <option value="0">â€“</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
               </select></div>
             <div class="mat-select-row"><label class="mat-sel-lbl">Jugendtore</label>
               <select class="fc mat-sel" data-mat="Jugendtore" style="padding:5px 8px;font-size:12px;" onchange="updateMatField()">
-                <option value="0">â€“</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
               </select></div>
             <div class="mat-select-row"><label class="mat-sel-lbl">Rebounder</label>
               <select class="fc mat-sel" data-mat="Rebounder" style="padding:5px 8px;font-size:12px;" onchange="updateMatField()">
-                <option value="0">â€“</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
               </select></div>
-            <div class="mat-select-row"><label class="mat-sel-lbl">HÃ¼rden</label>
-              <select class="fc mat-sel" data-mat="HÃ¼rden" style="padding:5px 8px;font-size:12px;" onchange="updateMatField()">
-                <option value="0">â€“</option><option value="2">2</option><option value="4">4</option><option value="6">6</option><option value="8">8</option><option value="10">10</option><option value="12">12</option>
+            <div class="mat-select-row"><label class="mat-sel-lbl">Hürden</label>
+              <select class="fc mat-sel" data-mat="Hürden" style="padding:5px 8px;font-size:12px;" onchange="updateMatField()">
+                <option value="0">–</option><option value="2">2</option><option value="4">4</option><option value="6">6</option><option value="8">8</option><option value="10">10</option><option value="12">12</option>
               </select></div>
             <div class="mat-select-row"><label class="mat-sel-lbl">Ringe</label>
               <select class="fc mat-sel" data-mat="Ringe" style="padding:5px 8px;font-size:12px;" onchange="updateMatField()">
-                <option value="0">â€“</option><option value="4">4</option><option value="6">6</option><option value="8">8</option><option value="10">10</option><option value="12">12</option><option value="16">16</option>
+                <option value="0">–</option><option value="4">4</option><option value="6">6</option><option value="8">8</option><option value="10">10</option><option value="12">12</option><option value="16">16</option>
               </select></div>
             <div class="mat-select-row"><label class="mat-sel-lbl">Koord.leiter</label>
               <select class="fc mat-sel" data-mat="Koordinationsleiter" style="padding:5px 8px;font-size:12px;" onchange="updateMatField()">
-                <option value="0">â€“</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+                <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
               </select></div>
           </div>
           <div style="font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--gm);margin-bottom:5px;">Weiteres Material:</div>
-          <input class="fc" id="mMatFree" type="text" placeholder="z.B. HÃ¼tchen, BÃ¤lle, Leibchen" style="font-size:12px;" oninput="updateMatField()">
+          <input class="fc" id="mMatFree" type="text" placeholder="z.B. Hütchen, Bälle, Leibchen" style="font-size:12px;" oninput="updateMatField()">
           <input type="hidden" id="mMat">
         </div>
       </div>
@@ -1299,7 +1241,7 @@ function filterHelpCards(q){
       <div class="fr">
         <div class="fg"><label>Belastungszeit</label>
           <select class="fc" id="mDur">
-            <option value="">â€“ wÃ¤hlen â€“</option>
+            <option value="">– wählen –</option>
             <option value="5">5 min</option>
             <option value="8">8 min</option>
             <option value="10">10 min</option>
@@ -1310,32 +1252,32 @@ function filterHelpCards(q){
             <option value="30">30 min</option>
           </select>
         </div>
-        <div class="fg"><label>BelastungsintensitÃ¤t</label>
+        <div class="fg"><label>Belastungsintensität</label>
           <select class="fc" id="mDif">
-            <option value="">â€“ wÃ¤hlen â€“</option><option value="Leicht">Leicht</option>
+            <option value="">– wählen –</option><option value="Leicht">Leicht</option>
             <option value="Mittel">Mittel</option><option value="Schwer">Hoch</option>
           </select>
         </div>
       </div>
-      <div class="fg"><label>Beschreibung</label><textarea class="fc" id="mDesc" rows="3" placeholder="Ablauf, Organisation, Coachingâ€¦"></textarea></div>
+      <div class="fg"><label>Beschreibung</label><textarea class="fc" id="mDesc" rows="3" placeholder="Ablauf, Organisation, Coaching…"></textarea></div>
       <div class="fsec">Felddiagramm</div>
       <div class="fg">
         <div style="display:flex;gap:0;border:1.5px solid var(--gray);border-radius:8px;overflow:hidden;margin-bottom:10px;">
-          <button id="imgTabUpload" onclick="switchImgTab('upload')" style="flex:1;padding:8px;border:none;background:var(--g);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;">ðŸ“· Foto hochladen</button>
-          <button id="imgTabDraw" onclick="switchImgTab('draw')" style="flex:1;padding:8px;border:none;background:none;color:var(--gd2);font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;">âš½ Felddiagramm</button>
+          <button id="imgTabUpload" onclick="switchImgTab('upload')" style="flex:1;padding:8px;border:none;background:var(--g);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;">📷 Foto hochladen</button>
+          <button id="imgTabDraw" onclick="switchImgTab('draw')" style="flex:1;padding:8px;border:none;background:none;color:var(--gd2);font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;">⚽ Felddiagramm</button>
         </div>
         <div id="imgPanelUpload">
           <!-- Image upload removed -->
         </div>
         <div id="imgPanelDraw" style="display:none;padding:8px 0;">
-          <button onclick="openFieldOverlay()" style="width:100%;padding:13px 10px;background:#1a2b1c;color:#a5d6a7;border:1.5px dashed rgba(165,214,167,.35);border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.3px;">âš½ Felddiagramm zeichnen / bearbeiten</button>
+          <button onclick="openFieldOverlay()" style="width:100%;padding:13px 10px;background:#1a2b1c;color:#a5d6a7;border:1.5px dashed rgba(165,214,167,.35);border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.3px;">⚽ Felddiagramm zeichnen / bearbeiten</button>
           <div id="cvPreview" style="display:none;margin-top:8px;border-radius:8px;overflow:hidden;"><img id="cvPreviewImg" style="width:100%;display:block;" alt="Vorschau"></div>
         </div>
       </div>
       <div class="fsec">Tags</div>
       <div class="fg">
         <div class="tr2">
-          <input class="fc" id="mTagIn" type="text" placeholder="Tag eingebenâ€¦" onkeydown="if(event.key==='Enter'){addMTag();event.preventDefault();}">
+          <input class="fc" id="mTagIn" type="text" placeholder="Tag eingeben…" onkeydown="if(event.key==='Enter'){addMTag();event.preventDefault();}">
           <button onclick="addMTag()" style="padding:8px 13px;background:var(--g);color:#fff;border:none;border-radius:7px;font-weight:700;cursor:pointer;font-size:12px;white-space:nowrap;">+ Tag</button>
         </div>
         <div id="mAtags" class="atags"></div>
@@ -1353,13 +1295,13 @@ function filterHelpCards(q){
 <div class="mbg h" id="descMod">
   <div class="md" style="max-width:900px;width:90vw;">
     <div class="mhdr">
-      <div class="mico" style="background:var(--gp)">âœï¸</div>
+      <div class="mico" style="background:var(--gp)">✏️</div>
       <div class="mtit" id="descModTit">Beschreibung</div>
-      <button class="mcl" onclick="closeMod('descMod')">âœ•</button>
+      <button class="mcl" onclick="closeMod('descMod')">✕</button>
     </div>
     <div class="mbody">
-      <div style="font-size:12px;color:var(--text-3);margin-bottom:8px;">Dieser Text erscheint im Abschnitts-Banner fÃ¼r alle Nutzer:innen sichtbar.</div>
-      <textarea class="dta" id="descTa" placeholder="Beschreibungstextâ€¦" style="width:100%;min-height:280px;resize:vertical;font-size:14px;line-height:1.6;box-sizing:border-box;"></textarea>
+      <div style="font-size:12px;color:var(--text-3);margin-bottom:8px;">Dieser Text erscheint im Abschnitts-Banner für alle Nutzer:innen sichtbar.</div>
+      <textarea class="dta" id="descTa" placeholder="Beschreibungstext…" style="width:100%;min-height:280px;resize:vertical;font-size:14px;line-height:1.6;box-sizing:border-box;"></textarea>
       <div class="macts"><button class="bpr" onclick="saveDesc()">Speichern</button><button class="bsc" onclick="closeMod('descMod')">Abbrechen</button></div>
     </div>
   </div>
@@ -1369,20 +1311,20 @@ function filterHelpCards(q){
 <div class="mbg h" id="tagMod">
   <div class="md">
     <div class="mhdr">
-      <div class="mico" style="background:var(--gp)">ðŸ·</div>
+      <div class="mico" style="background:var(--gp)">🏷</div>
       <div class="mtit" id="tagModTit">Tags</div>
-      <button class="mcl" onclick="closeMod('tagMod')">âœ•</button>
+      <button class="mcl" onclick="closeMod('tagMod')">✕</button>
     </div>
     <div class="mbody">
-      <div class="fsec">Tag hinzufÃ¼gen (global)</div>
+      <div class="fsec">Tag hinzufügen (global)</div>
       <div class="tr2" style="margin-bottom:9px;">
-        <input class="fc" id="newTagIn" type="text" placeholder="Tag eingebenâ€¦" onkeydown="if(event.key==='Enter'){addSecTag();event.preventDefault();}">
+        <input class="fc" id="newTagIn" type="text" placeholder="Tag eingeben…" onkeydown="if(event.key==='Enter'){addSecTag();event.preventDefault();}">
         <button onclick="addSecTag()" style="padding:8px 13px;background:var(--g);color:#fff;border:none;border-radius:7px;font-weight:700;cursor:pointer;font-size:12px;">+ Tag</button>
       </div>
-      <div class="fsec" style="margin-top:4px;">Alle Tags <span style="font-size:10px;font-weight:600;color:var(--gm);">(Ã— zum LÃ¶schen)</span></div>
+      <div class="fsec" style="margin-top:4px;">Alle Tags <span style="font-size:10px;font-weight:600;color:var(--gm);">(× zum Löschen)</span></div>
       <div id="sTagsList" class="atags" style="margin-bottom:16px;"></div>
       <div class="fsec">Tags Clustern zuordnen</div>
-      <p style="font-size:12px;color:var(--gm);margin-bottom:10px;line-height:1.5;">Klicke auf einen Tag, um ihn einem Cluster zuzuweisen. Tags ohne Cluster werden als â€žSonstige" angezeigt.</p>
+      <p style="font-size:12px;color:var(--gm);margin-bottom:10px;line-height:1.5;">Klicke auf einen Tag, um ihn einem Cluster zuzuweisen. Tags ohne Cluster werden als „Sonstige" angezeigt.</p>
       <div class="cluster-edit-grid" id="clusterEditGrid"></div>
     </div>
   </div>
@@ -1392,15 +1334,15 @@ function filterHelpCards(q){
 <div class="mbg h" id="ltpWeekMod">
   <div class="md sm">
     <div class="mhdr">
-      <div class="mico" style="background:var(--gp)">ðŸ“…</div>
+      <div class="mico" style="background:var(--gp)">📅</div>
       <div class="mtit" id="ltpWeekModTit">Woche bearbeiten</div>
-      <button class="mcl" onclick="closeMod('ltpWeekMod')">âœ•</button>
+      <button class="mcl" onclick="closeMod('ltpWeekMod')">✕</button>
     </div>
     <div class="mbody">
       <div class="fsec">Woche</div>
-      <div class="fg"><label>Wochenbezeichnung</label><input class="fc" id="ltpWLabel" type="text" placeholder="z.B. KW 18 Â· 29.04â€“03.05"></div>
+      <div class="fg"><label>Wochenbezeichnung</label><input class="fc" id="ltpWLabel" type="text" placeholder="z.B. KW 18 · 29.04–03.05"></div>
       <div class="fg"><label>Schwerpunkt</label><input class="fc" id="ltpWFocus" type="text" placeholder="z.B. 1vs1 offensiv, Pressing, Schusstechnik"></div>
-      <div class="fg"><label>Notizen / Progression</label><textarea class="dta" id="ltpWNotes" placeholder="z.B. Steigerung IntensitÃ¤t gegenÃ¼ber Vorwocheâ€¦" rows="3"></textarea></div>
+      <div class="fg"><label>Notizen / Progression</label><textarea class="dta" id="ltpWNotes" placeholder="z.B. Steigerung Intensität gegenüber Vorwoche…" rows="3"></textarea></div>
       <div class="macts"><button class="bpr" onclick="saveLtpWeek()">Speichern</button><button class="bsc" onclick="closeMod('ltpWeekMod')">Abbrechen</button></div>
     </div>
   </div>
@@ -1410,12 +1352,12 @@ function filterHelpCards(q){
 <div class="mbg h" id="lanePickerMod">
   <div class="md" style="max-width:620px;height:85vh;display:flex;flex-direction:column;">
     <div class="mhdr">
-      <div class="mico" style="font-size:16px;">âš½</div>
-      <div class="mtit" id="lanePickerTitle">Ãœbung wÃ¤hlen</div>
-      <button class="mcl" onclick="closeMod('lanePickerMod')">âœ•</button>
+      <div class="mico" style="font-size:16px;">⚽</div>
+      <div class="mtit" id="lanePickerTitle">Übung wählen</div>
+      <button class="mcl" onclick="closeMod('lanePickerMod')">✕</button>
     </div>
     <div style="padding:12px 20px;border-bottom:1px solid var(--border);flex-shrink:0;">
-      <input class="fc" id="lanePickerSearch" type="text" placeholder="Ãœbung suchenâ€¦" oninput="renderLanePickerList(this.value)" style="font-size:13px;">
+      <input class="fc" id="lanePickerSearch" type="text" placeholder="Übung suchen…" oninput="renderLanePickerList(this.value)" style="font-size:13px;">
     </div>
     <div style="flex:1;overflow-y:auto;padding:12px 20px;" id="lanePickerList"></div>
   </div>
@@ -1425,9 +1367,9 @@ function filterHelpCards(q){
 <div class="mbg h" id="exDetailMod">
   <div class="md" style="max-width:620px;max-height:90vh;overflow-y:auto;">
     <div class="mhdr">
-      <div class="mico" style="font-size:16px;">âš½</div>
-      <div class="mtit">Ãœbungsdetails</div>
-      <button class="mcl" onclick="closeMod('exDetailMod')">âœ•</button>
+      <div class="mico" style="font-size:16px;">⚽</div>
+      <div class="mtit">Übungsdetails</div>
+      <button class="mcl" onclick="closeMod('exDetailMod')">✕</button>
     </div>
     <div class="mbody" id="exDetailBody"></div>
   </div>
@@ -1436,12 +1378,12 @@ function filterHelpCards(q){
 <div class="mbg h" id="sectionPickMod">
   <div class="md" style="max-width:420px;">
     <div class="mhdr">
-      <div class="mico">ðŸ“‹</div>
+      <div class="mico">📋</div>
       <div class="mtit">In welchen Abschnitt?</div>
-      <button class="mcl" onclick="closeMod('sectionPickMod')">âœ•</button>
+      <button class="mcl" onclick="closeMod('sectionPickMod')">✕</button>
     </div>
     <div class="mbody">
-      <p style="font-size:13px;color:var(--text-2);margin-bottom:18px;">Diese Ãœbung stammt aus dem Sondertraining und kann in jeden Abschnitt eingeplant werden.</p>
+      <p style="font-size:13px;color:var(--text-2);margin-bottom:18px;">Diese Übung stammt aus dem Sondertraining und kann in jeden Abschnitt eingeplant werden.</p>
       <div id="sectionPickBtns" style="display:flex;flex-direction:column;gap:8px;"></div>
     </div>
   </div>
@@ -1451,12 +1393,12 @@ function filterHelpCards(q){
 <div class="mbg h" id="newBlockMod">
   <div class="md" style="max-width:500px;">
     <div class="mhdr">
-      <div class="mico" style="background:#e8f5e9;color:#1a7f4b;font-size:16px;">ðŸ“…</div>
+      <div class="mico" style="background:#e8f5e9;color:#1a7f4b;font-size:16px;">📅</div>
       <div class="mtit">Neuer Trainingsblock</div>
-      <button class="mcl" onclick="closeMod('newBlockMod')">âœ•</button>
+      <button class="mcl" onclick="closeMod('newBlockMod')">✕</button>
     </div>
     <div class="mbody">
-      <div class="fg"><label>Name des Blocks *</label><input class="fc" id="nb-name" type="text" placeholder="z.B. Vorbereitung FrÃ¼hjahr 2026"></div>
+      <div class="fg"><label>Name des Blocks *</label><input class="fc" id="nb-name" type="text" placeholder="z.B. Vorbereitung Frühjahr 2026"></div>
       <div class="fsec">Zeitraum</div>
       <div style="display:flex;gap:8px;margin-bottom:12px;">
         <button id="nb-mode-weeks" onclick="setNbMode('weeks')" style="flex:1;padding:9px;border-radius:8px;border:2px solid var(--accent);background:var(--accent);color:#fff;font-weight:800;font-size:12px;cursor:pointer;">Anzahl Wochen</button>
@@ -1464,9 +1406,9 @@ function filterHelpCards(q){
       </div>
       <div id="nb-weeks-wrap"><div class="fg"><label>Anzahl Wochen</label><input class="fc" id="nb-weeks" type="number" min="1" max="52" value="4"></div></div>
       <div id="nb-dates-wrap" style="display:none;"><div class="fr"><div class="fg"><label>Von</label><input class="fc" id="nb-from" type="date"></div><div class="fg"><label>Bis</label><input class="fc" id="nb-to" type="date"></div></div></div>
-      <div class="fg"><label>Ziele / Notizen</label><textarea class="fc dta" id="nb-notes" rows="3" placeholder="Schwerpunkte, Ziele, besondere Hinweiseâ€¦" style="resize:vertical;"></textarea></div>
+      <div class="fg"><label>Ziele / Notizen</label><textarea class="fc dta" id="nb-notes" rows="3" placeholder="Schwerpunkte, Ziele, besondere Hinweise…" style="resize:vertical;"></textarea></div>
       <div class="macts">
-        <button class="bpr" onclick="createNewBlock()" style="background:#1a7f4b;">Plan fÃ¼llen â†’</button>
+        <button class="bpr" onclick="createNewBlock()" style="background:#1a7f4b;">Plan füllen →</button>
         <button class="bsc" onclick="closeMod('newBlockMod')">Abbrechen</button>
       </div>
     </div>
@@ -1477,13 +1419,13 @@ function filterHelpCards(q){
 <div class="mbg h" id="ltpWeekMod">
   <div class="md" style="max-width:460px;">
     <div class="mhdr">
-      <div class="mico" style="font-size:16px;">ðŸ“‹</div>
+      <div class="mico" style="font-size:16px;">📋</div>
       <div class="mtit" id="ltpWeekModTit">Woche bearbeiten</div>
-      <button class="mcl" onclick="closeMod('ltpWeekMod')">âœ•</button>
+      <button class="mcl" onclick="closeMod('ltpWeekMod')">✕</button>
     </div>
     <div class="mbody">
       <div class="fg"><label>Bezeichnung</label><input class="fc" id="ltpWLabel" type="text" placeholder="z.B. KW 15"></div>
-      <div class="fg"><label>Schwerpunkt</label><input class="fc" id="ltpWFocus" type="text" placeholder="z.B. Passspielâ€¦"></div>
+      <div class="fg"><label>Schwerpunkt</label><input class="fc" id="ltpWFocus" type="text" placeholder="z.B. Passspiel…"></div>
       <div class="fg"><label>Notizen</label><textarea class="fc dta" id="ltpWNotes" rows="2" style="resize:vertical;"></textarea></div>
       <div id="ltpWeekCopyWrap" style="margin-top:4px;"></div>
       <div class="macts">
@@ -1498,9 +1440,9 @@ function filterHelpCards(q){
 <div class="mbg h" id="dayEditorMod">
   <div class="md" style="max-width:740px;height:90vh;display:flex;flex-direction:column;">
     <div class="mhdr">
-      <div class="mico" style="font-size:16px;">ðŸ—“</div>
+      <div class="mico" style="font-size:16px;">🗓</div>
       <div class="mtit" id="dayEditorTitle">Tag planen</div>
-      <button class="mcl" onclick="closeMod('dayEditorMod')">âœ•</button>
+      <button class="mcl" onclick="closeMod('dayEditorMod')">✕</button>
     </div>
     <div style="padding:10px 20px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--border);flex-shrink:0;">
       <button onclick="openEntryEdit('training')" style="padding:7px 13px;background:#1a7f4b;color:#fff;border:none;border-radius:7px;font-size:11px;font-weight:800;cursor:pointer;letter-spacing:.3px;">+ Trainingseinheit</button>
@@ -1522,9 +1464,9 @@ function filterHelpCards(q){
 <div class="mbg h" id="entryEditMod">
   <div class="md" style="max-width:480px;">
     <div class="mhdr">
-      <div class="mico" id="entryEditIco" style="font-size:16px;">ðŸ“‹</div>
+      <div class="mico" id="entryEditIco" style="font-size:16px;">📋</div>
       <div class="mtit" id="entryEditTitle">Eintrag</div>
-      <button class="mcl" onclick="closeMod('entryEditMod')">âœ•</button>
+      <button class="mcl" onclick="closeMod('entryEditMod')">✕</button>
     </div>
     <div class="mbody" id="entryEditBody"></div>
   </div>
@@ -1534,13 +1476,13 @@ function filterHelpCards(q){
 <div class="mbg h" id="saveBlockLibMod">
   <div class="md" style="max-width:420px;">
     <div class="mhdr">
-      <div class="mico" style="background:#e8f5e9;color:#1a7f4b;font-size:16px;">ðŸ’¾</div>
+      <div class="mico" style="background:#e8f5e9;color:#1a7f4b;font-size:16px;">💾</div>
       <div class="mtit">In Bibliothek speichern</div>
-      <button class="mcl" onclick="closeMod('saveBlockLibMod')">âœ•</button>
+      <button class="mcl" onclick="closeMod('saveBlockLibMod')">✕</button>
     </div>
     <div class="mbody">
-      <div class="fg"><label>Name</label><input class="fc" id="sbl-name" type="text" placeholder="Blocknameâ€¦"></div>
-      <div class="fg"><label>Beschreibung</label><input class="fc" id="sbl-desc" type="text" placeholder="Kurzbeschreibungâ€¦"></div>
+      <div class="fg"><label>Name</label><input class="fc" id="sbl-name" type="text" placeholder="Blockname…"></div>
+      <div class="fg"><label>Beschreibung</label><input class="fc" id="sbl-desc" type="text" placeholder="Kurzbeschreibung…"></div>
       <div class="macts">
         <button class="bpr" onclick="commitSaveBlockLib()">Speichern</button>
         <button class="bsc" onclick="closeMod('saveBlockLibMod')">Abbrechen</button>
@@ -1553,20 +1495,20 @@ function filterHelpCards(q){
 <div class="mbg h" id="dupPlanMod">
   <div class="md" style="max-width:420px;">
     <div class="mhdr">
-      <div class="mico" style="background:#fff3e0;color:#e65100;font-size:16px;">âš ï¸</div>
+      <div class="mico" style="background:#fff3e0;color:#e65100;font-size:16px;">⚠️</div>
       <div class="mtit">Plan bereits vorhanden</div>
-      <button class="mcl" onclick="closeMod('dupPlanMod')">âœ•</button>
+      <button class="mcl" onclick="closeMod('dupPlanMod')">✕</button>
     </div>
     <div class="mbody">
       <p style="font-size:13px;color:var(--text-2);margin-bottom:18px;line-height:1.6;">
-        Ein Plan mit dem Namen <strong id="dupPlanNameDisplay" style="color:var(--text-1);"></strong> existiert bereits. Was mÃ¶chtest du tun?
+        Ein Plan mit dem Namen <strong id="dupPlanNameDisplay" style="color:var(--text-1);"></strong> existiert bereits. Was möchtest du tun?
       </p>
       <div style="display:flex;flex-direction:column;gap:10px;">
         <button onclick="dupPlanOverwrite()" style="padding:12px;background:var(--accent);color:#fff;border:none;border-radius:9px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:background .15s;" onmouseover="this.style.background='#15703f'" onmouseout="this.style.background='var(--accent)'">
-          Bestehenden Plan Ã¼berschreiben
+          Bestehenden Plan überschreiben
         </button>
         <div style="display:flex;gap:8px;align-items:center;">
-          <input class="fc" id="dupPlanNewName" type="text" placeholder="Neuer Titelâ€¦" style="flex:1;font-size:13px;" onkeydown="if(event.key==='Enter')dupPlanRename()">
+          <input class="fc" id="dupPlanNewName" type="text" placeholder="Neuer Titel…" style="flex:1;font-size:13px;" onkeydown="if(event.key==='Enter')dupPlanRename()">
           <button onclick="dupPlanRename()" style="padding:11px 16px;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;color:var(--text-1);white-space:nowrap;">
             Neu speichern
           </button>
@@ -1580,9 +1522,9 @@ function filterHelpCards(q){
 <div class="mbg h" id="subListMod">
   <div class="md" style="max-width:580px;">
     <div class="mhdr">
-      <div class="mico" style="background:#f5f3ff;color:#8b5cf6;font-size:15px;">ðŸ“‹</div>
+      <div class="mico" style="background:#f5f3ff;color:#8b5cf6;font-size:15px;">📋</div>
       <div class="mtit" id="subListModTit">Einreichungen</div>
-      <button class="mcl" onclick="closeMod('subListMod')">âœ•</button>
+      <button class="mcl" onclick="closeMod('subListMod')">✕</button>
     </div>
     <div class="mbody">
       <div class="sub-list" id="subListContent"></div>
@@ -1590,16 +1532,16 @@ function filterHelpCards(q){
   </div>
 </div>
 
-<!-- MODAL: Admin Review einzelne Ãœbung -->
+<!-- MODAL: Admin Review einzelne Übung -->
 <div class="mbg h" id="reviewMod">
   <div class="md" style="max-width:660px;">
     <div class="mhdr">
-      <div class="mico" style="background:#f5f3ff;color:#8b5cf6;font-size:15px;">ðŸ”</div>
-      <div class="mtit" id="reviewModTit">Ãœbung prÃ¼fen</div>
-      <button class="mcl" onclick="closeMod('reviewMod')">âœ•</button>
+      <div class="mico" style="background:#f5f3ff;color:#8b5cf6;font-size:15px;">🔍</div>
+      <div class="mtit" id="reviewModTit">Übung prüfen</div>
+      <button class="mcl" onclick="closeMod('reviewMod')">✕</button>
     </div>
     <div class="mbody">
-      <div class="review-author" id="reviewAuthorBar"><span>ðŸ‘¤</span> <strong id="reviewAuthorName"></strong> &nbsp;Â·&nbsp; <span id="reviewDate"></span></div>
+      <div class="review-author" id="reviewAuthorBar"><span>👤</span> <strong id="reviewAuthorName"></strong> &nbsp;·&nbsp; <span id="reviewDate"></span></div>
       <div class="fsec">Grunddaten</div>
       <div class="fg"><label>Name</label><input class="fc" id="rv-name" type="text"></div>
       <div class="fg"><label>Beschreibung</label><textarea class="fc dta" id="rv-desc" rows="4" style="resize:vertical;"></textarea></div>
@@ -1607,11 +1549,11 @@ function filterHelpCards(q){
         <div class="fg"><label>Abschnitt</label>
           <select class="fc" id="rv-sec">
             <option value="0">Open Field</option><option value="1">Warm Up</option>
-            <option value="2">HinfÃ¼hrung</option><option value="3">Hauptteil</option>
+            <option value="2">Hinführung</option><option value="3">Hauptteil</option>
             <option value="4">Abschlussspiel</option><option value="5">Sondertraining</option>
           </select>
         </div>
-        <div class="fg"><label>BelastungsintensitÃ¤t</label>
+        <div class="fg"><label>Belastungsintensität</label>
           <select class="fc" id="rv-intensity">
             <option value="Leicht">Leicht</option><option value="Mittel">Mittel</option><option value="Schwer">Hoch</option>
           </select>
@@ -1625,9 +1567,9 @@ function filterHelpCards(q){
       <div class="fg"><label>Tags</label><input class="fc" id="rv-tags" type="text" placeholder="Kommagetrennt, z.B. DRIBBLING, 1VS1"></div>
       <div class="fg"><label>Felddiagramm</label><div id="rv-canvas-wrap" style="border:1px solid var(--border);border-radius:8px;overflow:hidden;"></div></div>
       <div class="review-actions">
-        <button class="review-btn del" onclick="reviewAction('delete')">ðŸ—‘ LÃ¶schen</button>
-        <button class="review-btn rev" onclick="reviewAction('review')">ðŸ” In Review</button>
-        <button class="review-btn free" onclick="reviewAction('approve')">âœ“ Freigeben</button>
+        <button class="review-btn del" onclick="reviewAction('delete')">🗑 Löschen</button>
+        <button class="review-btn rev" onclick="reviewAction('review')">🔍 In Review</button>
+        <button class="review-btn free" onclick="reviewAction('approve')">✓ Freigeben</button>
       </div>
     </div>
   </div>
@@ -1637,12 +1579,12 @@ function filterHelpCards(q){
 <div class="mbg h" id="sonderPlanMod">
   <div class="md sm">
     <div class="mhdr">
-      <div class="mico" style="background:#e0f2f1;color:#00695c;font-size:16px;">ðŸŽ¯</div>
+      <div class="mico" style="background:#e0f2f1;color:#00695c;font-size:16px;">🎯</div>
       <div class="mtit" id="sonderPlanTitle">Sondertraining einplanen</div>
-      <button class="mcl" onclick="document.getElementById('sonderPlanMod').classList.add('h')">âœ•</button>
+      <button class="mcl" onclick="document.getElementById('sonderPlanMod').classList.add('h')">✕</button>
     </div>
     <div class="mbody">
-      <p style="font-size:13px;color:var(--gm);margin-bottom:14px;line-height:1.6;">In welchen Abschnitt des Trainingsplans soll diese Ãœbung eingeplant werden?</p>
+      <p style="font-size:13px;color:var(--gm);margin-bottom:14px;line-height:1.6;">In welchen Abschnitt des Trainingsplans soll diese Übung eingeplant werden?</p>
       <div id="sonderPlanOpts"></div>
     </div>
   </div>
@@ -1651,14 +1593,14 @@ function filterHelpCards(q){
 <div class="toast" id="toast"></div>
 
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-     JAVASCRIPT â€” Ladereihenfolge ist wichtig!
-     1. Ãœbungsdaten zuerst (definieren defaultData())
-     2. i18n/Theme (keine AbhÃ¤ngigkeiten)
-     3. Core/State (definiert globale Variablen fÃ¼r alle weiteren Module)
+<!-- ════════════════════════════════════════════════════════════════
+     JAVASCRIPT — Ladereihenfolge ist wichtig!
+     1. Übungsdaten zuerst (definieren defaultData())
+     2. i18n/Theme (keine Abhängigkeiten)
+     3. Core/State (definiert globale Variablen für alle weiteren Module)
      4. Restliche Module (nutzen den globalen State aus core-state.js)
      5. App-Start (init()) als LETZTES
-     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+     ════════════════════════════════════════════════════════════════ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>emailjs.init('Gdp0v57LwSddbt-GE');</script>
@@ -1680,13 +1622,13 @@ function filterHelpCards(q){
 <div id="cropMod" class="mbg h" style="z-index:10001;">
   <div style="background:var(--card);border-radius:16px;padding:20px;width:min(95vw,820px);max-height:90vh;overflow:auto;display:flex;flex-direction:column;gap:14px;">
     <div style="font-size:17px;font-weight:700;color:var(--text);">Ausschnitt anpassen</div>
-    <div style="font-size:13px;color:var(--text-3);">Ziehe die Ecken, um den Zuschnitt zu vergrÃ¶ÃŸern oder zu verkleinern. Den ganzen Bereich verschieben indem du mittig ziehst.</div>
+    <div style="font-size:13px;color:var(--text-3);">Ziehe die Ecken, um den Zuschnitt zu vergrößern oder zu verkleinern. Den ganzen Bereich verschieben indem du mittig ziehst.</div>
     <div style="position:relative;">
       <canvas id="cropCanvas" style="width:100%;border-radius:8px;display:block;touch-action:none;cursor:crosshair;"></canvas>
     </div>
     <div style="display:flex;gap:10px;justify-content:flex-end;">
       <button onclick="closeMod('cropMod')" style="padding:10px 20px;border:1.5px solid var(--text-3);background:none;color:var(--text);border-radius:10px;font-size:14px;cursor:pointer;">Abbrechen</button>
-      <button onclick="confirmCrop()" style="padding:10px 22px;background:var(--g);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">Ãœbernehmen</button>
+      <button onclick="confirmCrop()" style="padding:10px 22px;background:var(--g);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">Übernehmen</button>
     </div>
   </div>
 </div>
@@ -1696,10 +1638,10 @@ function filterHelpCards(q){
   <img id="imgLightboxImg" style="max-width:95vw;max-height:95vh;border-radius:10px;object-fit:contain;box-shadow:0 8px 40px rgba(0,0,0,.6);">
 </div>
 
-<!-- FELDDIAGRAMM OVERLAY â€“ direkt in <body>, auÃŸerhalb aller Modals -->
+<!-- FELDDIAGRAMM OVERLAY – direkt in <body>, außerhalb aller Modals -->
 <div id="fieldOverlay" style="display:none;position:fixed;inset:0;z-index:10000;background:#1a2b1c;flex-direction:column;">
 
-  <!-- â”€â”€ ZEILE 1: Werkzeuge + Aktionen (immer sichtbar) â”€â”€ -->
+  <!-- ── ZEILE 1: Werkzeuge + Aktionen (immer sichtbar) ── -->
   <div style="background:#0f1a10;padding:5px 10px;display:flex;gap:6px;align-items:center;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0;flex-wrap:wrap;">
 
     <!-- Feldtyp -->
@@ -1718,7 +1660,7 @@ function filterHelpCards(q){
         <svg width="16" height="18" viewBox="0 0 16 18" fill="white"><circle cx="8" cy="4.5" r="3.5"/><path d="M1,17.5 C1,11.5 4,9.5 8,9.5 C12,9.5 15,11.5 15,17.5Z"/></svg>
       </button>
       <button class="tb" id="tb_ball" onclick="setTool('ball')" title="Ball setzen" style="background:#344736;font-size:14px;width:30px;height:30px;border:none;border-radius:6px;cursor:pointer;color:#fff;">&#x26BD;</button>
-      <button class="tb" id="tb_equip" onclick="setTool('equip')" title="Equipment (HÃ¼tchen, Stange â€¦)" style="background:#344736;width:30px;height:30px;border:none;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;">
+      <button class="tb" id="tb_equip" onclick="setTool('equip')" title="Equipment (Hütchen, Stange …)" style="background:#344736;width:30px;height:30px;border:none;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;">
         <svg width="16" height="18" viewBox="0 0 16 18"><polygon points="8,2 14,16 2,16" fill="#e65100"/><ellipse cx="8" cy="16" rx="6" ry="2" fill="rgba(0,0,0,0.35)"/><ellipse cx="8" cy="16" rx="5.5" ry="1.5" fill="#e65100"/></svg>
       </button>
       <button class="tb" id="tb_goal" onclick="setTool('goal')" title="Tor setzen" style="background:#344736;padding:0 5px;height:30px;border:none;border-radius:6px;cursor:pointer;">
@@ -1731,13 +1673,13 @@ function filterHelpCards(q){
     <!-- Linien -->
     <div style="display:flex;gap:3px;align-items:center;">
       <span style="font-size:9px;color:rgba(255,255,255,.3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding-right:2px;">Linien</span>
-      <button class="tb" id="tb_pass" onclick="setTool('pass')" title="Passweg (2Ã— klicken)" style="background:#344736;height:30px;padding:0 7px;border:none;border-radius:6px;cursor:pointer;">
+      <button class="tb" id="tb_pass" onclick="setTool('pass')" title="Passweg (2× klicken)" style="background:#344736;height:30px;padding:0 7px;border:none;border-radius:6px;cursor:pointer;">
         <svg width="32" height="12" viewBox="0 0 32 12"><line x1="2" y1="6" x2="23" y2="6" stroke="white" stroke-width="2" stroke-linecap="round"/><polygon points="22,2 30,6 22,10" fill="white"/></svg>
       </button>
-      <button class="tb" id="tb_run" onclick="setTool('run')" title="Laufweg (2Ã— klicken)" style="background:#344736;height:30px;padding:0 7px;border:none;border-radius:6px;cursor:pointer;">
+      <button class="tb" id="tb_run" onclick="setTool('run')" title="Laufweg (2× klicken)" style="background:#344736;height:30px;padding:0 7px;border:none;border-radius:6px;cursor:pointer;">
         <svg width="32" height="12" viewBox="0 0 32 12"><line x1="2" y1="6" x2="23" y2="6" stroke="#ffe082" stroke-width="2" stroke-linecap="round" stroke-dasharray="5,3"/><polygon points="22,2 30,6 22,10" fill="#ffe082"/></svg>
       </button>
-      <button class="tb" id="tb_dribble" onclick="setTool('dribble')" title="Dribbelweg (2Ã— klicken)" style="background:#344736;height:30px;padding:0 7px;border:none;border-radius:6px;cursor:pointer;">
+      <button class="tb" id="tb_dribble" onclick="setTool('dribble')" title="Dribbelweg (2× klicken)" style="background:#344736;height:30px;padding:0 7px;border:none;border-radius:6px;cursor:pointer;">
         <svg width="32" height="12" viewBox="0 0 32 12"><path d="M2,6 Q5,1 8,6 Q11,11 14,6 Q17,1 20,6" stroke="#81c784" stroke-width="2" fill="none" stroke-linecap="round"/><polygon points="19,2 27,6 19,10" fill="#81c784"/></svg>
       </button>
     </div>
@@ -1746,48 +1688,48 @@ function filterHelpCards(q){
 
     <!-- Auswahl / Tools -->
     <div style="display:flex;gap:3px;align-items:center;">
-      <button class="tb" id="tb_select" onclick="setTool('select')" title="AuswÃ¤hlen & Verschieben" style="background:#344736;height:30px;width:30px;border:none;border-radius:6px;cursor:pointer;color:#fff;font-size:14px;">&#x2196;</button>
-      <button class="tb" id="tb_erase" onclick="setTool('erase')" title="Objekt lÃ¶schen" style="background:#880e4f;height:30px;width:30px;border:none;border-radius:6px;cursor:pointer;color:#fff;font-size:12px;font-weight:700;">âœ•</button>
-      <button id="tb_snap" onclick="toggleGridSnap()" title="Einrasten & Ausrichtungshilfen" style="background:#344736;height:30px;padding:0 8px;border:none;border-radius:6px;cursor:pointer;color:#aaa;font-size:13px;">â›¶</button>
+      <button class="tb" id="tb_select" onclick="setTool('select')" title="Auswählen & Verschieben" style="background:#344736;height:30px;width:30px;border:none;border-radius:6px;cursor:pointer;color:#fff;font-size:14px;">&#x2196;</button>
+      <button class="tb" id="tb_erase" onclick="setTool('erase')" title="Objekt löschen" style="background:#880e4f;height:30px;width:30px;border:none;border-radius:6px;cursor:pointer;color:#fff;font-size:12px;font-weight:700;">✕</button>
+      <button id="tb_snap" onclick="toggleGridSnap()" title="Einrasten & Ausrichtungshilfen" style="background:#344736;height:30px;padding:0 8px;border:none;border-radius:6px;cursor:pointer;color:#aaa;font-size:13px;">⛶</button>
     </div>
 
     <!-- Aktionen rechts -->
     <div style="margin-left:auto;display:flex;gap:5px;align-items:center;">
-      <button onclick="undoDraw()" title="RÃ¼ckgÃ¤ngig (Strg+Z)" style="padding:5px 10px;border-radius:6px;border:none;background:#344736;color:#fff;font-size:13px;cursor:pointer;line-height:1;">â†©</button>
+      <button onclick="undoDraw()" title="Rückgängig (Strg+Z)" style="padding:5px 10px;border-radius:6px;border:none;background:#344736;color:#fff;font-size:13px;cursor:pointer;line-height:1;">↩</button>
       <button onclick="clearCanvas()" style="padding:5px 10px;border-radius:6px;border:none;background:#344736;color:rgba(255,100,100,.9);font-size:11px;font-weight:700;cursor:pointer;font-family:'Barlow Condensed',sans-serif;letter-spacing:.3px;">Leeren</button>
-      <button onclick="exportCanvas()" style="padding:6px 16px;border-radius:6px;border:none;background:#1a7f4b;color:#fff;font-size:12px;font-weight:800;cursor:pointer;font-family:'Barlow Condensed',sans-serif;letter-spacing:.3px;">âœ“ Ãœbernehmen</button>
-      <button onclick="closeFieldOverlay()" style="padding:6px 12px;border-radius:6px;border:none;background:#2e3f30;color:#aaa;font-size:12px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;">âœ•</button>
+      <button onclick="exportCanvas()" style="padding:6px 16px;border-radius:6px;border:none;background:#1a7f4b;color:#fff;font-size:12px;font-weight:800;cursor:pointer;font-family:'Barlow Condensed',sans-serif;letter-spacing:.3px;">✓ Übernehmen</button>
+      <button onclick="closeFieldOverlay()" style="padding:6px 12px;border-radius:6px;border:none;background:#2e3f30;color:#aaa;font-size:12px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;">✕</button>
     </div>
   </div>
 
-  <!-- â”€â”€ ZEILE 2: Kontextsensitive Optionen (erscheint je nach aktivem Werkzeug) â”€â”€ -->
+  <!-- ── ZEILE 2: Kontextsensitive Optionen (erscheint je nach aktivem Werkzeug) ── -->
   <div id="cvCtxBar" style="background:#162018;border-bottom:1px solid rgba(255,255,255,.07);padding:4px 10px;display:flex;gap:8px;align-items:center;flex-shrink:0;min-height:34px;flex-wrap:wrap;">
 
     <!-- Spieler-Kontext -->
     <div id="ctx_player" style="display:flex;align-items:center;gap:6px;">
       <span style="font-size:10px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.5px;">SPIELER:IN</span>
       <select id="playerColor" onchange="setTool('player')" title="Spielerfarbe" style="padding:3px 6px;border-radius:5px;border:none;font-size:11px;background:#344736;color:#fff;cursor:pointer;height:26px;">
-        <option value="#1565c0">â— Blau</option>
-        <option value="#b71c1c">â— Rot</option>
-        <option value="#1b5e20">â— GrÃ¼n</option>
-        <option value="#e65100">â— Orange</option>
-        <option value="#f9a825">â— Gelb / TW</option>
-        <option value="#4a148c">â— Lila</option>
-        <option value="#212121">â— Schwarz</option>
+        <option value="#1565c0">● Blau</option>
+        <option value="#b71c1c">● Rot</option>
+        <option value="#1b5e20">● Grün</option>
+        <option value="#e65100">● Orange</option>
+        <option value="#f9a825">● Gelb / TW</option>
+        <option value="#4a148c">● Lila</option>
+        <option value="#212121">● Schwarz</option>
       </select>
-      <button id="tb_autonum" onclick="toggleAutoNumber()" title="Autonummerierung an/aus" style="background:#1a7f4b;height:26px;padding:0 8px;border:none;border-radius:5px;cursor:pointer;color:#fff;font-size:11px;font-weight:700;font-family:'Barlow Condensed',sans-serif;letter-spacing:.3px;">1,2,3â€¦</button>
+      <button id="tb_autonum" onclick="toggleAutoNumber()" title="Autonummerierung an/aus" style="background:#1a7f4b;height:26px;padding:0 8px;border:none;border-radius:5px;cursor:pointer;color:#fff;font-size:11px;font-weight:700;font-family:'Barlow Condensed',sans-serif;letter-spacing:.3px;">1,2,3…</button>
     </div>
 
     <!-- Equipment-Kontext -->
     <div id="ctx_equip" style="display:none;align-items:center;gap:6px;">
       <span style="font-size:10px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.5px;">EQUIPMENT</span>
       <select id="equipType" onchange="setTool('equip')" title="Equipment-Typ" style="padding:3px 6px;border-radius:5px;border:none;font-size:11px;background:#344736;color:#fff;cursor:pointer;height:26px;">
-        <option value="cone-orange">ðŸŸ  HÃ¼tchen Orange</option>
-        <option value="cone-yellow">ðŸŸ¡ HÃ¼tchen Gelb</option>
-        <option value="cone-blue">ðŸ”µ HÃ¼tchen Blau</option>
-        <option value="cone-red">ðŸ”´ HÃ¼tchen Rot</option>
+        <option value="cone-orange">🟠 Hütchen Orange</option>
+        <option value="cone-yellow">🟡 Hütchen Gelb</option>
+        <option value="cone-blue">🔵 Hütchen Blau</option>
+        <option value="cone-red">🔴 Hütchen Rot</option>
         <option value="pole">Stange</option>
-        <option value="hurdle">HÃ¼rde</option>
+        <option value="hurdle">Hürde</option>
         <option value="ladder">Koordinationsleiter</option>
         <option value="ring">Ring</option>
       </select>
@@ -1796,23 +1738,23 @@ function filterHelpCards(q){
     <!-- Tor-Kontext -->
     <div id="ctx_goal" style="display:none;align-items:center;gap:6px;">
       <span style="font-size:10px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.5px;">TOR</span>
-      <select id="goalType" onchange="setTool('goal')" title="TorgrÃ¶ÃŸe" style="padding:3px 6px;border-radius:5px;border:none;font-size:11px;background:#344736;color:#fff;cursor:pointer;height:26px;">
+      <select id="goalType" onchange="setTool('goal')" title="Torgröße" style="padding:3px 6px;border-radius:5px;border:none;font-size:11px;background:#344736;color:#fff;cursor:pointer;height:26px;">
         <option value="mini">Minitor</option>
         <option value="youth">Jugendtor</option>
-        <option value="full">GroÃŸtor</option>
+        <option value="full">Großtor</option>
       </select>
     </div>
 
     <!-- Linien-Kontext -->
     <div id="ctx_line" style="display:none;align-items:center;gap:6px;">
       <span style="font-size:10px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.5px;">LINIE</span>
-      <span style="font-size:11px;color:rgba(255,255,255,.5);">1. Startpunkt klicken â†’ 2. Endpunkt klicken</span>
+      <span style="font-size:11px;color:rgba(255,255,255,.5);">1. Startpunkt klicken → 2. Endpunkt klicken</span>
     </div>
 
     <!-- Auswahl-Kontext -->
     <div id="ctx_select" style="display:none;align-items:center;gap:8px;flex-wrap:wrap;">
       <span style="font-size:10px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.5px;">AUSWAHL</span>
-      <span id="ctx_sel_hint" style="font-size:11px;color:rgba(255,255,255,.35);">Klicken zum AuswÃ¤hlen Â· Ziehen zum Verschieben Â· Rechtsklick = drehen</span>
+      <span id="ctx_sel_hint" style="font-size:11px;color:rgba(255,255,255,.35);">Klicken zum Auswählen · Ziehen zum Verschieben · Rechtsklick = drehen</span>
       <!-- Spieler:in-Label-Editor: nur sichtbar wenn einzelne Spieler:in selektiert -->
       <div id="ctx_player_edit" style="display:none;align-items:center;gap:6px;">
         <div style="width:1px;height:16px;background:rgba(255,255,255,.12);"></div>
@@ -1824,14 +1766,14 @@ function filterHelpCards(q){
       </div>
     </div>
 
-    <!-- Rotation (erscheint zusÃ¤tzlich wenn drehbares Objekt selektiert) -->
+    <!-- Rotation (erscheint zusätzlich wenn drehbares Objekt selektiert) -->
     <div id="rotCtrl" style="display:none;align-items:center;gap:5px;margin-left:auto;">
       <div style="width:1px;height:18px;background:rgba(255,255,255,.12);"></div>
       <span style="font-size:10px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.5px;">WINKEL</span>
-      <button onclick="rotateSel(-45)" title="-45Â°" style="padding:3px 7px;border-radius:5px;border:none;background:#344736;color:#fff;font-size:10px;font-weight:700;cursor:pointer;">âˆ’45</button>
+      <button onclick="rotateSel(-45)" title="-45°" style="padding:3px 7px;border-radius:5px;border:none;background:#344736;color:#fff;font-size:10px;font-weight:700;cursor:pointer;">−45</button>
       <input type="range" id="angleSlider" min="0" max="360" step="45" value="0" style="width:90px;accent-color:#1a7f4b;" oninput="setSelAngle(this.value)">
-      <span id="angleVal" style="font-size:11px;color:#fff;min-width:30px;font-weight:700;">0Â°</span>
-      <button onclick="rotateSel(45)" title="+45Â°" style="padding:3px 7px;border-radius:5px;border:none;background:#344736;color:#fff;font-size:10px;font-weight:700;cursor:pointer;">+45</button>
+      <span id="angleVal" style="font-size:11px;color:#fff;min-width:30px;font-weight:700;">0°</span>
+      <button onclick="rotateSel(45)" title="+45°" style="padding:3px 7px;border-radius:5px;border:none;background:#344736;color:#fff;font-size:10px;font-weight:700;cursor:pointer;">+45</button>
     </div>
 
   </div>
