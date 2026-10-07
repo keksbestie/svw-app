@@ -942,16 +942,18 @@ body:not(.on-home) .home-topbar { display: none; }
 .submit-login-demo { font-size: 11px; color: var(--text-3); cursor: pointer; text-decoration: underline; padding: 4px; }
 .submit-login-demo:hover { color: var(--accent); }
 
-/* Info Banner */
+/* Info Banner — styled like .hero */
 .submit-banner {
-  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-  padding: 20px 28px;
-  display: flex; align-items: center; gap: 16px;
-  border-radius: 0;
+  background: linear-gradient(135deg, #22a05f 0%, #0f5c33 100%);
+  border-radius: var(--radius-lg);
+  padding: 22px 26px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
 }
-.submit-banner-icon { font-size: 28px; flex-shrink: 0; }
-.submit-banner-title { font-family: 'Barlow Condensed', sans-serif; font-size: 17px; font-weight: 900; color: #fff; letter-spacing: .5px; margin-bottom: 3px; }
-.submit-banner-sub { font-size: 12px; color: rgba(255,255,255,.75); line-height: 1.5; }
+.submit-banner::before { content: ''; position: absolute; right: -40px; top: -40px; width: 200px; height: 200px; border-radius: 50%; background: rgba(255,255,255,.06); }
+.submit-banner .hero-in { position: relative; z-index: 1; }
+.submit-banner .hero-num { font-size: 42px; color: rgba(255,255,255,.15); }
 .submit-banner-user { margin-left: auto; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
 .submit-user-tag { background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.25); border-radius: 8px; padding: 6px 12px; font-size: 12px; color: #fff; font-weight: 700; }
 .submit-logout-btn { background: none; border: 1px solid rgba(255,255,255,.3); color: #fff; padding: 5px 10px; border-radius: 7px; font-size: 11px; font-weight: 700; cursor: pointer; transition: background .15s; }
