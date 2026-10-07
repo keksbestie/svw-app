@@ -110,6 +110,10 @@
           <button class="cfg-fs-rst" onclick="adjustFontSize(0)" title="Zurücksetzen">↺</button>
         </div>
         <div class="cfg-sep"></div>
+        <button class="cfg-item" onclick="closeCfgDrop();goPage('about')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
+          &Uuml;ber AssistCoach
+        </button>
         <button class="cfg-item" onclick="closeCfgDrop();goPage('impressum')">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           Impressum
@@ -718,6 +722,77 @@
   </div>
 </div>
 
+
+<!-- ABOUT PAGE -->
+<div id="page-about" class="page">
+  <div style="max-width:760px;margin:0 auto;padding-bottom:60px;">
+
+    <!-- Mission Hero -->
+    <div style="background:linear-gradient(135deg,#22a05f 0%,#0f5c33 100%);border-radius:var(--radius-lg);padding:36px 32px;margin-bottom:24px;position:relative;overflow:hidden;">
+      <div style="position:absolute;right:-60px;top:-60px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.05);"></div>
+      <div style="position:absolute;left:-30px;bottom:-60px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.04);"></div>
+      <div style="position:relative;z-index:1;">
+        <div style="font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:10px;">Unsere Mission</div>
+        <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:#fff;margin:0 0 16px;letter-spacing:.5px;line-height:1.1;">Besseres Training.<br>F&uuml;r alle.</h1>
+        <p style="font-size:14px;color:rgba(255,255,255,.85);line-height:1.7;margin:0;max-width:560px;">AssistCoach unterst&uuml;tzt Trainer:innen und Verantwortliche im Fu&szlig;ball auf allen Ebenen &ndash; in ihrer t&auml;glichen Arbeit. Gleichzeitig soll ein Ort entstehen, an dem das kollektive Wissen vieler zusammenkommt, damit wir alle gemeinsam wachsen und unseren Spieler:innen ein noch besseres Training bieten k&ouml;nnen.</p>
+      </div>
+    </div>
+
+    <!-- Zielgruppen -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:14px;">
+
+      <!-- Einsteiger -->
+      <div style="background:var(--surface);border-radius:var(--radius-lg);padding:24px;box-shadow:var(--sh);border-top:3px solid #2196a3;position:relative;overflow:hidden;">
+        <div style="position:absolute;right:-16px;top:-16px;font-family:'Barlow Condensed',sans-serif;font-size:72px;font-weight:900;color:rgba(33,150,163,.07);line-height:1;user-select:none;">1</div>
+        <div style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;background:rgba(33,150,163,.12);margin-bottom:12px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2196a3" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <div style="font-size:8px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#2196a3;margin-bottom:6px;">F&uuml;r Einsteiger</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:900;color:var(--text-1);margin-bottom:10px;">Struktur &amp; Orientierung</div>
+        <p style="font-size:13px;color:var(--gd2);line-height:1.65;margin:0;">Lerne, wie du einen klaren Aufbau und einen roten Faden durch jede Einheit bekommst. Entdecke neue &Uuml;bungen und nutze Filter, wenn du zu einem Thema nach Ideen suchst &ndash; egal wie wenig Erfahrung du mitbringst.</p>
+      </div>
+
+      <!-- Fortgeschrittene -->
+      <div style="background:var(--surface);border-radius:var(--radius-lg);padding:24px;box-shadow:var(--sh);border-top:3px solid #e07b2a;position:relative;overflow:hidden;">
+        <div style="position:absolute;right:-16px;top:-16px;font-family:'Barlow Condensed',sans-serif;font-size:72px;font-weight:900;color:rgba(224,123,42,.07);line-height:1;user-select:none;">2</div>
+        <div style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;background:rgba(224,123,42,.12);margin-bottom:12px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e07b2a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+        </div>
+        <div style="font-size:8px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#e07b2a;margin-bottom:6px;">F&uuml;r Fortgeschrittene</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:900;color:var(--text-1);margin-bottom:10px;">Planen &amp; Vorausdenken</div>
+        <p style="font-size:13px;color:var(--gd2);line-height:1.65;margin:0;">Lass dich von einer Vielzahl an &Uuml;bungen inspirieren, plane deine Einheiten voraus und behalte den &Uuml;berblick &uuml;ber Inhalt und Intensit&auml;t. Bereite Training so vor, dass es auch ohne dich reibungslos l&auml;uft &ndash; ideal, wenn jemand anderes &uuml;bernehmen soll.</p>
+      </div>
+
+      <!-- Profis -->
+      <div style="background:var(--surface);border-radius:var(--radius-lg);padding:24px;box-shadow:var(--sh);border-top:3px solid #7c3aed;position:relative;overflow:hidden;">
+        <div style="position:absolute;right:-16px;top:-16px;font-family:'Barlow Condensed',sans-serif;font-size:72px;font-weight:900;color:rgba(124,58,237,.07);line-height:1;user-select:none;">3</div>
+        <div style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;background:rgba(124,58,237,.12);margin-bottom:12px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div style="font-size:8px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#7c3aed;margin-bottom:6px;">F&uuml;r Profis</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:900;color:var(--text-1);margin-bottom:10px;">Volle Kontrolle</div>
+        <p style="font-size:13px;color:var(--gd2);line-height:1.65;margin:0;">Plane dein Training, deine Woche oder die gesamte Saison &ndash; ob Vorbereitung oder doppelte Spielbelastung. Behalte den &Uuml;berblick &uuml;ber Intensit&auml;t, Trainingstage und welche Spieler:innen in welchen &Uuml;bungen eingesetzt werden. Individualisiere jede Einheit vollst&auml;ndig oder lass dich inspirieren &ndash; und stelle sicher, dass alles nach Plan l&auml;uft, auch wenn du selbst nicht vor Ort bist.</p>
+      </div>
+    </div>
+
+    <!-- Für alle -->
+    <div style="background:var(--surface);border-radius:var(--radius-lg);padding:24px 28px;box-shadow:var(--sh);display:flex;gap:20px;align-items:flex-start;">
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;background:rgba(26,127,75,.12);flex-shrink:0;margin-top:2px;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a7f4b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <div>
+        <div style="font-size:8px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);margin-bottom:6px;">F&uuml;r alle</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:900;color:var(--text-1);margin-bottom:8px;">Mehr Zeit auf dem Platz</div>
+        <p style="font-size:13px;color:var(--gd2);line-height:1.65;margin:0;">Verliere nie wieder den &Uuml;berblick &uuml;ber Material, Zeitplanung und Belastungsverteilung. Sieh auf einen Blick, wie lange jede &Uuml;bung l&auml;uft und wie die Intensit&auml;t in deiner Einheit verteilt ist. Mit weniger Zeitaufwand zu einer professionelleren Vorbereitung &ndash; damit am Ende mehr Zeit und echte Interaktion auf dem Platz bleiben.</p>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:32px;">
+      <button onclick="goPage('handbook')" style="background:var(--accent);color:#fff;border:none;border-radius:10px;padding:13px 28px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;margin-right:10px;">Zum Katalog</button>
+      <button onclick="goPage('home')" style="background:var(--surface-2);color:var(--text-1);border:none;border-radius:10px;padding:13px 28px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;">Zur Startseite</button>
+    </div>
+  </div>
+</div>
 
 <!-- DATENSCHUTZ PAGE -->
 <div id="page-datenschutz" class="page">
