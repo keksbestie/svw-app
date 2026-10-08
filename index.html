@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex, nofollow">
 <title>AssistCoach</title>
 <link rel="stylesheet" href="fonts/fonts.css">
-<link rel="stylesheet" href="css/styles.css?v=20261006">
+<link rel="stylesheet" href="css/styles.css?v=20261008">
 </head>
 <body class="on-home">
 
@@ -178,6 +178,7 @@
 <div id="page-home" class="page">
   <!-- Topbar inside overlay -->
   <div class="home-topbar" id="homeTopbar">
+    <p class="home-motto" style="margin:0;flex:1;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:16px;">und wenn es einem Kind, einer Spielerin, einem Coach oder Betreuer geholfen hat … dann hat sich die ganze Mühe gelohnt</p>
     <div class="lang-sel" id="homeLangSel">
       <button class="lang-btn" onclick="toggleLangDrop('home')" id="homeLangBtn">
         <span id="homeLangFlag">🇩🇪</span>
@@ -192,17 +193,17 @@
     <button class="theme-btn" onclick="toggleTheme()" title="Theme wechseln" id="homeThemeBtn">🌙</button>
     <button id="homeSignInBtn" onclick="goPage('submit')" style="padding:7px 18px;background:#fff;color:#1a2b1c;border:none;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;letter-spacing:.5px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15);">Anmelden</button>
   </div>
+  <!-- Beta notice – left side -->
+  <div style="position:absolute;left:20px;top:50%;transform:translateY(-50%);z-index:5;pointer-events:none;">
+    <div style="writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,165,0,.5);border-left:2px solid rgba(255,165,0,.3);padding:8px 4px;">Beta</div>
+  </div>
   <!-- Hero -->
   <div class="home-hero">
-    <p class="home-motto" style="margin:0 0 18px;">und wenn es einem Kind, einer Spielerin, einem Coach oder Betreuer geholfen hat … dann hat sich die ganze Mühe gelohnt</p>
     <div class="home-hero-eyebrow" data-i18n="home_eyebrow">Nachwuchs</div>
-    <div style="display:inline-flex;align-items:center;gap:12px;justify-content:center;">
-      <h1 class="home-hero-title" data-i18n="home_title" style="margin:0;">AssistCoach</h1>
-      <button onclick="goPage('about')" title="Ziele &amp; Zielgruppen" style="flex-shrink:0;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);color:#fff;font-size:14px;font-weight:900;cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center;margin-bottom:4px;" onmouseover="this.style.background='rgba(255,255,255,.28)'" onmouseout="this.style.background='rgba(255,255,255,.15)'">↗</button>
-    </div>
+    <h1 class="home-hero-title" data-i18n="home_title">AssistCoach</h1>
     <div class="home-hero-tagline">Dein Trainingskatalog</div>
-    <div class="home-beta-banner">🚧 Diese App befindet sich in der <strong>Beta-Phase</strong> – Funktionen und Inhalte werden laufend erweitert.</div>
     <p class="home-hero-sub" data-i18n="home_sub">Übungen planen, strukturieren und langfristig periodisieren – alles an einem Ort.</p>
+    <button onclick="goPage('about')" style="margin-top:6px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);color:#fff;padding:8px 20px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">Vision &amp; Ziele ↗</button>
   </div>
 
   <!-- Feature Cards -->
@@ -1685,19 +1686,19 @@ function filterHelpCards(q){
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>emailjs.init('Gdp0v57LwSddbt-GE');</script>
-<script src="js/00-supabase.js?v=20261006"></script>
-<script src="data/exercises.default.js?v=20261006"></script>
-<script src="js/01-i18n-theme.js?v=20261006"></script>
-<script src="js/02-core-state.js?v=20261006"></script>
-<script src="js/03-submit-page.js?v=20261006"></script>
-<script src="js/04-planner.js?v=20261006"></script>
-<script src="js/05-catalog.js?v=20261006"></script>
-<script src="js/06-plan-save-load.js?v=20261006"></script>
-<script src="js/07-longterm-planning.js?v=20261006"></script>
-<script src="js/08-modals-toast.js?v=20261006"></script>
-<script src="js/09-default-descs.js?v=20261006"></script>
-<script src="js/10-field-editor.js?v=20261006"></script>
-<script src="js/11-app-start.js?v=20261006"></script>
+<script src="js/00-supabase.js?v=20261008"></script>
+<script src="data/exercises.default.js?v=20261008"></script>
+<script src="js/01-i18n-theme.js?v=20261008"></script>
+<script src="js/02-core-state.js?v=20261008"></script>
+<script src="js/03-submit-page.js?v=20261008"></script>
+<script src="js/04-planner.js?v=20261008"></script>
+<script src="js/05-catalog.js?v=20261008"></script>
+<script src="js/06-plan-save-load.js?v=20261008"></script>
+<script src="js/07-longterm-planning.js?v=20261008"></script>
+<script src="js/08-modals-toast.js?v=20261008"></script>
+<script src="js/09-default-descs.js?v=20261008"></script>
+<script src="js/10-field-editor.js?v=20261008"></script>
+<script src="js/11-app-start.js?v=20261008"></script>
 
 <!-- CROP DIALOG -->
 <div id="cropMod" class="mbg h" style="z-index:10001;">

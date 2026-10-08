@@ -516,15 +516,14 @@ body.app-loading .home-card { pointer-events: none; }
   line-height: 1.65;
 }
 .home-motto {
-  text-align: center;
   font-style: italic;
-  font-size: 12px;
-  color: rgba(255,255,255,.38);
-  line-height: 1.6;
-  margin: 0 auto;
-  max-width: 420px;
-  padding: 0 16px;
+  font-size: 11px;
+  color: rgba(255,255,255,.32);
+  line-height: 1.3;
   letter-spacing: .1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .home-motto::before { content: '\201E'; }
 .home-motto::after  { content: '\201C'; }
