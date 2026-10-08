@@ -265,7 +265,7 @@ header {
 
 /* Hero */
 .home-hero {
-  padding: 52px 32px 24px;
+  padding: 32px 32px 16px;
   max-width: 720px;
   margin: 0 auto;
   text-align: center;
@@ -518,12 +518,13 @@ body.app-loading .home-card { pointer-events: none; }
 .home-motto {
   text-align: center;
   font-style: italic;
-  font-size: 13px;
-  color: rgba(255,255,255,.45);
-  line-height: 1.75;
-  margin: 16px auto 0;
-  max-width: 460px;
+  font-size: 12px;
+  color: rgba(255,255,255,.38);
+  line-height: 1.6;
+  margin: 0 auto;
+  max-width: 420px;
   padding: 0 16px;
+  letter-spacing: .1px;
 }
 .home-motto::before { content: '\201E'; }
 .home-motto::after  { content: '\201C'; }
