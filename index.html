@@ -4,7 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#22a05f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AssistCoach">
 <title>AssistCoach</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="css/styles.css?v=20261008">
 </head>
@@ -1718,6 +1725,13 @@ function filterHelpCards(q){
 <script src="js/10-field-editor.js?v=20261008"></script>
 <script src="js/11-app-start.js?v=20261008"></script>
 <script src="js/12-kader.js?v=20261008"></script>
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(e => console.warn('SW:', e));
+  });
+}
+</script>
 
 <!-- CROP DIALOG -->
 <div id="cropMod" class="mbg h" style="z-index:10001;">
