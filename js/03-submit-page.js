@@ -105,6 +105,7 @@ async function doLogin(){
   renderSubmitPage(); // show page immediately
   updateSignInBtn();
   silentSync();       // sync data in background
+  if(typeof loadSquad==='function') loadSquad();
 }
 
 function toggleRegisterMode(){

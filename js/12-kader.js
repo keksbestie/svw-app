@@ -6,6 +6,9 @@ let editPlayerId = null;
 
 // ── Init ──────────────────────────────────────────────────────────
 async function loadSquad() {
+  const menuBtn = document.getElementById('menuKaderBtn');
+  if (menuBtn) menuBtn.style.display = currentUser ? '' : 'none';
+
   if (!_supabase || !currentUser) { loadSquadLocal(); return; }
   try {
     const { data, error } = await _supabase
