@@ -92,7 +92,11 @@
         </button>
         <button class="cfg-item" onclick="closeCfgDrop();goPage('account');setTimeout(()=>document.getElementById('accTabPlans')?.click(),100)">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          Meine Pläne
+          Meine Pl&auml;ne
+        </button>
+        <button class="cfg-item" id="menuKaderBtn" onclick="closeCfgDrop();goPage('kader')" style="display:none;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Mein Kader
         </button>
         <button class="cfg-item cfg-item--soon" disabled>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -1699,6 +1703,7 @@ function filterHelpCards(q){
 <script src="js/09-default-descs.js?v=20261008"></script>
 <script src="js/10-field-editor.js?v=20261008"></script>
 <script src="js/11-app-start.js?v=20261008"></script>
+<script src="js/12-kader.js?v=20261008"></script>
 
 <!-- CROP DIALOG -->
 <div id="cropMod" class="mbg h" style="z-index:10001;">
@@ -1862,4 +1867,77 @@ function filterHelpCards(q){
   <!-- Canvas -->
   <canvas id="fieldCanvas" style="flex:1;min-height:0;display:block;cursor:crosshair;touch-action:none;"></canvas>
 </div>
+
+<!-- KADER PAGE -->
+<div id="page-kader" class="page">
+  <div class="inner" style="max-width:720px;padding-bottom:80px;">
+    <button onclick="goPage('home')" style="display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--gd2);font-size:13px;cursor:pointer;margin-bottom:18px;padding:0;font-family:'Barlow',sans-serif;">&#8592; Zur&uuml;ck</button>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+      <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;margin:0;">Mein Kader</h1>
+      <button class="bpr" onclick="openPlayerModal()" style="display:flex;align-items:center;gap:6px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Spieler hinzuf&uuml;gen
+      </button>
+    </div>
+
+    <!-- Kader leer -->
+    <div id="kaderEmpty" style="display:none;text-align:center;padding:48px 24px;color:var(--gd2);">
+      <div style="font-size:48px;margin-bottom:12px;">&#128101;</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;margin-bottom:6px;">Noch keine Spieler angelegt</div>
+      <div style="font-size:13px;">F&uuml;ge deinen ersten Spieler hinzu, um den Kader aufzubauen.</div>
+    </div>
+
+    <!-- Spielerliste -->
+    <div id="kaderList"></div>
+  </div>
+</div>
+
+<!-- MODAL: Spieler anlegen / bearbeiten -->
+<div id="playerModal" class="modal-bg" style="display:none;" onclick="if(event.target===this)closePlayerModal()">
+  <div class="modal-box" style="max-width:440px;width:90%;">
+    <div class="mhd">
+      <span class="mtit" id="playerModalTitle">Spieler anlegen</span>
+      <button class="mcl" onclick="closePlayerModal()">&#10005;</button>
+    </div>
+    <div class="mbody">
+      <div class="fg">
+        <label>Name *</label>
+        <input type="text" id="pName" class="fc" placeholder="Vor- und Nachname">
+      </div>
+      <div class="fr">
+        <div class="fg">
+          <label>Nummer (optional)</label>
+          <input type="number" id="pNumber" class="fc" placeholder="z.B. 10" min="1" max="99">
+        </div>
+        <div class="fg">
+          <label>Jahrgang</label>
+          <select id="pAge" class="fc">
+            <option value="">-- w&auml;hlen --</option>
+            <option>U7</option><option>U8</option><option>U9</option><option>U10</option>
+            <option>U11</option><option>U12</option><option>U13</option><option>U14</option>
+            <option>U15</option><option>U16</option><option>U17</option><option>U18</option>
+            <option>U19</option><option>U20</option><option>U21</option><option>U23</option>
+            <option>Senioren</option><option>Seniorinnen</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg">
+        <label>Position (optional)</label>
+        <select id="pPosition" class="fc">
+          <option value="">-- w&auml;hlen --</option>
+          <option>Torwart</option>
+          <option>Innenverteidiger</option><option>Au&szlig;enverteidiger</option>
+          <option>Defensives Mittelfeld</option><option>Zentrales Mittelfeld</option><option>Offensives Mittelfeld</option>
+          <option>Au&szlig;ensturm</option><option>Mittelst&uuml;rmer</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:6px;">
+        <button class="bsc" onclick="closePlayerModal()" style="flex:1;">Abbrechen</button>
+        <button class="bpr" onclick="savePlayer()" style="flex:2;" id="playerSaveBtn">Speichern</button>
+      </div>
+      <button id="playerDeleteBtn" onclick="deletePlayer()" style="display:none;width:100%;margin-top:10px;padding:9px;background:none;border:1.5px solid #e53935;color:#e53935;border-radius:var(--radius-sm);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase;cursor:pointer;">Spieler l&ouml;schen</button>
+    </div>
+  </div>
+</div>
+
 </html>

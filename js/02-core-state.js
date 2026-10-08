@@ -25,6 +25,7 @@ async function init(){
   if(ok){ renderStbar(); renderSection(); renderSavedPlans(); renderLtp(); }
   updateApiBar();
   if(typeof updateSignInBtn==='function') updateSignInBtn();
+  if(typeof loadSquad==='function') loadSquad();
   setInterval(()=>{if(apiOnline)silentSync();},60000);
 }
 function hideLS(){const l=document.getElementById('ls');l.classList.add('fade');setTimeout(()=>l.style.display='none',400);}
@@ -233,6 +234,7 @@ function goPage(name,btn){
   if(name==='longterm')renderLtp();
   if(name==='submit')renderSubmitPage();
   if(name==='account')renderAccountPage();
+  if(name==='kader'&&typeof renderKaderPage==='function')renderKaderPage();
 
   // 3. Scroll to top
   document.documentElement.scrollTop=0; document.body.scrollTop=0;
