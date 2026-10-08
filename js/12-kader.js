@@ -1,8 +1,151 @@
 // ══════════════════════════════════════════════════════════════════
-// MODUL: KADER-VERWALTUNG
+// MODUL: KADER-VERWALTUNG + TRAININGSPLAN-KADER
 // ══════════════════════════════════════════════════════════════════
 let squad = [];        // [{id, name, number, position, ageGroup}]
 let editPlayerId = null;
+
+// IDs der Spieler, die heute beim Training dabei sind (null = ganzer Kader)
+let planSquadAbsent = new Set(); // IDs der Abwesenden
+
+// ── Trainingsplan-Kader ───────────────────────────────────────────
+function squadForPlan() {
+  if (!squad.length) return [];
+  return squad.filter(p => !planSquadAbsent.has(p.id));
+}
+
+function initPlanSquad() {
+  const wrap = document.getElementById('planSquadWrap');
+  if (wrap) wrap.style.display = squad.length ? '' : 'none';
+  renderSquadDrop();
+}
+
+function renderSquadDrop() {
+  const list = document.getElementById('squadPlayerList');
+  if (!list) return;
+  list.innerHTML = squad.map(p => `
+    <label style="display:flex;align-items:center;gap:10px;padding:6px 14px;cursor:pointer;font-size:13px;" onclick="toggleSquadPlayer(event,'${p.id}')">
+      <input type="checkbox" data-pid="${p.id}" ${planSquadAbsent.has(p.id)?'':'checked'} style="accent-color:var(--accent);width:15px;height:15px;">
+      <span>${escH(p.name)}${p.ageGroup?` <span style="font-size:10px;color:var(--gd2);">${p.ageGroup}</span>`:''}</span>
+    </label>
+  `).join('');
+  updateSquadLabel();
+}
+
+function toggleSquadDrop() {
+  const drop = document.getElementById('planSquadDrop');
+  if (!drop) return;
+  const open = drop.style.display !== 'none';
+  drop.style.display = open ? 'none' : 'block';
+  if (!open) renderSquadDrop();
+}
+
+function toggleAllSquad(e) {
+  e.stopPropagation();
+  const allChk = document.getElementById('squadAllChk');
+  // Let the checkbox toggle first
+  setTimeout(() => {
+    if (allChk.checked) {
+      planSquadAbsent.clear();
+    } else {
+      squad.forEach(p => planSquadAbsent.add(p.id));
+    }
+    renderSquadDrop();
+    renderLanes();
+  }, 0);
+}
+
+function toggleSquadPlayer(e, id) {
+  e.stopPropagation();
+  const chk = e.currentTarget.querySelector('input');
+  setTimeout(() => {
+    if (chk.checked) {
+      planSquadAbsent.delete(id);
+    } else {
+      planSquadAbsent.add(id);
+    }
+    updateSquadLabel();
+    const allChk = document.getElementById('squadAllChk');
+    if (allChk) allChk.checked = planSquadAbsent.size === 0;
+    renderLanes();
+  }, 0);
+}
+
+function updateSquadLabel() {
+  const label = document.getElementById('planSquadLabel');
+  if (!label) return;
+  const present = squad.length - planSquadAbsent.size;
+  label.textContent = planSquadAbsent.size === 0
+    ? 'Ganzer Kader'
+    : `${present} von ${squad.length} Spielern`;
+}
+
+// Schließt Squad-Dropdown wenn außerhalb geklickt
+document.addEventListener('click', e => {
+  if (!e.target.closest('#planSquadWrap')) {
+    const drop = document.getElementById('planSquadDrop');
+    if (drop) drop.style.display = 'none';
+  }
+});
+
+// ── Ausschluss-Dropdown pro Übung ────────────────────────────────
+let _excDropTarget = null; // {exId, si}
+
+function toggleExcludeDrop(exId, si, btn) {
+  // Altes Dropdown entfernen
+  const existing = document.getElementById('excDrop');
+  if (existing) {
+    const same = _excDropTarget && _excDropTarget.exId === exId && _excDropTarget.si === si;
+    existing.remove();
+    _excDropTarget = null;
+    if (same) return;
+  }
+
+  _excDropTarget = {exId, si};
+  const lane = currentPlan.lanes[si] || [];
+  const item = lane.map(r => typeof r === 'string' ? {id:r} : r).find(r => r.id === exId);
+  const excluded = new Set(item?.excludedIds || []);
+  const present = squadForPlan();
+
+  const drop = document.createElement('div');
+  drop.id = 'excDrop';
+  drop.style.cssText = 'position:fixed;min-width:200px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;box-shadow:var(--shadow-lg);z-index:500;padding:8px 0;max-height:280px;overflow-y:auto;';
+
+  const rect = btn.getBoundingClientRect();
+  drop.style.top = (rect.bottom + 6) + 'px';
+  drop.style.left = Math.max(8, rect.left - 120) + 'px';
+
+  drop.innerHTML = `<div style="padding:5px 12px 4px;font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gd2);">Nicht dabei bei dieser Übung</div>` +
+    present.map(p => `
+      <label style="display:flex;align-items:center;gap:9px;padding:6px 12px;cursor:pointer;font-size:12px;" onclick="event.stopPropagation()">
+        <input type="checkbox" data-pid="${p.id}" ${excluded.has(p.id)?'checked':''} style="accent-color:#e53935;width:14px;height:14px;"
+          onchange="setExclude('${exId}',${si},'${p.id}',this.checked)">
+        ${escH(p.name)}
+      </label>
+    `).join('');
+
+  document.body.appendChild(drop);
+}
+
+function setExclude(exId, si, pid, excluded) {
+  const lane = currentPlan.lanes[si] || [];
+  const idx = lane.findIndex(r => (typeof r === 'string' ? r : r.id) === exId);
+  if (idx < 0) return;
+  const item = typeof lane[idx] === 'string' ? {id: lane[idx]} : {...lane[idx]};
+  const set = new Set(item.excludedIds || []);
+  excluded ? set.add(pid) : set.delete(pid);
+  item.excludedIds = [...set];
+  lane[idx] = item;
+  currentPlan.lanes[si] = lane;
+  save();
+  renderLanes();
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('#excDrop') && !e.target.closest('.pi-squad-btn')) {
+    const drop = document.getElementById('excDrop');
+    if (drop) { drop.remove(); _excDropTarget = null; }
+  }
+});
 
 // ── Init ──────────────────────────────────────────────────────────
 async function loadSquad() {

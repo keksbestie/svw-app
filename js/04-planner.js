@@ -8,6 +8,7 @@ function renderPlanner(){
   renderLanes();renderSavedPlans();
   const d=document.getElementById('planDate');
   if(d&&!d.value) d.value=new Date().toISOString().slice(0,10);
+  if(typeof initPlanSquad==='function') initPlanSquad();
 }
 
 // Normalize lane items: support old format (string id) and new format ({id,...})
@@ -78,6 +79,11 @@ function piHTML(item,ex,si,col){
       </div>
     </div>
     <button class="pi-rm" onclick="removePlanLane('${ex.id}',${si})">✕</button>
+    ${squadForPlan().length>0?`<div class="pi-squad-wrap" style="position:relative;">
+      <button class="pi-squad-btn" onclick="toggleExcludeDrop('${ex.id}',${si},this);event.stopPropagation()" title="Spieler ausschließen" style="background:none;border:none;cursor:pointer;padding:2px 5px;color:${(item.excludedIds||[]).length>0?'#e53935':'var(--gd2)'};font-size:11px;font-weight:700;border-radius:5px;" onmouseenter="this.style.background='var(--off)'" onmouseleave="this.style.background='none'">
+        👥${(item.excludedIds||[]).length>0?` −${item.excludedIds.length}`:''}
+      </button>
+    </div>`:''}
   </div>`;
 }
 
@@ -219,6 +225,7 @@ function loadTemplate(tpl){
 function clearPlan(){
   if(!confirm('Trainingsplan leeren? Alle Übungen werden entfernt.')) return;
   currentPlan.lanes=[[],[],[],[],[]];
+  if(typeof planSquadAbsent!=='undefined') planSquadAbsent.clear();
   save();
   renderPlanner();
   updatePlanCart();

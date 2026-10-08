@@ -545,6 +545,20 @@
     <div class="plan-hdr no-print">
       <input class="plan-in" id="planName" type="text" placeholder="Trainingseinheit benennen…">
       <input class="plan-in plan-date-in" id="planDate" type="date" title="Datum der Trainingseinheit">
+      <div class="plan-squad-wrap no-print" id="planSquadWrap" style="display:none;position:relative;">
+        <button class="bpl gy" id="planSquadBtn" onclick="toggleSquadDrop()" style="display:flex;align-items:center;gap:6px;white-space:nowrap;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span id="planSquadLabel">Ganzer Kader</span> &#9660;
+        </button>
+        <div id="planSquadDrop" style="display:none;position:absolute;top:calc(100% + 6px);right:0;min-width:220px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;box-shadow:var(--shadow-lg);z-index:200;padding:8px 0;max-height:320px;overflow-y:auto;">
+          <div style="padding:6px 14px 4px;font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gd2);">Wer ist heute dabei?</div>
+          <label style="display:flex;align-items:center;gap:10px;padding:7px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--border);font-weight:700;" onclick="toggleAllSquad(event)">
+            <input type="checkbox" id="squadAllChk" checked style="accent-color:var(--accent);width:15px;height:15px;">
+            Ganzer Kader
+          </label>
+          <div id="squadPlayerList"></div>
+        </div>
+      </div>
       <button class="bpl gr" onclick="savePlan()">Speichern</button>
       <button class="bpl gy" onclick="printPlan()">Drucken</button>
       <button class="bpl gy" onclick="clearPlan()">Leeren</button>
