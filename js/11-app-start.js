@@ -9,17 +9,42 @@ init();
 
 // PWA Install
 let _pwaPrompt = null;
+const _isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+const _isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+const _isMobile = /iphone|ipad|ipod|android/i.test(navigator.userAgent);
+
+(function initPWAUI() {
+  const section = document.getElementById('pwaInstallSection');
+  if (!section) return;
+
+  // Bereits als App installiert → Abschnitt ausblenden
+  if (_isStandalone) { section.style.display = 'none'; return; }
+
+  // Nur auf Mobilgeräten anzeigen
+  if (!_isMobile) { section.style.display = 'none'; return; }
+
+  // Plattform-spezifische Hinweise
+  if (_isIOS) {
+    const a = document.getElementById('pwaHintAndroid');
+    if (a) a.style.display = 'none';
+  } else {
+    const i = document.getElementById('pwaHintIOS');
+    if (i) i.style.display = 'none';
+  }
+})();
 
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
   _pwaPrompt = e;
   const btn = document.getElementById('pwaInstallBtn');
-  if (btn) btn.style.display = 'inline-block';
+  const fb = document.getElementById('pwaFallback');
+  if (btn) { btn.style.display = 'inline-block'; }
+  if (fb) { fb.style.display = 'none'; }
 });
 
 window.addEventListener('appinstalled', () => {
-  const btn = document.getElementById('pwaInstallBtn');
-  if (btn) btn.style.display = 'none';
+  const section = document.getElementById('pwaInstallSection');
+  if (section) section.style.display = 'none';
 });
 
 function triggerPWAInstall() {
@@ -28,13 +53,3 @@ function triggerPWAInstall() {
     _pwaPrompt.userChoice.then(() => { _pwaPrompt = null; });
   }
 }
-
-// iOS: kein beforeinstallprompt → eigenen Hinweis zeigen
-(function() {
-  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
-  if (isIOS && !isStandalone) {
-    const hint = document.getElementById('pwaIOSHint');
-    if (hint) hint.style.display = 'block';
-  }
-})();
