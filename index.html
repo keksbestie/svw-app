@@ -1893,13 +1893,13 @@ function filterHelpCards(q){
 </div>
 
 <!-- MODAL: Spieler anlegen / bearbeiten -->
-<div id="playerModal" class="modal-bg" style="display:none;" onclick="if(event.target===this)closePlayerModal()">
-  <div class="modal-box" style="max-width:440px;width:90%;">
-    <div class="mhd">
-      <span class="mtit" id="playerModalTitle">Spieler anlegen</span>
-      <button class="mcl" onclick="closePlayerModal()">&#10005;</button>
+<div id="playerModal" class="mbg h" onclick="if(event.target===this)closePlayerModal()">
+  <div class="md sm">
+    <div class="mhdr">
+      <span class="mhdr-t" id="playerModalTitle">Spieler anlegen</span>
+      <button class="mcls" onclick="closePlayerModal()">&#10005;</button>
     </div>
-    <div class="mbody">
+    <div class="mbd">
       <div class="fg">
         <label>Name *</label>
         <input type="text" id="pName" class="fc" placeholder="Vor- und Nachname">
@@ -1939,5 +1939,6 @@ function filterHelpCards(q){
     </div>
   </div>
 </div>
+
 
 </html>

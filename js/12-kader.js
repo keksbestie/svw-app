@@ -125,12 +125,12 @@ function openPlayerModal(id) {
     delBtn.style.display = 'none';
   }
 
-  modal.style.display = 'flex';
+  modal.classList.remove('h');
   setTimeout(() => document.getElementById('pName').focus(), 50);
 }
 
 function closePlayerModal() {
-  document.getElementById('playerModal').style.display = 'none';
+  document.getElementById('playerModal').classList.add('h');
   editPlayerId = null;
 }
 
@@ -144,6 +144,14 @@ async function savePlayer() {
     ageGroup: document.getElementById('pAge').value,
     position: document.getElementById('pPosition').value
   };
+
+  // Duplikatsprüfung: gleicher Name (case-insensitiv), anderer Eintrag
+  const nameLower = name.toLowerCase();
+  const duplicate = squad.find(p => p.name.toLowerCase() === nameLower && p.id !== editPlayerId);
+  if (duplicate) {
+    showToast(`„${duplicate.name}" ist bereits im Kader`, 'err');
+    return;
+  }
 
   const btn = document.getElementById('playerSaveBtn');
   btn.disabled = true;
