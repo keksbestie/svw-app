@@ -335,10 +335,12 @@ function printPlan(){
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Helvetica Neue',Arial,sans-serif;color:#111;background:#fff;padding:14mm 16mm;}
 .doc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5mm;}
-.brand{text-align:center;}
-.brand-name{font-size:18pt;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:#1a7f4b;}
-.brand-sub{font-size:7pt;letter-spacing:3px;text-transform:uppercase;color:#888;margin-top:1px;}
-.club-logo{max-height:40px;max-width:100px;object-fit:contain;}
+.brand{display:flex;align-items:center;gap:7px;}
+.brand-logo{width:40px;height:40px;border-radius:27%;display:block;flex-shrink:0;}
+.brand-text{display:flex;flex-direction:column;}
+.brand-name{font-size:14pt;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:#1a7f4b;line-height:1.1;}
+.brand-sub{font-size:6pt;letter-spacing:2px;text-transform:uppercase;color:#888;margin-top:1px;}
+.club-logo{max-height:40px;max-width:110px;object-fit:contain;}
 .print-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:5mm;padding-bottom:3mm;border-bottom:2px solid #111;}
 .print-title{font-size:16pt;font-weight:900;}
 .print-date{font-size:9pt;color:#666;}
@@ -365,8 +367,22 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;color:#111;background:#fff;pa
 </style></head><body>
 <div class="doc-top">
   <div class="brand">
-    <div class="brand-name">AssistCoach</div>
-    <div class="brand-sub">Trainingsplanung</div>
+    <svg class="brand-logo" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="pga" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0f5c33"/><stop offset="1" stop-color="#0a3d22"/></linearGradient>
+        <linearGradient id="pgb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0d2e1a"/><stop offset="1" stop-color="#061209"/></linearGradient>
+        <clipPath id="pclip"><rect width="256" height="256" rx="90"/></clipPath>
+      </defs>
+      <rect width="256" height="256" rx="90" fill="url(#pgb)"/>
+      <g clip-path="url(#pclip)">
+        <polygon points="0,0 256,0 256,256" fill="url(#pga)"/>
+        <text x="128" y="185" font-family="Arial Black,Helvetica,sans-serif" font-size="190" text-anchor="middle" fill="white" font-weight="900">A</text>
+      </g>
+    </svg>
+    <div class="brand-text">
+      <div class="brand-name">AssistCoach</div>
+      <div class="brand-sub">Trainingsplanung</div>
+    </div>
   </div>
   ${typeof clubLogoUrl!=='undefined'&&clubLogoUrl?`<img class="club-logo" src="${clubLogoUrl}" alt="Vereinslogo">`:''}
 </div>

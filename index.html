@@ -30,7 +30,18 @@
 
 <header>
   <div class="logo">
-    <span style="font-size:28px;line-height:1;">⚽</span>
+    <svg width="34" height="34" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" style="border-radius:27%;flex-shrink:0;display:block;">
+      <defs>
+        <linearGradient id="hga" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0f5c33"/><stop offset="1" stop-color="#0a3d22"/></linearGradient>
+        <linearGradient id="hgb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0d2e1a"/><stop offset="1" stop-color="#061209"/></linearGradient>
+        <clipPath id="hclip"><rect width="256" height="256" rx="90"/></clipPath>
+      </defs>
+      <rect width="256" height="256" rx="90" fill="url(#hgb)"/>
+      <g clip-path="url(#hclip)">
+        <polygon points="0,0 256,0 256,256" fill="url(#hga)"/>
+        <text x="128" y="185" font-family="'Bebas Neue',Arial Black,sans-serif" font-size="190" text-anchor="middle" fill="white">A</text>
+      </g>
+    </svg>
     <div>
       <div style="display:flex;align-items:center;gap:6px;">
         <div class="logo-t">AssistCoach</div>
