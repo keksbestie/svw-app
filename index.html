@@ -1133,7 +1133,7 @@
     {
       page:'handbook',target:'[data-page="handbook"]',pos:'top',
       title:'Übungskatalog',
-      text:'Hier findest du hunderte Übungen in 6 Abschnitten. Nutze Filter, Tags und die Suche, um schnell die richtige Übung zu finden.'
+      text:'Nutze Filter, Tags und die Suche, um schnell die passende Übung zu finden.'
     },
     {
       page:'handbook',target:'.ex-add-btn, .btn-add-plan, [onclick*="addToPlan"], .add-plan-btn',pos:'top',
@@ -1153,7 +1153,7 @@
       fallbackTarget:'.plan-toolbar, #plannerToolbar, .planner-header'
     },
     {
-      page:'handbook',target:'#cfgDrop, button[onclick*="cfgDrop"], .cfg-row button:first-child',pos:'bottom',
+      page:'handbook',target:'#cfgBtn',pos:'bottom',
       title:'Menü & Kader',
       text:'Über das Menü (☰) oben rechts erreichst du <strong>Mein Kader</strong>. Dort legst du Spieler:innen an und wählst vor dem Training aus, wer heute dabei ist.',
       fallbackTarget:'.topbar .cfg-row, .cfg-row'
@@ -1257,6 +1257,7 @@
   }
 
   window.startTour=function(){
+    document.body.style.overflow='hidden';
     _step=0;
     document.getElementById('tourBubble').style.display='block';
     document.getElementById('tourHighlight').style.display='block';
@@ -1270,6 +1271,7 @@
     _renderStep();
   };
   window.endTour=function(){
+    document.body.style.overflow='';
     document.getElementById('tourBubble').style.display='none';
     document.getElementById('tourHighlight').style.display='none';
   };
