@@ -654,6 +654,7 @@ function openHelpPanel(){
   const overlay=document.getElementById('helpOverlay');
   panel.style.display='flex';
   overlay.style.display='block';
+  document.body.style.overflow='hidden';
   requestAnimationFrame(()=>panel.classList.add('open'));
   closeCfgDrop();
 }
@@ -663,6 +664,7 @@ function closeHelpPanel(){
   const overlay=document.getElementById('helpOverlay');
   panel.classList.remove('open');
   overlay.style.display='none';
+  document.body.style.overflow='';
   setTimeout(()=>{ if(!panel.classList.contains('open')) panel.style.display='none'; },300);
 }
 
