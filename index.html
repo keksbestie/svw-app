@@ -225,7 +225,10 @@
     <h1 class="home-hero-title" data-i18n="home_title">AssistCoach</h1>
     <div class="home-hero-tagline">Dein Trainingskatalog</div>
     <p class="home-hero-sub" data-i18n="home_sub">Übungen planen, strukturieren und langfristig periodisieren – alles an einem Ort.</p>
-    <button onclick="goPage('about')" style="margin-top:6px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);color:#fff;padding:8px 20px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">Vision &amp; Ziele ↗</button>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;">
+      <button onclick="goPage('about')" style="background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);color:#fff;padding:8px 20px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">Vision &amp; Ziele ↗</button>
+      <button onclick="window._showOnboarding()" style="background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);color:#fff;padding:8px 16px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">&#127973; Einführung</button>
+    </div>
     <!-- PWA Install: standardmäßig sichtbar auf mobil, JS blendet bei Bedarf aus -->
     <div id="pwaInstallSection" style="margin-top:16px;">
       <!-- Android: button erscheint wenn beforeinstallprompt feuert -->
@@ -1035,10 +1038,12 @@
         <span class="ob-dot"></span>
         <span class="ob-dot"></span>
       </div>
-      <div style="display:flex;gap:10px;width:100%;">
+      <div id="obBtnRow" style="display:flex;gap:10px;width:100%;">
         <button onclick="closeOnboarding()" style="flex:1;padding:11px;border-radius:12px;border:1.5px solid var(--border);background:none;color:var(--text-2);font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">Überspringen</button>
         <button id="obNextBtn" onclick="obNext()" style="flex:2;padding:11px;border-radius:12px;border:none;background:var(--accent);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;letter-spacing:.4px;cursor:pointer;">Weiter →</button>
       </div>
+      <!-- Letzter Slide: Tour-Option (initial versteckt) -->
+      <button id="obTourBtn" onclick="closeOnboarding();startTour();" style="display:none;width:100%;padding:10px;border-radius:12px;border:1.5px solid var(--accent);background:none;color:var(--accent);font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;cursor:pointer;letter-spacing:.3px;">🗺 Geführte Tour starten</button>
     </div>
   </div>
 </div>
@@ -1051,9 +1056,19 @@
   let _obSlide=0;
   const _obTotal=4;
   function showOnboarding(){
+    _obSlide=0;
+    const slides=document.getElementById('obSlides');
+    if(slides){slides.style.transition='none';slides.style.transform='translateX(0)';}
+    const dots=document.querySelectorAll('.ob-dot');
+    dots.forEach((d,i)=>{d.classList.toggle('ob-dot-active',i===0);});
+    const btn=document.getElementById('obNextBtn');
+    const tourBtn=document.getElementById('obTourBtn');
+    if(btn){btn.textContent='Weiter →';btn.onclick=function(){obNext();};}
+    if(tourBtn)tourBtn.style.display='none';
     const el=document.getElementById('onboardingOverlay');
-    if(el){el.style.display='flex';}
+    if(el)el.style.display='flex';
   }
+  window._showOnboarding=showOnboarding;
   window.closeOnboarding=function(){
     const el=document.getElementById('onboardingOverlay');
     if(el)el.style.display='none';
@@ -1069,15 +1084,192 @@
     const dots=document.querySelectorAll('.ob-dot');
     dots.forEach((d,i)=>{d.classList.toggle('ob-dot-active',i===_obSlide);});
     const btn=document.getElementById('obNextBtn');
-    if(btn)btn.textContent=_obSlide===_obTotal-1?'Loslegen ✓':'Weiter →';
-    if(_obSlide===_obTotal-1&&btn){
-      btn.onclick=function(){closeOnboarding();};
+    const tourBtn=document.getElementById('obTourBtn');
+    const isLast=_obSlide===_obTotal-1;
+    if(btn){
+      btn.textContent=isLast?'Loslegen ✓':'Weiter →';
+      btn.onclick=isLast?function(){closeOnboarding();}:function(){obNext();};
     }
+    if(tourBtn)tourBtn.style.display=isLast?'block':'none';
   };
   // Zeigen wenn noch nicht gesehen
   try{
     if(!localStorage.getItem('ac_onboarded'))showOnboarding();
   }catch(e){showOnboarding();}
+})();
+</script>
+
+<!-- GUIDED TOUR -->
+<div id="tourHighlight" style="display:none;position:fixed;z-index:9100;pointer-events:none;border-radius:10px;box-shadow:0 0 0 4000px rgba(0,0,0,.6);transition:all .35s ease;"></div>
+<div id="tourBubble" style="display:none;position:fixed;z-index:9200;max-width:300px;width:calc(100vw - 32px);">
+  <div style="background:var(--surface);border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.35);padding:18px 20px 14px;position:relative;">
+    <div id="tourArrow" style="position:absolute;width:12px;height:12px;background:var(--surface);transform:rotate(45deg);"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+      <div id="tourStepLabel" style="font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);"></div>
+      <button onclick="endTour()" style="background:none;border:none;font-size:16px;cursor:pointer;color:var(--gd2);line-height:1;padding:2px 4px;">✕</button>
+    </div>
+    <div id="tourTitle" style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:900;color:var(--text);margin-bottom:5px;"></div>
+    <div id="tourText" style="font-size:13px;color:var(--text-2);line-height:1.6;"></div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:14px;">
+      <button id="tourPrevBtn" onclick="tourStep(-1)" style="padding:8px 14px;border-radius:10px;border:1.5px solid var(--border);background:none;color:var(--text-2);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">← Zurück</button>
+      <div id="tourDots" style="flex:1;display:flex;justify-content:center;gap:5px;"></div>
+      <button id="tourNextBtn" onclick="tourStep(1)" style="padding:8px 18px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;cursor:pointer;">Weiter →</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  const STEPS=[
+    {
+      page:null,target:null,
+      title:'Geführte Tour',
+      text:'Wir gehen jetzt die wichtigsten Bereiche gemeinsam durch. Du kannst jederzeit mit ✕ abbrechen.'
+    },
+    {
+      page:'handbook',target:'[data-page="handbook"]',pos:'top',
+      title:'Übungskatalog',
+      text:'Hier findest du hunderte Übungen in 6 Abschnitten. Nutze Filter, Tags und die Suche, um schnell die richtige Übung zu finden.'
+    },
+    {
+      page:'handbook',target:'.ex-add-btn, .btn-add-plan, [onclick*="addToPlan"], .add-plan-btn',pos:'top',
+      title:'Übung zum Plan hinzufügen',
+      text:'Mit dem <strong>+ Plan</strong>-Button auf jeder Übungskarte fügst du sie direkt deinem Trainingsplan hinzu.',
+      fallbackTarget:'.ex-card, .exercise-card, .hb-card'
+    },
+    {
+      page:'planner',target:'[data-page="planner"]',pos:'top',
+      title:'Trainingsplan',
+      text:'Alle hinzugefügten Übungen erscheinen hier. Reihenfolge per Drag & Drop ändern, Zeit mit − / + anpassen und eine Zieldauer setzen.'
+    },
+    {
+      page:'planner',target:'#planSaveBtn, .plan-save, [onclick*="savePlan"]',pos:'bottom',
+      title:'Plan speichern & drucken',
+      text:'Gespeicherte Pläne bleiben in deinem Konto. Das Drucksymbol exportiert den fertigen Plan als PDF – inklusive Materialliste.',
+      fallbackTarget:'.plan-toolbar, #plannerToolbar, .planner-header'
+    },
+    {
+      page:'home',target:'#cfgBtn, .cfg-btn[onclick*="Cfg"], button[onclick*="cfgDrop"]',pos:'bottom',
+      title:'Menü & Kader',
+      text:'Über das Menü (☰) oben rechts erreichst du <strong>Mein Kader</strong>. Dort legst du Spieler:innen an und wählst vor dem Training aus, wer heute dabei ist.',
+      fallbackTarget:'.topbar, #topbar, header'
+    },
+    {
+      page:'home',target:'.cfg-btn[onclick*="Help"], button[onclick*="HelpPanel"], [onclick*="toggleHelpPanel"]',pos:'bottom',
+      title:'Hilfe jederzeit abrufbar',
+      text:'Das <strong>?</strong>-Symbol öffnet das Hilfe-Center mit Detailanleitung zu allen Funktionen – jederzeit erreichbar.',
+      fallbackTarget:'.topbar-right, .cfg-row'
+    }
+  ];
+
+  let _step=0;
+
+  function _getTarget(s){
+    if(!s.target)return null;
+    const selectors=s.target.split(',');
+    for(const sel of selectors){
+      const el=document.querySelector(sel.trim());
+      if(el)return el;
+    }
+    if(s.fallbackTarget){
+      const fb=s.fallbackTarget.split(',');
+      for(const sel of fb){
+        const el=document.querySelector(sel.trim());
+        if(el)return el;
+      }
+    }
+    return null;
+  }
+
+  function _positionBubble(target){
+    const bubble=document.getElementById('tourBubble');
+    const hl=document.getElementById('tourHighlight');
+    const arrow=document.getElementById('tourArrow');
+    if(!bubble)return;
+    if(!target){
+      // Zentriert
+      hl.style.display='none';
+      bubble.style.left='50%';
+      bubble.style.top='50%';
+      bubble.style.transform='translate(-50%,-50%)';
+      if(arrow)arrow.style.display='none';
+      return;
+    }
+    target.scrollIntoView({behavior:'smooth',block:'nearest'});
+    setTimeout(()=>{
+      const r=target.getBoundingClientRect();
+      const pad=8;
+      hl.style.display='block';
+      hl.style.left=(r.left-pad)+'px';
+      hl.style.top=(r.top-pad)+'px';
+      hl.style.width=(r.width+pad*2)+'px';
+      hl.style.height=(r.height+pad*2)+'px';
+
+      bubble.style.transform='none';
+      const bw=Math.min(300,window.innerWidth-32);
+      const spaceBelow=window.innerHeight-r.bottom;
+      const spaceAbove=r.top;
+      let left=Math.max(16,Math.min(r.left,window.innerWidth-bw-16));
+
+      if(spaceBelow>200||spaceBelow>spaceAbove){
+        // unter dem Element
+        bubble.style.top=(r.bottom+14)+'px';
+        bubble.style.left=left+'px';
+        if(arrow){arrow.style.display='block';arrow.style.top='-6px';arrow.style.left=(r.left+r.width/2-left-6)+'px';arrow.style.bottom='auto';}
+      } else {
+        // über dem Element
+        bubble.style.top='auto';
+        bubble.style.left=left+'px';
+        // wir setzen bottom = window height - r.top + 14
+        const fromBottom=window.innerHeight-r.top+14;
+        bubble.style.bottom=fromBottom+'px';
+        bubble.style.top='auto';
+        if(arrow){arrow.style.display='block';arrow.style.bottom='-6px';arrow.style.top='auto';arrow.style.left=(r.left+r.width/2-left-6)+'px';}
+      }
+    },300);
+  }
+
+  function _renderStep(){
+    const s=STEPS[_step];
+    document.getElementById('tourStepLabel').textContent='Schritt '+(_step+1)+' / '+STEPS.length;
+    document.getElementById('tourTitle').textContent=s.title;
+    document.getElementById('tourText').innerHTML=s.text;
+    // Dots
+    const dc=document.getElementById('tourDots');
+    if(dc)dc.innerHTML=STEPS.map((_,i)=>`<span style="width:${i===_step?'16':'7'}px;height:7px;border-radius:4px;background:${i===_step?'var(--accent)':'var(--border)'};display:inline-block;transition:all .2s;"></span>`).join('');
+    // Buttons
+    const prev=document.getElementById('tourPrevBtn');
+    const next=document.getElementById('tourNextBtn');
+    if(prev)prev.style.visibility=_step===0?'hidden':'visible';
+    if(next)next.textContent=_step===STEPS.length-1?'Fertig ✓':'Weiter →';
+    // Page + Target
+    if(s.page&&typeof goPage==='function'){
+      const currentPage=document.querySelector('.page.active');
+      const currentId=currentPage?currentPage.id.replace('page-',''):null;
+      if(currentId!==s.page)goPage(s.page);
+    }
+    setTimeout(()=>{
+      const target=_getTarget(s);
+      _positionBubble(target);
+    },s.page?400:0);
+  }
+
+  window.startTour=function(){
+    _step=0;
+    document.getElementById('tourBubble').style.display='block';
+    document.getElementById('tourHighlight').style.display='block';
+    _renderStep();
+  };
+  window.tourStep=function(dir){
+    const next=_step+dir;
+    if(next>=STEPS.length){endTour();return;}
+    if(next<0)return;
+    _step=next;
+    _renderStep();
+  };
+  window.endTour=function(){
+    document.getElementById('tourBubble').style.display='none';
+    document.getElementById('tourHighlight').style.display='none';
+  };
 })();
 </script>
 
