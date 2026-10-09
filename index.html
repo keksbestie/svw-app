@@ -1228,27 +1228,29 @@
     }
   }
 
+  function _updateContent(){
+    const s=STEPS[_step];
+    document.getElementById('tourStepLabel').textContent='Schritt '+(_step+1)+' / '+STEPS.length;
+    document.getElementById('tourTitle').textContent=s.title;
+    document.getElementById('tourText').innerHTML=s.text;
+    const dc=document.getElementById('tourDots');
+    if(dc)dc.innerHTML=STEPS.map(function(_,i){return '<span style="width:'+(i===_step?'16':'7')+'px;height:7px;border-radius:4px;background:'+(i===_step?'var(--accent)':'var(--border)')+';display:inline-block;transition:all .2s;"></span>';}).join('');
+    const prev=document.getElementById('tourPrevBtn');
+    const next=document.getElementById('tourNextBtn');
+    if(prev)prev.style.visibility=_step===0?'hidden':'visible';
+    if(next)next.textContent=_step===STEPS.length-1?'Fertig ✓':'Weiter →';
+  }
+
   function _renderStep(){
     const s=STEPS[_step];
     const bubble=document.getElementById('tourBubble');
     const hl=document.getElementById('tourHighlight');
-    // 1. Fade out
+    // Fade out
     bubble.style.opacity='0';
     hl.style.opacity='0';
     setTimeout(function(){
-      // 2. Update content
-      document.getElementById('tourStepLabel').textContent='Schritt '+(_step+1)+' / '+STEPS.length;
-      document.getElementById('tourTitle').textContent=s.title;
-      document.getElementById('tourText').innerHTML=s.text;
-      const dc=document.getElementById('tourDots');
-      if(dc)dc.innerHTML=STEPS.map(function(_,i){return '<span style="width:'+(i===_step?'16':'7')+'px;height:7px;border-radius:4px;background:'+(i===_step?'var(--accent)':'var(--border)')+';display:inline-block;transition:all .2s;"></span>';}).join('');
-      const prev=document.getElementById('tourPrevBtn');
-      const next=document.getElementById('tourNextBtn');
-      if(prev)prev.style.visibility=_step===0?'hidden':'visible';
-      if(next)next.textContent=_step===STEPS.length-1?'Fertig ✓':'Weiter →';
-      // 3. Navigate
+      _updateContent();
       if(s.page&&typeof goPage==='function') goPage(s.page);
-      // 4. Position then fade in
       setTimeout(function(){
         _positionBubble(_getTarget(s));
         bubble.style.opacity='1';
@@ -1260,11 +1262,17 @@
   window.startTour=function(){
     document.body.style.overflow='hidden';
     _step=0;
-    const b=document.getElementById('tourBubble');
-    const h=document.getElementById('tourHighlight');
-    b.style.display='block';b.style.opacity='0';
-    h.style.display='block';h.style.opacity='0';
-    _renderStep();
+    const bubble=document.getElementById('tourBubble');
+    const hl=document.getElementById('tourHighlight');
+    bubble.style.transition='none';
+    bubble.style.display='block';
+    bubble.style.opacity='1';
+    hl.style.display='block';
+    hl.style.opacity='0';
+    _updateContent();
+    _positionBubble(_getTarget(STEPS[0]));
+    // Re-enable transition after first paint
+    requestAnimationFrame(function(){ bubble.style.transition=''; });
   };
   window.tourStep=function(dir){
     const next=_step+dir;
