@@ -1460,6 +1460,99 @@ function exportCanvas(){
   });
 }
 
+// ── FORMATIONS ───────────────────────────────────────
+// Positionen als [xFrac, yFrac]: x=0 eigenes Tor, x=1 gegnerisches Tor; y=0 oben, y=1 unten
+// Index 0 ist immer der Torwart
+const FORMATIONS = {
+  '442': { name:'4-4-2', positions:[
+    [0.03,0.50], // TW
+    [0.18,0.18],[0.18,0.38],[0.18,0.62],[0.18,0.82], // Abwehr
+    [0.38,0.18],[0.38,0.38],[0.38,0.62],[0.38,0.82], // Mittelfeld
+    [0.50,0.40],[0.50,0.60]  // Sturm
+  ]},
+  '433': { name:'4-3-3', positions:[
+    [0.03,0.50],
+    [0.18,0.18],[0.18,0.38],[0.18,0.62],[0.18,0.82],
+    [0.38,0.28],[0.38,0.50],[0.38,0.72],
+    [0.50,0.18],[0.52,0.50],[0.50,0.82]
+  ]},
+  '4231': { name:'4-2-3-1', positions:[
+    [0.03,0.50],
+    [0.18,0.18],[0.18,0.38],[0.18,0.62],[0.18,0.82],
+    [0.32,0.38],[0.32,0.62],
+    [0.44,0.18],[0.44,0.50],[0.44,0.82],
+    [0.54,0.50]
+  ]},
+  '352': { name:'3-5-2', positions:[
+    [0.03,0.50],
+    [0.18,0.28],[0.18,0.50],[0.18,0.72],
+    [0.32,0.08],[0.38,0.28],[0.38,0.50],[0.38,0.72],[0.32,0.92],
+    [0.50,0.40],[0.50,0.60]
+  ]},
+  '532': { name:'5-3-2', positions:[
+    [0.03,0.50],
+    [0.18,0.08],[0.18,0.28],[0.18,0.50],[0.18,0.72],[0.18,0.92],
+    [0.38,0.28],[0.38,0.50],[0.38,0.72],
+    [0.50,0.40],[0.50,0.60]
+  ]}
+};
+
+function toggleFormationPanel(e){
+  if(e) e.stopPropagation();
+  const panel = document.getElementById('formationPanel');
+  if(!panel) return;
+  if(panel.style.display !== 'none'){ panel.style.display='none'; return; }
+  const btn = document.getElementById('tb_formation');
+  const r = btn.getBoundingClientRect();
+  panel.style.top = (r.bottom + 6) + 'px';
+  panel.style.left = Math.min(r.left, window.innerWidth - 240) + 'px';
+  panel.style.display = 'flex';
+}
+
+function applyFormation(side){
+  const formKey = document.getElementById('formationSelect')?.value || '442';
+  const form = FORMATIONS[formKey];
+  if(!form || !canvasEl) return;
+
+  const W = canvasEl.offsetWidth;
+  const H = canvasEl.offsetHeight;
+  const p = Math.round(Math.min(W,H) * 0.04);
+  const fw = W - p*2, fh = H - p*2;
+
+  pushUndo();
+
+  const sides = side === 'both' ? ['home','away'] : [side];
+  const colorMap = { home:'#1565c0', away:'#b71c1c' };
+
+  sides.forEach(s => {
+    const color = colorMap[s];
+    const awayMirror = s === 'away';
+    form.positions.forEach((pos, idx) => {
+      const isGK = idx === 0;
+      const col = isGK ? '#f9a825' : color;
+      const xFrac = awayMirror ? 1 - pos[0] : pos[0];
+      const x = p + xFrac * fw;
+      const y = p + pos[1] * fh;
+      const lbl = isGK ? 'TW' : String(idx);
+      const angle = awayMirror ? Math.PI : 0;
+      canvasObjects.push({type:'player', x, y, color:col, label:lbl, name:'', angle});
+    });
+  });
+
+  renumberPlayers();
+  redraw();
+  document.getElementById('formationPanel').style.display = 'none';
+  const label = side==='both' ? ' (beide Teams)' : side==='home' ? ' (Heim)' : ' (Gast)';
+  showToast(form.name + label + ' aufgestellt');
+}
+
+document.addEventListener('click', e => {
+  if(!e.target.closest('#formationPanel') && !e.target.closest('#tb_formation')){
+    const panel = document.getElementById('formationPanel');
+    if(panel) panel.style.display = 'none';
+  }
+});
+
 // DeepL integration placeholder:
 // async function translateWithDeepL(text, targetLang) {
 //   const API_KEY = 'YOUR_DEEPL_API_KEY';
