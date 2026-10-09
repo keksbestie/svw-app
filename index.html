@@ -1190,47 +1190,40 @@
     return null;
   }
 
-  function _positionBubble(target){
+  function _positionBubble(target, onDone){
     const bubble=document.getElementById('tourBubble');
     const hl=document.getElementById('tourHighlight');
     const arrow=document.getElementById('tourArrow');
     if(!bubble)return;
-    const vw=window.innerWidth, vh=window.innerHeight;
-    const bw=Math.min(300,vw-32);
     if(!target){
-      hl.style.width='0';hl.style.height='0';
+      hl.style.display='none';
       bubble.style.left='50%'; bubble.style.top='50%';
       bubble.style.bottom='auto'; bubble.style.transform='translate(-50%,-50%)';
       if(arrow)arrow.style.display='none';
+      if(onDone)onDone();
       return;
     }
-    const r=target.getBoundingClientRect();
-    // If target is off-screen, center bubble instead
-    if(r.bottom<0||r.top>vh||r.right<0||r.left>vw){
-      hl.style.width='0';hl.style.height='0';
-      bubble.style.left='50%'; bubble.style.top='50%';
-      bubble.style.bottom='auto'; bubble.style.transform='translate(-50%,-50%)';
-      if(arrow)arrow.style.display='none';
-      return;
-    }
-    const pad=8;
-    hl.style.left=(r.left-pad)+'px';
-    hl.style.top=(r.top-pad)+'px';
-    hl.style.width=(r.width+pad*2)+'px';
-    hl.style.height=(r.height+pad*2)+'px';
-    bubble.style.transform='none';
-    const spaceBelow=vh-r.bottom;
-    const spaceAbove=r.top;
-    let left=Math.max(16,Math.min(r.left,vw-bw-16));
-    if(spaceBelow>=160||spaceBelow>=spaceAbove){
-      const top=Math.min(r.bottom+14, vh-20);
-      bubble.style.top=top+'px'; bubble.style.bottom='auto'; bubble.style.left=left+'px';
-      if(arrow){arrow.style.display='block';arrow.style.top='-6px';arrow.style.left=(r.left+r.width/2-left-6)+'px';arrow.style.bottom='auto';}
-    } else {
-      const bottom=Math.min(vh-r.top+14, vh-20);
-      bubble.style.left=left+'px'; bubble.style.bottom=bottom+'px'; bubble.style.top='auto';
-      if(arrow){arrow.style.display='block';arrow.style.bottom='-6px';arrow.style.top='auto';arrow.style.left=(r.left+r.width/2-left-6)+'px';}
-    }
+    target.scrollIntoView({behavior:'smooth',block:'nearest'});
+    setTimeout(function(){
+      const r=target.getBoundingClientRect();
+      const vw=window.innerWidth, vh=window.innerHeight;
+      const pad=8;
+      hl.style.display='block';
+      hl.style.left=(r.left-pad)+'px'; hl.style.top=(r.top-pad)+'px';
+      hl.style.width=(r.width+pad*2)+'px'; hl.style.height=(r.height+pad*2)+'px';
+      bubble.style.transform='none';
+      const bw=Math.min(300,vw-32);
+      const spaceBelow=vh-r.bottom, spaceAbove=r.top;
+      let left=Math.max(16,Math.min(r.left,vw-bw-16));
+      if(spaceBelow>200||spaceBelow>spaceAbove){
+        bubble.style.top=(r.bottom+14)+'px'; bubble.style.bottom='auto'; bubble.style.left=left+'px';
+        if(arrow){arrow.style.display='block';arrow.style.top='-6px';arrow.style.left=(r.left+r.width/2-left-6)+'px';arrow.style.bottom='auto';}
+      } else {
+        bubble.style.left=left+'px'; bubble.style.bottom=(vh-r.top+14)+'px'; bubble.style.top='auto';
+        if(arrow){arrow.style.display='block';arrow.style.bottom='-6px';arrow.style.top='auto';arrow.style.left=(r.left+r.width/2-left-6)+'px';}
+      }
+      if(onDone)onDone();
+    },300);
   }
 
   function _updateContent(){
@@ -1249,18 +1242,14 @@
   function _renderStep(){
     const s=STEPS[_step];
     const bubble=document.getElementById('tourBubble');
-    const hl=document.getElementById('tourHighlight');
     // Fade out
     bubble.style.opacity='0';
-    hl.style.opacity='0';
     setTimeout(function(){
       _updateContent();
       if(s.page&&typeof goPage==='function') goPage(s.page);
       setTimeout(function(){
-        _positionBubble(_getTarget(s));
-        bubble.style.opacity='1';
-        if(s.target) hl.style.opacity='1';
-      },s.page?500:30);
+        _positionBubble(_getTarget(s), function(){ bubble.style.opacity='1'; });
+      }, s.page?600:0);
     },200);
   }
 
@@ -1270,14 +1259,12 @@
     const bubble=document.getElementById('tourBubble');
     const hl=document.getElementById('tourHighlight');
     bubble.style.transition='none';
-    bubble.style.display='block';
-    bubble.style.opacity='1';
+    bubble.style.display='block'; bubble.style.opacity='1';
     hl.style.display='block';
-    hl.style.opacity='0';
     _updateContent();
-    _positionBubble(_getTarget(STEPS[0]));
-    // Re-enable transition after first paint
-    requestAnimationFrame(function(){ bubble.style.transition=''; });
+    _positionBubble(_getTarget(STEPS[0]), function(){
+      requestAnimationFrame(function(){ bubble.style.transition='opacity .25s ease'; });
+    });
   };
   window.tourStep=function(dir){
     const next=_step+dir;
