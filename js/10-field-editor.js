@@ -1597,7 +1597,16 @@ function applyFormation(side){
   const W = canvasEl.offsetWidth;
   const H = canvasEl.offsetHeight;
   const p = Math.round(Math.min(W,H) * 0.04);
-  const fw = W - p*2, fh = H - p*2;
+  const ft = document.getElementById('fieldType')?.value || 'full';
+
+  // Half field: vertical orientation (goal at bottom, midline at top)
+  const isHalf = ft === 'half';
+  let ox=p, oy=p, fw=W-p*2, fh=H-p*2;
+  if(isHalf){
+    const sc = Math.min((W-p*2)/68, (H-p*2)/52.5);
+    fw = 68*sc; fh = 52.5*sc;
+    ox = (W-fw)/2; oy = (H-fh)/2;
+  }
 
   pushUndo();
 
@@ -1610,11 +1619,21 @@ function applyFormation(side){
     form.positions.forEach((pos, idx) => {
       const isGK = idx === 0;
       const col = isGK ? '#f9a825' : color;
-      const xFrac = awayMirror ? 1 - pos[0] : pos[0];
-      const x = p + xFrac * fw;
-      const y = p + pos[1] * fh;
+      let x, y, angle;
+      if(isHalf){
+        // xFrac=0 → goal line (bottom), xFrac=1 → midline (top)
+        // yFrac=0 → left touchline, yFrac=1 → right touchline
+        const yFrac = awayMirror ? 1 - pos[1] : pos[1];
+        x = ox + yFrac * fw;
+        y = oy + (1 - pos[0]) * fh;
+        angle = -Math.PI / 2; // face upward toward opponent goal
+      } else {
+        const xFrac = awayMirror ? 1 - pos[0] : pos[0];
+        x = ox + xFrac * fw;
+        y = oy + pos[1] * fh;
+        angle = awayMirror ? Math.PI : 0;
+      }
       const lbl = isGK ? 'TW' : String(idx);
-      const angle = awayMirror ? Math.PI : 0;
       canvasObjects.push({type:'player', x, y, color:col, label:lbl, name:'', angle});
     });
   });
