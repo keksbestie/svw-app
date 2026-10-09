@@ -1111,7 +1111,7 @@
 
 <!-- GUIDED TOUR -->
 <div id="tourHighlight" style="display:none;position:fixed;z-index:9100;pointer-events:none;border-radius:10px;box-shadow:0 0 0 4000px rgba(0,0,0,.6);transition:all .35s ease;"></div>
-<div id="tourBubble" style="display:none;position:fixed;z-index:9200;max-width:300px;width:calc(100vw - 32px);">
+<div id="tourBubble" style="display:none;position:fixed;z-index:9200;max-width:300px;width:calc(100vw - 32px);opacity:0;transition:opacity .25s ease;">
   <div style="background:var(--surface);border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.35);padding:18px 20px 14px;position:relative;">
     <div id="tourArrow" style="position:absolute;width:12px;height:12px;background:var(--surface);transform:rotate(45deg);"></div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
@@ -1240,32 +1240,37 @@
 
   function _renderStep(){
     const s=STEPS[_step];
-    document.getElementById('tourStepLabel').textContent='Schritt '+(_step+1)+' / '+STEPS.length;
-    document.getElementById('tourTitle').textContent=s.title;
-    document.getElementById('tourText').innerHTML=s.text;
-    // Dots
-    const dc=document.getElementById('tourDots');
-    if(dc)dc.innerHTML=STEPS.map((_,i)=>`<span style="width:${i===_step?'16':'7'}px;height:7px;border-radius:4px;background:${i===_step?'var(--accent)':'var(--border)'};display:inline-block;transition:all .2s;"></span>`).join('');
-    // Buttons
-    const prev=document.getElementById('tourPrevBtn');
-    const next=document.getElementById('tourNextBtn');
-    if(prev)prev.style.visibility=_step===0?'hidden':'visible';
-    if(next)next.textContent=_step===STEPS.length-1?'Fertig ✓':'Weiter →';
-    // Page + Target: immer navigieren wenn Step eine Seite angibt
-    if(s.page&&typeof goPage==='function'){
-      goPage(s.page);
-    }
-    setTimeout(()=>{
-      const target=_getTarget(s);
-      _positionBubble(target);
-    },s.page?600:0);
+    const bubble=document.getElementById('tourBubble');
+    const hl=document.getElementById('tourHighlight');
+    bubble.style.opacity='0';
+    hl.style.opacity='0';
+    setTimeout(function(){
+      document.getElementById('tourStepLabel').textContent='Schritt '+(_step+1)+' / '+STEPS.length;
+      document.getElementById('tourTitle').textContent=s.title;
+      document.getElementById('tourText').innerHTML=s.text;
+      const dc=document.getElementById('tourDots');
+      if(dc)dc.innerHTML=STEPS.map(function(_,i){return '<span style="width:'+(i===_step?'16':'7')+'px;height:7px;border-radius:4px;background:'+(i===_step?'var(--accent)':'var(--border)')+';display:inline-block;transition:all .2s;"></span>';}).join('');
+      const prev=document.getElementById('tourPrevBtn');
+      const next=document.getElementById('tourNextBtn');
+      if(prev)prev.style.visibility=_step===0?'hidden':'visible';
+      if(next)next.textContent=_step===STEPS.length-1?'Fertig ✓':'Weiter →';
+      if(s.page&&typeof goPage==='function') goPage(s.page);
+      setTimeout(function(){
+        _positionBubble(_getTarget(s),function(){
+          bubble.style.opacity='1';
+          if(s.target)hl.style.opacity='1';
+        });
+      },s.page?500:30);
+    },220);
   }
 
   window.startTour=function(){
     document.body.style.overflow='hidden';
     _step=0;
-    document.getElementById('tourBubble').style.display='block';
-    document.getElementById('tourHighlight').style.display='block';
+    const b=document.getElementById('tourBubble');
+    const h=document.getElementById('tourHighlight');
+    b.style.display='block';b.style.opacity='0';
+    h.style.display='block';h.style.opacity='0';
     _renderStep();
   };
   window.tourStep=function(dir){
