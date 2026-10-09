@@ -278,6 +278,7 @@ function closePlayerModal() {
 }
 
 async function savePlayer() {
+  if (!currentUser) { showToast('Bitte zuerst anmelden', 'err'); return; }
   const name = document.getElementById('pName').value.trim();
   if (!name) { showToast('Bitte einen Namen eingeben', 'err'); return; }
 
