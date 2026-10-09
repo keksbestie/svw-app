@@ -1626,12 +1626,12 @@ function applyFormation(side){
         const yFrac = awayMirror ? 1 - pos[1] : pos[1];
         x = ox + yFrac * fw;
         y = oy + (1 - pos[0]) * fh;
-        angle = -Math.PI / 2; // face upward toward opponent goal
+        angle = 0;
       } else {
         const xFrac = awayMirror ? 1 - pos[0] : pos[0];
         x = ox + xFrac * fw;
         y = oy + pos[1] * fh;
-        angle = awayMirror ? Math.PI : 0;
+        angle = 0;
       }
       const lbl = isGK ? 'TW' : String(idx);
       canvasObjects.push({type:'player', x, y, color:col, label:lbl, name:'', angle});
