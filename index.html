@@ -2281,19 +2281,23 @@ if('serviceWorker' in navigator){
 </div>
 
 <!-- AUFSTELLUNGS-PANEL (fixed, innerhalb fieldOverlay-Kontext) -->
-<div id="formationPanel" style="display:none;position:fixed;background:#1a2e1c;border:1.5px solid rgba(255,255,255,.15);border-radius:10px;padding:14px 16px;z-index:10010;box-shadow:0 6px 24px rgba(0,0,0,.7);flex-direction:column;gap:10px;min-width:220px;">
+<div id="formationPanel" style="display:none;position:fixed;background:#1a2e1c;border:1.5px solid rgba(255,255,255,.15);border-radius:10px;padding:14px 16px;z-index:10010;box-shadow:0 6px 24px rgba(0,0,0,.7);flex-direction:column;gap:10px;min-width:230px;">
   <div style="font-size:9px;color:rgba(255,255,255,.4);font-weight:800;letter-spacing:2px;text-transform:uppercase;">AUFSTELLUNG PLATZIEREN</div>
-  <select id="formationSelect" style="width:100%;padding:6px 8px;border-radius:6px;border:none;background:#344736;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'Barlow Condensed',sans-serif;">
-    <option value="442">4-4-2</option>
-    <option value="433">4-3-3</option>
-    <option value="4231">4-2-3-1</option>
-    <option value="352">3-5-2</option>
-    <option value="532">5-3-2</option>
-  </select>
-  <div style="display:flex;gap:6px;">
-    <button onclick="applyFormation('home')" style="flex:1;padding:8px 4px;border:none;border-radius:7px;background:#1565c0;color:#fff;font-size:12px;font-weight:800;cursor:pointer;font-family:'Barlow Condensed',sans-serif;">Heim</button>
-    <button onclick="applyFormation('away')" style="flex:1;padding:8px 4px;border:none;border-radius:7px;background:#b71c1c;color:#fff;font-size:12px;font-weight:800;cursor:pointer;font-family:'Barlow Condensed',sans-serif;">Gast</button>
-    <button onclick="applyFormation('both')" style="flex:1;padding:8px 4px;border:none;border-radius:7px;background:#455a64;color:#fff;font-size:12px;font-weight:800;cursor:pointer;font-family:'Barlow Condensed',sans-serif;">Beide</button>
+  <div id="formationUnavail" style="display:none;font-size:11px;color:rgba(255,150,100,.8);padding:4px 0;">Nur für Vollfeld, Halbfeld und Kleinfeld verfügbar.</div>
+  <div id="formationControls" style="display:flex;flex-direction:column;gap:8px;">
+    <div id="formationFormatRow" style="display:none;align-items:center;gap:6px;">
+      <span style="font-size:10px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.5px;white-space:nowrap;">FORMAT</span>
+      <select id="formationFormat" onchange="updateFormationSelect()" style="flex:1;padding:5px 7px;border-radius:6px;border:none;background:#344736;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:'Barlow Condensed',sans-serif;">
+        <option value="9">9v9</option>
+        <option value="7">7v7</option>
+      </select>
+    </div>
+    <select id="formationSelect" style="width:100%;padding:6px 8px;border-radius:6px;border:none;background:#344736;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'Barlow Condensed',sans-serif;"></select>
+    <div style="display:flex;gap:6px;">
+      <button onclick="applyFormation('home')" style="flex:1;padding:8px 4px;border:none;border-radius:7px;background:#1565c0;color:#fff;font-size:12px;font-weight:800;cursor:pointer;font-family:'Barlow Condensed',sans-serif;">Heim</button>
+      <button onclick="applyFormation('away')" style="flex:1;padding:8px 4px;border:none;border-radius:7px;background:#b71c1c;color:#fff;font-size:12px;font-weight:800;cursor:pointer;font-family:'Barlow Condensed',sans-serif;">Gast</button>
+      <button onclick="applyFormation('both')" style="flex:1;padding:8px 4px;border:none;border-radius:7px;background:#455a64;color:#fff;font-size:12px;font-weight:800;cursor:pointer;font-family:'Barlow Condensed',sans-serif;">Beide</button>
+    </div>
   </div>
 </div>
 

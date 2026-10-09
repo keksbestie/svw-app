@@ -1465,14 +1465,14 @@ function exportCanvas(){
 // ── FORMATIONS ───────────────────────────────────────
 // Positionen als [xFrac, yFrac]: x=0 eigenes Tor, x=1 gegnerisches Tor; y=0 oben, y=1 unten
 // Index 0 ist immer der Torwart
-const FORMATIONS = {
-  '442': { name:'4-4-2', positions:[
-    [0.03,0.50], // TW
-    [0.18,0.18],[0.18,0.38],[0.18,0.62],[0.18,0.82], // Abwehr
-    [0.38,0.18],[0.38,0.38],[0.38,0.62],[0.38,0.82], // Mittelfeld
-    [0.50,0.40],[0.50,0.60]  // Sturm
+const FORMATIONS_11 = {
+  '442':  { name:'4-4-2', positions:[
+    [0.03,0.50],
+    [0.18,0.18],[0.18,0.38],[0.18,0.62],[0.18,0.82],
+    [0.38,0.18],[0.38,0.38],[0.38,0.62],[0.38,0.82],
+    [0.50,0.40],[0.50,0.60]
   ]},
-  '433': { name:'4-3-3', positions:[
+  '433':  { name:'4-3-3', positions:[
     [0.03,0.50],
     [0.18,0.18],[0.18,0.38],[0.18,0.62],[0.18,0.82],
     [0.38,0.28],[0.38,0.50],[0.38,0.72],
@@ -1485,13 +1485,13 @@ const FORMATIONS = {
     [0.44,0.18],[0.44,0.50],[0.44,0.82],
     [0.54,0.50]
   ]},
-  '352': { name:'3-5-2', positions:[
+  '352':  { name:'3-5-2', positions:[
     [0.03,0.50],
     [0.18,0.28],[0.18,0.50],[0.18,0.72],
     [0.32,0.08],[0.38,0.28],[0.38,0.50],[0.38,0.72],[0.32,0.92],
     [0.50,0.40],[0.50,0.60]
   ]},
-  '532': { name:'5-3-2', positions:[
+  '532':  { name:'5-3-2', positions:[
     [0.03,0.50],
     [0.18,0.08],[0.18,0.28],[0.18,0.50],[0.18,0.72],[0.18,0.92],
     [0.38,0.28],[0.38,0.50],[0.38,0.72],
@@ -1499,11 +1499,83 @@ const FORMATIONS = {
   ]}
 };
 
+const FORMATIONS_9 = {
+  '332': { name:'3-3-2', positions:[
+    [0.04,0.50],
+    [0.22,0.25],[0.22,0.50],[0.22,0.75],
+    [0.44,0.18],[0.44,0.50],[0.44,0.82],
+    [0.62,0.38],[0.62,0.62]
+  ]},
+  '323': { name:'3-2-3', positions:[
+    [0.04,0.50],
+    [0.22,0.25],[0.22,0.50],[0.22,0.75],
+    [0.44,0.35],[0.44,0.65],
+    [0.62,0.18],[0.64,0.50],[0.62,0.82]
+  ]},
+  '242': { name:'2-4-2', positions:[
+    [0.04,0.50],
+    [0.22,0.32],[0.22,0.68],
+    [0.44,0.15],[0.44,0.38],[0.44,0.62],[0.44,0.85],
+    [0.62,0.38],[0.62,0.62]
+  ]}
+};
+
+const FORMATIONS_7 = {
+  '231': { name:'2-3-1', positions:[
+    [0.04,0.50],
+    [0.22,0.33],[0.22,0.67],
+    [0.44,0.20],[0.44,0.50],[0.44,0.80],
+    [0.64,0.50]
+  ]},
+  '321': { name:'3-2-1', positions:[
+    [0.04,0.50],
+    [0.22,0.25],[0.22,0.50],[0.22,0.75],
+    [0.44,0.35],[0.44,0.65],
+    [0.64,0.50]
+  ]},
+  '222': { name:'2-2-2', positions:[
+    [0.04,0.50],
+    [0.22,0.33],[0.22,0.67],
+    [0.44,0.33],[0.44,0.67],
+    [0.64,0.33],[0.64,0.67]
+  ]}
+};
+
+const _SUPPORTED_FT = ['full','half','small'];
+
+function _getFormations(format){
+  const ft = document.getElementById('fieldType')?.value || 'small';
+  if(ft === 'small'){
+    const fmt = format || document.getElementById('formationFormat')?.value || '9';
+    return fmt === '7' ? FORMATIONS_7 : FORMATIONS_9;
+  }
+  return FORMATIONS_11;
+}
+
+function updateFormationSelect(){
+  const sel = document.getElementById('formationSelect');
+  if(!sel) return;
+  const forms = _getFormations();
+  const prev = sel.value;
+  sel.innerHTML = Object.entries(forms).map(([k,f])=>`<option value="${k}">${f.name}</option>`).join('');
+  if(forms[prev]) sel.value = prev;
+}
+
 function toggleFormationPanel(e){
   if(e) e.stopPropagation();
   const panel = document.getElementById('formationPanel');
   if(!panel) return;
   if(panel.style.display !== 'none'){ panel.style.display='none'; return; }
+
+  const ft = document.getElementById('fieldType')?.value || 'small';
+  const supported = _SUPPORTED_FT.includes(ft);
+  document.getElementById('formationUnavail').style.display = supported ? 'none' : 'block';
+  document.getElementById('formationControls').style.display = supported ? 'flex' : 'none';
+  const fmtRow = document.getElementById('formationFormatRow');
+  if(fmtRow) fmtRow.style.display = (ft === 'small') ? 'flex' : 'none';
+
+  if(supported) updateFormationSelect();
+
   const btn = document.getElementById('tb_formation');
   const r = btn.getBoundingClientRect();
   panel.style.top = (r.bottom + 6) + 'px';
@@ -1513,7 +1585,7 @@ function toggleFormationPanel(e){
 
 function applyFormation(side){
   const formKey = document.getElementById('formationSelect')?.value || '442';
-  const form = FORMATIONS[formKey];
+  const form = _getFormations()[formKey];
   if(!form || !canvasEl) return;
 
   const W = canvasEl.offsetWidth;
