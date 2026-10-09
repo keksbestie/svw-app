@@ -1561,6 +1561,12 @@ function updateFormationSelect(){
   if(forms[prev]) sel.value = prev;
 }
 
+function updateFormationBtn(){
+  const ft = document.getElementById('fieldType')?.value || 'small';
+  const btn = document.getElementById('tb_formation');
+  if(btn) btn.style.display = _SUPPORTED_FT.includes(ft) ? '' : 'none';
+}
+
 function toggleFormationPanel(e){
   if(e) e.stopPropagation();
   const panel = document.getElementById('formationPanel');
