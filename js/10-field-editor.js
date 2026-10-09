@@ -1023,12 +1023,14 @@ function drawPlayer(x,y,lbl,col,sel,ang,name){
   ctx.lineWidth=sel?2.8:2;
   ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.stroke();
 
-  // Label — shifted slightly toward the colored half (downward in local space)
+  // Label — always upright regardless of player rotation
   const bright=['#f9a825','#fff176','#ffffff','#e0e0e0'].includes(col);
+  ctx.save(); ctx.rotate(-ang);
   ctx.fillStyle=bright?'#111':'#fff';
   ctx.font=`bold ${lbl&&lbl.length>2?8:11}px "Barlow Condensed",sans-serif`;
   ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText(lbl||'',0,4);
+  ctx.fillText(lbl||'',0,0);
+  ctx.restore();
 
   // Selection halo
   if(sel){
