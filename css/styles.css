@@ -157,6 +157,7 @@ header {
 .help-card-text { font-size: 13px; color: var(--gd2); line-height: 1.55; margin: 0 0 10px; }
 .help-card-text:last-child { margin-bottom: 0; }
 .help-step { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: var(--text-1); margin-bottom: 6px; line-height: 1.4; }
+.help-step > span:not(.help-num) { flex: 1; min-width: 0; }
 .help-step:last-child { margin-bottom: 0; }
 .help-num { min-width: 20px; height: 20px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
 .help-pill-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
