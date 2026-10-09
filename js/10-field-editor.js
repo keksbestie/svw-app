@@ -1624,8 +1624,9 @@ function applyFormation(side){
         // xFrac=0 → goal line (bottom), xFrac=1 → midline (top)
         // yFrac=0 → left touchline, yFrac=1 → right touchline
         const yFrac = awayMirror ? 1 - pos[1] : pos[1];
+        const xScaled = Math.min(1, pos[0] * 2); // map own-half (0–0.5) to full field height (0–1)
         x = ox + yFrac * fw;
-        y = oy + (1 - pos[0]) * fh;
+        y = oy + (1 - xScaled) * fh;
         angle = 0;
       } else {
         const xFrac = awayMirror ? 1 - pos[0] : pos[0];
