@@ -1141,10 +1141,10 @@
       text:'Nutze Filter, Tags und die Suche, um schnell die passende Übung zu finden.'
     },
     {
-      page:'handbook',target:'.ex-add-btn, .btn-add-plan, [onclick*="addToPlan"], .add-plan-btn',pos:'top',
+      page:'handbook',target:'.card-collapsed-add, .bcrd.ap',pos:'top',
       title:'Übung zum Plan hinzufügen',
       text:'Mit dem <strong>+ Plan</strong>-Button auf jeder Übungskarte fügst du sie direkt deinem Trainingsplan hinzu.',
-      fallbackTarget:'.ex-card, .exercise-card, .hb-card'
+      fallbackTarget:'.card-collapsed, .card'
     },
     {
       page:'planner',target:'[data-page="planner"]',pos:'top',
@@ -1195,35 +1195,40 @@
     const hl=document.getElementById('tourHighlight');
     const arrow=document.getElementById('tourArrow');
     if(!bubble)return;
+    const vw=window.innerWidth, vh=window.innerHeight;
+    const bw=Math.min(300,vw-32);
     if(!target){
       hl.style.width='0';hl.style.height='0';
-      bubble.style.left='50%';
-      bubble.style.top='50%';
-      bubble.style.bottom='auto';
-      bubble.style.transform='translate(-50%,-50%)';
+      bubble.style.left='50%'; bubble.style.top='50%';
+      bubble.style.bottom='auto'; bubble.style.transform='translate(-50%,-50%)';
       if(arrow)arrow.style.display='none';
       return;
     }
     const r=target.getBoundingClientRect();
+    // If target is off-screen, center bubble instead
+    if(r.bottom<0||r.top>vh||r.right<0||r.left>vw){
+      hl.style.width='0';hl.style.height='0';
+      bubble.style.left='50%'; bubble.style.top='50%';
+      bubble.style.bottom='auto'; bubble.style.transform='translate(-50%,-50%)';
+      if(arrow)arrow.style.display='none';
+      return;
+    }
     const pad=8;
     hl.style.left=(r.left-pad)+'px';
     hl.style.top=(r.top-pad)+'px';
     hl.style.width=(r.width+pad*2)+'px';
     hl.style.height=(r.height+pad*2)+'px';
     bubble.style.transform='none';
-    const bw=Math.min(300,window.innerWidth-32);
-    const spaceBelow=window.innerHeight-r.bottom;
+    const spaceBelow=vh-r.bottom;
     const spaceAbove=r.top;
-    let left=Math.max(16,Math.min(r.left,window.innerWidth-bw-16));
-    if(spaceBelow>200||spaceBelow>spaceAbove){
-      bubble.style.top=(r.bottom+14)+'px';
-      bubble.style.bottom='auto';
-      bubble.style.left=left+'px';
+    let left=Math.max(16,Math.min(r.left,vw-bw-16));
+    if(spaceBelow>=160||spaceBelow>=spaceAbove){
+      const top=Math.min(r.bottom+14, vh-20);
+      bubble.style.top=top+'px'; bubble.style.bottom='auto'; bubble.style.left=left+'px';
       if(arrow){arrow.style.display='block';arrow.style.top='-6px';arrow.style.left=(r.left+r.width/2-left-6)+'px';arrow.style.bottom='auto';}
     } else {
-      bubble.style.left=left+'px';
-      bubble.style.bottom=(window.innerHeight-r.top+14)+'px';
-      bubble.style.top='auto';
+      const bottom=Math.min(vh-r.top+14, vh-20);
+      bubble.style.left=left+'px'; bubble.style.bottom=bottom+'px'; bubble.style.top='auto';
       if(arrow){arrow.style.display='block';arrow.style.bottom='-6px';arrow.style.top='auto';arrow.style.left=(r.left+r.width/2-left-6)+'px';}
     }
   }
