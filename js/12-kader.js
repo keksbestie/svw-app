@@ -151,6 +151,8 @@ document.addEventListener('click', e => {
 async function loadSquad() {
   const menuBtn = document.getElementById('menuKaderBtn');
   if (menuBtn) menuBtn.style.display = currentUser ? '' : 'none';
+  const navBtn = document.getElementById('navKaderBtn');
+  if (navBtn) navBtn.style.display = currentUser ? '' : 'none';
 
   if (!_supabase || !currentUser) { loadSquadLocal(); return; }
   try {
@@ -187,9 +189,11 @@ function renderKaderPage() {
   const list = document.getElementById('kaderList');
   const empty = document.getElementById('kaderEmpty');
   const menuBtn = document.getElementById('menuKaderBtn');
+  const navBtn2 = document.getElementById('navKaderBtn');
 
-  // Show menu entry only when logged in
+  // Show menu/nav entry only when logged in
   if (menuBtn) menuBtn.style.display = currentUser ? '' : 'none';
+  if (navBtn2) navBtn2.style.display = currentUser ? '' : 'none';
 
   if (!currentUser) {
     list.innerHTML = '<div style="text-align:center;padding:48px 24px;color:var(--gd2);"><div style="font-size:13px;">Bitte melde dich an, um deinen Kader zu verwalten.</div></div>';
