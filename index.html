@@ -971,12 +971,10 @@
 <!-- ONBOARDING OVERLAY -->
 <div id="onboardingOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9500;backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">
   <div style="background:var(--surface);border-radius:24px;width:100%;max-width:420px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.45);">
-    <!-- Slides: overflow auf dem Wrapper, Track hat 100% Breite -->
-    <div style="overflow:hidden;">
-    <div id="obSlides" style="display:flex;width:100%;will-change:transform;">
+    <div id="obSlides">
 
       <!-- Slide 1: Willkommen -->
-      <div class="ob-slide" style="min-width:100%;flex-shrink:0;padding:36px 28px 28px;box-sizing:border-box;text-align:center;">
+      <div class="ob-slide" style="padding:36px 28px 28px;box-sizing:border-box;text-align:center;">
         <div style="width:88px;height:88px;margin:0 auto 18px;border-radius:20px;overflow:hidden;"><svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
   <defs>
     <linearGradient id="ob1a" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0f5c33"/><stop offset="1" stop-color="#0a3d22"/></linearGradient>
@@ -999,7 +997,7 @@
       </div>
 
       <!-- Slide 2: Katalog & Plan -->
-      <div class="ob-slide" style="min-width:100%;flex-shrink:0;padding:36px 28px 28px;box-sizing:border-box;text-align:center;">
+      <div class="ob-slide" style="padding:36px 28px 28px;box-sizing:border-box;text-align:center;">
         <div style="font-size:48px;margin-bottom:14px;">📚</div>
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:var(--text);margin-bottom:8px;">Übungskatalog</div>
         <div style="font-size:13px;color:var(--text-2);line-height:1.7;text-align:left;">
@@ -1011,7 +1009,7 @@
       </div>
 
       <!-- Slide 3: Kader -->
-      <div class="ob-slide" style="min-width:100%;flex-shrink:0;padding:36px 28px 28px;box-sizing:border-box;text-align:center;">
+      <div class="ob-slide" style="padding:36px 28px 28px;box-sizing:border-box;text-align:center;">
         <div style="font-size:48px;margin-bottom:14px;">👥</div>
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:var(--text);margin-bottom:8px;">Mein Kader</div>
         <div style="font-size:13px;color:var(--text-2);line-height:1.7;text-align:left;">
@@ -1022,7 +1020,7 @@
       </div>
 
       <!-- Slide 4: Saison & Langzeit -->
-      <div class="ob-slide" style="min-width:100%;flex-shrink:0;padding:36px 28px 28px;box-sizing:border-box;text-align:center;">
+      <div class="ob-slide" style="padding:36px 28px 28px;box-sizing:border-box;text-align:center;">
         <div style="font-size:48px;margin-bottom:14px;">📅</div>
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:var(--text);margin-bottom:8px;">Saisonplanung</div>
         <div style="font-size:13px;color:var(--text-2);line-height:1.7;text-align:left;">
@@ -1033,7 +1031,6 @@
       </div>
 
     </div>
-    </div><!-- /overflow wrapper -->
 
     <!-- Dots + Buttons -->
     <div style="padding:16px 24px 24px;display:flex;flex-direction:column;align-items:center;gap:14px;">
@@ -1060,41 +1057,38 @@
 (function(){
   let _obSlide=0;
   const _obTotal=4;
+  function _updateUI(){
+    // Slides: nur aktive anzeigen
+    document.querySelectorAll('.ob-slide').forEach(function(s,i){
+      s.style.display = i===_obSlide ? 'block' : 'none';
+    });
+    // Dots
+    document.querySelectorAll('.ob-dot').forEach(function(d,i){
+      d.classList.toggle('ob-dot-active', i===_obSlide);
+    });
+    var isLast = _obSlide===_obTotal-1;
+    var nextBtn = document.getElementById('obNextBtn');
+    if(nextBtn){
+      nextBtn.textContent = isLast ? 'Loslegen ✓' : 'Weiter →';
+      nextBtn.onclick = isLast ? function(){closeOnboarding();} : function(){obNext();};
+    }
+    var leftBtn = document.getElementById('obLeftBtn');
+    if(leftBtn) leftBtn.textContent = _obSlide===0 ? 'Überspringen' : '← Zurück';
+    var tourBtn = document.getElementById('obTourBtn');
+    if(tourBtn) tourBtn.style.display = isLast ? 'block' : 'none';
+  }
   function showOnboarding(){
     _obSlide=0;
-    const slides=document.getElementById('obSlides');
-    if(slides){slides.style.transition='none';slides.style.transform='translateX(0%)';}
-    const el=document.getElementById('onboardingOverlay');
-    if(el)el.style.display='flex';
-    setTimeout(_updateUI,10);
+    var el=document.getElementById('onboardingOverlay');
+    if(el) el.style.display='flex';
+    _updateUI();
   }
   window._showOnboarding=showOnboarding;
   window.closeOnboarding=function(){
-    const el=document.getElementById('onboardingOverlay');
-    if(el)el.style.display='none';
+    var el=document.getElementById('onboardingOverlay');
+    if(el) el.style.display='none';
     try{localStorage.setItem('ac_onboarded','1');}catch(e){}
   };
-  function _updateUI(){
-    const slides=document.getElementById('obSlides');
-    if(slides){
-      slides.style.transition=_obSlide===0&&slides.style.transform==='translateX(0%)'?'none':'transform .3s ease';
-      slides.style.transform='translateX(-'+(_obSlide*100)+'%)';
-    }
-    const dots=document.querySelectorAll('.ob-dot');
-    dots.forEach((d,i)=>{d.classList.toggle('ob-dot-active',i===_obSlide);});
-    const isLast=_obSlide===_obTotal-1;
-    const nextBtn=document.getElementById('obNextBtn');
-    if(nextBtn){
-      nextBtn.textContent=isLast?'Loslegen ✓':'Weiter →';
-      nextBtn.onclick=isLast?function(){closeOnboarding();}:function(){obNext();};
-    }
-    const leftBtn=document.getElementById('obLeftBtn');
-    if(leftBtn){
-      leftBtn.textContent=_obSlide===0?'Überspringen':'← Zurück';
-    }
-    const tourBtn=document.getElementById('obTourBtn');
-    if(tourBtn)tourBtn.style.display=isLast?'block':'none';
-  }
   window.obNext=function(){
     _obSlide=Math.min(_obSlide+1,_obTotal-1);
     _updateUI();
@@ -1159,16 +1153,16 @@
       fallbackTarget:'.plan-toolbar, #plannerToolbar, .planner-header'
     },
     {
-      page:'home',target:'#cfgBtn, .cfg-btn[onclick*="Cfg"], button[onclick*="cfgDrop"]',pos:'bottom',
+      page:'handbook',target:'#cfgDrop, button[onclick*="cfgDrop"], .cfg-row button:first-child',pos:'bottom',
       title:'Menü & Kader',
       text:'Über das Menü (☰) oben rechts erreichst du <strong>Mein Kader</strong>. Dort legst du Spieler:innen an und wählst vor dem Training aus, wer heute dabei ist.',
-      fallbackTarget:'.topbar, #topbar, header'
+      fallbackTarget:'.topbar .cfg-row, .cfg-row'
     },
     {
-      page:'home',target:'.cfg-btn[onclick*="Help"], button[onclick*="HelpPanel"], [onclick*="toggleHelpPanel"]',pos:'bottom',
+      page:'handbook',target:'button[onclick*="toggleHelpPanel"], .cfg-btn[title*="Hilfe"]',pos:'bottom',
       title:'Hilfe jederzeit abrufbar',
       text:'Das <strong>?</strong>-Symbol öffnet das Hilfe-Center mit Detailanleitung zu allen Funktionen – jederzeit erreichbar.',
-      fallbackTarget:'.topbar-right, .cfg-row'
+      fallbackTarget:'.cfg-row'
     }
   ];
 
@@ -1252,16 +1246,14 @@
     const next=document.getElementById('tourNextBtn');
     if(prev)prev.style.visibility=_step===0?'hidden':'visible';
     if(next)next.textContent=_step===STEPS.length-1?'Fertig ✓':'Weiter →';
-    // Page + Target
+    // Page + Target: immer navigieren wenn Step eine Seite angibt
     if(s.page&&typeof goPage==='function'){
-      const currentPage=document.querySelector('.page.active');
-      const currentId=currentPage?currentPage.id.replace('page-',''):null;
-      if(currentId!==s.page)goPage(s.page);
+      goPage(s.page);
     }
     setTimeout(()=>{
       const target=_getTarget(s);
       _positionBubble(target);
-    },s.page?400:0);
+    },s.page?600:0);
   }
 
   window.startTour=function(){
