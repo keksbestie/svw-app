@@ -1196,55 +1196,47 @@
     const arrow=document.getElementById('tourArrow');
     if(!bubble)return;
     if(!target){
-      // Zentriert
-      hl.style.display='none';
+      hl.style.width='0';hl.style.height='0';
       bubble.style.left='50%';
       bubble.style.top='50%';
+      bubble.style.bottom='auto';
       bubble.style.transform='translate(-50%,-50%)';
       if(arrow)arrow.style.display='none';
       return;
     }
-    target.scrollIntoView({behavior:'smooth',block:'nearest'});
-    setTimeout(()=>{
-      const r=target.getBoundingClientRect();
-      const pad=8;
-      hl.style.display='block';
-      hl.style.left=(r.left-pad)+'px';
-      hl.style.top=(r.top-pad)+'px';
-      hl.style.width=(r.width+pad*2)+'px';
-      hl.style.height=(r.height+pad*2)+'px';
-
-      bubble.style.transform='none';
-      const bw=Math.min(300,window.innerWidth-32);
-      const spaceBelow=window.innerHeight-r.bottom;
-      const spaceAbove=r.top;
-      let left=Math.max(16,Math.min(r.left,window.innerWidth-bw-16));
-
-      if(spaceBelow>200||spaceBelow>spaceAbove){
-        // unter dem Element
-        bubble.style.top=(r.bottom+14)+'px';
-        bubble.style.left=left+'px';
-        if(arrow){arrow.style.display='block';arrow.style.top='-6px';arrow.style.left=(r.left+r.width/2-left-6)+'px';arrow.style.bottom='auto';}
-      } else {
-        // über dem Element
-        bubble.style.top='auto';
-        bubble.style.left=left+'px';
-        // wir setzen bottom = window height - r.top + 14
-        const fromBottom=window.innerHeight-r.top+14;
-        bubble.style.bottom=fromBottom+'px';
-        bubble.style.top='auto';
-        if(arrow){arrow.style.display='block';arrow.style.bottom='-6px';arrow.style.top='auto';arrow.style.left=(r.left+r.width/2-left-6)+'px';}
-      }
-    },300);
+    const r=target.getBoundingClientRect();
+    const pad=8;
+    hl.style.left=(r.left-pad)+'px';
+    hl.style.top=(r.top-pad)+'px';
+    hl.style.width=(r.width+pad*2)+'px';
+    hl.style.height=(r.height+pad*2)+'px';
+    bubble.style.transform='none';
+    const bw=Math.min(300,window.innerWidth-32);
+    const spaceBelow=window.innerHeight-r.bottom;
+    const spaceAbove=r.top;
+    let left=Math.max(16,Math.min(r.left,window.innerWidth-bw-16));
+    if(spaceBelow>200||spaceBelow>spaceAbove){
+      bubble.style.top=(r.bottom+14)+'px';
+      bubble.style.bottom='auto';
+      bubble.style.left=left+'px';
+      if(arrow){arrow.style.display='block';arrow.style.top='-6px';arrow.style.left=(r.left+r.width/2-left-6)+'px';arrow.style.bottom='auto';}
+    } else {
+      bubble.style.left=left+'px';
+      bubble.style.bottom=(window.innerHeight-r.top+14)+'px';
+      bubble.style.top='auto';
+      if(arrow){arrow.style.display='block';arrow.style.bottom='-6px';arrow.style.top='auto';arrow.style.left=(r.left+r.width/2-left-6)+'px';}
+    }
   }
 
   function _renderStep(){
     const s=STEPS[_step];
     const bubble=document.getElementById('tourBubble');
     const hl=document.getElementById('tourHighlight');
+    // 1. Fade out
     bubble.style.opacity='0';
     hl.style.opacity='0';
     setTimeout(function(){
+      // 2. Update content
       document.getElementById('tourStepLabel').textContent='Schritt '+(_step+1)+' / '+STEPS.length;
       document.getElementById('tourTitle').textContent=s.title;
       document.getElementById('tourText').innerHTML=s.text;
@@ -1254,14 +1246,15 @@
       const next=document.getElementById('tourNextBtn');
       if(prev)prev.style.visibility=_step===0?'hidden':'visible';
       if(next)next.textContent=_step===STEPS.length-1?'Fertig ✓':'Weiter →';
+      // 3. Navigate
       if(s.page&&typeof goPage==='function') goPage(s.page);
+      // 4. Position then fade in
       setTimeout(function(){
-        _positionBubble(_getTarget(s),function(){
-          bubble.style.opacity='1';
-          if(s.target)hl.style.opacity='1';
-        });
+        _positionBubble(_getTarget(s));
+        bubble.style.opacity='1';
+        if(s.target) hl.style.opacity='1';
       },s.page?500:30);
-    },220);
+    },200);
   }
 
   window.startTour=function(){
