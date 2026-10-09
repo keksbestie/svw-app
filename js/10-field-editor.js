@@ -1609,6 +1609,9 @@ function applyFormation(side){
   }
 
   pushUndo();
+  // Alle bestehenden Spieler entfernen — nur eine Aufstellung gleichzeitig
+  canvasObjects = canvasObjects.filter(o => o.type !== 'player');
+  playerCounters = {};
 
   const sides = side === 'both' ? ['home','away'] : [side];
   const colorMap = { home:'#1565c0', away:'#b71c1c' };
