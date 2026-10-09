@@ -37,15 +37,21 @@ function updateSignInBtn(){
   const drop=document.getElementById('authDrop');
   const nameEl=document.getElementById('authDropName');
   const homeBtn=document.getElementById('homeSignInBtn');
-  if(submitUser){
+  const navKaderBtn=document.getElementById('navKaderBtn');
+  // submitUser may not be set yet on init — fall back to currentUser
+  const loggedIn=submitUser||(typeof currentUser!=='undefined'&&currentUser);
+  if(loggedIn){
+    const name=submitUser?submitUser.name:(currentUser.user_metadata?.username||currentUser.email);
     if(btn){btn.textContent='Abmelden';btn.style.background='rgba(255,255,255,.15)';btn.style.color='var(--text-1)';btn.onclick=doLogout;}
     if(drop)drop.style.display='none';
-    if(nameEl)nameEl.textContent=submitUser.name;
+    if(nameEl)nameEl.textContent=name;
     if(homeBtn){homeBtn.textContent='Abmelden';homeBtn.onclick=doLogout;}
+    if(navKaderBtn)navKaderBtn.style.display='';
   } else {
     if(btn){btn.textContent='Anmelden';btn.style.background='#fff';btn.style.color='#1a2b1c';btn.onclick=openLoginMod;}
     if(drop)drop.style.display='none';
     if(homeBtn){homeBtn.textContent='Anmelden';homeBtn.onclick=openLoginMod;}
+    if(navKaderBtn)navKaderBtn.style.display='none';
   }
 }
 function toggleAuthDrop(){
