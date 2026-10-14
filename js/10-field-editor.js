@@ -1878,12 +1878,10 @@ function toggleFormationPanel(e){
   const fmtRow = document.getElementById('formationFormatRow');
   if(fmtRow) fmtRow.style.display = (ft === 'small') ? 'flex' : 'none';
 
-  // Gast/Beide nur auf Vollfeldern sinnvoll
+  // Gast-Button nur auf Vollfeldern sinnvoll
   const isHalf = ft==='vb-half'||ft==='vb-beach-half'||ft==='half';
   const btnAway = document.getElementById('formationBtnAway');
-  const btnBoth = document.getElementById('formationBtnBoth');
   if(btnAway) btnAway.style.display = isHalf ? 'none' : '';
-  if(btnBoth) btnBoth.style.display = isHalf ? 'none' : '';
 
   if(supported) updateFormationSelect();
 
