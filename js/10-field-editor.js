@@ -1315,16 +1315,6 @@ function drawVolleyball(x,y,sel,sc){
   ctx.quadraticCurveTo(-R*0.5,R*0.1,-R*0.1,R*0.6);
   ctx.quadraticCurveTo(-R*0.3,R*0.1,-R,R);
   ctx.closePath(); ctx.fill();
-  // White seam lines – the characteristic volleyball curves
-  ctx.strokeStyle='rgba(255,255,255,.95)'; ctx.lineWidth=1.8; ctx.lineJoin='round'; ctx.lineCap='round';
-  // Horizontal seam
-  ctx.beginPath(); ctx.moveTo(-R,0); ctx.bezierCurveTo(-R*0.3,-R*0.4,R*0.3,R*0.4,R,0); ctx.stroke();
-  // Vertical seam (mirrored curve)
-  ctx.beginPath(); ctx.moveTo(0,-R); ctx.bezierCurveTo(R*0.4,-R*0.3,-R*0.4,R*0.3,0,R); ctx.stroke();
-  // Diagonal seams
-  ctx.strokeStyle='rgba(255,255,255,.6)'; ctx.lineWidth=1;
-  ctx.beginPath(); ctx.moveTo(-R*0.7,-R*0.7); ctx.bezierCurveTo(-R*0.2,-R*0.1,R*0.2,R*0.1,R*0.7,R*0.7); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(R*0.7,-R*0.7); ctx.bezierCurveTo(R*0.2,-R*0.1,-R*0.2,R*0.1,-R*0.7,R*0.7); ctx.stroke();
   ctx.restore();
   // Outer border
   ctx.strokeStyle='rgba(0,0,0,.25)'; ctx.lineWidth=1;
