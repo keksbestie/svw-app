@@ -396,8 +396,8 @@ header {
   padding: 0 24px;
 }
 .home-sport-card {
-  background: rgba(255,255,255,.06);
-  border: 1.5px solid rgba(255,255,255,.12);
+  background: linear-gradient(160deg, #162b18 0%, #0e1e10 100%);
+  border: 1.5px solid #1e3d21;
   border-radius: 20px;
   padding: 28px 16px 22px;
   display: flex;
@@ -405,23 +405,25 @@ header {
   align-items: center;
   gap: 12px;
   cursor: pointer;
-  transition: border-color .2s, background .2s, transform .15s;
+  transition: border-color .2s, background .2s, transform .15s, box-shadow .2s;
   color: #fff;
+  box-shadow: inset 0 1px 0 rgba(34,160,95,.15);
 }
 .home-sport-card:hover {
-  border-color: var(--accent);
-  background: rgba(34,160,95,.12);
-  transform: translateY(-2px);
+  border-color: #22a05f;
+  background: linear-gradient(160deg, #1d3d20 0%, #122414 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(34,160,95,.18), inset 0 1px 0 rgba(34,160,95,.3);
 }
-.home-sport-img { width: 72px; height: 72px; object-fit: contain; filter: invert(1) sepia(1) saturate(3) hue-rotate(95deg) brightness(.65); mix-blend-mode: screen; transition: filter .2s; }
-.home-sport-card:hover .home-sport-img { filter: invert(1) sepia(1) saturate(4) hue-rotate(95deg) brightness(.85); }
+.home-sport-img { width: 80px; height: 80px; object-fit: contain; filter: invert(1) sepia(1) saturate(4) hue-rotate(95deg) brightness(.9) contrast(1.1); mix-blend-mode: screen; transition: filter .2s; }
+.home-sport-card:hover .home-sport-img { filter: invert(1) sepia(1) saturate(5) hue-rotate(95deg) brightness(1.1) contrast(1.2); }
 .home-sport-label {
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 15px;
   font-weight: 800;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: rgba(255,255,255,.85);
+  color: #7ec89a;
 }
 @media (max-width: 500px) {
   .home-sport-grid { gap: 12px; padding: 0 16px; }
