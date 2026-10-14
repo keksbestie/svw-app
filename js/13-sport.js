@@ -43,6 +43,11 @@ function renderHomeSportState() {
   if (!grid || !cards) return;
 
   if(typeof _updateFieldTypeOptions==='function') _updateFieldTypeOptions();
+  const onbSub=document.getElementById('onboardingSubtitle');
+  if(onbSub){
+    const sportName=sport?{fussball:'(Nachwuchs)fußball',volleyball:'(Nachwuchs)Volleyball',tennis:'(Nachwuchs)Tennis'}[sport.id]||sport.label:'(Nachwuchs)fußball';
+    onbSub.textContent=`Dein Trainingsassistent für den ${sportName}. Plane Einheiten, verwalte deinen Kader und strukturiere die ganze Saison – alles an einem Ort.`;
+  }
 
   if (sport) {
     grid.style.display = 'none';
