@@ -843,7 +843,8 @@ body.admin .hero-edit-btn { display: flex; }
 
 /* ── Home overlay active: hide header & nav behind it ── */
 body.on-home > header,
-body.on-home > .mnav { visibility: hidden; }
+body.on-home > .mnav,
+body.on-home > footer { visibility: hidden; }
 
 /* Minimal home top bar: only lang + darkmode — inside overlay */
 .home-topbar {
