@@ -64,3 +64,6 @@ function initSportSelection() {
   if (saved) window.currentSport = saved;
   renderHomeSportState();
 }
+
+// Direkt beim Laden ausführen (goPage('home') läuft vor diesem Script)
+initSportSelection();
