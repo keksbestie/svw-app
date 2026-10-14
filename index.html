@@ -2227,11 +2227,10 @@ if('serviceWorker' in navigator){
       <option value="full">Vollfeld</option><option value="half">Halbfeld</option>
       <option value="small" selected>Kleinfeld</option><option value="neutral">Neutrales Feld</option>
       <option value="penalty">Strafraum</option><option value="sprint">Sprintbahn</option>
-      <optgroup label="Volleyball">
-        <option value="vb-full">VB Vollfeld</option>
-        <option value="vb-half">VB Halbfeld</option>
-        <option value="vb-beach">Beach VB</option>
-      </optgroup>
+      <option value="vb-full">Großfeld</option>
+      <option value="vb-half">Halbfeld</option>
+      <option value="vb-beach">Großfeld Beach</option>
+      <option value="vb-beach-half">Halbfeld Beach</option>
     </select>
 
     <div style="width:1px;height:22px;background:rgba(255,255,255,.12);flex-shrink:0;"></div>
@@ -2297,7 +2296,7 @@ if('serviceWorker' in navigator){
         <option value="#b71c1c">● Rot</option>
         <option value="#1b5e20">● Grün</option>
         <option value="#e65100">● Orange</option>
-        <option value="#f9a825">● Gelb / TW</option>
+        <option value="#f9a825" id="playerColorGelb">● Gelb / TW</option>
         <option value="#4a148c">● Lila</option>
         <option value="#212121">● Schwarz</option>
       </select>

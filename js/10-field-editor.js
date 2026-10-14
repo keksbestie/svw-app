@@ -201,6 +201,11 @@ function _getFieldGrid(){
     const fw=16*s, fh=8*s;
     const ox=(W-fw)/2, oy=(H-fh)/2;
     return meterGrid(ox, oy, fw, fh, 16, 8, 1);
+  } else if(ft==='vb-beach-half'){
+    const s=Math.min((W-p*2)/8,(H-p*2)/8);
+    const fw=8*s, fh=8*s;
+    const ox=(W-fw)/2, oy=(H-fh)/2;
+    return meterGrid(ox, oy, fw, fh, 8, 8, 1);
   } else {
     return meterGrid(p, p, W-p*2, H-p*2, 40, 25, 5);
   }
@@ -288,16 +293,15 @@ function _updateFieldTypeOptions(){
   if(!sel) return;
   const isVb=window.currentSport&&window.currentSport.id==='volleyball';
   // Show/hide optgroup and individual options based on sport
+  const vbOpts=['vb-full','vb-half','vb-beach','vb-beach-half'];
+  const fbOpts=['full','half','small','neutral','penalty','sprint'];
   Array.from(sel.options).forEach(opt=>{
-    const vbOpts=['vb-full','vb-half','vb-beach'];
-    const fbOpts=['full','half','small','neutral','penalty','sprint'];
     if(isVb) opt.hidden=fbOpts.includes(opt.value);
     else opt.hidden=vbOpts.includes(opt.value);
   });
-  // Also hide/show the optgroup label
-  Array.from(sel.querySelectorAll('optgroup')).forEach(og=>{
-    og.hidden=!isVb;
-  });
+  // Update Gelb/TW → Gelb/Libero label
+  const gelbOpt=document.getElementById('playerColorGelb');
+  if(gelbOpt) gelbOpt.textContent=isVb?'● Gelb / Libero':'● Gelb / TW';
   // If current value is now hidden, switch to first valid option
   const cur=sel.options[sel.selectedIndex];
   if(cur&&cur.hidden){
@@ -718,12 +722,11 @@ function drawField(){
   const H=canvasEl.offsetHeight||Math.round(W*0.6);
   const ft=document.getElementById('fieldType')?.value||'small';
   // Beach volleyball: sand background
-  if(ft==='vb-beach'){
+  if(ft==='vb-beach'||ft==='vb-beach-half'){
     const bgGrad=ctx.createLinearGradient(0,0,0,H);
     bgGrad.addColorStop(0,'#c8a86a'); bgGrad.addColorStop(.5,'#d8b87a'); bgGrad.addColorStop(1,'#c8a86a');
     ctx.fillStyle=bgGrad; ctx.fillRect(0,0,W,H);
   } else if(ft==='vb-full'||ft==='vb-half'){
-    // Indoor volleyball: neutral dark court (like FIVB blue/dark)
     ctx.fillStyle='#1a2b3c'; ctx.fillRect(0,0,W,H);
   } else {
   // Base grass gradient
@@ -760,6 +763,7 @@ function drawField(){
   else if(ft==='vb-full')drawVbFull(W,H,p);
   else if(ft==='vb-half')drawVbHalf(W,H,p);
   else if(ft==='vb-beach')drawVbBeach(W,H,p);
+  else if(ft==='vb-beach-half')drawVbBeachHalf(W,H,p);
   else drawNeutral(W,H,p);
 }
 
@@ -1031,6 +1035,20 @@ function drawVbBeach(W,H,p){
   ctx.fillText('BEACH  16m × 8m', W/2, oy-4);
 }
 
+// Beach-Volleyball Halbfeld — 8m × 8m, Netz links
+function drawVbBeachHalf(W,H,p){
+  const s=Math.min((W-p*2)/8,(H-p*2)/8);
+  const fw=8*s, fh=8*s;
+  const ox=(W-fw)/2, oy=(H-fh)/2;
+  ctx.strokeStyle='rgba(255,255,255,.88)'; ctx.lineWidth=2.5; ctx.setLineDash([8,5]);
+  sr(ox,oy,fw,fh);
+  ctx.setLineDash([]);
+  _drawVbNetVertical(ox, oy, oy+fh);
+  ctx.fillStyle='rgba(255,255,255,.5)'; ctx.font='bold 10px "Barlow Condensed",sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='bottom';
+  ctx.fillText('HALBFELD BEACH  8m × 8m', W/2, oy-4);
+}
+
 // ── DRAW OBJECTS ──
 function drawObj(o,sel){
   if(o.type==='pass')     drawArrowLine(o.x1,o.y1,o.x2,o.y2,'pass',sel);
@@ -1199,7 +1217,7 @@ function drawPlayer(x,y,lbl,col,sel,ang,name){
 // ── Ball ──
 function _isVolleyballSport(){
   const ft=document.getElementById('fieldType')?.value||'';
-  return ft==='vb-full'||ft==='vb-half'||ft==='vb-beach'||
+  return ft==='vb-full'||ft==='vb-half'||ft==='vb-beach'||ft==='vb-beach-half'||
     (window.currentSport&&(window.currentSport.id==='volleyball'||window.currentSport.id==='tennis'));
 }
 
@@ -1818,11 +1836,11 @@ const FORMATIONS_VB2 = {
   ]},
 };
 
-const _SUPPORTED_FT = ['full','half','small','vb-full','vb-half','vb-beach'];
+const _SUPPORTED_FT = ['full','half','small','vb-full','vb-half','vb-beach','vb-beach-half'];
 
 function _getFormations(format){
   const ft = document.getElementById('fieldType')?.value || 'small';
-  if(ft==='vb-beach') return FORMATIONS_VB2;
+  if(ft==='vb-beach'||ft==='vb-beach-half') return FORMATIONS_VB2;
   if(ft==='vb-full'||ft==='vb-half') return FORMATIONS_VB6;
   if(ft === 'small'){
     const fmt = format || document.getElementById('formationFormat')?.value || '9';
@@ -1883,7 +1901,7 @@ function applyFormation(side){
   playerCounters = {};
 
   // ── Volleyball formations ──────────────────────────
-  const isVb = ft==='vb-full'||ft==='vb-half'||ft==='vb-beach';
+  const isVb = ft==='vb-full'||ft==='vb-half'||ft==='vb-beach'||ft==='vb-beach-half';
   if(isVb){
     let ox, oy, fw, fh;
     if(ft==='vb-full'){
@@ -1892,9 +1910,12 @@ function applyFormation(side){
     } else if(ft==='vb-half'){
       const s=Math.min((W-p*2)/9,(H-p*2)/9);
       fw=9*s; fh=9*s; ox=(W-fw)/2; oy=(H-fh)/2;
-    } else { // vb-beach
+    } else if(ft==='vb-beach'){
       const s=Math.min((W-p*2)/16,(H-p*2)/8);
       fw=16*s; fh=8*s; ox=(W-fw)/2; oy=(H-fh)/2;
+    } else { // vb-beach-half
+      const s=Math.min((W-p*2)/8,(H-p*2)/8);
+      fw=8*s; fh=8*s; ox=(W-fw)/2; oy=(H-fh)/2;
     }
 
     const sides = side==='both' ? ['home','away'] : [side];
@@ -1924,13 +1945,16 @@ function applyFormation(side){
             cx = ox + pos[0] * fw/2;
           }
           cy = oy + yFrac * fh;
-        } else { // beach
+        } else if(ft==='vb-beach'){
           if(awayMirror){
             cx = ox + fw/2 + (1-pos[0]) * fw/2;
           } else {
             cx = ox + pos[0] * fw/2;
           }
           cy = oy + yFrac * fh;
+        } else { // vb-beach-half: net on left like vb-half
+          cx = ox + yFrac * fw;
+          cy = oy + (1 - xFrac) * fh;
         }
         const lbl = isLibero ? 'L' : String(idx);
         canvasObjects.push({type:'player', x:cx, y:cy, color:col, label:lbl, name:'', angle:0});
