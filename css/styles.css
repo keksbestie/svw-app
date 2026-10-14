@@ -413,8 +413,8 @@ header {
   background: rgba(34,160,95,.12);
   transform: translateY(-2px);
 }
-.home-sport-img { width: 72px; height: 72px; object-fit: contain; filter: invert(1); opacity: .9; transition: opacity .2s; }
-.home-sport-card:hover .home-sport-img { opacity: 1; filter: invert(1) sepia(1) saturate(2) hue-rotate(90deg); }
+.home-sport-img { width: 72px; height: 72px; object-fit: contain; filter: invert(1) sepia(1) saturate(3) hue-rotate(95deg) brightness(.65); mix-blend-mode: screen; transition: filter .2s; }
+.home-sport-card:hover .home-sport-img { filter: invert(1) sepia(1) saturate(4) hue-rotate(95deg) brightness(.85); }
 .home-sport-label {
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 15px;
