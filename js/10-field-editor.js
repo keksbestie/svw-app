@@ -1258,29 +1258,58 @@ function drawVolleyball(x,y,sel,sc){
   ctx.save();
   ctx.translate(x,y); ctx.scale(sc||1,sc||1);
   ctx.shadowColor='rgba(0,0,0,.5)'; ctx.shadowBlur=7; ctx.shadowOffsetY=3;
-  // Base white
-  ctx.fillStyle='#f8f6f0';
+  // Base
+  ctx.fillStyle='#e8f0ff';
   ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.fill();
   ctx.shadowBlur=0; ctx.shadowOffsetY=0;
   ctx.save();
   ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.clip();
-  // Classic volleyball: blue top half, yellow bottom half, red stripe
+  // Volleyball panel pattern: 3 pairs of panels (blue + yellow, FIVB beach style)
+  // Panel 1: blue – top-left curve
   ctx.fillStyle='#1565c0';
-  ctx.beginPath(); ctx.arc(0,0,R,-Math.PI,0); ctx.lineTo(0,0); ctx.closePath(); ctx.fill();
-  ctx.fillStyle='#f9a825';
-  ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI); ctx.lineTo(0,0); ctx.closePath(); ctx.fill();
-  // Red diagonal stripe
-  ctx.fillStyle='#c62828';
   ctx.beginPath();
-  ctx.moveTo(-R,-R*0.25); ctx.lineTo(R,R*0.25); ctx.lineTo(R,R*0.55); ctx.lineTo(-R,R*0.05);
+  ctx.moveTo(-R,-R);
+  ctx.lineTo(R,-R);
+  ctx.quadraticCurveTo(R*0.3,-R*0.1,-R*0.1,R*0.6);
+  ctx.quadraticCurveTo(-R*0.5,R*0.1,-R,R*0.1);
   ctx.closePath(); ctx.fill();
-  // White seam lines
-  ctx.strokeStyle='rgba(255,255,255,.9)'; ctx.lineWidth=1.5;
-  sl(-R,0,R,0);
-  sl(-R*0.25,-R,R*0.25,R);
+  // Panel 2: blue – bottom-right curve
+  ctx.fillStyle='#1565c0';
+  ctx.beginPath();
+  ctx.moveTo(R,R);
+  ctx.lineTo(-R,R);
+  ctx.quadraticCurveTo(-R*0.3,R*0.1,R*0.1,-R*0.6);
+  ctx.quadraticCurveTo(R*0.5,-R*0.1,R,-R*0.1);
+  ctx.closePath(); ctx.fill();
+  // Panel 3: yellow – right wedge
+  ctx.fillStyle='#f9a825';
+  ctx.beginPath();
+  ctx.moveTo(R,-R);
+  ctx.lineTo(R,R);
+  ctx.quadraticCurveTo(R*0.5,-R*0.1,R*0.1,-R*0.6);
+  ctx.quadraticCurveTo(R*0.3,-R*0.1,R,-R);
+  ctx.closePath(); ctx.fill();
+  // Panel 4: yellow – left wedge
+  ctx.fillStyle='#f9a825';
+  ctx.beginPath();
+  ctx.moveTo(-R,R);
+  ctx.lineTo(-R,-R);
+  ctx.quadraticCurveTo(-R*0.5,R*0.1,-R*0.1,R*0.6);
+  ctx.quadraticCurveTo(-R*0.3,R*0.1,-R,R);
+  ctx.closePath(); ctx.fill();
+  // White seam lines – the characteristic volleyball curves
+  ctx.strokeStyle='rgba(255,255,255,.95)'; ctx.lineWidth=1.8; ctx.lineJoin='round'; ctx.lineCap='round';
+  // Horizontal seam
+  ctx.beginPath(); ctx.moveTo(-R,0); ctx.bezierCurveTo(-R*0.3,-R*0.4,R*0.3,R*0.4,R,0); ctx.stroke();
+  // Vertical seam (mirrored curve)
+  ctx.beginPath(); ctx.moveTo(0,-R); ctx.bezierCurveTo(R*0.4,-R*0.3,-R*0.4,R*0.3,0,R); ctx.stroke();
+  // Diagonal seams
+  ctx.strokeStyle='rgba(255,255,255,.6)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(-R*0.7,-R*0.7); ctx.bezierCurveTo(-R*0.2,-R*0.1,R*0.2,R*0.1,R*0.7,R*0.7); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(R*0.7,-R*0.7); ctx.bezierCurveTo(R*0.2,-R*0.1,-R*0.2,R*0.1,-R*0.7,R*0.7); ctx.stroke();
   ctx.restore();
-  // Outer ring
-  ctx.strokeStyle='rgba(0,0,0,.3)'; ctx.lineWidth=1.2;
+  // Outer border
+  ctx.strokeStyle='rgba(0,0,0,.25)'; ctx.lineWidth=1;
   ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.stroke();
   if(sel){
     ctx.strokeStyle='#ffe082'; ctx.lineWidth=2; ctx.setLineDash([3,3]);
