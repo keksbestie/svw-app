@@ -295,6 +295,11 @@ function _updateFieldTypeOptions(){
   const btnAway2=document.getElementById('formationBtnAway');
   if(btnHome){ btnHome.style.background=isVb?'#ffffff':'#1565c0'; btnHome.style.color=isVb?'#111':'#fff'; }
   if(btnAway2){ btnAway2.style.background=isVb?'#e53935':'#b71c1c'; }
+  // Hide goal button and context for volleyball (no goals in VB)
+  const goalBtn=document.getElementById('tb_goal');
+  const goalCtx=document.getElementById('ctx_goal');
+  if(goalBtn) goalBtn.style.display=isVb?'none':'';
+  if(goalCtx) goalCtx.style.display=isVb?'none':'';
   // Update sport icons
   const ballIcon=isVb?'🏐':'⚽';
   const ballBtn=document.getElementById('tb_ball');
