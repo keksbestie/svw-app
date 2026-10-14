@@ -294,7 +294,9 @@ function switchImgTab(tab){
 function _updateFieldTypeOptions(){
   const sel=document.getElementById('fieldType');
   if(!sel) return;
-  const isVb=window.currentSport&&window.currentSport.id==='volleyball';
+  const sport=window.currentSport&&window.currentSport.id;
+  const isVb=sport==='volleyball';
+  const isTn=sport==='tennis';
   // Show/hide optgroup and individual options based on sport
   const vbOpts=['vb-full','vb-half','vb-beach','vb-beach-half'];
   const fbOpts=['full','half','small','neutral','penalty','sprint'];
@@ -319,7 +321,7 @@ function _updateFieldTypeOptions(){
   if(goalBtn) goalBtn.style.display=isVb?'none':'';
   if(goalCtx) goalCtx.style.display=isVb?'none':'';
   // Update sport icons
-  const ballIcon=isVb?'🏐':'⚽';
+  const ballIcon=isVb?'🏐':isTn?'🎾':'⚽';
   const ballBtn=document.getElementById('tb_ball');
   if(ballBtn) ballBtn.innerHTML=ballIcon;
   const stfIco=document.getElementById('stfIco');
@@ -330,6 +332,8 @@ function _updateFieldTypeOptions(){
   if(exFieldBtn) exFieldBtn.textContent=ballIcon+' Felddiagramm zeichnen / bearbeiten';
   const imgTabDraw=document.getElementById('imgTabDraw');
   if(imgTabDraw) imgTabDraw.textContent=ballIcon+' Felddiagramm';
+  const gsIco=document.getElementById('gsIco');
+  if(gsIco) gsIco.textContent=ballIcon;
   // If current value is now hidden, switch to first valid option
   const cur=sel.options[sel.selectedIndex];
   if(cur&&cur.hidden){
