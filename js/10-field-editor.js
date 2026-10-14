@@ -1026,8 +1026,13 @@ function drawVbBeach(W,H,p){
 
 function drawVbBeachHalf(W,H,p){
   const {ox,oy,fw,fh} = _vbFieldRect('vb-beach-half',W,H,p);
+  // Nur die 3 Außenlinien rot (oben, rechts, unten) — Netzseite (links) bleibt weiß
   ctx.strokeStyle='#e53935'; ctx.lineWidth=3; ctx.setLineDash([]);
-  sr(ox,oy,fw,fh);
+  ctx.beginPath();
+  ctx.moveTo(ox, oy); ctx.lineTo(ox+fw, oy);   // oben
+  ctx.lineTo(ox+fw, oy+fh);                     // rechts
+  ctx.lineTo(ox, oy+fh);                        // unten
+  ctx.stroke();
   _drawVbNetVertical(ox, oy, oy+fh);
   ctx.fillStyle='rgba(255,255,255,.5)'; ctx.font='bold 10px "Barlow Condensed",sans-serif';
   ctx.textAlign='center'; ctx.textBaseline='bottom';
