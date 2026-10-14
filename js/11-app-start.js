@@ -17,6 +17,9 @@ const _isMobile = /iphone|ipad|ipod|android/i.test(navigator.userAgent);
   const section = document.getElementById('pwaInstallSection');
   if (!section) return;
 
+  // Desktop: Banner komplett ausblenden
+  if (!_isMobile) { section.style.setProperty('display','none','important'); return; }
+
   // Bereits als App installiert → Abschnitt dauerhaft ausblenden
   if (_isStandalone) { section.style.setProperty('display','none','important'); return; }
 
@@ -33,6 +36,7 @@ const _isMobile = /iphone|ipad|ipod|android/i.test(navigator.userAgent);
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
   _pwaPrompt = e;
+  if (!_isMobile) return; // Desktop: Banner nie anzeigen
   const btn = document.getElementById('pwaInstallBtn');
   const fb = document.getElementById('pwaFallback');
   if (btn) { btn.style.display = 'inline-block'; }
