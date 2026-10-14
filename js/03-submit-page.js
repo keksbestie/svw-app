@@ -15,17 +15,32 @@ let submitCanvasData = null; // base64 from canvas
 let submissions = []; // array of submission objects
 let reviewingId = null;
 
+async function _applyProfile(userId){
+  const {data:profile}=await _supabase.from('profiles').select('role,reviewer_sports').eq('id',userId).single();
+  IS_ADMIN=profile?.role==='admin';
+  IS_REVIEWER=profile?.role==='reviewer';
+  REVIEWER_SPORTS=profile?.reviewer_sports||[];
+  document.body.classList.toggle('admin',IS_ADMIN);
+  document.body.classList.toggle('reviewer',IS_REVIEWER);
+}
+
 async function loadSubmissions(){
   if(!currentUser){submissions=[];return;}
   let q=_supabase.from('exercises').select('*').neq('status','approved');
-  if(!IS_ADMIN) q=q.eq('created_by',currentUser.id);
+  if(IS_ADMIN){
+    // sees everything
+  } else if(IS_REVIEWER&&REVIEWER_SPORTS.length){
+    q=q.in('sport',REVIEWER_SPORTS);
+  } else {
+    q=q.eq('created_by',currentUser.id);
+  }
   const {data,error}=await q;
 if(error){console.error('loadSubmissions error:',error);submissions=[];return;}
   submissions=(data||[]).map(e=>({
     id:e.id,name:e.name,desc:e.description,players:e.players,
     duration:e.duration,material:e.material,section:e.section,
     intensity:e.difficulty,tags:e.tags||[],diagram:e.image,
-    author:e.author_name||e.created_by,status:e.status,
+    author:e.author_name||e.created_by,status:e.status,sport:e.sport||'',
     submittedAt:new Date(e.created_at).toLocaleDateString('de-DE'),
     submittedTs:new Date(e.created_at).getTime()
   }));
@@ -83,8 +98,10 @@ async function renderSubmitPage(){
     renderSubmitChecklist_init();
     _renderMySubmissionsFromCache();
     loadMySubmittedPlans();
-    if(IS_ADMIN){ _renderAdminQueueFromCache(); renderUserList(); loadAdminPlanQueue(); }
-    document.getElementById('adminQueueWrap').style.display = IS_ADMIN ? 'block' : 'none';
+    const canReview=IS_ADMIN||IS_REVIEWER;
+    if(IS_ADMIN){ renderUserList(); loadAdminPlanQueue(); }
+    if(canReview) _renderAdminQueueFromCache();
+    document.getElementById('adminQueueWrap').style.display = canReview ? 'block' : 'none';
     document.getElementById('adminUserWrap').style.display = IS_ADMIN ? 'block' : 'none';
     document.getElementById('adminPlanQueueWrap').style.display = IS_ADMIN ? 'block' : 'none';
     // Canvas wird per Button im fieldOverlay geöffnet
@@ -104,9 +121,7 @@ async function doLogin(){
     showToast('Login fehlgeschlagen: '+error.message,'err');return;
   }
   currentUser=data.user;
-  const {data:profile}=await _supabase.from('profiles').select('role').eq('id',data.user.id).single();
-  IS_ADMIN=profile?.role==='admin';
-  document.body.classList.toggle('admin',IS_ADMIN);
+  await _applyProfile(data.user.id);
   const displayName=data.user.user_metadata?.username||data.user.email;
   submitUser={name:displayName,isDemo:false,id:data.user.id};
   renderSubmitPage(); // show page immediately
@@ -209,9 +224,7 @@ async function doSetNewPassword(){
   const {data:{user}}=await _supabase.auth.getUser();
   if(user){
     currentUser=user;
-    const {data:profile}=await _supabase.from('profiles').select('role').eq('id',user.id).single();
-    IS_ADMIN=profile?.role==='admin';
-    document.body.classList.toggle('admin',IS_ADMIN);
+    await _applyProfile(user.id);
     const displayName=user.user_metadata?.username||user.email;
     submitUser={name:displayName,isDemo:false,id:user.id};
   }
@@ -351,6 +364,7 @@ async function submitExercise(){
     canvas_objects:canvasObjects.length?canvasObjects:null,
     created_by:currentUser.id,
     author_name:submitUser.name||null,
+    sport:window.currentSport?.id||'',
     status:'pending'
   });
   if(error){showToast('Fehler beim Einreichen','err');return;}
@@ -362,7 +376,7 @@ async function submitExercise(){
   canvasObjects=[];playerCounters={};undoStack=[];selectedObjIdx=null;linePhase=0;lineStart=null;
   await loadSubmissions();
   _renderMySubmissionsFromCache();
-  if(IS_ADMIN) _renderAdminQueueFromCache();
+  if(IS_ADMIN||IS_REVIEWER) _renderAdminQueueFromCache();
 }
 
 // ── My Submissions ───────────────────────────────────
@@ -393,7 +407,7 @@ async function withdrawSubmission(id){
   showToast('Einreichung zurückgezogen.');
   await loadSubmissions();
   _renderMySubmissionsFromCache();
-  if(IS_ADMIN) _renderAdminQueueFromCache();
+  if(IS_ADMIN||IS_REVIEWER) _renderAdminQueueFromCache();
 }
 async function editSubmission(id){
   const s=submissions.find(x=>x.id===id); if(!s) return;
@@ -456,7 +470,7 @@ async function openQueueSection(secIdx){
         <div class="sub-list-thumb">${s.diagram?`<img src="${s.diagram}" style="width:100%;height:100%;object-fit:cover;">`:'⚽'}</div>
         <div class="sub-list-info">
           <div class="sub-list-name">${s.name}</div>
-          <div class="sub-list-meta">👤 ${s.author} · ${SECS[s.section].name} · ${s.tags.slice(0,3).join(', ')}</div>
+          <div class="sub-list-meta">👤 ${s.author} · ${SECS[s.section].name}${s.sport?' · '+s.sport:''} · ${s.tags.slice(0,3).join(', ')}</div>
         </div>
         <div class="sub-list-date">${s.submittedAt}</div>
       </div>`).join('');
@@ -486,28 +500,68 @@ function openReviewMod(id){
   openMod('reviewMod');
 }
 
+const _ALL_SPORTS=[{id:'fussball',label:'Fußball'},{id:'volleyball',label:'Volleyball'},{id:'tennis',label:'Tennis'}];
+
+function _roleLabel(u){
+  if(u.role==='admin') return 'Admin';
+  if(u.role==='reviewer'){
+    const sports=(u.reviewer_sports||[]).map(s=>_ALL_SPORTS.find(x=>x.id===s)?.label||s).join(', ');
+    return 'Reviewer'+(sports?` (${sports})`:'');
+  }
+  return 'Trainer:in';
+}
+
+function _userActions(u){
+  if(u.id===currentUser?.id) return '<span style="font-size:11px;color:var(--text-3);">Du</span>';
+  const btnStyle='padding:5px 10px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;border:none;';
+  if(u.role==='admin') return `<button onclick="setUserRole('${u.id}','coach')" style="${btnStyle}background:var(--surface-2);border:1px solid var(--border);color:var(--text-1);">Admin entziehen</button>`;
+
+  const sportChecks=_ALL_SPORTS.map(s=>{
+    const checked=(u.reviewer_sports||[]).includes(s.id)?'checked':'';
+    return `<label style="display:flex;align-items:center;gap:4px;font-size:11px;cursor:pointer;"><input type="checkbox" data-uid="${u.id}" data-sport="${s.id}" ${checked} onchange="_toggleReviewerSport(this)" style="cursor:pointer;">${s.label}</label>`;
+  }).join('');
+
+  const reviewerActive=u.role==='reviewer';
+  return `<div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">${sportChecks}</div>
+    <div style="display:flex;gap:6px;">
+      <button onclick="setUserRole('${u.id}','${reviewerActive?'coach':'reviewer'}')" style="${btnStyle}background:${reviewerActive?'var(--surface-2)':'#1565c0'};${reviewerActive?'border:1px solid var(--border);color:var(--text-1);':'color:#fff;'}">
+        ${reviewerActive?'Reviewer entziehen':'Reviewer machen'}
+      </button>
+      <button onclick="setUserRole('${u.id}','admin')" style="${btnStyle}background:var(--g);color:#fff;">Admin machen</button>
+    </div>
+  </div>`;
+}
+
 async function renderUserList(){
   const el=document.getElementById('userList');if(!el)return;
-  const {data:users}=await _supabase.from('profiles').select('id,email,role');
-  if(!users||!users.length){el.innerHTML='<div style="font-size:13px;color:var(--text-3);">Keine Trainer:innen gefunden.</div>';return;}
+  const {data:users}=await _supabase.from('profiles').select('id,email,role,reviewer_sports');
+  if(!users||!users.length){el.innerHTML='<div style="font-size:13px;color:var(--text-3);">Keine Nutzer:innen gefunden.</div>';return;}
   el.innerHTML=users.map(u=>`
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface-2);border-radius:9px;border:1px solid var(--border);">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:12px 14px;background:var(--surface-2);border-radius:9px;border:1px solid var(--border);">
       <div>
         <div style="font-size:13px;font-weight:700;color:var(--text-1);">${u.email||u.id}</div>
-        <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${u.role==='admin'?'Admin':'Trainer:in'}</div>
+        <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${_roleLabel(u)}</div>
       </div>
-      ${u.id===currentUser?.id?'<span style="font-size:11px;color:var(--text-3);">Du</span>':
-        u.role==='admin'
-          ?`<button onclick="setUserRole('${u.id}','trainer')" style="padding:6px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;color:var(--text-1);">Admin entziehen</button>`
-          :`<button onclick="setUserRole('${u.id}','admin')" style="padding:6px 12px;background:var(--g);color:#fff;border:none;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;">Admin machen</button>`
-      }
+      <div>${_userActions(u)}</div>
     </div>`).join('');
+}
+
+async function _toggleReviewerSport(cb){
+  const userId=cb.dataset.uid, sport=cb.dataset.sport;
+  const {data:p}=await _supabase.from('profiles').select('reviewer_sports').eq('id',userId).single();
+  let sports=p?.reviewer_sports||[];
+  if(cb.checked) sports=[...new Set([...sports,sport])];
+  else sports=sports.filter(s=>s!==sport);
+  await _supabase.from('profiles').update({reviewer_sports:sports}).eq('id',userId);
+  showToast('Sportarten aktualisiert');
 }
 
 async function setUserRole(userId,role){
   await _supabase.from('profiles').update({role}).eq('id',userId);
   renderUserList();
-  showToast(role==='admin'?'Admin-Rechte vergeben':'Admin-Rechte entzogen');
+  const labels={admin:'Admin-Rechte vergeben',reviewer:'Reviewer-Rechte vergeben',coach:'Rechte entzogen'};
+  showToast(labels[role]||'Rolle aktualisiert');
 }
 
 async function reviewAction(action){
@@ -534,7 +588,7 @@ async function reviewAction(action){
   }
   await loadSubmissions();
   closeMod('reviewMod');
-  renderAdminQueue();
+  if(IS_ADMIN||IS_REVIEWER) renderAdminQueue();
   renderMySubmissions();
 }
 
@@ -700,9 +754,7 @@ async function doLoginMod(){
   btn.disabled=false;btn.textContent='Anmelden';
   if(error){errEl.textContent=error.message;errEl.style.display='block';return;}
   currentUser=data.user;
-  const {data:profile}=await _supabase.from('profiles').select('role').eq('id',data.user.id).single();
-  IS_ADMIN=profile?.role==='admin';
-  document.body.classList.toggle('admin',IS_ADMIN);
+  await _applyProfile(data.user.id);
   const displayName=data.user.user_metadata?.username||data.user.email;
   submitUser={name:displayName,isDemo:false,id:data.user.id};
   closeMod('loginMod');

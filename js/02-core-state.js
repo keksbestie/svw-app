@@ -7,7 +7,7 @@
 // WICHTIG: Dieses Modul muss nach data/exercises.default.js und vor
 // allen anderen js/-Modulen geladen werden (definiert globalen State).
 // ══════════════════════════════════════════════════════════════════
-let IS_ADMIN=false, apiOnline=false, syncTO=null;
+let IS_ADMIN=false, IS_REVIEWER=false, REVIEWER_SPORTS=[], apiOnline=false, syncTO=null;
 
 // ══════════════════════════════════════════════════════
 // INIT
@@ -44,10 +44,13 @@ async function loadAPI(){
     const {data:{user}}=await _supabase.auth.getUser();
     currentUser=user; IS_ADMIN=false;
     if(user){
-      const {data:profile}=await _supabase.from('profiles').select('role').eq('id',user.id).single();
+      const {data:profile}=await _supabase.from('profiles').select('role,reviewer_sports').eq('id',user.id).single();
       IS_ADMIN=profile?.role==='admin';
+      IS_REVIEWER=profile?.role==='reviewer';
+      REVIEWER_SPORTS=profile?.reviewer_sports||[];
     }
     document.body.classList.toggle('admin',IS_ADMIN);
+    document.body.classList.toggle('reviewer',IS_REVIEWER);
     const {data:exData,error:exErr}=await _supabase.from('exercises').select('*').eq('status','approved');
     if(exErr)throw exErr;
     // Only overwrite local exercises if Supabase actually has data
