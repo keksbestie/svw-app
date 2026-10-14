@@ -8,7 +8,7 @@
 // ══════════════════════════════════════════════════════
 // FELD-EDITOR
 // ══════════════════════════════════════════════════════
-let currentTool='player', canvasObjects=[], undoStack=[];
+let currentTool='player', canvasObjects=[], undoStack=[], lineCounter=0;
 let playerCounters={}, selectedObjIdx=null;
 let isDraggingObj=false, dragOffX=0, dragOffY=0;
 let isResizing=false, resizeObjIdx=null;
@@ -79,20 +79,38 @@ function updateSelPlayerName(val){
   redraw();
 }
 
-// Show/hide player label editor in ctx_select based on current selection
+// Update the selected line's label
+function updateSelLineLabel(val){
+  const idx=selectedIndices.length===1?selectedIndices[0]:selectedObjIdx;
+  if(idx===null||idx<0) return;
+  const o=canvasObjects[idx];
+  if(o.type!=='pass'&&o.type!=='run'&&o.type!=='dribble') return;
+  o.label=val;
+  redraw();
+}
+
+// Show/hide label editors in ctx_select based on current selection
 function _updatePlayerEdit(){
   const editEl=document.getElementById('ctx_player_edit');
+  const lineEditEl=document.getElementById('ctx_line_edit');
   const hintEl=document.getElementById('ctx_sel_hint');
   if(!editEl) return;
   const idx=selectedIndices.length===1?selectedIndices[0]:(selectedObjIdx!==null&&selectedObjIdx>=0?selectedObjIdx:null);
-  const isPlayer=idx!==null&&canvasObjects[idx]?.type==='player';
+  const o=idx!==null?canvasObjects[idx]:null;
+  const isPlayer=o?.type==='player';
+  const isLine=o?.type==='pass'||o?.type==='run'||o?.type==='dribble';
   editEl.style.display=isPlayer?'flex':'none';
-  if(hintEl) hintEl.style.display=isPlayer?'none':'inline';
+  if(lineEditEl) lineEditEl.style.display=isLine?'flex':'none';
+  if(hintEl) hintEl.style.display=(isPlayer||isLine)?'none':'inline';
   if(isPlayer){
     const inp=document.getElementById('playerLabelInput');
-    if(inp) inp.value=canvasObjects[idx].label||'';
+    if(inp) inp.value=o.label||'';
     const nameInp=document.getElementById('playerNameInput');
-    if(nameInp) nameInp.value=canvasObjects[idx].name||'';
+    if(nameInp) nameInp.value=o.name||'';
+  }
+  if(isLine){
+    const inp=document.getElementById('lineLabelInput');
+    if(inp) inp.value=o.label||'';
   }
 }
 
@@ -343,7 +361,7 @@ function initCanvas(reset){
   canvasEl.width=W*dpr; canvasEl.height=H*dpr;
   ctx=canvasEl.getContext('2d');
   ctx.scale(dpr,dpr);
-  if(reset){canvasObjects=[];playerCounters={};undoStack=[];selectedObjIdx=null;linePhase=0;lineStart=null;}
+  if(reset){canvasObjects=[];playerCounters={};undoStack=[];selectedObjIdx=null;linePhase=0;lineStart=null;lineCounter=0;}
   redraw();
   if(!_cvInited){attachCvEvents();_cvInited=true;}
 }
@@ -446,12 +464,12 @@ function cvDown({x,y}){
   if(t==='erase'){pushUndo();const i=hitAt(x,y);if(i>=0){canvasObjects.splice(i,1);renumberPlayers();redraw();} return;}
   if(t==='dribble'){
     if(!linePhase){pushUndo();linePhase=1;lineStart={x,y};}
-    else{canvasObjects.push({type:'dribble',x1:lineStart.x,y1:lineStart.y,x2:x,y2:y});linePhase=0;lineStart=null;redraw();}
+    else{lineCounter++;canvasObjects.push({type:'dribble',x1:lineStart.x,y1:lineStart.y,x2:x,y2:y,label:String(lineCounter)});linePhase=0;lineStart=null;redraw();}
     return;
   }
   if(t==='pass'||t==='run'){
     if(!linePhase){pushUndo();linePhase=1;lineStart={x,y};}
-    else{canvasObjects.push({type:t,x1:lineStart.x,y1:lineStart.y,x2:x,y2:y});linePhase=0;lineStart=null;redraw();}
+    else{lineCounter++;canvasObjects.push({type:t,x1:lineStart.x,y1:lineStart.y,x2:x,y2:y,label:String(lineCounter)});linePhase=0;lineStart=null;redraw();}
     return;
   }
   const sp=_snapPoint(x,y,[]);
@@ -1056,10 +1074,26 @@ function drawVbBeachHalf(W,H,p){
 }
 
 // ── DRAW OBJECTS ──
+function _drawLineLabel(x1,y1,x2,y2,label){
+  if(!label) return;
+  const mx=(x1+x2)/2, my=(y1+y2)/2;
+  ctx.save();
+  ctx.shadowColor='rgba(0,0,0,.4)'; ctx.shadowBlur=4;
+  ctx.fillStyle='#fff';
+  ctx.beginPath(); ctx.arc(mx,my,9,0,Math.PI*2); ctx.fill();
+  ctx.shadowBlur=0;
+  ctx.strokeStyle='rgba(0,0,0,.15)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.arc(mx,my,9,0,Math.PI*2); ctx.stroke();
+  ctx.fillStyle='#111';
+  ctx.font='bold 10px Barlow Condensed, sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(label,mx,my+0.5);
+  ctx.restore();
+}
 function drawObj(o,sel){
-  if(o.type==='pass')     drawArrowLine(o.x1,o.y1,o.x2,o.y2,'pass',sel);
-  else if(o.type==='run') drawArrowLine(o.x1,o.y1,o.x2,o.y2,'run',sel);
-  else if(o.type==='dribble') drawSnakeLine(o.x1,o.y1,o.x2,o.y2,sel);
+  if(o.type==='pass')     {drawArrowLine(o.x1,o.y1,o.x2,o.y2,'pass',sel);_drawLineLabel(o.x1,o.y1,o.x2,o.y2,o.label);}
+  else if(o.type==='run') {drawArrowLine(o.x1,o.y1,o.x2,o.y2,'run',sel);_drawLineLabel(o.x1,o.y1,o.x2,o.y2,o.label);}
+  else if(o.type==='dribble') {drawSnakeLine(o.x1,o.y1,o.x2,o.y2,sel);_drawLineLabel(o.x1,o.y1,o.x2,o.y2,o.label);}
   else if(o.type==='player')  drawPlayer(o.x,o.y,o.label,o.color,sel,o.angle||0,o.name||'');
   else if(o.type==='ball')    drawBall(o.x,o.y,sel,_objSc(o));
   else if(o.type==='equip')   drawEquip(o.x,o.y,o.subtype,sel,o.angle||0,_objSc(o));
@@ -1475,7 +1509,7 @@ function drawGoal(x,y,sub,sel,ang,sc){
 // ── UNDO/CLEAR/EXPORT ──
 function pushUndo(){undoStack.push(JSON.stringify(canvasObjects));if(undoStack.length>40)undoStack.shift();}
 function undoDraw(){if(!undoStack.length){showToast('Nichts rückgängig');return;}canvasObjects=JSON.parse(undoStack.pop());redraw();}
-function clearCanvas(){if(!confirm('Diagramm leeren?'))return;pushUndo();canvasObjects=[];playerCounters={};linePhase=0;lineStart=null;isDribbling=false;dribblePoints=[];selectedObjIdx=null;redraw();}
+function clearCanvas(){if(!confirm('Diagramm leeren?'))return;pushUndo();canvasObjects=[];playerCounters={};lineCounter=0;linePhase=0;lineStart=null;isDribbling=false;dribblePoints=[];selectedObjIdx=null;redraw();}
 // ── CROP DIALOG ──────────────────────────────────────
 let _cropImg=null, _cropRect={x:0,y:0,w:0,h:0};
 let _cropHandle=null, _cropDragStart=null, _cropRectStart=null;
