@@ -283,10 +283,34 @@ function switchImgTab(tab){
   document.getElementById('imgTabDraw').style.color=u?'var(--gd2)':'#fff';
 }
 
+function _updateFieldTypeOptions(){
+  const sel=document.getElementById('fieldType');
+  if(!sel) return;
+  const isVb=window.currentSport&&window.currentSport.id==='volleyball';
+  // Show/hide optgroup and individual options based on sport
+  Array.from(sel.options).forEach(opt=>{
+    const vbOpts=['vb-full','vb-half','vb-beach'];
+    const fbOpts=['full','half','small','neutral','penalty','sprint'];
+    if(isVb) opt.hidden=fbOpts.includes(opt.value);
+    else opt.hidden=vbOpts.includes(opt.value);
+  });
+  // Also hide/show the optgroup label
+  Array.from(sel.querySelectorAll('optgroup')).forEach(og=>{
+    og.hidden=!isVb;
+  });
+  // If current value is now hidden, switch to first valid option
+  const cur=sel.options[sel.selectedIndex];
+  if(cur&&cur.hidden){
+    const first=Array.from(sel.options).find(o=>!o.hidden);
+    if(first) sel.value=first.value;
+  }
+}
+
 function openFieldOverlay(mode){
   _cvMode=mode||'edit';
   const ov=document.getElementById('fieldOverlay');
   if(ov) ov.style.display='flex';
+  _updateFieldTypeOptions();
   _cvInited=false;
   setTimeout(()=>initCanvas(false),80);
 }
@@ -693,22 +717,14 @@ function drawField(){
   const W=canvasEl.offsetWidth||800;
   const H=canvasEl.offsetHeight||Math.round(W*0.6);
   const ft=document.getElementById('fieldType')?.value||'small';
-  // Beach volleyball: sand background — field function handles it
+  // Beach volleyball: sand background
   if(ft==='vb-beach'){
-    const bgGrad=ctx.createLinearGradient(0,0,W,H);
-    bgGrad.addColorStop(0,'#b8964e'); bgGrad.addColorStop(.5,'#c9a85c'); bgGrad.addColorStop(1,'#b8964e');
+    const bgGrad=ctx.createLinearGradient(0,0,0,H);
+    bgGrad.addColorStop(0,'#c8a86a'); bgGrad.addColorStop(.5,'#d8b87a'); bgGrad.addColorStop(1,'#c8a86a');
     ctx.fillStyle=bgGrad; ctx.fillRect(0,0,W,H);
   } else if(ft==='vb-full'||ft==='vb-half'){
-    // Indoor volleyball: wooden floor look
-    const floorGrad=ctx.createLinearGradient(0,0,0,H);
-    floorGrad.addColorStop(0,'#c8973a'); floorGrad.addColorStop(.5,'#d4a44a'); floorGrad.addColorStop(1,'#c8973a');
-    ctx.fillStyle=floorGrad; ctx.fillRect(0,0,W,H);
-    // Wood grain stripes
-    const stripeCount=14;
-    for(let i=0;i<stripeCount;i++){
-      ctx.fillStyle=i%2===0?'rgba(0,0,0,.04)':'rgba(255,255,255,.04)';
-      ctx.fillRect(0,i*(H/stripeCount),W,H/stripeCount);
-    }
+    // Indoor volleyball: neutral dark court (like FIVB blue/dark)
+    ctx.fillStyle='#1a2b3c'; ctx.fillRect(0,0,W,H);
   } else {
   // Base grass gradient
   const grassGrad=ctx.createLinearGradient(0,0,0,H);
@@ -930,47 +946,46 @@ function drawSprintLane(W,H,p){
 
 // ── VOLLEYBALL FIELDS ─────────────────────────────────
 
-function _drawVbNet(cx, y, halfW, netH){
-  // Net post lines
+// Net runs vertically on landscape canvas (across the 9m court width = canvas height)
+function _drawVbNetVertical(cx, top, bottom){
   ctx.save();
-  ctx.strokeStyle='rgba(255,255,255,.9)'; ctx.lineWidth=2.5; ctx.setLineDash([]);
-  sl(cx, y-netH*0.5, cx, y+netH*0.5);
-  // Net tape top
-  ctx.strokeStyle='rgba(255,255,255,.95)'; ctx.lineWidth=3;
-  sl(cx-halfW, y, cx+halfW, y);
-  // Net mesh suggestion
-  ctx.strokeStyle='rgba(255,255,255,.22)'; ctx.lineWidth=1;
-  for(let i=0;i<=6;i++){
-    const x=cx-halfW+i*(halfW*2/6);
-    sl(x, y-netH*0.5, x, y+netH*0.5);
-  }
-  for(let j=1;j<=3;j++){
-    const ny=y-netH*0.5+j*(netH/4);
-    sl(cx-halfW, ny, cx+halfW, ny);
-  }
+  // Net body — semi-transparent mesh fill
+  ctx.fillStyle='rgba(0,0,0,.18)';
+  ctx.fillRect(cx-3, top, 6, bottom-top);
+  // Mesh lines horizontal
+  ctx.strokeStyle='rgba(255,255,255,.18)'; ctx.lineWidth=0.8; ctx.setLineDash([]);
+  for(let y=top+10; y<bottom; y+=14) sl(cx-3,y,cx+3,y);
+  // Top tape (white stripe at top of net)
+  ctx.fillStyle='rgba(255,255,255,.9)';
+  ctx.fillRect(cx-3, top, 6, 5);
+  // Net poles at top and bottom
+  ctx.strokeStyle='rgba(255,255,255,.7)'; ctx.lineWidth=3; ctx.setLineDash([]);
+  ctx.beginPath(); ctx.moveTo(cx,top-8); ctx.lineTo(cx,top); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx,bottom); ctx.lineTo(cx,bottom+8); ctx.stroke();
+  // Center line (under net)
+  ctx.strokeStyle='rgba(255,255,255,.5)'; ctx.lineWidth=1.5;
+  sl(cx, top, cx, bottom);
   ctx.restore();
 }
 
-// Volleyball Vollfeld — 18m × 9m, Netz bei 9m, Angriffslinie 3m beiderseits
+// Volleyball Vollfeld — 18m × 9m, Netz bei 9m, Angriffslinien 3m beiderseits
 function drawVbFull(W,H,p){
   const s=Math.min((W-p*2)/18,(H-p*2)/9);
   const fw=18*s, fh=9*s;
   const ox=(W-fw)/2, oy=(H-fh)/2;
-  ctx.strokeStyle='rgba(255,255,255,.92)'; ctx.lineWidth=1.8; ctx.setLineDash([]);
+  ctx.strokeStyle='rgba(255,255,255,.88)'; ctx.lineWidth=2; ctx.setLineDash([]);
   // Border
   sr(ox,oy,fw,fh);
-  // Net / center line
-  sl(ox+fw/2, oy, ox+fw/2, oy+fh);
-  // Attack lines (3m from net = fw/6 from center)
+  // Attack lines (3m from center)
   const atk=3*s;
-  ctx.save(); ctx.strokeStyle='rgba(255,255,255,.75)'; ctx.lineWidth=1.5; ctx.setLineDash([4,4]);
+  ctx.save(); ctx.strokeStyle='rgba(255,255,255,.7)'; ctx.lineWidth=1.5; ctx.setLineDash([5,4]);
   sl(ox+fw/2-atk, oy, ox+fw/2-atk, oy+fh);
   sl(ox+fw/2+atk, oy, ox+fw/2+atk, oy+fh);
   ctx.restore();
-  // Net graphic
-  _drawVbNet(ox+fw/2, oy+fh/2, fh*0.42, fh*0.9);
+  // Net
+  _drawVbNetVertical(ox+fw/2, oy, oy+fh);
   // Labels
-  ctx.fillStyle='rgba(255,255,255,.35)'; ctx.font='bold 10px "Barlow Condensed",sans-serif';
+  ctx.fillStyle='rgba(255,255,255,.4)'; ctx.font='bold 10px "Barlow Condensed",sans-serif';
   ctx.textAlign='center'; ctx.textBaseline='bottom';
   ctx.fillText('VOLLEYBALL  18m × 9m', W/2, oy-4);
   ctx.textBaseline='top';
@@ -978,53 +993,40 @@ function drawVbFull(W,H,p){
   ctx.fillText('3m', ox+fw/2+atk/2, oy+4);
 }
 
-// Volleyball Halbfeld — 9m × 9m, Netz oben, Angriffslinie 3m
+// Volleyball Halbfeld — 9m × 9m, Netz links, Angriffslinie 3m davon
 function drawVbHalf(W,H,p){
   const s=Math.min((W-p*2)/9,(H-p*2)/9);
   const fw=9*s, fh=9*s;
   const ox=(W-fw)/2, oy=(H-fh)/2;
-  ctx.strokeStyle='rgba(255,255,255,.92)'; ctx.lineWidth=1.8; ctx.setLineDash([]);
+  ctx.strokeStyle='rgba(255,255,255,.88)'; ctx.lineWidth=2; ctx.setLineDash([]);
   sr(ox,oy,fw,fh);
-  // Net top edge
-  sl(ox,oy,ox+fw,oy);
-  _drawVbNet(ox+fw/2, oy, fw*0.46, fw*0.12);
-  // Attack line 3m from top
+  // Net on left edge
+  _drawVbNetVertical(ox, oy, oy+fh);
+  // Attack line 3m from net (left)
   const atk=3*s;
-  ctx.save(); ctx.strokeStyle='rgba(255,255,255,.75)'; ctx.lineWidth=1.5; ctx.setLineDash([4,4]);
-  sl(ox, oy+atk, ox+fw, oy+atk);
+  ctx.save(); ctx.strokeStyle='rgba(255,255,255,.7)'; ctx.lineWidth=1.5; ctx.setLineDash([5,4]);
+  sl(ox+atk, oy, ox+atk, oy+fh);
   ctx.restore();
-  ctx.fillStyle='rgba(255,255,255,.35)'; ctx.font='bold 10px "Barlow Condensed",sans-serif';
-  ctx.textAlign='left'; ctx.textBaseline='middle';
-  ctx.fillText('3m', ox+4, oy+atk+10);
-  ctx.fillText('6m', ox+4, oy+atk+(fh-atk)/2+10);
+  ctx.fillStyle='rgba(255,255,255,.4)'; ctx.font='bold 10px "Barlow Condensed",sans-serif';
+  ctx.textAlign='left'; ctx.textBaseline='top';
+  ctx.fillText('3m', ox+atk/2-8, oy+4);
+  ctx.fillText('6m', ox+atk+(fw-atk)/2-8, oy+4);
   ctx.textAlign='center'; ctx.textBaseline='bottom';
   ctx.fillText('HALBFELD  9m × 9m', W/2, oy-4);
 }
 
-// Beach-Volleyball — 16m × 8m, kein Angriffsstrich, Sand-Optik
+// Beach-Volleyball — 16m × 8m, keine Angriffslinie, Sand-Optik
 function drawVbBeach(W,H,p){
   const s=Math.min((W-p*2)/16,(H-p*2)/8);
   const fw=16*s, fh=8*s;
   const ox=(W-fw)/2, oy=(H-fh)/2;
-  // Sand fill
-  ctx.save();
-  const sandGrad=ctx.createLinearGradient(ox,oy,ox+fw,oy+fh);
-  sandGrad.addColorStop(0,'#c4a35a'); sandGrad.addColorStop(.5,'#d4b46a'); sandGrad.addColorStop(1,'#c4a35a');
-  ctx.fillStyle=sandGrad; ctx.fillRect(ox,oy,fw,fh);
-  // Sand grain texture
-  ctx.strokeStyle='rgba(0,0,0,.04)'; ctx.lineWidth=0.5;
-  for(let i=0;i<18;i++){
-    ctx.beginPath();
-    ctx.moveTo(ox+Math.random()*fw, oy+Math.random()*fh);
-    ctx.lineTo(ox+Math.random()*fw, oy+Math.random()*fh);
-    ctx.stroke();
-  }
-  ctx.restore();
-  ctx.strokeStyle='rgba(255,255,255,.92)'; ctx.lineWidth=2; ctx.setLineDash([]);
+  // Court border lines (rope = dashed)
+  ctx.strokeStyle='rgba(255,255,255,.88)'; ctx.lineWidth=2.5; ctx.setLineDash([8,5]);
   sr(ox,oy,fw,fh);
-  sl(ox+fw/2,oy,ox+fw/2,oy+fh);
-  _drawVbNet(ox+fw/2, oy+fh/2, fh*0.42, fh*0.9);
-  ctx.fillStyle='rgba(255,255,255,.45)'; ctx.font='bold 10px "Barlow Condensed",sans-serif';
+  ctx.setLineDash([]);
+  // Net
+  _drawVbNetVertical(ox+fw/2, oy, oy+fh);
+  ctx.fillStyle='rgba(255,255,255,.5)'; ctx.font='bold 10px "Barlow Condensed",sans-serif';
   ctx.textAlign='center'; ctx.textBaseline='bottom';
   ctx.fillText('BEACH  16m × 8m', W/2, oy-4);
 }
@@ -1256,34 +1258,29 @@ function drawVolleyball(x,y,sel,sc){
   ctx.save();
   ctx.translate(x,y); ctx.scale(sc||1,sc||1);
   ctx.shadowColor='rgba(0,0,0,.5)'; ctx.shadowBlur=7; ctx.shadowOffsetY=3;
-  // Base — white/cream
-  ctx.fillStyle='#f5f0e8';
+  // Base white
+  ctx.fillStyle='#f8f6f0';
   ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.fill();
   ctx.shadowBlur=0; ctx.shadowOffsetY=0;
-  // Volleyball panels: 3 curved stripes
   ctx.save();
   ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.clip();
-  const colors=['#1a6fc4','#c62828','#1a6fc4'];
-  const angles=[-Math.PI/2, Math.PI/6, Math.PI*5/6];
-  colors.forEach((col,i)=>{
-    ctx.fillStyle=col;
-    ctx.beginPath();
-    ctx.moveTo(0,0);
-    ctx.arc(0,0,R,angles[i]-0.55,angles[i]+0.55);
-    ctx.closePath();
-    ctx.fill();
-  });
-  // White seam lines between panels
-  ctx.strokeStyle='rgba(255,255,255,.85)'; ctx.lineWidth=1.5;
-  for(let i=0;i<3;i++){
-    const a=angles[i]+Math.PI/3;
-    ctx.beginPath();
-    ctx.moveTo(0,0);
-    ctx.arc(0,0,R,a-0.05,a+1.2);
-    ctx.stroke();
-  }
+  // Classic volleyball: blue top half, yellow bottom half, red stripe
+  ctx.fillStyle='#1565c0';
+  ctx.beginPath(); ctx.arc(0,0,R,-Math.PI,0); ctx.lineTo(0,0); ctx.closePath(); ctx.fill();
+  ctx.fillStyle='#f9a825';
+  ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI); ctx.lineTo(0,0); ctx.closePath(); ctx.fill();
+  // Red diagonal stripe
+  ctx.fillStyle='#c62828';
+  ctx.beginPath();
+  ctx.moveTo(-R,-R*0.25); ctx.lineTo(R,R*0.25); ctx.lineTo(R,R*0.55); ctx.lineTo(-R,R*0.05);
+  ctx.closePath(); ctx.fill();
+  // White seam lines
+  ctx.strokeStyle='rgba(255,255,255,.9)'; ctx.lineWidth=1.5;
+  sl(-R,0,R,0);
+  sl(-R*0.25,-R,R*0.25,R);
   ctx.restore();
-  ctx.strokeStyle='#888'; ctx.lineWidth=1;
+  // Outer ring
+  ctx.strokeStyle='rgba(0,0,0,.3)'; ctx.lineWidth=1.2;
   ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.stroke();
   if(sel){
     ctx.strokeStyle='#ffe082'; ctx.lineWidth=2; ctx.setLineDash([3,3]);
