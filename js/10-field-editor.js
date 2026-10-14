@@ -1905,8 +1905,9 @@ function applyFormation(side){
     sides.forEach(s => {
       const color = colorMap[s];
       const awayMirror = s==='away';
+      const isBeach = ft==='vb-beach'||ft==='vb-beach-half';
       form.positions.forEach((pos, idx) => {
-        const isLibero = idx===0;
+        const isLibero = idx===0 && !isBeach;
         const col = isLibero ? liberoColor : color;
         // pos[0]=xFrac: 0=eigene Grundlinie, 1=Netz
         // pos[1]=yFrac: 0=links, 1=rechts
@@ -1926,7 +1927,7 @@ function applyFormation(side){
           cx = ox + (1 - xFrac) * fw;
           cy = oy + yFrac * fh;
         }
-        const lbl = isLibero ? 'L' : String(idx);
+        const lbl = isLibero ? 'L' : String(idx + (isBeach ? 1 : 0));
         canvasObjects.push({type:'player', x:cx, y:cy, color:col, label:lbl, name:'', angle:0, team:s});
       });
     });
