@@ -305,6 +305,11 @@ function _updateFieldTypeOptions(){
   // Update Dribbelweg → Angriff for volleyball
   const dribbleBtn=document.getElementById('tb_dribble');
   if(dribbleBtn) dribbleBtn.title=isVb?'Angriff (2× klicken)':'Dribbelweg (2× klicken)';
+  // Formation buttons: Heim=Weiß/Gast=Rot bei VB, sonst Blau/DunkelRot
+  const btnHome=document.getElementById('formationBtnHome');
+  const btnAway2=document.getElementById('formationBtnAway');
+  if(btnHome){ btnHome.style.background=isVb?'#ffffff':'#1565c0'; btnHome.style.color=isVb?'#111':'#fff'; }
+  if(btnAway2){ btnAway2.style.background=isVb?'#e53935':'#b71c1c'; }
   // If current value is now hidden, switch to first valid option
   const cur=sel.options[sel.selectedIndex];
   if(cur&&cur.hidden){
