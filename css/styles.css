@@ -263,6 +263,50 @@ header {
 }
 [data-theme="dark"] #page-home::before { opacity: .18; }
 
+/* Home page theme-adaptive elements */
+.home-hero-btn {
+  background: rgba(0,0,0,.07) !important;
+  border: 1.5px solid rgba(0,0,0,.18) !important;
+  color: var(--text-1) !important;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .home-hero-btn {
+    background: rgba(255,255,255,.12) !important;
+    border-color: rgba(255,255,255,.25) !important;
+    color: #fff !important;
+  }
+}
+[data-theme="dark"] .home-hero-btn {
+  background: rgba(255,255,255,.12) !important;
+  border-color: rgba(255,255,255,.25) !important;
+  color: #fff !important;
+}
+#homeSportBadge { color: var(--text-2); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) #homeSportBadge { color: rgba(255,255,255,.8); }
+}
+[data-theme="dark"] #homeSportBadge { color: rgba(255,255,255,.8); }
+#homeSportBadge button { color: var(--text-3) !important; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) #homeSportBadge button { color: rgba(255,255,255,.5) !important; }
+}
+[data-theme="dark"] #homeSportBadge button { color: rgba(255,255,255,.5) !important; }
+#page-home footer {
+  color: var(--text-2) !important;
+  border-top-color: var(--border) !important;
+}
+#page-home footer button { color: var(--text-2) !important; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) #page-home footer,
+  :root:not([data-theme="light"]) #page-home footer button {
+    color: rgba(255,255,255,.45) !important;
+  }
+  :root:not([data-theme="light"]) #page-home footer { border-top-color: rgba(255,255,255,.1) !important; }
+}
+[data-theme="dark"] #page-home footer,
+[data-theme="dark"] #page-home footer button { color: rgba(255,255,255,.45) !important; }
+[data-theme="dark"] #page-home footer { border-top-color: rgba(255,255,255,.1) !important; }
+
 /* Hero */
 .home-hero {
   padding: 32px 32px 16px;

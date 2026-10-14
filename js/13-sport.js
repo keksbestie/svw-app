@@ -54,7 +54,7 @@ function renderHomeSportState() {
     cards.style.display = '';
     if (badge) {
       badge.style.display = 'flex';
-      badge.innerHTML = `<img src="${sport.icon}" style="width:20px;height:20px;object-fit:contain;filter:invert(1);opacity:.8;"><span>${sport.label}</span><button onclick="changeSport()" style="background:none;border:none;color:rgba(255,255,255,.5);font-size:11px;cursor:pointer;padding:0;margin-left:4px;">ändern</button>`;
+      badge.innerHTML = `<img src="${sport.icon}" style="width:20px;height:20px;object-fit:contain;opacity:.7;"><span>${sport.label}</span><button onclick="changeSport()" style="background:none;border:none;font-size:11px;cursor:pointer;padding:0;margin-left:4px;">ändern</button>`;
     }
     if (sub) sub.textContent = 'Was möchtest du tun?';
     if (heroBtns) heroBtns.style.display = 'flex';
