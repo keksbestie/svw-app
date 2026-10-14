@@ -1922,7 +1922,7 @@ function applyFormation(side){
     }
 
     const sides = side==='both' ? ['home','away'] : [side];
-    const colorMap = { home:'#1565c0', away:'#b71c1c' };
+    const colorMap = { home:'#ffffff', away:'#e53935' };
     const liberoColor = '#f9a825';
 
     sides.forEach(s => {
@@ -1931,25 +1931,21 @@ function applyFormation(side){
       form.positions.forEach((pos, idx) => {
         const isLibero = idx===0;
         const col = isLibero ? liberoColor : color;
-        // pos[0]=xFrac: 0=eigene Grundlinie, 1=Netz (or full-field center)
+        // pos[0]=xFrac: 0=eigene Grundlinie, 1=Netz
         // pos[1]=yFrac: 0=links, 1=rechts
-        let xFrac = awayMirror ? 1 - pos[0] : pos[0];
-        let yFrac = pos[1];
-        // For vb-half: own half only, xFrac maps 0→bottom(own line), 1→top(net)
+        const xFrac = pos[0]; // direkt verwenden, keine Vor-Invertierung
+        const yFrac = pos[1];
         let cx, cy;
-        // xFrac: 0=Grundlinie(weit vom Netz), 1=Netz
-        // yFrac: 0=links, 1=rechts
         if(ft==='vb-full'||ft==='vb-beach'){
-          // Vollfeld: Heimteam links (ox→ox+fw/2), Gast gespiegelt
+          // Vollfeld: Heim links (ox→ox+fw/2), Gast rechts gespiegelt
           if(awayMirror){
-            cx = ox + fw/2 + (1-xFrac) * fw/2;
+            cx = ox + fw/2 + (1 - xFrac) * fw/2; // xFrac=0(Grundlinie)→ganz rechts, xFrac=1(Netz)→Mitte
           } else {
-            cx = ox + xFrac * fw/2;
+            cx = ox + xFrac * fw/2; // xFrac=0(Grundlinie)→ganz links, xFrac=1(Netz)→Mitte
           }
           cy = oy + yFrac * fh;
         } else {
-          // Halbfeld (vb-half / vb-beach-half): Netz links (ox), Grundlinie rechts
-          // xFrac=1 (nah am Netz) → cx nahe ox; xFrac=0 (Grundlinie) → cx nahe ox+fw
+          // Halbfeld: Netz links (ox), Grundlinie rechts (ox+fw)
           cx = ox + (1 - xFrac) * fw;
           cy = oy + yFrac * fh;
         }
