@@ -38,6 +38,7 @@ function renderHomeSportState() {
   const cards = document.getElementById('homeCards');
   const badge = document.getElementById('homeSportBadge');
   const sub = document.getElementById('homeHeroSub');
+  const heroBtns = document.getElementById('homeHeroBtns');
 
   if (!grid || !cards) return;
 
@@ -49,12 +50,14 @@ function renderHomeSportState() {
       badge.innerHTML = `<img src="${sport.icon}" style="width:20px;height:20px;object-fit:contain;filter:invert(1);opacity:.8;"><span>${sport.label}</span><button onclick="changeSport()" style="background:none;border:none;color:rgba(255,255,255,.5);font-size:11px;cursor:pointer;padding:0;margin-left:4px;">ändern</button>`;
     }
     if (sub) sub.textContent = 'Was möchtest du tun?';
+    if (heroBtns) heroBtns.style.display = 'flex';
     window.currentSport = sport;
   } else {
     grid.style.display = 'grid';
     cards.style.display = 'none';
     if (badge) badge.style.display = 'none';
     if (sub) sub.textContent = 'Übungen planen, strukturieren und langfristig periodisieren – alles an einem Ort.';
+    if (heroBtns) heroBtns.style.display = 'none';
     window.currentSport = null;
   }
 }
