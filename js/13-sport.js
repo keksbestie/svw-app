@@ -43,6 +43,7 @@ function renderHomeSportState() {
   if (!grid || !cards) return;
 
   if(typeof _updateFieldTypeOptions==='function') _updateFieldTypeOptions();
+  _updateHelpSport();
   const onbSub=document.getElementById('onboardingSubtitle');
   if(onbSub){
     const sportName=sport?{fussball:'(Nachwuchs)fußball',volleyball:'(Nachwuchs)Volleyball',tennis:'(Nachwuchs)Tennis'}[sport.id]||sport.label:'(Nachwuchs)fußball';
@@ -67,6 +68,28 @@ function renderHomeSportState() {
     if (heroBtns) heroBtns.style.display = 'none';
     window.currentSport = null;
   }
+}
+
+function _updateHelpSport() {
+  const sport = window.currentSport && window.currentSport.id;
+  const isVb = sport === 'volleyball';
+  // Filter button label
+  const editorBtn = document.querySelector('.haf-btn[onclick*="editor"]');
+  if (editorBtn) editorBtn.textContent = (isVb ? '🏐' : '⚽') + ' Feldeditor';
+  // Quick overview card text
+  const qhEditor = document.getElementById('qhEditor');
+  if (qhEditor) {
+    if (isVb) {
+      qhEditor.innerHTML = 'Spieler, Bälle, Hütchen und Laufwege auf dem Volleyballfeld platzieren. Kein Tor – dafür Vollfeld, Halbfeld und Beach. Raster (⛶) für gleichmäßige Abstände.';
+    } else {
+      qhEditor.innerHTML = 'Spieler, Bälle, Tore, Hütchen und Laufwege auf dem Feld platzieren. Raster (⛶) aktivieren für gleichmäßige Abstände. Strg+C/V kopieren, Strg+Z rückgängig.';
+    }
+  }
+  const qhEditorIcon = document.getElementById('qhEditorIcon');
+  if (qhEditorIcon) qhEditorIcon.textContent = isVb ? '🏐' : '⚽';
+  // Sport-specific help cards
+  document.querySelectorAll('.help-sport-fussball').forEach(el => el.style.display = isVb ? 'none' : '');
+  document.querySelectorAll('.help-sport-volleyball').forEach(el => el.style.display = isVb ? '' : 'none');
 }
 
 function initSportSelection() {

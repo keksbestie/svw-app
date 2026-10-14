@@ -1412,10 +1412,10 @@
     </div>
 
     <div class="hq-card" onclick="switchHelpTab('detail');filterHelpArea('editor')">
-      <div class="hq-icon" style="background:#006064;">⚽</div>
+      <div class="hq-icon" style="background:#006064;" id="qhEditorIcon">⚽</div>
       <div class="hq-body">
         <div class="hq-title">Felddiagramm-Editor</div>
-        <div class="hq-text">Spieler, Bälle, Tore, Hütchen und Laufwege auf dem Feld platzieren. Raster (⛶) aktivieren für gleichmäßige Abstände. Strg+C/V kopieren, Strg+Z rückgängig.</div>
+        <div class="hq-text" id="qhEditor">Spieler, Bälle, Tore, Hütchen und Laufwege auf dem Feld platzieren. Raster (⛶) aktivieren für gleichmäßige Abstände. Strg+C/V kopieren, Strg+Z rückgängig.</div>
       </div>
       <div class="hq-arrow">›</div>
     </div>
@@ -1539,8 +1539,8 @@
       </div>
     </div>
 
-    <!-- Feldeditor -->
-    <div class="help-card" data-area="editor" data-tags="felddiagramm editor zeichnen werkzeug spieler ball tor hütchen platzieren feldtyp vollfeld halbfeld klein">
+    <!-- Feldeditor – Fußball -->
+    <div class="help-card help-sport-fussball" data-area="editor" data-tags="felddiagramm editor zeichnen werkzeug spieler ball tor hütchen platzieren feldtyp vollfeld halbfeld klein">
       <div class="help-card-icon" style="background:#006064;">⚽</div>
       <div>
         <div class="help-card-title">Feldeditor – Grundlagen</div>
@@ -1557,7 +1557,7 @@
       </div>
     </div>
 
-    <div class="help-card" data-area="editor" data-tags="aufstellung formation automatisch platzieren 442 433 halbfeld kleinfeld 9er 7er heim gast beide">
+    <div class="help-card help-sport-fussball" data-area="editor" data-tags="aufstellung formation automatisch platzieren 442 433 halbfeld kleinfeld 9er 7er heim gast beide">
       <div class="help-card-icon" style="background:#1a4d2e;">▦</div>
       <div>
         <div class="help-card-title">Aufstellung automatisch platzieren</div>
@@ -1570,6 +1570,41 @@
         <div class="help-step"><span class="help-num">6</span><span>Einzelne Spieler danach frei verschieben oder löschen</span></div>
         <div class="help-pill-row" style="margin-top:8px;">
           <span class="help-pill">Vollfeld: 11v11</span><span class="help-pill">Halbfeld: 11v11</span><span class="help-pill">Kleinfeld: 9v9 / 7v7</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feldeditor – Volleyball -->
+    <div class="help-card help-sport-volleyball" data-area="editor" data-tags="felddiagramm editor zeichnen werkzeug spieler volleyball hütchen platzieren feldtyp vollfeld halbfeld beach" style="display:none;">
+      <div class="help-card-icon" style="background:#006064;">🏐</div>
+      <div>
+        <div class="help-card-title">Feldeditor – Grundlagen (Volleyball)</div>
+        <p class="help-card-text">Taktische Aufstellungen und Übungsabläufe direkt auf dem Volleyballfeld zeichnen.</p>
+        <div class="help-step"><span class="help-num">1</span><span><strong>Feldtyp</strong> oben links wählen: Vollfeld (18×9m), Halbfeld, Beach-Vollfeld, Beach-Halbfeld</span></div>
+        <div class="help-step"><span class="help-num">2</span><span>Werkzeug wählen (Spieler:in, Ball, Hütchen, Equipment) – kein Tor im Volleyball</span></div>
+        <div class="help-step"><span class="help-num">3</span><span>Ins Feld klicken → Objekt wird platziert</span></div>
+        <div class="help-step"><span class="help-num">4</span><span>Auswählen-Werkzeug (↖) → Objekte verschieben oder drehen</span></div>
+        <div class="help-step"><span class="help-num">5</span><span>Rechtsklick auf Objekt → um 22,5° drehen</span></div>
+        <div class="help-step"><span class="help-num">6</span><span>„✓ Übernehmen" → Zuschneidedialog → an Übung anhängen</span></div>
+        <div class="help-pill-row" style="margin-top:8px;">
+          <span class="help-pill">👤 Spieler:in</span><span class="help-pill">🏐 Ball</span><span class="help-pill">🟠 Hütchen</span><span class="help-pill">→ Passweg / Zuspiel</span><span class="help-pill">⤳ Laufweg</span><span class="help-pill">〰 Angriff</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="help-card help-sport-volleyball" data-area="editor" data-tags="aufstellung formation volleyball 6er 51 42 grundaufstellung rotation heim gast beide" style="display:none;">
+      <div class="help-card-icon" style="background:#1a4d2e;">▦</div>
+      <div>
+        <div class="help-card-title">Aufstellung automatisch platzieren (Volleyball)</div>
+        <p class="help-card-text">Mit einem Klick eine komplette Mannschaft in einer Volleyball-Grundaufstellung platzieren.</p>
+        <div class="help-step"><span class="help-num">1</span><span><strong>Feldtyp</strong> wählen (Vollfeld oder Halbfeld)</span></div>
+        <div class="help-step"><span class="help-num">2</span><span><strong>„Aufst."-Button</strong> in der Toolbar klicken → Panel öffnet sich</span></div>
+        <div class="help-step"><span class="help-num">3</span><span>Aufstellung wählen (z.B. 6er-Grundposition, 5-1, 4-2)</span></div>
+        <div class="help-step"><span class="help-num">4</span><span><strong>Heim</strong> (weiß), <strong>Gast</strong> (rot) oder <strong>Beide</strong> wählen → Spieler werden platziert</span></div>
+        <div class="help-step"><span class="help-num">5</span><span>Neue Aufstellung wählen → ersetzt die vorherigen Spieler automatisch</span></div>
+        <div class="help-step"><span class="help-num">6</span><span>Einzelne Spieler danach frei verschieben – Libero (gelb) manuell kennzeichnen</span></div>
+        <div class="help-pill-row" style="margin-top:8px;">
+          <span class="help-pill">Vollfeld: 6v6</span><span class="help-pill">Halbfeld: 6er-Hälfte</span><span class="help-pill">Beach: 2v2</span>
         </div>
       </div>
     </div>
