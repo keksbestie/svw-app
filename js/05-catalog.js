@@ -284,6 +284,18 @@ function saveDesc(){
 
 function renderSection(){
   const s=SECS[activeSec];const col=s.color;
+
+  // Andere Sportarten: leeres Skelett zeigen
+  if(window.currentSport && window.currentSport.id !== 'fussball'){
+    const wrap=document.getElementById('scontent');
+    if(wrap) wrap.innerHTML=`<div style="text-align:center;padding:60px 24px;color:var(--gd2);font-family:'Barlow Condensed',sans-serif;">
+      <div style="font-size:48px;margin-bottom:16px;opacity:.4;">🏗️</div>
+      <div style="font-size:20px;font-weight:800;letter-spacing:1px;margin-bottom:8px;">Noch keine Inhalte</div>
+      <div style="font-size:13px;opacity:.6;">Für <strong>${window.currentSport.label}</strong> werden hier bald Übungen verfügbar sein.</div>
+    </div>`;
+    return;
+  }
+
   const sEx=exercises.filter(e=>e.section===activeSec);
   const q=(document.getElementById(`ss${activeSec}`)||{value:''}).value||'';
 
