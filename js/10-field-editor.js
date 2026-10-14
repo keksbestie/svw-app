@@ -52,7 +52,7 @@ function renumberPlayers(){
   });
   // Renumber numeric labels sequentially per color group
   Object.entries(colorGroups).forEach(([col,indices])=>{
-    if(col==='#f9a825') return; // TW stays TW
+    if(col==='#f9a825') return; // TW/Libero stays special
     let n=1;
     indices.forEach(idx=>{
       const o=canvasObjects[idx];
@@ -186,6 +186,21 @@ function _getFieldGrid(){
     return meterGrid(p, p, W-p*2, H-p*2, 30, 20, 2);
   } else if(ft==='neutral'){
     return meterGrid(p, p, W-p*2, H-p*2, 40, 25, 5);
+  } else if(ft==='vb-full'){
+    const s=Math.min((W-p*2)/18,(H-p*2)/9);
+    const fw=18*s, fh=9*s;
+    const ox=(W-fw)/2, oy=(H-fh)/2;
+    return meterGrid(ox, oy, fw, fh, 18, 9, 1);
+  } else if(ft==='vb-half'){
+    const s=Math.min((W-p*2)/9,(H-p*2)/9);
+    const fw=9*s, fh=9*s;
+    const ox=(W-fw)/2, oy=(H-fh)/2;
+    return meterGrid(ox, oy, fw, fh, 9, 9, 1);
+  } else if(ft==='vb-beach'){
+    const s=Math.min((W-p*2)/16,(H-p*2)/8);
+    const fw=16*s, fh=8*s;
+    const ox=(W-fw)/2, oy=(H-fh)/2;
+    return meterGrid(ox, oy, fw, fh, 16, 8, 1);
   } else {
     return meterGrid(p, p, W-p*2, H-p*2, 40, 25, 5);
   }
@@ -489,7 +504,7 @@ function placeObj(t,x,y){
     const col=document.getElementById('playerColor')?.value||'#1565c0';
     if(!playerCounters[col])playerCounters[col]=1;
     let lbl;
-    if(col==='#f9a825') lbl='TW';
+    if(col==='#f9a825') lbl=_isVolleyballSport()?'L':'TW';
     else if(_autoNumber) lbl=String(playerCounters[col]++);
     else { lbl=''; playerCounters[col]++; }
     canvasObjects.push({type:'player',x,y,color:col,label:lbl,name:'',angle:0});
@@ -678,15 +693,30 @@ function drawField(){
   const W=canvasEl.offsetWidth||800;
   const H=canvasEl.offsetHeight||Math.round(W*0.6);
   const ft=document.getElementById('fieldType')?.value||'small';
+  // Beach volleyball: sand background — field function handles it
+  if(ft==='vb-beach'){
+    const bgGrad=ctx.createLinearGradient(0,0,W,H);
+    bgGrad.addColorStop(0,'#b8964e'); bgGrad.addColorStop(.5,'#c9a85c'); bgGrad.addColorStop(1,'#b8964e');
+    ctx.fillStyle=bgGrad; ctx.fillRect(0,0,W,H);
+  } else if(ft==='vb-full'||ft==='vb-half'){
+    // Indoor volleyball: wooden floor look
+    const floorGrad=ctx.createLinearGradient(0,0,0,H);
+    floorGrad.addColorStop(0,'#c8973a'); floorGrad.addColorStop(.5,'#d4a44a'); floorGrad.addColorStop(1,'#c8973a');
+    ctx.fillStyle=floorGrad; ctx.fillRect(0,0,W,H);
+    // Wood grain stripes
+    const stripeCount=14;
+    for(let i=0;i<stripeCount;i++){
+      ctx.fillStyle=i%2===0?'rgba(0,0,0,.04)':'rgba(255,255,255,.04)';
+      ctx.fillRect(0,i*(H/stripeCount),W,H/stripeCount);
+    }
+  } else {
   // Base grass gradient
   const grassGrad=ctx.createLinearGradient(0,0,0,H);
   grassGrad.addColorStop(0,'#2e7d32');
   grassGrad.addColorStop(.5,'#388e3c');
   grassGrad.addColorStop(1,'#2e7d32');
   ctx.fillStyle=grassGrad; ctx.fillRect(0,0,W,H);
-  // Mowing stripes — quer zur Spielrichtung
-  // Halbfeld + Strafraum: Spielrichtung vertikal → horizontale Streifen
-  // alle anderen: Spielrichtung horizontal → vertikale Streifen
+  // Mowing stripes
   const stripeCount=12;
   const stripeVert=(ft==='half'||ft==='penalty');
   for(let i=0;i<stripeCount;i++){
@@ -696,6 +726,7 @@ function drawField(){
     } else {
       ctx.fillRect(i*(W/stripeCount),0,W/stripeCount,H);
     }
+  }
   }
   // Subtle vignette around edges
   const vig=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*.3,W/2,H/2,Math.max(W,H)*.75);
@@ -710,6 +741,9 @@ function drawField(){
   else if(ft==='small')drawSmall(W,H,p);
   else if(ft==='penalty')drawPenaltyBox(W,H,p);
   else if(ft==='sprint')drawSprintLane(W,H,p);
+  else if(ft==='vb-full')drawVbFull(W,H,p);
+  else if(ft==='vb-half')drawVbHalf(W,H,p);
+  else if(ft==='vb-beach')drawVbBeach(W,H,p);
   else drawNeutral(W,H,p);
 }
 
@@ -894,6 +928,107 @@ function drawSprintLane(W,H,p){
   ctx.fillText('SPRINTBAHN  30m × 5m', p+4, H/2);
 }
 
+// ── VOLLEYBALL FIELDS ─────────────────────────────────
+
+function _drawVbNet(cx, y, halfW, netH){
+  // Net post lines
+  ctx.save();
+  ctx.strokeStyle='rgba(255,255,255,.9)'; ctx.lineWidth=2.5; ctx.setLineDash([]);
+  sl(cx, y-netH*0.5, cx, y+netH*0.5);
+  // Net tape top
+  ctx.strokeStyle='rgba(255,255,255,.95)'; ctx.lineWidth=3;
+  sl(cx-halfW, y, cx+halfW, y);
+  // Net mesh suggestion
+  ctx.strokeStyle='rgba(255,255,255,.22)'; ctx.lineWidth=1;
+  for(let i=0;i<=6;i++){
+    const x=cx-halfW+i*(halfW*2/6);
+    sl(x, y-netH*0.5, x, y+netH*0.5);
+  }
+  for(let j=1;j<=3;j++){
+    const ny=y-netH*0.5+j*(netH/4);
+    sl(cx-halfW, ny, cx+halfW, ny);
+  }
+  ctx.restore();
+}
+
+// Volleyball Vollfeld — 18m × 9m, Netz bei 9m, Angriffslinie 3m beiderseits
+function drawVbFull(W,H,p){
+  const s=Math.min((W-p*2)/18,(H-p*2)/9);
+  const fw=18*s, fh=9*s;
+  const ox=(W-fw)/2, oy=(H-fh)/2;
+  ctx.strokeStyle='rgba(255,255,255,.92)'; ctx.lineWidth=1.8; ctx.setLineDash([]);
+  // Border
+  sr(ox,oy,fw,fh);
+  // Net / center line
+  sl(ox+fw/2, oy, ox+fw/2, oy+fh);
+  // Attack lines (3m from net = fw/6 from center)
+  const atk=3*s;
+  ctx.save(); ctx.strokeStyle='rgba(255,255,255,.75)'; ctx.lineWidth=1.5; ctx.setLineDash([4,4]);
+  sl(ox+fw/2-atk, oy, ox+fw/2-atk, oy+fh);
+  sl(ox+fw/2+atk, oy, ox+fw/2+atk, oy+fh);
+  ctx.restore();
+  // Net graphic
+  _drawVbNet(ox+fw/2, oy+fh/2, fh*0.42, fh*0.9);
+  // Labels
+  ctx.fillStyle='rgba(255,255,255,.35)'; ctx.font='bold 10px "Barlow Condensed",sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='bottom';
+  ctx.fillText('VOLLEYBALL  18m × 9m', W/2, oy-4);
+  ctx.textBaseline='top';
+  ctx.fillText('3m', ox+fw/2-atk/2, oy+4);
+  ctx.fillText('3m', ox+fw/2+atk/2, oy+4);
+}
+
+// Volleyball Halbfeld — 9m × 9m, Netz oben, Angriffslinie 3m
+function drawVbHalf(W,H,p){
+  const s=Math.min((W-p*2)/9,(H-p*2)/9);
+  const fw=9*s, fh=9*s;
+  const ox=(W-fw)/2, oy=(H-fh)/2;
+  ctx.strokeStyle='rgba(255,255,255,.92)'; ctx.lineWidth=1.8; ctx.setLineDash([]);
+  sr(ox,oy,fw,fh);
+  // Net top edge
+  sl(ox,oy,ox+fw,oy);
+  _drawVbNet(ox+fw/2, oy, fw*0.46, fw*0.12);
+  // Attack line 3m from top
+  const atk=3*s;
+  ctx.save(); ctx.strokeStyle='rgba(255,255,255,.75)'; ctx.lineWidth=1.5; ctx.setLineDash([4,4]);
+  sl(ox, oy+atk, ox+fw, oy+atk);
+  ctx.restore();
+  ctx.fillStyle='rgba(255,255,255,.35)'; ctx.font='bold 10px "Barlow Condensed",sans-serif';
+  ctx.textAlign='left'; ctx.textBaseline='middle';
+  ctx.fillText('3m', ox+4, oy+atk+10);
+  ctx.fillText('6m', ox+4, oy+atk+(fh-atk)/2+10);
+  ctx.textAlign='center'; ctx.textBaseline='bottom';
+  ctx.fillText('HALBFELD  9m × 9m', W/2, oy-4);
+}
+
+// Beach-Volleyball — 16m × 8m, kein Angriffsstrich, Sand-Optik
+function drawVbBeach(W,H,p){
+  const s=Math.min((W-p*2)/16,(H-p*2)/8);
+  const fw=16*s, fh=8*s;
+  const ox=(W-fw)/2, oy=(H-fh)/2;
+  // Sand fill
+  ctx.save();
+  const sandGrad=ctx.createLinearGradient(ox,oy,ox+fw,oy+fh);
+  sandGrad.addColorStop(0,'#c4a35a'); sandGrad.addColorStop(.5,'#d4b46a'); sandGrad.addColorStop(1,'#c4a35a');
+  ctx.fillStyle=sandGrad; ctx.fillRect(ox,oy,fw,fh);
+  // Sand grain texture
+  ctx.strokeStyle='rgba(0,0,0,.04)'; ctx.lineWidth=0.5;
+  for(let i=0;i<18;i++){
+    ctx.beginPath();
+    ctx.moveTo(ox+Math.random()*fw, oy+Math.random()*fh);
+    ctx.lineTo(ox+Math.random()*fw, oy+Math.random()*fh);
+    ctx.stroke();
+  }
+  ctx.restore();
+  ctx.strokeStyle='rgba(255,255,255,.92)'; ctx.lineWidth=2; ctx.setLineDash([]);
+  sr(ox,oy,fw,fh);
+  sl(ox+fw/2,oy,ox+fw/2,oy+fh);
+  _drawVbNet(ox+fw/2, oy+fh/2, fh*0.42, fh*0.9);
+  ctx.fillStyle='rgba(255,255,255,.45)'; ctx.font='bold 10px "Barlow Condensed",sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='bottom';
+  ctx.fillText('BEACH  16m × 8m', W/2, oy-4);
+}
+
 // ── DRAW OBJECTS ──
 function drawObj(o,sel){
   if(o.type==='pass')     drawArrowLine(o.x1,o.y1,o.x2,o.y2,'pass',sel);
@@ -1060,7 +1195,14 @@ function drawPlayer(x,y,lbl,col,sel,ang,name){
 }
 
 // ── Ball ──
+function _isVolleyballSport(){
+  const ft=document.getElementById('fieldType')?.value||'';
+  return ft==='vb-full'||ft==='vb-half'||ft==='vb-beach'||
+    (window.currentSport&&(window.currentSport.id==='volleyball'||window.currentSport.id==='tennis'));
+}
+
 function drawBall(x,y,sel,sc){
+  if(_isVolleyballSport()){ drawVolleyball(x,y,sel,sc); return; }
   const R=13;
   const pr=R*0.306, dr=R*0.620;
   ctx.save();
@@ -1100,6 +1242,48 @@ function drawBall(x,y,sel,sc){
   }
   ctx.restore();
   ctx.strokeStyle='#222'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.stroke();
+  if(sel){
+    ctx.strokeStyle='#ffe082'; ctx.lineWidth=2; ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.arc(0,0,R+4,0,Math.PI*2); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+  ctx.restore();
+}
+
+function drawVolleyball(x,y,sel,sc){
+  const R=13;
+  ctx.save();
+  ctx.translate(x,y); ctx.scale(sc||1,sc||1);
+  ctx.shadowColor='rgba(0,0,0,.5)'; ctx.shadowBlur=7; ctx.shadowOffsetY=3;
+  // Base — white/cream
+  ctx.fillStyle='#f5f0e8';
+  ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.fill();
+  ctx.shadowBlur=0; ctx.shadowOffsetY=0;
+  // Volleyball panels: 3 curved stripes
+  ctx.save();
+  ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.clip();
+  const colors=['#1a6fc4','#c62828','#1a6fc4'];
+  const angles=[-Math.PI/2, Math.PI/6, Math.PI*5/6];
+  colors.forEach((col,i)=>{
+    ctx.fillStyle=col;
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.arc(0,0,R,angles[i]-0.55,angles[i]+0.55);
+    ctx.closePath();
+    ctx.fill();
+  });
+  // White seam lines between panels
+  ctx.strokeStyle='rgba(255,255,255,.85)'; ctx.lineWidth=1.5;
+  for(let i=0;i<3;i++){
+    const a=angles[i]+Math.PI/3;
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.arc(0,0,R,a-0.05,a+1.2);
+    ctx.stroke();
+  }
+  ctx.restore();
+  ctx.strokeStyle='#888'; ctx.lineWidth=1;
   ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.stroke();
   if(sel){
     ctx.strokeStyle='#ffe082'; ctx.lineWidth=2; ctx.setLineDash([3,3]);
@@ -1541,10 +1725,50 @@ const FORMATIONS_7 = {
   ]}
 };
 
-const _SUPPORTED_FT = ['full','half','small'];
+// ── VOLLEYBALL FORMATIONS ────────────────────────────
+// Positionen [xFrac, yFrac]: x=0 eigene Grundlinie, x=1 Netz; y=0 links, y=1 rechts
+// Index 0 = Libero (#f9a825, Label 'L')
+// Rotation: Pos 1=rechts hinten, 2=rechts vorne, 3=Mitte vorne, 4=links vorne, 5=links hinten, 6=Mitte hinten
+const FORMATIONS_VB6 = {
+  'vb-51': { name:'5-1 (Rotation I)', positions:[
+    [0.85,0.50], // L (Libero, Pos 6 Mitte hinten)
+    [0.85,0.18], // Pos 5 links hinten
+    [0.85,0.82], // Pos 1 rechts hinten
+    [0.15,0.50], // Pos 3 Mitte vorne (Zuspieler)
+    [0.15,0.18], // Pos 4 links vorne
+    [0.15,0.82], // Pos 2 rechts vorne
+  ]},
+  'vb-62': { name:'6-2 (Rotation I)', positions:[
+    [0.85,0.50], // L (Libero, Pos 6)
+    [0.85,0.18], // Pos 5
+    [0.85,0.82], // Pos 1
+    [0.15,0.18], // Pos 4
+    [0.15,0.50], // Pos 3
+    [0.15,0.82], // Pos 2 (Zuspieler von hinten)
+  ]},
+  'vb-42': { name:'4-2', positions:[
+    [0.85,0.50], // L (Libero, Pos 6)
+    [0.85,0.18], // Pos 5
+    [0.85,0.82], // Pos 1
+    [0.15,0.18], // Pos 4
+    [0.15,0.50], // Pos 3 (Zuspieler)
+    [0.15,0.82], // Pos 2 (Zuspieler)
+  ]}
+};
+
+const FORMATIONS_VB2 = {
+  'vb-beach': { name:'Block/Defense', positions:[
+    [0.12,0.50], // L (Blocker am Netz, andere Farbe)
+    [0.75,0.50], // Defender hinten
+  ]}
+};
+
+const _SUPPORTED_FT = ['full','half','small','vb-full','vb-half','vb-beach'];
 
 function _getFormations(format){
   const ft = document.getElementById('fieldType')?.value || 'small';
+  if(ft==='vb-beach') return FORMATIONS_VB2;
+  if(ft==='vb-full'||ft==='vb-half') return FORMATIONS_VB6;
   if(ft === 'small'){
     const fmt = format || document.getElementById('formationFormat')?.value || '9';
     return fmt === '7' ? FORMATIONS_7 : FORMATIONS_9;
@@ -1599,7 +1823,74 @@ function applyFormation(side){
   const p = Math.round(Math.min(W,H) * 0.04);
   const ft = document.getElementById('fieldType')?.value || 'full';
 
-  // Half field: vertical orientation (goal at bottom, midline at top)
+  pushUndo();
+  canvasObjects = canvasObjects.filter(o => o.type !== 'player');
+  playerCounters = {};
+
+  // ── Volleyball formations ──────────────────────────
+  const isVb = ft==='vb-full'||ft==='vb-half'||ft==='vb-beach';
+  if(isVb){
+    let ox, oy, fw, fh;
+    if(ft==='vb-full'){
+      const s=Math.min((W-p*2)/18,(H-p*2)/9);
+      fw=18*s; fh=9*s; ox=(W-fw)/2; oy=(H-fh)/2;
+    } else if(ft==='vb-half'){
+      const s=Math.min((W-p*2)/9,(H-p*2)/9);
+      fw=9*s; fh=9*s; ox=(W-fw)/2; oy=(H-fh)/2;
+    } else { // vb-beach
+      const s=Math.min((W-p*2)/16,(H-p*2)/8);
+      fw=16*s; fh=8*s; ox=(W-fw)/2; oy=(H-fh)/2;
+    }
+
+    const sides = side==='both' ? ['home','away'] : [side];
+    const colorMap = { home:'#1565c0', away:'#b71c1c' };
+    const liberoColor = '#f9a825';
+
+    sides.forEach(s => {
+      const color = colorMap[s];
+      const awayMirror = s==='away';
+      form.positions.forEach((pos, idx) => {
+        const isLibero = idx===0;
+        const col = isLibero ? liberoColor : color;
+        // pos[0]=xFrac: 0=eigene Grundlinie, 1=Netz (or full-field center)
+        // pos[1]=yFrac: 0=links, 1=rechts
+        let xFrac = awayMirror ? 1 - pos[0] : pos[0];
+        let yFrac = pos[1];
+        // For vb-half: own half only, xFrac maps 0→bottom(own line), 1→top(net)
+        let cx, cy;
+        if(ft==='vb-half'){
+          cx = ox + yFrac * fw;
+          cy = oy + (1 - xFrac) * fh;
+        } else if(ft==='vb-full'){
+          // home plays left half (ox → ox+fw/2), away plays right half
+          if(awayMirror){
+            cx = ox + fw/2 + (1-pos[0]) * fw/2;
+          } else {
+            cx = ox + pos[0] * fw/2;
+          }
+          cy = oy + yFrac * fh;
+        } else { // beach
+          if(awayMirror){
+            cx = ox + fw/2 + (1-pos[0]) * fw/2;
+          } else {
+            cx = ox + pos[0] * fw/2;
+          }
+          cy = oy + yFrac * fh;
+        }
+        const lbl = isLibero ? 'L' : String(idx);
+        canvasObjects.push({type:'player', x:cx, y:cy, color:col, label:lbl, name:'', angle:0});
+      });
+    });
+
+    renumberPlayers();
+    redraw();
+    document.getElementById('formationPanel').style.display = 'none';
+    const label = side==='both' ? ' (beide Teams)' : side==='home' ? ' (Heim)' : ' (Gast)';
+    showToast(form.name + label + ' aufgestellt');
+    return;
+  }
+
+  // ── Football formations ────────────────────────────
   const isHalf = ft === 'half';
   let ox=p, oy=p, fw=W-p*2, fh=H-p*2;
   if(isHalf){
@@ -1607,11 +1898,6 @@ function applyFormation(side){
     fw = 68*sc; fh = 52.5*sc;
     ox = (W-fw)/2; oy = (H-fh)/2;
   }
-
-  pushUndo();
-  // Alle bestehenden Spieler entfernen — nur eine Aufstellung gleichzeitig
-  canvasObjects = canvasObjects.filter(o => o.type !== 'player');
-  playerCounters = {};
 
   const sides = side === 'both' ? ['home','away'] : [side];
   const colorMap = { home:'#1565c0', away:'#b71c1c' };
@@ -1624,10 +1910,8 @@ function applyFormation(side){
       const col = isGK ? '#f9a825' : color;
       let x, y, angle;
       if(isHalf){
-        // xFrac=0 → goal line (bottom), xFrac=1 → midline (top)
-        // yFrac=0 → left touchline, yFrac=1 → right touchline
         const yFrac = awayMirror ? 1 - pos[1] : pos[1];
-        const xScaled = Math.min(1, pos[0] * 2); // map own-half (0–0.5) to full field height (0–1)
+        const xScaled = Math.min(1, pos[0] * 2);
         x = ox + yFrac * fw;
         y = oy + (1 - xScaled) * fh;
         angle = 0;
