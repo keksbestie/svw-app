@@ -944,24 +944,22 @@ function drawSprintLane(W,H,p){
 // ── VOLLEYBALL FIELDS ─────────────────────────────────
 
 // Net runs vertically on landscape canvas (across the 9m court width = canvas height)
-function _drawVbNetVertical(cx, top, bottom){
+// centerLine=true: Bodenlinie unter Netz (nur Indoor — Beach hat keine)
+function _drawVbNetVertical(cx, top, bottom, centerLine=true){
   ctx.save();
-  // Net body — semi-transparent mesh fill
   ctx.fillStyle='rgba(0,0,0,.18)';
   ctx.fillRect(cx-3, top, 6, bottom-top);
-  // Mesh lines horizontal
   ctx.strokeStyle='rgba(255,255,255,.18)'; ctx.lineWidth=0.8; ctx.setLineDash([]);
   for(let y=top+10; y<bottom; y+=14) sl(cx-3,y,cx+3,y);
-  // Top tape (white stripe at top of net)
   ctx.fillStyle='rgba(255,255,255,.9)';
   ctx.fillRect(cx-3, top, 6, 5);
-  // Net poles at top and bottom
   ctx.strokeStyle='rgba(255,255,255,.7)'; ctx.lineWidth=3; ctx.setLineDash([]);
   ctx.beginPath(); ctx.moveTo(cx,top-8); ctx.lineTo(cx,top); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(cx,bottom); ctx.lineTo(cx,bottom+8); ctx.stroke();
-  // Center line (under net)
-  ctx.strokeStyle='rgba(255,255,255,.5)'; ctx.lineWidth=1.5;
-  sl(cx, top, cx, bottom);
+  if(centerLine){
+    ctx.strokeStyle='rgba(255,255,255,.5)'; ctx.lineWidth=1.5;
+    sl(cx, top, cx, bottom);
+  }
   ctx.restore();
 }
 
@@ -1018,7 +1016,7 @@ function drawVbBeach(W,H,p){
   const {ox,oy,fw,fh} = _vbFieldRect('vb-beach',W,H,p);
   ctx.strokeStyle='#e53935'; ctx.lineWidth=3; ctx.setLineDash([]);
   sr(ox,oy,fw,fh);
-  _drawVbNetVertical(ox+fw/2, oy, oy+fh);
+  _drawVbNetVertical(ox+fw/2, oy, oy+fh, false);
   ctx.fillStyle='rgba(255,255,255,.5)'; ctx.font='bold 10px "Barlow Condensed",sans-serif';
   ctx.textAlign='center'; ctx.textBaseline='bottom';
   ctx.fillText('BEACH  16m × 8m', W/2, oy-4);
@@ -1033,7 +1031,7 @@ function drawVbBeachHalf(W,H,p){
   ctx.lineTo(ox+fw, oy+fh);                     // rechts
   ctx.lineTo(ox, oy+fh);                        // unten
   ctx.stroke();
-  _drawVbNetVertical(ox, oy, oy+fh);
+  _drawVbNetVertical(ox, oy, oy+fh, false);
   ctx.fillStyle='rgba(255,255,255,.5)'; ctx.font='bold 10px "Barlow Condensed",sans-serif';
   ctx.textAlign='center'; ctx.textBaseline='bottom';
   ctx.fillText('HALBFELD BEACH  8m × 8m', W/2, oy-4);
