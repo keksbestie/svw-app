@@ -1905,8 +1905,17 @@ function applyFormation(side){
   const ft = document.getElementById('fieldType')?.value || 'full';
 
   pushUndo();
-  canvasObjects = canvasObjects.filter(o => o.type !== 'player');
-  playerCounters = {};
+  // Nur Spieler des betroffenen Teams entfernen (bei 'both' alle)
+  if(side === 'both'){
+    canvasObjects = canvasObjects.filter(o => o.type !== 'player');
+    playerCounters = {};
+  } else {
+    canvasObjects = canvasObjects.filter(o => !(o.type === 'player' && o.team === side));
+    // Zähler nur für betroffene Farbe zurücksetzen
+    const teamColor = side === 'home' ? '#ffffff' : '#e53935';
+    delete playerCounters[teamColor];
+    delete playerCounters['#f9a825'];
+  }
 
   // ── Volleyball formations ──────────────────────────
   const isVb = ft==='vb-full'||ft==='vb-half'||ft==='vb-beach'||ft==='vb-beach-half';
@@ -1955,7 +1964,7 @@ function applyFormation(side){
           cy = oy + yFrac * fh;
         }
         const lbl = isLibero ? 'L' : String(idx);
-        canvasObjects.push({type:'player', x:cx, y:cy, color:col, label:lbl, name:'', angle:0});
+        canvasObjects.push({type:'player', x:cx, y:cy, color:col, label:lbl, name:'', angle:0, team:s});
       });
     });
 
@@ -1999,7 +2008,7 @@ function applyFormation(side){
         angle = 0;
       }
       const lbl = isGK ? 'TW' : String(idx);
-      canvasObjects.push({type:'player', x, y, color:col, label:lbl, name:'', angle});
+      canvasObjects.push({type:'player', x, y, color:col, label:lbl, name:'', angle, team:s});
     });
   });
 
