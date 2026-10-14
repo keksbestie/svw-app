@@ -386,6 +386,47 @@ header {
   box-shadow: 0 4px 12px rgba(0,0,0,.08);
 }
 
+/* Sport-Auswahl Grid */
+.home-sport-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 600px;
+  margin: 0 auto 40px;
+  padding: 0 24px;
+}
+.home-sport-card {
+  background: rgba(255,255,255,.06);
+  border: 1.5px solid rgba(255,255,255,.12);
+  border-radius: 20px;
+  padding: 28px 16px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: border-color .2s, background .2s, transform .15s;
+  color: #fff;
+}
+.home-sport-card:hover {
+  border-color: var(--accent);
+  background: rgba(34,160,95,.12);
+  transform: translateY(-2px);
+}
+.home-sport-emoji { font-size: 48px; line-height: 1; }
+.home-sport-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.85);
+}
+@media (max-width: 500px) {
+  .home-sport-grid { gap: 12px; padding: 0 16px; }
+  .home-sport-emoji { font-size: 36px; }
+}
+
 /* Cards grid */
 .home-cards {
   display: grid;

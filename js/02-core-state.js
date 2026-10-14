@@ -213,6 +213,7 @@ function goPage(name,btn){
     document.querySelector('.home-hero')?.classList.remove('flying');
     document.querySelectorAll('.mb,.bnav-item').forEach(b=>b.classList.remove('active'));
     const hb=btn||document.querySelector('.mb[data-page="home"]');if(hb)hb.classList.add('active');
+    if(typeof initSportSelection==='function') initSportSelection();
     return;
   }
 

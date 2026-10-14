@@ -230,15 +230,34 @@
     <div class="home-hero-eyebrow" data-i18n="home_eyebrow">(Nachwuchs)</div>
     <h1 class="home-hero-title" data-i18n="home_title">AssistCoach</h1>
     <div class="home-hero-tagline">Dein Trainingskatalog</div>
-    <p class="home-hero-sub" data-i18n="home_sub">Übungen planen, strukturieren und langfristig periodisieren – alles an einem Ort.</p>
+    <p class="home-hero-sub" id="homeHeroSub">Übungen planen, strukturieren und langfristig periodisieren – alles an einem Ort.</p>
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;justify-content:center;">
       <button onclick="goPage('about')" style="background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);color:#fff;padding:8px 20px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">Vision &amp; Ziele ↗</button>
       <button onclick="window._showOnboarding()" style="background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);color:#fff;padding:8px 16px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">&#127973; Einführung</button>
     </div>
   </div>
 
+  <!-- Sport-Auswahl -->
+  <div id="homeSportGrid" class="home-sport-grid" style="display:none;">
+    <button class="home-sport-card" onclick="selectSport('fussball')">
+      <span class="home-sport-emoji">⚽</span>
+      <span class="home-sport-label">Fußball</span>
+    </button>
+    <button class="home-sport-card" onclick="selectSport('volleyball')">
+      <span class="home-sport-emoji">🏐</span>
+      <span class="home-sport-label">Volleyball</span>
+    </button>
+    <button class="home-sport-card" onclick="selectSport('tennis')">
+      <span class="home-sport-emoji">🎾</span>
+      <span class="home-sport-label">Tennis</span>
+    </button>
+  </div>
+
+  <!-- Sport-Badge (zeigt gewählte Sportart über den Karten) -->
+  <div id="homeSportBadge" style="display:none;align-items:center;gap:8px;justify-content:center;margin-bottom:16px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:rgba(255,255,255,.8);letter-spacing:.5px;"></div>
+
   <!-- Feature Cards -->
-  <div class="home-cards five">
+  <div class="home-cards five" id="homeCards">
     <div class="home-card home-card--catalog" onclick="goPage('handbook')">
       <div class="home-card-num">01</div>
       <div class="home-card-inner">
@@ -2138,6 +2157,7 @@ function filterHelpCards(q){
 <script src="js/10-field-editor.js?v=20261008"></script>
 <script src="js/11-app-start.js?v=20261008"></script>
 <script src="js/12-kader.js?v=20261008"></script>
+<script src="js/13-sport.js?v=20261014"></script>
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
