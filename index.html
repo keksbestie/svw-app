@@ -1033,8 +1033,8 @@
         <div style="font-size:14px;color:var(--text-2);line-height:1.6;">Dein Trainingsassistent f&uuml;r den (Nachwuchs)fu&szlig;ball. Plane Einheiten, verwalte deinen Kader und strukturiere die ganze Saison – alles an einem Ort.</div>
       </div>
 
-      <!-- Slide 2: Katalog & Plan -->
-      <div class="ob-slide" style="padding:36px 28px 28px;box-sizing:border-box;text-align:center;">
+      <!-- Slide 2: Katalog & Plan (Fußball) -->
+      <div class="ob-slide" data-sport="fussball" style="padding:36px 28px 28px;box-sizing:border-box;text-align:center;">
         <div style="font-size:48px;margin-bottom:14px;">📚</div>
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:var(--text);margin-bottom:8px;">Übungskatalog</div>
         <div style="font-size:13px;color:var(--text-2);line-height:1.7;text-align:left;">
@@ -1042,6 +1042,17 @@
           <div style="display:flex;gap:10px;margin-bottom:8px;"><span style="color:var(--accent);font-weight:800;">2</span> Übungen bewerten (⭐) und die besten nach oben sortieren</div>
           <div style="display:flex;gap:10px;margin-bottom:8px;"><span style="color:var(--accent);font-weight:800;">3</span> Mit <strong>+ Plan</strong> Übungen direkt in den Trainingsplan legen</div>
           <div style="display:flex;gap:10px;"><span style="color:var(--accent);font-weight:800;">4</span> Fertigen Plan als PDF drucken oder speichern</div>
+        </div>
+      </div>
+
+      <!-- Slide 2b: Katalog (Volleyball / Tennis) -->
+      <div class="ob-slide" data-sport="volleyball tennis" style="padding:36px 28px 28px;box-sizing:border-box;text-align:center;">
+        <div style="font-size:48px;margin-bottom:14px;">📚</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:var(--text);margin-bottom:8px;">Übungskatalog</div>
+        <div style="font-size:13px;color:var(--text-2);line-height:1.7;text-align:left;">
+          <div style="display:flex;gap:10px;margin-bottom:8px;"><span style="color:var(--accent);font-weight:800;">1</span> Übungen werden bald speziell für deine Sportart ergänzt</div>
+          <div style="display:flex;gap:10px;margin-bottom:8px;"><span style="color:var(--accent);font-weight:800;">2</span> Mit <strong>+ Plan</strong> legst du Übungen direkt in den Trainingsplan</div>
+          <div style="display:flex;gap:10px;"><span style="color:var(--accent);font-weight:800;">3</span> Fertigen Plan als PDF drucken oder speichern</div>
         </div>
       </div>
 
@@ -1092,28 +1103,46 @@
 </style>
 <script>
 (function(){
-  let _obSlide=0;
-  const _obTotal=4;
-  function _updateUI(){
-    // Slides: nur aktive anzeigen
-    document.querySelectorAll('.ob-slide').forEach(function(s,i){
-      s.style.display = i===_obSlide ? 'block' : 'none';
+  var _obSlide=0;
+  var _obFiltered=[];
+
+  function _getFilteredSlides(){
+    var sport=(window.currentSport&&window.currentSport.id)||'fussball';
+    return Array.from(document.querySelectorAll('.ob-slide')).filter(function(s){
+      var ds=s.getAttribute('data-sport')||'all';
+      if(ds==='all') return true;
+      return ds.split(' ').indexOf(sport)!==-1;
     });
-    // Dots
-    document.querySelectorAll('.ob-dot').forEach(function(d,i){
-      d.classList.toggle('ob-dot-active', i===_obSlide);
-    });
-    var isLast = _obSlide===_obTotal-1;
-    var nextBtn = document.getElementById('obNextBtn');
-    if(nextBtn){
-      nextBtn.textContent = isLast ? 'Loslegen ✓' : 'Weiter →';
-      nextBtn.onclick = isLast ? function(){closeOnboarding();} : function(){obNext();};
-    }
-    var leftBtn = document.getElementById('obLeftBtn');
-    if(leftBtn) leftBtn.textContent = _obSlide===0 ? 'Überspringen' : '← Zurück';
-    var tourBtn = document.getElementById('obTourBtn');
-    if(tourBtn) tourBtn.style.display = isLast ? 'block' : 'none';
   }
+
+  function _updateUI(){
+    _obFiltered=_getFilteredSlides();
+    var total=_obFiltered.length;
+    // Hide all slides, show active
+    document.querySelectorAll('.ob-slide').forEach(function(s){ s.style.display='none'; });
+    if(_obFiltered[_obSlide]) _obFiltered[_obSlide].style.display='block';
+    // Rebuild dots dynamically
+    var dotsEl=document.getElementById('obDots');
+    if(dotsEl){
+      dotsEl.innerHTML='';
+      for(var i=0;i<total;i++){
+        var d=document.createElement('span');
+        d.className='ob-dot'+(i===_obSlide?' ob-dot-active':'');
+        dotsEl.appendChild(d);
+      }
+    }
+    var isLast=_obSlide===total-1;
+    var nextBtn=document.getElementById('obNextBtn');
+    if(nextBtn){
+      nextBtn.textContent=isLast?'Loslegen ✓':'Weiter →';
+      nextBtn.onclick=isLast?function(){closeOnboarding();}:function(){obNext();};
+    }
+    var leftBtn=document.getElementById('obLeftBtn');
+    if(leftBtn) leftBtn.textContent=_obSlide===0?'Überspringen':'← Zurück';
+    var tourBtn=document.getElementById('obTourBtn');
+    if(tourBtn) tourBtn.style.display=isLast?'block':'none';
+  }
+
   function showOnboarding(){
     _obSlide=0;
     var el=document.getElementById('onboardingOverlay');
@@ -1127,7 +1156,8 @@
     try{localStorage.setItem('ac_onboarded','1');}catch(e){}
   };
   window.obNext=function(){
-    _obSlide=Math.min(_obSlide+1,_obTotal-1);
+    _obFiltered=_getFilteredSlides();
+    _obSlide=Math.min(_obSlide+1,_obFiltered.length-1);
     _updateUI();
   };
   window.obLeft=function(){
