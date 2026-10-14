@@ -396,7 +396,7 @@
     <div class="submit-layout">
       <div>
         <div class="submit-form-wrap">
-          <div class="submit-form-title"><div class="stf-ico">⚽</div>Neue Übung erstellen</div>
+          <div class="submit-form-title"><div class="stf-ico" id="stfIco">⚽</div>Neue Übung erstellen</div>
           <div class="fsec">Grunddaten</div>
           <div class="fg"><label>Name der Übung *</label><input class="fc" id="sName" type="text" placeholder="Übungsname…" oninput="updateSubmitChecklist()"></div>
           <div class="fg"><label>Beschreibung (min. 20 Zeichen) *</label><textarea class="fc dta" id="sDesc" rows="4" placeholder="Wie funktioniert die Übung? Was ist das Ziel?" oninput="updateSubmitChecklist()" style="resize:vertical;"></textarea>
@@ -472,7 +472,7 @@
           <div class="fsec">Felddiagramm (Pflicht – mind. 1 Objekt) *</div>
           <div class="fg">
             <div id="submitCanvasWrap">
-              <button onclick="openFieldOverlay('submit')" style="width:100%;padding:13px 10px;background:#1a2b1c;color:#a5d6a7;border:1.5px dashed rgba(165,214,167,.35);border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.3px;">⚽ Felddiagramm zeichnen / bearbeiten</button>
+              <button id="submitFieldBtn" onclick="openFieldOverlay('submit')" style="width:100%;padding:13px 10px;background:#1a2b1c;color:#a5d6a7;border:1.5px dashed rgba(165,214,167,.35);border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.3px;">⚽ Felddiagramm zeichnen / bearbeiten</button>
               <div id="sPreviewWrap" style="display:none;margin-top:8px;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,.1);">
                 <img id="sPreviewImg" style="width:100%;display:block;" alt="Vorschau">
               </div>
@@ -1839,7 +1839,7 @@ function filterHelpCards(q){
           <!-- Image upload removed -->
         </div>
         <div id="imgPanelDraw" style="display:none;padding:8px 0;">
-          <button onclick="openFieldOverlay()" style="width:100%;padding:13px 10px;background:#1a2b1c;color:#a5d6a7;border:1.5px dashed rgba(165,214,167,.35);border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.3px;">⚽ Felddiagramm zeichnen / bearbeiten</button>
+          <button id="exFieldBtn" onclick="openFieldOverlay()" style="width:100%;padding:13px 10px;background:#1a2b1c;color:#a5d6a7;border:1.5px dashed rgba(165,214,167,.35);border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.3px;">⚽ Felddiagramm zeichnen / bearbeiten</button>
           <div id="cvPreview" style="display:none;margin-top:8px;border-radius:8px;overflow:hidden;"><img id="cvPreviewImg" style="width:100%;display:block;" alt="Vorschau"></div>
         </div>
       </div>

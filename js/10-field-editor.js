@@ -295,6 +295,18 @@ function _updateFieldTypeOptions(){
   const btnAway2=document.getElementById('formationBtnAway');
   if(btnHome){ btnHome.style.background=isVb?'#ffffff':'#1565c0'; btnHome.style.color=isVb?'#111':'#fff'; }
   if(btnAway2){ btnAway2.style.background=isVb?'#e53935':'#b71c1c'; }
+  // Update sport icons
+  const ballIcon=isVb?'🏐':'⚽';
+  const ballBtn=document.getElementById('tb_ball');
+  if(ballBtn) ballBtn.innerHTML=ballIcon;
+  const stfIco=document.getElementById('stfIco');
+  if(stfIco) stfIco.textContent=ballIcon;
+  const submitFieldBtn=document.getElementById('submitFieldBtn');
+  if(submitFieldBtn) submitFieldBtn.textContent=ballIcon+' Felddiagramm zeichnen / bearbeiten';
+  const exFieldBtn=document.getElementById('exFieldBtn');
+  if(exFieldBtn) exFieldBtn.textContent=ballIcon+' Felddiagramm zeichnen / bearbeiten';
+  const imgTabDraw=document.getElementById('imgTabDraw');
+  if(imgTabDraw) imgTabDraw.textContent=ballIcon+' Felddiagramm';
   // If current value is now hidden, switch to first valid option
   const cur=sel.options[sel.selectedIndex];
   if(cur&&cur.hidden){

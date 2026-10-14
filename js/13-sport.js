@@ -42,6 +42,8 @@ function renderHomeSportState() {
 
   if (!grid || !cards) return;
 
+  if(typeof _updateFieldTypeOptions==='function') _updateFieldTypeOptions();
+
   if (sport) {
     grid.style.display = 'none';
     cards.style.display = '';

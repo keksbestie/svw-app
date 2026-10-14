@@ -89,6 +89,7 @@ async function renderSubmitPage(){
     document.getElementById('adminPlanQueueWrap').style.display = IS_ADMIN ? 'block' : 'none';
     // Canvas wird per Button im fieldOverlay geöffnet
   }
+  if(typeof _updateFieldTypeOptions==='function') _updateFieldTypeOptions();
 }
 
 async function doLogin(){
