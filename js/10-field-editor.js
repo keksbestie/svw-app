@@ -727,7 +727,7 @@ function drawField(){
     bgGrad.addColorStop(0,'#c8a86a'); bgGrad.addColorStop(.5,'#d8b87a'); bgGrad.addColorStop(1,'#c8a86a');
     ctx.fillStyle=bgGrad; ctx.fillRect(0,0,W,H);
   } else if(ft==='vb-full'||ft==='vb-half'){
-    ctx.fillStyle='#1a2b3c'; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='#1e3f6e'; ctx.fillRect(0,0,W,H);
   } else {
   // Base grass gradient
   const grassGrad=ctx.createLinearGradient(0,0,0,H);
@@ -977,12 +977,12 @@ function drawVbFull(W,H,p){
   const s=Math.min((W-p*2)/18,(H-p*2)/9);
   const fw=18*s, fh=9*s;
   const ox=(W-fw)/2, oy=(H-fh)/2;
-  ctx.strokeStyle='rgba(255,255,255,.88)'; ctx.lineWidth=2; ctx.setLineDash([]);
+  ctx.strokeStyle='rgba(255,255,255,.95)'; ctx.lineWidth=3; ctx.setLineDash([]);
   // Border
   sr(ox,oy,fw,fh);
   // Attack lines (3m from center)
   const atk=3*s;
-  ctx.save(); ctx.strokeStyle='rgba(255,255,255,.7)'; ctx.lineWidth=1.5; ctx.setLineDash([5,4]);
+  ctx.save(); ctx.strokeStyle='rgba(255,255,255,.8)'; ctx.lineWidth=2; ctx.setLineDash([6,4]);
   sl(ox+fw/2-atk, oy, ox+fw/2-atk, oy+fh);
   sl(ox+fw/2+atk, oy, ox+fw/2+atk, oy+fh);
   ctx.restore();
@@ -1002,13 +1002,13 @@ function drawVbHalf(W,H,p){
   const s=Math.min((W-p*2)/9,(H-p*2)/9);
   const fw=9*s, fh=9*s;
   const ox=(W-fw)/2, oy=(H-fh)/2;
-  ctx.strokeStyle='rgba(255,255,255,.88)'; ctx.lineWidth=2; ctx.setLineDash([]);
+  ctx.strokeStyle='rgba(255,255,255,.95)'; ctx.lineWidth=3; ctx.setLineDash([]);
   sr(ox,oy,fw,fh);
   // Net on left edge
   _drawVbNetVertical(ox, oy, oy+fh);
   // Attack line 3m from net (left)
   const atk=3*s;
-  ctx.save(); ctx.strokeStyle='rgba(255,255,255,.7)'; ctx.lineWidth=1.5; ctx.setLineDash([5,4]);
+  ctx.save(); ctx.strokeStyle='rgba(255,255,255,.8)'; ctx.lineWidth=2; ctx.setLineDash([6,4]);
   sl(ox+atk, oy, ox+atk, oy+fh);
   ctx.restore();
   ctx.fillStyle='rgba(255,255,255,.4)'; ctx.font='bold 10px "Barlow Condensed",sans-serif';
@@ -1024,10 +1024,9 @@ function drawVbBeach(W,H,p){
   const s=Math.min((W-p*2)/16,(H-p*2)/8);
   const fw=16*s, fh=8*s;
   const ox=(W-fw)/2, oy=(H-fh)/2;
-  // Court border lines (rope = dashed)
-  ctx.strokeStyle='rgba(255,255,255,.88)'; ctx.lineWidth=2.5; ctx.setLineDash([8,5]);
+  // Court border lines (Seitenlinien rot, durchgezogen)
+  ctx.strokeStyle='#e53935'; ctx.lineWidth=3; ctx.setLineDash([]);
   sr(ox,oy,fw,fh);
-  ctx.setLineDash([]);
   // Net
   _drawVbNetVertical(ox+fw/2, oy, oy+fh);
   ctx.fillStyle='rgba(255,255,255,.5)'; ctx.font='bold 10px "Barlow Condensed",sans-serif';
@@ -1040,9 +1039,8 @@ function drawVbBeachHalf(W,H,p){
   const s=Math.min((W-p*2)/8,(H-p*2)/8);
   const fw=8*s, fh=8*s;
   const ox=(W-fw)/2, oy=(H-fh)/2;
-  ctx.strokeStyle='rgba(255,255,255,.88)'; ctx.lineWidth=2.5; ctx.setLineDash([8,5]);
+  ctx.strokeStyle='#e53935'; ctx.lineWidth=3; ctx.setLineDash([]);
   sr(ox,oy,fw,fh);
-  ctx.setLineDash([]);
   _drawVbNetVertical(ox, oy, oy+fh);
   ctx.fillStyle='rgba(255,255,255,.5)'; ctx.font='bold 10px "Barlow Condensed",sans-serif';
   ctx.textAlign='center'; ctx.textBaseline='bottom';
@@ -1871,6 +1869,13 @@ function toggleFormationPanel(e){
   document.getElementById('formationControls').style.display = supported ? 'flex' : 'none';
   const fmtRow = document.getElementById('formationFormatRow');
   if(fmtRow) fmtRow.style.display = (ft === 'small') ? 'flex' : 'none';
+
+  // Gast/Beide nur auf Vollfeldern sinnvoll
+  const isHalf = ft==='vb-half'||ft==='vb-beach-half'||ft==='half';
+  const btnAway = document.getElementById('formationBtnAway');
+  const btnBoth = document.getElementById('formationBtnBoth');
+  if(btnAway) btnAway.style.display = isHalf ? 'none' : '';
+  if(btnBoth) btnBoth.style.display = isHalf ? 'none' : '';
 
   if(supported) updateFormationSelect();
 
