@@ -944,12 +944,13 @@ function drawSprintLane(W,H,p){
 // ── VOLLEYBALL FIELDS ─────────────────────────────────
 
 // Net runs vertically on landscape canvas (across the 9m court width = canvas height)
-// centerLine=true: Bodenlinie unter Netz (nur Indoor — Beach hat keine)
-function _drawVbNetVertical(cx, top, bottom, centerLine=true){
+// centerLine: Bodenlinie unter Netz (nur Indoor). beach: weißes Netz statt dunklem.
+function _drawVbNetVertical(cx, top, bottom, centerLine=true, beach=false){
   ctx.save();
-  ctx.fillStyle='rgba(0,0,0,.18)';
+  ctx.fillStyle = beach ? 'rgba(255,255,255,.55)' : 'rgba(0,0,0,.18)';
   ctx.fillRect(cx-3, top, 6, bottom-top);
-  ctx.strokeStyle='rgba(255,255,255,.18)'; ctx.lineWidth=0.8; ctx.setLineDash([]);
+  ctx.strokeStyle = beach ? 'rgba(255,255,255,.35)' : 'rgba(255,255,255,.18)';
+  ctx.lineWidth=0.8; ctx.setLineDash([]);
   for(let y=top+10; y<bottom; y+=14) sl(cx-3,y,cx+3,y);
   ctx.fillStyle='rgba(255,255,255,.9)';
   ctx.fillRect(cx-3, top, 6, 5);
@@ -1016,7 +1017,7 @@ function drawVbBeach(W,H,p){
   const {ox,oy,fw,fh} = _vbFieldRect('vb-beach',W,H,p);
   ctx.strokeStyle='#e53935'; ctx.lineWidth=3; ctx.setLineDash([]);
   sr(ox,oy,fw,fh);
-  _drawVbNetVertical(ox+fw/2, oy, oy+fh, false);
+  _drawVbNetVertical(ox+fw/2, oy, oy+fh, false, true);
   ctx.fillStyle='rgba(255,255,255,.5)'; ctx.font='bold 10px "Barlow Condensed",sans-serif';
   ctx.textAlign='center'; ctx.textBaseline='bottom';
   ctx.fillText('BEACH  16m × 8m', W/2, oy-4);
@@ -1031,7 +1032,7 @@ function drawVbBeachHalf(W,H,p){
   ctx.lineTo(ox+fw, oy+fh);                     // rechts
   ctx.lineTo(ox, oy+fh);                        // unten
   ctx.stroke();
-  _drawVbNetVertical(ox, oy, oy+fh, false);
+  _drawVbNetVertical(ox, oy, oy+fh, false, true);
   ctx.fillStyle='rgba(255,255,255,.5)'; ctx.font='bold 10px "Barlow Condensed",sans-serif';
   ctx.textAlign='center'; ctx.textBaseline='bottom';
   ctx.fillText('HALBFELD BEACH  8m × 8m', W/2, oy-4);
