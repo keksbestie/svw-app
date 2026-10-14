@@ -13,7 +13,7 @@ let playerCounters={}, selectedObjIdx=null;
 let isDraggingObj=false, dragOffX=0, dragOffY=0;
 let isResizing=false, resizeObjIdx=null;
 let linePhase=0, lineStart=null;
-let dribblePoints=[], isDribbling=false;
+// dribblePoints / isDribbling entfernt (nie genutzt)
 let canvasEl=null, ctx=null, _cvInited=false;
 let _cvMode='edit'; // 'edit' | 'submit' | 'catalog-edit'
 // Multi-select & lasso
@@ -186,26 +186,11 @@ function _getFieldGrid(){
     return meterGrid(p, p, W-p*2, H-p*2, 30, 20, 2);
   } else if(ft==='neutral'){
     return meterGrid(p, p, W-p*2, H-p*2, 40, 25, 5);
-  } else if(ft==='vb-full'){
-    const s=Math.min((W-p*2)/18,(H-p*2)/9);
-    const fw=18*s, fh=9*s;
-    const ox=(W-fw)/2, oy=(H-fh)/2;
-    return meterGrid(ox, oy, fw, fh, 18, 9, 1);
-  } else if(ft==='vb-half'){
-    const s=Math.min((W-p*2)/9,(H-p*2)/9);
-    const fw=9*s, fh=9*s;
-    const ox=(W-fw)/2, oy=(H-fh)/2;
-    return meterGrid(ox, oy, fw, fh, 9, 9, 1);
-  } else if(ft==='vb-beach'){
-    const s=Math.min((W-p*2)/16,(H-p*2)/8);
-    const fw=16*s, fh=8*s;
-    const ox=(W-fw)/2, oy=(H-fh)/2;
-    return meterGrid(ox, oy, fw, fh, 16, 8, 1);
-  } else if(ft==='vb-beach-half'){
-    const s=Math.min((W-p*2)/8,(H-p*2)/8);
-    const fw=8*s, fh=8*s;
-    const ox=(W-fw)/2, oy=(H-fh)/2;
-    return meterGrid(ox, oy, fw, fh, 8, 8, 1);
+  } else if(ft==='vb-full'||ft==='vb-half'||ft==='vb-beach'||ft==='vb-beach-half'){
+    const dims = {'vb-full':[18,9],'vb-half':[9,9],'vb-beach':[16,8],'vb-beach-half':[8,8]};
+    const [wm,hm] = dims[ft];
+    const {ox,oy,fw,fh} = _vbFieldRect(ft, W, H, p);
+    return meterGrid(ox, oy, fw, fh, wm, hm, 1);
   } else {
     return meterGrid(p, p, W-p*2, H-p*2, 40, 25, 5);
   }
@@ -980,23 +965,30 @@ function _drawVbNetVertical(cx, top, bottom){
   ctx.restore();
 }
 
-// Volleyball Vollfeld — 18m × 9m, Netz bei 9m, Angriffslinien 3m beiderseits
+// Gibt {ox,oy,fw,fh,s} für jeden VB-Feldtyp zurück — Single Source of Truth für alle Draw- und Formation-Funktionen
+function _vbFieldRect(ft, W, H, p){
+  const dims = {
+    'vb-full':       [18, 9],
+    'vb-half':       [9,  9],
+    'vb-beach':      [16, 8],
+    'vb-beach-half': [8,  8],
+  };
+  const [wm, hm] = dims[ft] || [18, 9];
+  const s = Math.min((W - p*2) / wm, (H - p*2) / hm);
+  const fw = wm*s, fh = hm*s;
+  return { ox:(W-fw)/2, oy:(H-fh)/2, fw, fh, s };
+}
+
 function drawVbFull(W,H,p){
-  const s=Math.min((W-p*2)/18,(H-p*2)/9);
-  const fw=18*s, fh=9*s;
-  const ox=(W-fw)/2, oy=(H-fh)/2;
+  const {ox,oy,fw,fh,s} = _vbFieldRect('vb-full',W,H,p);
   ctx.strokeStyle='rgba(255,255,255,.95)'; ctx.lineWidth=3; ctx.setLineDash([]);
-  // Border
   sr(ox,oy,fw,fh);
-  // Attack lines (3m from center)
   const atk=3*s;
   ctx.save(); ctx.strokeStyle='rgba(255,255,255,.8)'; ctx.lineWidth=2; ctx.setLineDash([6,4]);
   sl(ox+fw/2-atk, oy, ox+fw/2-atk, oy+fh);
   sl(ox+fw/2+atk, oy, ox+fw/2+atk, oy+fh);
   ctx.restore();
-  // Net
   _drawVbNetVertical(ox+fw/2, oy, oy+fh);
-  // Labels
   ctx.fillStyle='rgba(255,255,255,.4)'; ctx.font='bold 10px "Barlow Condensed",sans-serif';
   ctx.textAlign='center'; ctx.textBaseline='bottom';
   ctx.fillText('VOLLEYBALL  18m × 9m', W/2, oy-4);
@@ -1005,16 +997,11 @@ function drawVbFull(W,H,p){
   ctx.fillText('3m', ox+fw/2+atk/2, oy+4);
 }
 
-// Volleyball Halbfeld — 9m × 9m, Netz links, Angriffslinie 3m davon
 function drawVbHalf(W,H,p){
-  const s=Math.min((W-p*2)/9,(H-p*2)/9);
-  const fw=9*s, fh=9*s;
-  const ox=(W-fw)/2, oy=(H-fh)/2;
+  const {ox,oy,fw,fh,s} = _vbFieldRect('vb-half',W,H,p);
   ctx.strokeStyle='rgba(255,255,255,.95)'; ctx.lineWidth=3; ctx.setLineDash([]);
   sr(ox,oy,fw,fh);
-  // Net on left edge
   _drawVbNetVertical(ox, oy, oy+fh);
-  // Attack line 3m from net (left)
   const atk=3*s;
   ctx.save(); ctx.strokeStyle='rgba(255,255,255,.8)'; ctx.lineWidth=2; ctx.setLineDash([6,4]);
   sl(ox+atk, oy, ox+atk, oy+fh);
@@ -1027,26 +1014,18 @@ function drawVbHalf(W,H,p){
   ctx.fillText('HALBFELD  9m × 9m', W/2, oy-4);
 }
 
-// Beach-Volleyball — 16m × 8m, keine Angriffslinie, Sand-Optik
 function drawVbBeach(W,H,p){
-  const s=Math.min((W-p*2)/16,(H-p*2)/8);
-  const fw=16*s, fh=8*s;
-  const ox=(W-fw)/2, oy=(H-fh)/2;
-  // Court border lines (Seitenlinien rot, durchgezogen)
+  const {ox,oy,fw,fh} = _vbFieldRect('vb-beach',W,H,p);
   ctx.strokeStyle='#e53935'; ctx.lineWidth=3; ctx.setLineDash([]);
   sr(ox,oy,fw,fh);
-  // Net
   _drawVbNetVertical(ox+fw/2, oy, oy+fh);
   ctx.fillStyle='rgba(255,255,255,.5)'; ctx.font='bold 10px "Barlow Condensed",sans-serif';
   ctx.textAlign='center'; ctx.textBaseline='bottom';
   ctx.fillText('BEACH  16m × 8m', W/2, oy-4);
 }
 
-// Beach-Volleyball Halbfeld — 8m × 8m, Netz links
 function drawVbBeachHalf(W,H,p){
-  const s=Math.min((W-p*2)/8,(H-p*2)/8);
-  const fw=8*s, fh=8*s;
-  const ox=(W-fw)/2, oy=(H-fh)/2;
+  const {ox,oy,fw,fh} = _vbFieldRect('vb-beach-half',W,H,p);
   ctx.strokeStyle='#e53935'; ctx.lineWidth=3; ctx.setLineDash([]);
   sr(ox,oy,fw,fh);
   _drawVbNetVertical(ox, oy, oy+fh);
@@ -1362,7 +1341,6 @@ function drawEquip(x,y,sub,sel,ang,sc){
     ctx.beginPath(); ctx.ellipse(0,20,5,2,0,0,Math.PI*2); ctx.fill();
 
   } else if(sub==='hurdle'){
-    ctx.shadowBlur=0;
     ctx.shadowBlur=0;
     ctx.fillStyle='#111';
     ctx.fillRect(-12,-3,2.5,11); ctx.fillRect(9.5,-3,2.5,11);
@@ -1918,20 +1896,7 @@ function applyFormation(side){
   // ── Volleyball formations ──────────────────────────
   const isVb = ft==='vb-full'||ft==='vb-half'||ft==='vb-beach'||ft==='vb-beach-half';
   if(isVb){
-    let ox, oy, fw, fh;
-    if(ft==='vb-full'){
-      const s=Math.min((W-p*2)/18,(H-p*2)/9);
-      fw=18*s; fh=9*s; ox=(W-fw)/2; oy=(H-fh)/2;
-    } else if(ft==='vb-half'){
-      const s=Math.min((W-p*2)/9,(H-p*2)/9);
-      fw=9*s; fh=9*s; ox=(W-fw)/2; oy=(H-fh)/2;
-    } else if(ft==='vb-beach'){
-      const s=Math.min((W-p*2)/16,(H-p*2)/8);
-      fw=16*s; fh=8*s; ox=(W-fw)/2; oy=(H-fh)/2;
-    } else { // vb-beach-half
-      const s=Math.min((W-p*2)/8,(H-p*2)/8);
-      fw=8*s; fh=8*s; ox=(W-fw)/2; oy=(H-fh)/2;
-    }
+    const {ox, oy, fw, fh} = _vbFieldRect(ft, W, H, p);
 
     const sides = side==='both' ? ['home','away'] : [side];
     const colorMap = { home:'#ffffff', away:'#e53935' };
