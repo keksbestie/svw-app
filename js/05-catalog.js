@@ -515,7 +515,7 @@ function loadMatIntoBuilder(matStr){
   // reset all selects
   document.querySelectorAll('.mat-sel').forEach(s=>{s.value='0';});
   if(!matStr){if(document.getElementById('mMatFree'))document.getElementById('mMatFree').value='';return;}
-  const COUNTED_MATS=['Minitore','Stangen','Jugendtore','Rebounder','Hürden','Ringe','Koordinationsleiter'];
+  const COUNTED_MATS=['Stangen','Rebounder','Hürden','Ringe','Koordinationsleiter','Ballkorb','Zuspielring'];
   const parts=matStr.split(',').map(x=>x.trim()).filter(Boolean);
   const freeItems=[];
   parts.forEach(p=>{
