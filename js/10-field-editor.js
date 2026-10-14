@@ -1764,65 +1764,70 @@ const FORMATIONS_7 = {
 // Index 0 = Libero (#f9a825, Label 'L')
 // Rotation: Pos 1=rechts hinten, 2=rechts vorne, 3=Mitte vorne, 4=links vorne, 5=links hinten, 6=Mitte hinten
 // Koordinaten [xFrac, yFrac]:
-//   vb-full/home: xFrac=0=eigene Grundlinie, xFrac=1=Netz; yFrac=0=oben, yFrac=1=unten
-//   vb-half: xFrac=0=Grundlinie(rechts), xFrac=1=Netz(links); yFrac=0=oben, yFrac=1=unten
+//   xFrac: 0 = eigene Grundlinie (weit vom Netz), 1 = Netz (nah am Netz)
+//   yFrac: 0 = linke Seitenlinie, 1 = rechte Seitenlinie
+// Gilt für alle VB-Feldtypen — applyFormation übersetzt in Canvas-px.
 // Index 0 = Libero (gelb, Label L)
 
 const FORMATIONS_VB6 = {
   // ── Grundaufstellungen ──────────────────────────────
+  // Standard-Rotation: Pos 4 links, Pos 3 Mitte, Pos 2 rechts (vorne)
+  //                    Pos 5 links, Pos 6 Mitte, Pos 1 rechts (hinten)
   'vb-51': { name:'5-1', positions:[
-    [0.82,0.50], // L Libero – Pos 6 Mitte hinten
-    [0.82,0.18], // OH – Pos 5 links hinten
-    [0.82,0.82], // OH – Pos 1 rechts hinten
-    [0.18,0.50], // MB – Pos 3 Mitte vorne
-    [0.18,0.18], // OH – Pos 4 links vorne
-    [0.18,0.82], // S  – Pos 2 rechts vorne
+    [0.20,0.50], // L  Libero – Pos 6 Mitte hinten
+    [0.20,0.18], // OH – Pos 5 links hinten
+    [0.20,0.82], // OH – Pos 1 rechts hinten
+    [0.85,0.50], // MB – Pos 3 Mitte vorne
+    [0.85,0.18], // OH – Pos 4 links vorne
+    [0.85,0.82], // S  – Pos 2 rechts vorne (Zuspieler)
   ]},
   'vb-62': { name:'6-2', positions:[
-    [0.82,0.50], // L Libero – Pos 6 Mitte hinten
-    [0.82,0.18], // OH – Pos 5 links hinten
-    [0.82,0.82], // OH – Pos 1 rechts hinten
-    [0.18,0.18], // OH – Pos 4 links vorne
-    [0.18,0.50], // MB – Pos 3 Mitte vorne
-    [0.18,0.82], // S  – Pos 2 vorne rechts (Zuspieler von hinten)
+    [0.20,0.50], // L  Libero – Pos 6 Mitte hinten
+    [0.20,0.18], // OH – Pos 5 links hinten
+    [0.20,0.82], // S  – Pos 1 rechts hinten (läuft ans Netz)
+    [0.85,0.18], // OH – Pos 4 links vorne
+    [0.85,0.50], // MB – Pos 3 Mitte vorne
+    [0.85,0.82], // OPP – Pos 2 rechts vorne
   ]},
   'vb-42': { name:'4-2', positions:[
-    [0.82,0.50], // L Libero – Pos 6 Mitte hinten
-    [0.82,0.18], // OH – Pos 5 links hinten
-    [0.82,0.82], // OH – Pos 1 rechts hinten
-    [0.18,0.18], // OH – Pos 4 links vorne
-    [0.18,0.50], // S  – Pos 3 Mitte vorne
-    [0.18,0.82], // S  – Pos 2 rechts vorne
+    [0.20,0.50], // L  Libero – Pos 6 Mitte hinten
+    [0.20,0.18], // OH – Pos 5 links hinten
+    [0.20,0.82], // OH – Pos 1 rechts hinten
+    [0.85,0.18], // S  – Pos 4 links vorne (Zuspieler)
+    [0.85,0.50], // OH – Pos 3 Mitte vorne
+    [0.85,0.82], // S  – Pos 2 rechts vorne (Zuspieler)
   ]},
   // ── Annahmeriegel ───────────────────────────────────
-  // 4er W-Annahme: 4 Empfänger in W-Form, Setter + MB frei am Netz
+  // 4er W-Annahme: W-Form aus 4 Empfängern + Libero, Setter frei am Netz
+  // W von unten: R5(hinten-links)–L(Mitte)–R1(hinten-rechts)
+  //              R4(Mitte-links)–·–R2(Mitte-rechts)
   'vb-recv-4w': { name:'4er W-Annahme', positions:[
-    [0.58,0.50], // L Libero – Mitte (Spitze des W)
-    [0.75,0.15], // OH links hinten (linke Basis des W)
-    [0.75,0.85], // OH rechts hinten (rechte Basis des W)
-    [0.45,0.22], // OH links vorne (linker Schenkel des W)
-    [0.45,0.78], // OH rechts vorne (rechter Schenkel des W)
-    [0.10,0.75], // S – Setter am Netz rechts (nicht in Annahme)
+    [0.33,0.50], // L  Libero – W-Mitte (~3m von Grundlinie)
+    [0.17,0.15], // OH – Pos 5, W-Basis links tief (~1.5m von Grundlinie)
+    [0.17,0.85], // OH – Pos 1, W-Basis rechts tief
+    [0.52,0.20], // OH – Pos 4 gezogen, W-Schulter links (~4.7m von Grundlinie)
+    [0.52,0.80], // OH – Pos 2 gezogen, W-Schulter rechts
+    [0.93,0.82], // S  – Setter am Netz rechts (nicht in Annahme)
   ]},
-  // 3er U-Annahme: Libero + 2 Außen nehmen an, 3 Spieler frei am Netz
+  // 3er U-Annahme: Libero + 2 Außen in Halbkreis, 3 Spieler frei am Netz
   'vb-recv-3u': { name:'3er U-Annahme', positions:[
-    [0.60,0.50], // L Libero – Mitte hinten
-    [0.65,0.16], // OH – links hinten
-    [0.65,0.84], // OH – rechts hinten
-    [0.12,0.16], // OH – links vorne (frei am Netz)
-    [0.12,0.50], // MB – Mitte vorne (frei am Netz)
-    [0.12,0.84], // S  – rechts vorne (frei am Netz)
+    [0.35,0.50], // L  Libero – Mitte hinten (~3m von Grundlinie)
+    [0.25,0.18], // OH – links hinten (~2m von Grundlinie)
+    [0.25,0.82], // OH – rechts hinten
+    [0.92,0.18], // MB – Mitte-links vorne (frei am Netz)
+    [0.92,0.50], // OPP – Mitte vorne (frei am Netz)
+    [0.92,0.82], // S  – rechts vorne (frei am Netz)
   ]},
 };
 
 const FORMATIONS_VB2 = {
   'vb-block-def': { name:'Block/Defense', positions:[
-    [0.12,0.50], // Blocker am Netz
-    [0.72,0.50], // Defender hinten Mitte
+    [0.90,0.50], // Blocker – direkt am Netz
+    [0.25,0.50], // Defender – hinten Mitte
   ]},
   'vb-recv-2': { name:'2er Annahme', positions:[
-    [0.55,0.28], // Spieler 1 – hinten links
-    [0.55,0.72], // Spieler 2 – hinten rechts
+    [0.28,0.28], // Spieler 1 – hinten links
+    [0.28,0.72], // Spieler 2 – hinten rechts
   ]},
 };
 
@@ -1924,27 +1929,21 @@ function applyFormation(side){
         let yFrac = pos[1];
         // For vb-half: own half only, xFrac maps 0→bottom(own line), 1→top(net)
         let cx, cy;
-        if(ft==='vb-half'){
-          cx = ox + yFrac * fw;
-          cy = oy + (1 - xFrac) * fh;
-        } else if(ft==='vb-full'){
-          // home plays left half (ox → ox+fw/2), away plays right half
+        // xFrac: 0=Grundlinie(weit vom Netz), 1=Netz
+        // yFrac: 0=links, 1=rechts
+        if(ft==='vb-full'||ft==='vb-beach'){
+          // Vollfeld: Heimteam links (ox→ox+fw/2), Gast gespiegelt
           if(awayMirror){
-            cx = ox + fw/2 + (1-pos[0]) * fw/2;
+            cx = ox + fw/2 + (1-xFrac) * fw/2;
           } else {
-            cx = ox + pos[0] * fw/2;
+            cx = ox + xFrac * fw/2;
           }
           cy = oy + yFrac * fh;
-        } else if(ft==='vb-beach'){
-          if(awayMirror){
-            cx = ox + fw/2 + (1-pos[0]) * fw/2;
-          } else {
-            cx = ox + pos[0] * fw/2;
-          }
+        } else {
+          // Halbfeld (vb-half / vb-beach-half): Netz links (ox), Grundlinie rechts
+          // xFrac=1 (nah am Netz) → cx nahe ox; xFrac=0 (Grundlinie) → cx nahe ox+fw
+          cx = ox + (1 - xFrac) * fw;
           cy = oy + yFrac * fh;
-        } else { // vb-beach-half: net on left like vb-half
-          cx = ox + yFrac * fw;
-          cy = oy + (1 - xFrac) * fh;
         }
         const lbl = isLibero ? 'L' : String(idx);
         canvasObjects.push({type:'player', x:cx, y:cy, color:col, label:lbl, name:'', angle:0});
