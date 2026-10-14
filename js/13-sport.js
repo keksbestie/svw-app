@@ -2,9 +2,9 @@
 // MODUL: SPORT-AUSWAHL
 // ══════════════════════════════════════════════════════════════════
 const SPORTS = [
-  { id: 'fussball',  emoji: '⚽', label: 'Fußball' },
-  { id: 'volleyball', emoji: '🏐', label: 'Volleyball' },
-  { id: 'tennis',    emoji: '🎾', label: 'Tennis' },
+  { id: 'fussball',   icon: 'icons/sport-fussball.png',   label: 'Fußball' },
+  { id: 'volleyball', icon: 'icons/sport-volleyball.png', label: 'Volleyball' },
+  { id: 'tennis',     icon: 'icons/sport-tennis.png',     label: 'Tennis' },
 ];
 
 const SPORT_KEY = 'assistcoach_sport';
@@ -46,7 +46,7 @@ function renderHomeSportState() {
     cards.style.display = '';
     if (badge) {
       badge.style.display = 'flex';
-      badge.innerHTML = `<span style="font-size:18px;">${sport.emoji}</span><span>${sport.label}</span><button onclick="changeSport()" style="background:none;border:none;color:rgba(255,255,255,.5);font-size:11px;cursor:pointer;padding:0;margin-left:4px;">ändern</button>`;
+      badge.innerHTML = `<img src="${sport.icon}" style="width:20px;height:20px;object-fit:contain;filter:invert(1);opacity:.8;"><span>${sport.label}</span><button onclick="changeSport()" style="background:none;border:none;color:rgba(255,255,255,.5);font-size:11px;cursor:pointer;padding:0;margin-left:4px;">ändern</button>`;
     }
     if (sub) sub.textContent = 'Was möchtest du tun?';
     window.currentSport = sport;

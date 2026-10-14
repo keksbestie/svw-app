@@ -1,4 +1,4 @@
-const CACHE = 'assistcoach-v38';
+const CACHE = 'assistcoach-v39';
 const ASSETS = [
   '/',
   '/index.html',
@@ -18,6 +18,9 @@ const ASSETS = [
   '/js/11-app-start.js',
   '/js/12-kader.js',
   '/js/13-sport.js',
+  '/icons/sport-fussball.png',
+  '/icons/sport-volleyball.png',
+  '/icons/sport-tennis.png',
   '/data/exercises.default.js',
   '/icons/icon-192.png',
   '/icons/icon-512.png'
