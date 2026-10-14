@@ -302,6 +302,9 @@ function _updateFieldTypeOptions(){
   // Update Gelb/TW → Gelb/Libero label
   const gelbOpt=document.getElementById('playerColorGelb');
   if(gelbOpt) gelbOpt.textContent=isVb?'● Gelb / Libero':'● Gelb / TW';
+  // Update Dribbelweg → Angriff for volleyball
+  const dribbleBtn=document.getElementById('tb_dribble');
+  if(dribbleBtn) dribbleBtn.title=isVb?'Angriff (2× klicken)':'Dribbelweg (2× klicken)';
   // If current value is now hidden, switch to first valid option
   const cur=sel.options[sel.selectedIndex];
   if(cur&&cur.hidden){
