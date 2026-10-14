@@ -464,12 +464,12 @@ function cvDown({x,y}){
   if(t==='erase'){pushUndo();const i=hitAt(x,y);if(i>=0){canvasObjects.splice(i,1);renumberPlayers();redraw();} return;}
   if(t==='dribble'){
     if(!linePhase){pushUndo();linePhase=1;lineStart={x,y};}
-    else{lineCounter++;canvasObjects.push({type:'dribble',x1:lineStart.x,y1:lineStart.y,x2:x,y2:y,label:String(lineCounter)});linePhase=0;lineStart=null;redraw();}
+    else{canvasObjects.push({type:'dribble',x1:lineStart.x,y1:lineStart.y,x2:x,y2:y,label:''});linePhase=0;lineStart=null;redraw();}
     return;
   }
   if(t==='pass'||t==='run'){
     if(!linePhase){pushUndo();linePhase=1;lineStart={x,y};}
-    else{lineCounter++;canvasObjects.push({type:t,x1:lineStart.x,y1:lineStart.y,x2:x,y2:y,label:String(lineCounter)});linePhase=0;lineStart=null;redraw();}
+    else{canvasObjects.push({type:t,x1:lineStart.x,y1:lineStart.y,x2:x,y2:y,label:''});linePhase=0;lineStart=null;redraw();}
     return;
   }
   const sp=_snapPoint(x,y,[]);
@@ -1076,18 +1076,18 @@ function drawVbBeachHalf(W,H,p){
 // ── DRAW OBJECTS ──
 function _drawLineLabel(x1,y1,x2,y2,label){
   if(!label) return;
-  const mx=(x1+x2)/2, my=(y1+y2)/2;
+  // Place label near the arrow end, slightly offset perpendicular
+  const a=Math.atan2(y2-y1,x2-x1);
+  const d=18; // distance back from tip
+  const lx=x2-Math.cos(a)*d - Math.sin(a)*8;
+  const ly=y2-Math.sin(a)*d + Math.cos(a)*8;
   ctx.save();
-  ctx.shadowColor='rgba(0,0,0,.4)'; ctx.shadowBlur=4;
-  ctx.fillStyle='#fff';
-  ctx.beginPath(); ctx.arc(mx,my,9,0,Math.PI*2); ctx.fill();
-  ctx.shadowBlur=0;
-  ctx.strokeStyle='rgba(0,0,0,.15)'; ctx.lineWidth=1;
-  ctx.beginPath(); ctx.arc(mx,my,9,0,Math.PI*2); ctx.stroke();
-  ctx.fillStyle='#111';
-  ctx.font='bold 10px Barlow Condensed, sans-serif';
+  ctx.font='bold 11px Barlow Condensed, sans-serif';
   ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText(label,mx,my+0.5);
+  ctx.fillStyle='rgba(255,255,255,.7)';
+  ctx.fillText(label,lx+0.5,ly+0.5);
+  ctx.fillStyle='#111';
+  ctx.fillText(label,lx,ly);
   ctx.restore();
 }
 function drawObj(o,sel){
