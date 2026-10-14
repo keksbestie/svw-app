@@ -845,6 +845,9 @@ body.admin .hero-edit-btn { display: flex; }
 body.on-home > header,
 body.on-home > .mnav { visibility: hidden; }
 body.on-home #homeLegal { display: block !important; }
+@media (max-width: 767px) {
+  body.on-home #pwaInstallSection { display: block !important; }
+}
 
 /* Minimal home top bar: only lang + darkmode — inside overlay */
 .home-topbar {

@@ -17,11 +17,8 @@ const _isMobile = /iphone|ipad|ipod|android/i.test(navigator.userAgent);
   const section = document.getElementById('pwaInstallSection');
   if (!section) return;
 
-  // Bereits als App installiert → Abschnitt ausblenden
-  if (_isStandalone) { section.style.display = 'none'; return; }
-
-  // Nur auf Mobilgeräten anzeigen
-  if (!_isMobile) { section.style.display = 'none'; return; }
+  // Bereits als App installiert → Abschnitt dauerhaft ausblenden
+  if (_isStandalone) { section.style.setProperty('display','none','important'); return; }
 
   // Plattform-spezifische Hinweise
   if (_isIOS) {

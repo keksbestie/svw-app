@@ -235,17 +235,6 @@
       <button onclick="goPage('about')" style="background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);color:#fff;padding:8px 20px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">Vision &amp; Ziele ↗</button>
       <button onclick="window._showOnboarding()" style="background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);color:#fff;padding:8px 16px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">&#127973; Einführung</button>
     </div>
-    <!-- PWA Install: standardmäßig sichtbar auf mobil, JS blendet bei Bedarf aus -->
-    <div id="pwaInstallSection" style="margin-top:16px;">
-      <!-- Android: button erscheint wenn beforeinstallprompt feuert -->
-      <button id="pwaInstallBtn" onclick="triggerPWAInstall()" style="display:none;background:#22a05f;border:none;color:#fff;padding:13px 28px;border-radius:28px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;letter-spacing:.5px;cursor:pointer;box-shadow:0 4px 18px rgba(34,160,95,.45);">App installieren</button>
-      <!-- Fallback-Hinweis (iOS + Android ohne Prompt) -->
-      <div id="pwaFallback" style="background:rgba(255,255,255,.13);border:1.5px solid rgba(255,255,255,.28);border-radius:16px;padding:13px 18px;max-width:300px;text-align:left;">
-        <div style="font-size:14px;font-weight:800;color:#fff;margin-bottom:5px;">&#128247; Als App speichern</div>
-        <div id="pwaHintIOS" style="font-size:12px;color:rgba(255,255,255,.85);line-height:1.6;">iPhone/iPad: Tippe auf <strong style="color:#fff;">Teilen &#x2197;</strong> &rarr; <strong style="color:#fff;">Zum Home-Bildschirm</strong></div>
-        <div id="pwaHintAndroid" style="font-size:12px;color:rgba(255,255,255,.85);line-height:1.6;margin-top:4px;">Android: Men&uuml; &#8942; &rarr; <strong style="color:#fff;">App installieren</strong></div>
-      </div>
-    </div>
   </div>
 
   <!-- Feature Cards -->
@@ -737,6 +726,18 @@
         <div style="text-align:center;color:var(--gd2);font-size:14px;padding:40px 0;">Keine Pläne vorhanden.</div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- PWA install banner (mobile only, home page only) -->
+<div id="pwaInstallSection" style="display:none;position:fixed;bottom:34px;left:50%;transform:translateX(-50%);z-index:1002;text-align:center;pointer-events:auto;">
+  <!-- Android: erscheint wenn beforeinstallprompt feuert -->
+  <button id="pwaInstallBtn" onclick="triggerPWAInstall()" style="display:none;background:#22a05f;border:none;color:#fff;padding:12px 28px;border-radius:28px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:.5px;cursor:pointer;box-shadow:0 4px 20px rgba(34,160,95,.55);">⬇ App installieren</button>
+  <!-- Fallback: iOS + Android ohne Prompt -->
+  <div id="pwaFallback" style="background:rgba(20,40,22,.88);border:1.5px solid rgba(255,255,255,.22);border-radius:14px;padding:10px 16px;white-space:nowrap;backdrop-filter:blur(8px);">
+    <div style="font-size:13px;font-weight:800;color:#fff;margin-bottom:3px;">📲 Als App speichern</div>
+    <div id="pwaHintIOS" style="font-size:11px;color:rgba(255,255,255,.8);line-height:1.5;">Tippe auf <strong style="color:#fff;">Teilen ↗</strong> → <strong style="color:#fff;">Zum Home-Bildschirm</strong></div>
+    <div id="pwaHintAndroid" style="font-size:11px;color:rgba(255,255,255,.8);line-height:1.5;">Menü ⋮ → <strong style="color:#fff;">App installieren</strong></div>
   </div>
 </div>
 
