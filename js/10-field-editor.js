@@ -1726,38 +1726,67 @@ const FORMATIONS_7 = {
 // Positionen [xFrac, yFrac]: x=0 eigene Grundlinie, x=1 Netz; y=0 links, y=1 rechts
 // Index 0 = Libero (#f9a825, Label 'L')
 // Rotation: Pos 1=rechts hinten, 2=rechts vorne, 3=Mitte vorne, 4=links vorne, 5=links hinten, 6=Mitte hinten
+// Koordinaten [xFrac, yFrac]:
+//   vb-full/home: xFrac=0=eigene Grundlinie, xFrac=1=Netz; yFrac=0=oben, yFrac=1=unten
+//   vb-half: xFrac=0=Grundlinie(rechts), xFrac=1=Netz(links); yFrac=0=oben, yFrac=1=unten
+// Index 0 = Libero (gelb, Label L)
+
 const FORMATIONS_VB6 = {
-  'vb-51': { name:'5-1 (Rotation I)', positions:[
-    [0.85,0.50], // L (Libero, Pos 6 Mitte hinten)
-    [0.85,0.18], // Pos 5 links hinten
-    [0.85,0.82], // Pos 1 rechts hinten
-    [0.15,0.50], // Pos 3 Mitte vorne (Zuspieler)
-    [0.15,0.18], // Pos 4 links vorne
-    [0.15,0.82], // Pos 2 rechts vorne
+  // ── Grundaufstellungen ──────────────────────────────
+  'vb-51': { name:'5-1', positions:[
+    [0.82,0.50], // L Libero – Pos 6 Mitte hinten
+    [0.82,0.18], // OH – Pos 5 links hinten
+    [0.82,0.82], // OH – Pos 1 rechts hinten
+    [0.18,0.50], // MB – Pos 3 Mitte vorne
+    [0.18,0.18], // OH – Pos 4 links vorne
+    [0.18,0.82], // S  – Pos 2 rechts vorne
   ]},
-  'vb-62': { name:'6-2 (Rotation I)', positions:[
-    [0.85,0.50], // L (Libero, Pos 6)
-    [0.85,0.18], // Pos 5
-    [0.85,0.82], // Pos 1
-    [0.15,0.18], // Pos 4
-    [0.15,0.50], // Pos 3
-    [0.15,0.82], // Pos 2 (Zuspieler von hinten)
+  'vb-62': { name:'6-2', positions:[
+    [0.82,0.50], // L Libero – Pos 6 Mitte hinten
+    [0.82,0.18], // OH – Pos 5 links hinten
+    [0.82,0.82], // OH – Pos 1 rechts hinten
+    [0.18,0.18], // OH – Pos 4 links vorne
+    [0.18,0.50], // MB – Pos 3 Mitte vorne
+    [0.18,0.82], // S  – Pos 2 vorne rechts (Zuspieler von hinten)
   ]},
   'vb-42': { name:'4-2', positions:[
-    [0.85,0.50], // L (Libero, Pos 6)
-    [0.85,0.18], // Pos 5
-    [0.85,0.82], // Pos 1
-    [0.15,0.18], // Pos 4
-    [0.15,0.50], // Pos 3 (Zuspieler)
-    [0.15,0.82], // Pos 2 (Zuspieler)
-  ]}
+    [0.82,0.50], // L Libero – Pos 6 Mitte hinten
+    [0.82,0.18], // OH – Pos 5 links hinten
+    [0.82,0.82], // OH – Pos 1 rechts hinten
+    [0.18,0.18], // OH – Pos 4 links vorne
+    [0.18,0.50], // S  – Pos 3 Mitte vorne
+    [0.18,0.82], // S  – Pos 2 rechts vorne
+  ]},
+  // ── Annahmeriegel ───────────────────────────────────
+  // 4er W-Annahme: 4 Empfänger in W-Form, Setter + MB frei am Netz
+  'vb-recv-4w': { name:'4er W-Annahme', positions:[
+    [0.58,0.50], // L Libero – Mitte (Spitze des W)
+    [0.75,0.15], // OH links hinten (linke Basis des W)
+    [0.75,0.85], // OH rechts hinten (rechte Basis des W)
+    [0.45,0.22], // OH links vorne (linker Schenkel des W)
+    [0.45,0.78], // OH rechts vorne (rechter Schenkel des W)
+    [0.10,0.75], // S – Setter am Netz rechts (nicht in Annahme)
+  ]},
+  // 3er U-Annahme: Libero + 2 Außen nehmen an, 3 Spieler frei am Netz
+  'vb-recv-3u': { name:'3er U-Annahme', positions:[
+    [0.60,0.50], // L Libero – Mitte hinten
+    [0.65,0.16], // OH – links hinten
+    [0.65,0.84], // OH – rechts hinten
+    [0.12,0.16], // OH – links vorne (frei am Netz)
+    [0.12,0.50], // MB – Mitte vorne (frei am Netz)
+    [0.12,0.84], // S  – rechts vorne (frei am Netz)
+  ]},
 };
 
 const FORMATIONS_VB2 = {
-  'vb-beach': { name:'Block/Defense', positions:[
-    [0.12,0.50], // L (Blocker am Netz, andere Farbe)
-    [0.75,0.50], // Defender hinten
-  ]}
+  'vb-block-def': { name:'Block/Defense', positions:[
+    [0.12,0.50], // Blocker am Netz
+    [0.72,0.50], // Defender hinten Mitte
+  ]},
+  'vb-recv-2': { name:'2er Annahme', positions:[
+    [0.55,0.28], // Spieler 1 – hinten links
+    [0.55,0.72], // Spieler 2 – hinten rechts
+  ]},
 };
 
 const _SUPPORTED_FT = ['full','half','small','vb-full','vb-half','vb-beach'];
