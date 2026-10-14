@@ -130,7 +130,7 @@ async function withdrawSubmittedPlan(id){
 
 // ── Admin: Plan review queue ────────────────────────
 async function loadAdminPlanQueue(){
-  if(!_supabase||!IS_ADMIN)return;
+  if(!_supabase||(!IS_ADMIN&&!IS_REVIEWER))return;
   const {data}=await _supabase.from('submitted_plans').select('*').eq('status','pending').order('submitted_at',{ascending:true});
   renderAdminPlanQueue(data||[]);
 }

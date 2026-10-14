@@ -99,11 +99,11 @@ async function renderSubmitPage(){
     _renderMySubmissionsFromCache();
     loadMySubmittedPlans();
     const canReview=IS_ADMIN||IS_REVIEWER;
-    if(IS_ADMIN){ renderUserList(); loadAdminPlanQueue(); }
-    if(canReview) _renderAdminQueueFromCache();
+    if(IS_ADMIN) renderUserList();
+    if(canReview){ _renderAdminQueueFromCache(); loadAdminPlanQueue(); }
     document.getElementById('adminQueueWrap').style.display = canReview ? 'block' : 'none';
     document.getElementById('adminUserWrap').style.display = IS_ADMIN ? 'block' : 'none';
-    document.getElementById('adminPlanQueueWrap').style.display = IS_ADMIN ? 'block' : 'none';
+    document.getElementById('adminPlanQueueWrap').style.display = canReview ? 'block' : 'none';
     // Canvas wird per Button im fieldOverlay geöffnet
   }
   if(typeof _updateFieldTypeOptions==='function') _updateFieldTypeOptions();
