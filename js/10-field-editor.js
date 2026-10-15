@@ -1843,12 +1843,12 @@ const FORMATIONS_VB6 = {
   // ── Annahmeriegel ───────────────────────────────────
   // 4er Annahme: 4 Spieler in Annahme, 2 frei am Netz
   'vb-recv-4w': { name:'4er Annahme', positions:[
-    [0.40,0.08], // L  – Libero, mitte-tief, oben
-    [0.92,0.08], // 1  – am Netz, oben
-    [0.90,0.22], // 2  – am Netz, oben-mitte
-    [0.18,0.45], // 3  – tief, Mitte
-    [0.18,0.88], // 4  – tief, unten
-    [0.18,0.22], // 5  – tief, oben-mitte
+    [0.27,0.60], // L  – Libero, mitte-hinten rechts
+    [0.26,0.93], // 1  – tief, rechts
+    [0.39,0.84], // 2  – mitte-hinten, rechts
+    [0.74,0.29], // 3  – Vorderzone, links
+    [0.33,0.14], // 4  – hinten, links
+    [0.27,0.35], // 5  – tief, mitte-links
   ]},
   // 3er Annahme: L + P1 + P2 in Annahme, P3 + P4 frei vorne, P5 hinten links
   'vb-recv-3u': { name:'3er Annahme', positions:[
@@ -1978,7 +1978,7 @@ function applyFormation(side){
           } else {
             cx = ox + xFrac * fw/2; // xFrac=0(Grundlinie)→ganz links, xFrac=1(Netz)→Mitte
           }
-          cy = oy + yFrac * fh;
+          cy = oy + (awayMirror ? (1 - yFrac) : yFrac) * fh;
         } else {
           // Halbfeld: Netz links (ox), Grundlinie rechts (ox+fw)
           cx = ox + (1 - xFrac) * fw;
