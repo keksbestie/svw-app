@@ -1850,14 +1850,14 @@ const FORMATIONS_VB6 = {
     [0.18,0.88], // 4  – tief, unten
     [0.18,0.22], // 5  – tief, oben-mitte
   ]},
-  // 3er Annahme: 3 Spieler in Annahme, 3 frei am Netz
+  // 3er Annahme: L + P1 + P2 in Annahme, P3 + P4 frei vorne, P5 hinten links
   'vb-recv-3u': { name:'3er Annahme', positions:[
-    [0.30,0.22], // L  – Libero, links-hinten
-    [0.22,0.75], // 1  – tief, rechts
-    [0.22,0.42], // 2  – tief, mitte
-    [0.88,0.30], // 3  – am Netz, center-links
-    [0.88,0.48], // 4  – am Netz, Mitte
-    [0.90,0.12], // 5  – am Netz, links
+    [0.27,0.46], // L  – Libero, mitte-hinten
+    [0.28,0.91], // 1  – tief, rechts
+    [0.41,0.79], // 2  – mitte-hinten, rechts
+    [0.78,0.22], // 3  – Vorderzone, links
+    [0.92,0.17], // 4  – am Netz, links
+    [0.38,0.16], // 5  – mitte-hinten, links
   ]},
 };
 
