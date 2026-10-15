@@ -1841,25 +1841,23 @@ const FORMATIONS_VB6 = {
     [0.85,0.82], // S  – Pos 2 rechts vorne (Zuspieler)
   ]},
   // ── Annahmeriegel ───────────────────────────────────
-  // 4er W-Annahme: W-Form aus 4 Empfängern + Libero, Setter frei am Netz
-  // W von unten: R5(hinten-links)–L(Mitte)–R1(hinten-rechts)
-  //              R4(Mitte-links)–·–R2(Mitte-rechts)
-  'vb-recv-4w': { name:'4er W-Annahme', positions:[
-    [0.33,0.50], // L  Libero – W-Mitte (~3m von Grundlinie)
-    [0.17,0.15], // OH – Pos 5, W-Basis links tief (~1.5m von Grundlinie)
-    [0.17,0.85], // OH – Pos 1, W-Basis rechts tief
-    [0.52,0.20], // OH – Pos 4 gezogen, W-Schulter links (~4.7m von Grundlinie)
-    [0.52,0.80], // OH – Pos 2 gezogen, W-Schulter rechts
-    [0.93,0.82], // S  – Setter am Netz rechts (nicht in Annahme)
+  // 4er Annahme: 4 Spieler in Annahme, 2 frei am Netz
+  'vb-recv-4w': { name:'4er Annahme', positions:[
+    [0.40,0.08], // L  – Libero, mitte-tief, oben
+    [0.92,0.08], // 1  – am Netz, oben
+    [0.90,0.22], // 2  – am Netz, oben-mitte
+    [0.18,0.45], // 3  – tief, Mitte
+    [0.18,0.88], // 4  – tief, unten
+    [0.18,0.22], // 5  – tief, oben-mitte
   ]},
-  // 3er U-Annahme: Libero + 2 Außen in Halbkreis, 3 Spieler frei am Netz
-  'vb-recv-3u': { name:'3er U-Annahme', positions:[
-    [0.35,0.50], // L  Libero – Mitte hinten (~3m von Grundlinie)
-    [0.25,0.18], // OH – links hinten (~2m von Grundlinie)
-    [0.25,0.82], // OH – rechts hinten
-    [0.92,0.18], // MB – Mitte-links vorne (frei am Netz)
-    [0.92,0.50], // OPP – Mitte vorne (frei am Netz)
-    [0.92,0.82], // S  – rechts vorne (frei am Netz)
+  // 3er Annahme: 3 Spieler in Annahme, 3 frei am Netz
+  'vb-recv-3u': { name:'3er Annahme', positions:[
+    [0.30,0.22], // L  – Libero, links-hinten
+    [0.22,0.75], // 1  – tief, rechts
+    [0.22,0.42], // 2  – tief, mitte
+    [0.88,0.30], // 3  – am Netz, center-links
+    [0.88,0.48], // 4  – am Netz, Mitte
+    [0.90,0.12], // 5  – am Netz, links
   ]},
 };
 
