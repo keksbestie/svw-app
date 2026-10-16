@@ -1320,42 +1320,34 @@ function drawVolleyball(x,y,sel,sc){
   ctx.save();
   ctx.translate(x,y); ctx.scale(sc||1,sc||1);
   ctx.shadowColor='rgba(0,0,0,.5)'; ctx.shadowBlur=7; ctx.shadowOffsetY=3;
-  // Base: cream-white
-  ctx.fillStyle='#f5f0e8';
+  // Base: purple like the emoji icon
+  ctx.fillStyle='#9c6fbe';
   ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.fill();
   ctx.shadowBlur=0; ctx.shadowOffsetY=0;
   ctx.save();
   ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.clip();
-  // Blue left panel — S-Naht trennt links von rechts
-  ctx.fillStyle='#1565c0';
+  // Slightly lighter purple highlight top-left
+  const grad = ctx.createRadialGradient(-R*0.3,-R*0.3,R*0.1,0,0,R);
+  grad.addColorStop(0,'#c49dd6');
+  grad.addColorStop(1,'#7a4fa0');
+  ctx.fillStyle=grad;
+  ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.fill();
+  // White seam lines — volleyball emoji pattern (3 curved lines)
+  ctx.strokeStyle='rgba(255,255,255,0.9)'; ctx.lineWidth=2; ctx.lineCap='round';
+  // Left S-curve (vertical)
   ctx.beginPath();
-  ctx.moveTo(0,-R);
-  ctx.bezierCurveTo(-R*0.35,-R*0.4, R*0.35,R*0.4, 0,R);
-  ctx.lineTo(-R,R); ctx.lineTo(-R,-R);
-  ctx.closePath(); ctx.fill();
-  // Yellow bottom-right panel — zweite S-Naht (um 90° gedreht)
-  ctx.fillStyle='#f9a825';
-  ctx.beginPath();
-  ctx.moveTo(-R,0);
-  ctx.bezierCurveTo(-R*0.4,R*0.35, R*0.4,-R*0.35, R,0);
-  ctx.lineTo(R,R); ctx.lineTo(-R,R);
-  ctx.closePath(); ctx.fill();
-  // Seam lines (weiße Nähte sichtbar)
-  ctx.strokeStyle='rgba(255,255,255,0.85)'; ctx.lineWidth=1.8; ctx.lineCap='round';
-  // S-Naht vertikal
-  ctx.beginPath();
-  ctx.moveTo(0,-R);
-  ctx.bezierCurveTo(-R*0.35,-R*0.4, R*0.35,R*0.4, 0,R);
+  ctx.moveTo(-R*0.15,-R);
+  ctx.bezierCurveTo(-R*0.6,-R*0.3, R*0.6,R*0.3, R*0.15,R);
   ctx.stroke();
-  // S-Naht horizontal
+  // Right S-curve (vertical, mirrored)
   ctx.beginPath();
-  ctx.moveTo(-R,0);
-  ctx.bezierCurveTo(-R*0.4,R*0.35, R*0.4,-R*0.35, R,0);
+  ctx.moveTo(R*0.45,-R*0.9);
+  ctx.bezierCurveTo(R*1.0,-R*0.2, -R*0.2,R*0.5, R*0.1,R*0.95);
   ctx.stroke();
-  // Dritte Naht (diagonal oben-rechts)
+  // Bottom arc (horizontal)
   ctx.beginPath();
-  ctx.moveTo(R*0.1,-R);
-  ctx.bezierCurveTo(R*0.7,-R*0.4, R*0.6,R*0.4, R*0.1,R);
+  ctx.moveTo(-R,-R*0.1);
+  ctx.bezierCurveTo(-R*0.3,R*0.7, R*0.3,R*0.7, R,-R*0.1);
   ctx.stroke();
   ctx.restore();
   // Outer border
