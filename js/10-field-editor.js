@@ -1320,48 +1320,46 @@ function drawVolleyball(x,y,sel,sc){
   ctx.save();
   ctx.translate(x,y); ctx.scale(sc||1,sc||1);
   ctx.shadowColor='rgba(0,0,0,.5)'; ctx.shadowBlur=7; ctx.shadowOffsetY=3;
-  // Base
-  ctx.fillStyle='#e8f0ff';
+  // Base: cream-white
+  ctx.fillStyle='#f5f0e8';
   ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.fill();
   ctx.shadowBlur=0; ctx.shadowOffsetY=0;
   ctx.save();
   ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.clip();
-  // Volleyball panel pattern: 3 pairs of panels (blue + yellow, FIVB beach style)
-  // Panel 1: blue – top-left curve
+  // Blue left panel — S-Naht trennt links von rechts
   ctx.fillStyle='#1565c0';
   ctx.beginPath();
-  ctx.moveTo(-R,-R);
-  ctx.lineTo(R,-R);
-  ctx.quadraticCurveTo(R*0.3,-R*0.1,-R*0.1,R*0.6);
-  ctx.quadraticCurveTo(-R*0.5,R*0.1,-R,R*0.1);
+  ctx.moveTo(0,-R);
+  ctx.bezierCurveTo(-R*0.35,-R*0.4, R*0.35,R*0.4, 0,R);
+  ctx.lineTo(-R,R); ctx.lineTo(-R,-R);
   ctx.closePath(); ctx.fill();
-  // Panel 2: blue – bottom-right curve
-  ctx.fillStyle='#1565c0';
-  ctx.beginPath();
-  ctx.moveTo(R,R);
-  ctx.lineTo(-R,R);
-  ctx.quadraticCurveTo(-R*0.3,R*0.1,R*0.1,-R*0.6);
-  ctx.quadraticCurveTo(R*0.5,-R*0.1,R,-R*0.1);
-  ctx.closePath(); ctx.fill();
-  // Panel 3: yellow – right wedge
+  // Yellow bottom-right panel — zweite S-Naht (um 90° gedreht)
   ctx.fillStyle='#f9a825';
   ctx.beginPath();
-  ctx.moveTo(R,-R);
-  ctx.lineTo(R,R);
-  ctx.quadraticCurveTo(R*0.5,-R*0.1,R*0.1,-R*0.6);
-  ctx.quadraticCurveTo(R*0.3,-R*0.1,R,-R);
+  ctx.moveTo(-R,0);
+  ctx.bezierCurveTo(-R*0.4,R*0.35, R*0.4,-R*0.35, R,0);
+  ctx.lineTo(R,R); ctx.lineTo(-R,R);
   ctx.closePath(); ctx.fill();
-  // Panel 4: yellow – left wedge
-  ctx.fillStyle='#f9a825';
+  // Seam lines (weiße Nähte sichtbar)
+  ctx.strokeStyle='rgba(255,255,255,0.85)'; ctx.lineWidth=1.8; ctx.lineCap='round';
+  // S-Naht vertikal
   ctx.beginPath();
-  ctx.moveTo(-R,R);
-  ctx.lineTo(-R,-R);
-  ctx.quadraticCurveTo(-R*0.5,R*0.1,-R*0.1,R*0.6);
-  ctx.quadraticCurveTo(-R*0.3,R*0.1,-R,R);
-  ctx.closePath(); ctx.fill();
+  ctx.moveTo(0,-R);
+  ctx.bezierCurveTo(-R*0.35,-R*0.4, R*0.35,R*0.4, 0,R);
+  ctx.stroke();
+  // S-Naht horizontal
+  ctx.beginPath();
+  ctx.moveTo(-R,0);
+  ctx.bezierCurveTo(-R*0.4,R*0.35, R*0.4,-R*0.35, R,0);
+  ctx.stroke();
+  // Dritte Naht (diagonal oben-rechts)
+  ctx.beginPath();
+  ctx.moveTo(R*0.1,-R);
+  ctx.bezierCurveTo(R*0.7,-R*0.4, R*0.6,R*0.4, R*0.1,R);
+  ctx.stroke();
   ctx.restore();
   // Outer border
-  ctx.strokeStyle='rgba(0,0,0,.25)'; ctx.lineWidth=1;
+  ctx.strokeStyle='rgba(0,0,0,.2)'; ctx.lineWidth=1;
   ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.stroke();
   if(sel){
     ctx.strokeStyle='#ffe082'; ctx.lineWidth=2; ctx.setLineDash([3,3]);
