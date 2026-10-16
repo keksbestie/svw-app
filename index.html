@@ -257,7 +257,7 @@
   <div id="homeSportBadge" style="display:none;align-items:center;gap:8px;justify-content:center;margin-bottom:16px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.5px;"></div>
 
   <!-- Feature Cards -->
-  <div class="home-cards five" id="homeCards">
+  <div class="home-cards" id="homeCards">
     <div class="home-card home-card--catalog" onclick="goPage('handbook')">
       <div class="home-card-num">01</div>
       <div class="home-card-inner">
@@ -300,22 +300,8 @@
       </div>
     </div>
 
-    <div class="home-card home-card--taktik" onclick="goPage('taktik')">
-      <div class="home-card-num">04</div>
-      <div class="home-card-inner">
-        <div class="home-card-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><circle cx="8" cy="10" r="1.5" fill="currentColor"/><circle cx="16" cy="10" r="1.5" fill="currentColor"/><circle cx="12" cy="7" r="1.5" fill="currentColor"/><line x1="8" y1="10" x2="12" y2="7"/><line x1="12" y1="7" x2="16" y2="10"/></svg>
-        </div>
-        <div class="home-card-title">Taktiktafel</div>
-        <div class="home-card-desc">Aufstellungen und Spielzüge als animierte Szenenfolge erstellen und speichern.</div>
-      </div>
-      <div class="home-card-arrow">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </div>
-    </div>
-
     <div class="home-card home-card--submit" onclick="goPage('submit')">
-      <div class="home-card-num">05</div>
+      <div class="home-card-num">04</div>
       <div class="home-card-inner">
         <div class="home-card-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
@@ -338,9 +324,6 @@
     <button onclick="goPage('agb')" style="background:none;border:none;color:rgba(255,255,255,.45);font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.3px;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px;">AGB</button>
   </footer>
 </div>
-
-<!-- PAGE: TAKTIKTAFEL -->
-<div id="page-taktik" class="page" style="display:flex;flex-direction:column;height:100%;overflow:hidden;padding:0;"></div>
 
 <!-- PAGE: SUBMIT — Übung einreichen -->
 <div id="page-submit" class="page">
@@ -2234,7 +2217,6 @@ function filterHelpCards(q){
 <script src="js/11-app-start.js?v=20261008"></script>
 <script src="js/12-kader.js?v=20261008"></script>
 <script src="js/13-sport.js?v=20261014"></script>
-<script src="js/14-taktik.js?v=20261017"></script>
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
