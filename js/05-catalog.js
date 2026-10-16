@@ -334,7 +334,7 @@ function renderSection(){
       </div>
     </div>
     <div class="inner" style="padding-top:0;">
-      ${clusterLegend?`<div class="cleg">
+      ${!isOtherSport&&clusterLegend?`<div class="cleg">
         <span class="cleg-t">Kategorien:</span>
         ${clusterLegend}
         ${activeCluster?`<span onclick="toggleCluster(null)" style="font-size:10px;font-weight:700;color:var(--gm);cursor:pointer;margin-left:2px;">✕ Alle</span>`:''}
@@ -342,7 +342,7 @@ function renderSection(){
       </div>`:''}
       <div id="catalogLayout" class="catalog-layout">
         <div>
-          <div class="fbar">
+          ${!isOtherSport?`<div class="fbar">
             <div class="ftop">
               <input class="fin" id="ss${activeSec}" type="text" placeholder="In ${s.name} suchen…" value="${q}" oninput="renderSection()">
               <button class="gbtn" onclick="selectedTags=[];activeCluster=null;clusterFilterTags=[];renderSection()">✕ Reset</button>
@@ -360,7 +360,7 @@ function renderSection(){
             }).join('')}
             ${!allTags.length?'<span style="font-size:10px;color:var(--gm);">Noch keine Tags</span>':''}
           </div>
-          <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gm);margin-bottom:11px;">${filtered.length} von ${sEx.length} Übungen</div>
+          <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gm);margin-bottom:11px;">${filtered.length} von ${sEx.length} Übungen</div>`:''}
           <div class="exgrid${_catalogView==='collapsed'?' collapsed':''}">
             ${isOtherSport
               ?`<div class="empty-grid"><div class="ei">${window.currentSport.icon?`<img src="${window.currentSport.icon}" style="width:48px;opacity:.4;">`:'🏗️'}</div><h3>Noch keine Inhalte</h3><p>Für <strong>${window.currentSport.label}</strong> werden hier bald Übungen verfügbar sein.</p></div>`
