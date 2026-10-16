@@ -1320,37 +1320,45 @@ function drawVolleyball(x,y,sel,sc){
   ctx.save();
   ctx.translate(x,y); ctx.scale(sc||1,sc||1);
   ctx.shadowColor='rgba(0,0,0,.5)'; ctx.shadowBlur=7; ctx.shadowOffsetY=3;
-  // Base: purple like the emoji icon
-  ctx.fillStyle='#9c6fbe';
+  ctx.fillStyle='#f0ede6';
   ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.fill();
   ctx.shadowBlur=0; ctx.shadowOffsetY=0;
   ctx.save();
   ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.clip();
-  // Slightly lighter purple highlight top-left
-  const grad = ctx.createRadialGradient(-R*0.3,-R*0.3,R*0.1,0,0,R);
-  grad.addColorStop(0,'#c49dd6');
-  grad.addColorStop(1,'#7a4fa0');
-  ctx.fillStyle=grad;
-  ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.fill();
-  // White seam lines — volleyball emoji pattern (3 curved lines)
-  ctx.strokeStyle='rgba(255,255,255,0.9)'; ctx.lineWidth=2; ctx.lineCap='round';
-  // Left S-curve (vertical)
+  // Blue panel (left + top)
+  ctx.fillStyle='#1a6db5';
   ctx.beginPath();
-  ctx.moveTo(-R*0.15,-R);
-  ctx.bezierCurveTo(-R*0.6,-R*0.3, R*0.6,R*0.3, R*0.15,R);
+  ctx.moveTo(-R,-R);
+  ctx.lineTo(R*0.1,-R);
+  ctx.bezierCurveTo(R*0.5,-R*0.5, -R*0.5,R*0.5, -R*0.1,R);
+  ctx.lineTo(-R,R);
+  ctx.closePath(); ctx.fill();
+  // Yellow panel (bottom right)
+  ctx.fillStyle='#e8b800';
+  ctx.beginPath();
+  ctx.moveTo(R,R);
+  ctx.lineTo(-R*0.1,R);
+  ctx.bezierCurveTo(-R*0.5,R*0.5, R*0.5,-R*0.5, R*0.1,-R);
+  ctx.lineTo(R,-R);
+  ctx.closePath(); ctx.fill();
+  // White seam lines
+  ctx.strokeStyle='#ffffff'; ctx.lineWidth=2.2; ctx.lineCap='round';
+  // Main S-seam separating blue/white/yellow
+  ctx.beginPath();
+  ctx.moveTo(R*0.1,-R);
+  ctx.bezierCurveTo(R*0.5,-R*0.5, -R*0.5,R*0.5, -R*0.1,R);
   ctx.stroke();
-  // Right S-curve (vertical, mirrored)
+  // Second seam (top arc)
   ctx.beginPath();
-  ctx.moveTo(R*0.45,-R*0.9);
-  ctx.bezierCurveTo(R*1.0,-R*0.2, -R*0.2,R*0.5, R*0.1,R*0.95);
+  ctx.moveTo(-R,R*0.15);
+  ctx.bezierCurveTo(-R*0.4,-R*0.55, R*0.4,-R*0.55, R,R*0.15);
   ctx.stroke();
-  // Bottom arc (horizontal)
+  // Third seam (bottom arc, mirror)
   ctx.beginPath();
-  ctx.moveTo(-R,-R*0.1);
-  ctx.bezierCurveTo(-R*0.3,R*0.7, R*0.3,R*0.7, R,-R*0.1);
+  ctx.moveTo(-R,-R*0.15);
+  ctx.bezierCurveTo(-R*0.4,R*0.55, R*0.4,R*0.55, R,-R*0.15);
   ctx.stroke();
   ctx.restore();
-  // Outer border
   ctx.strokeStyle='rgba(0,0,0,.2)'; ctx.lineWidth=1;
   ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.stroke();
   if(sel){
