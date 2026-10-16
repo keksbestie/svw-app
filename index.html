@@ -1730,13 +1730,17 @@ function filterHelpArea(area){
 function filterHelpCards(q){
   const cards=document.querySelectorAll('#helpTabDetail .help-card');
   const ql=q.trim().toLowerCase();
+  const sportId=window.currentSport&&window.currentSport.id;
   let visible=0;
   cards.forEach(c=>{
     const areaMatch=_helpCurrentArea==='all'||(c.dataset.area||'')=== _helpCurrentArea;
     const tags=(c.dataset.tags||'').toLowerCase();
     const text=c.textContent.toLowerCase();
     const textMatch=!ql||tags.includes(ql)||text.includes(ql);
-    const show=areaMatch&&textMatch;
+    const sportOk=(!c.classList.contains('help-sport-fussball')||sportId==='fussball'||!sportId)
+                &&(!c.classList.contains('help-sport-volleyball')||sportId==='volleyball')
+                &&(!c.classList.contains('help-sport-tennis')||sportId==='tennis');
+    const show=areaMatch&&textMatch&&sportOk;
     c.style.display=show?'':'none';
     if(show)visible++;
   });
