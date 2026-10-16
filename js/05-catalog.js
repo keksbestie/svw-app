@@ -285,17 +285,7 @@ function saveDesc(){
 function renderSection(){
   const s=SECS[activeSec];const col=s.color;
 
-  // Andere Sportarten: leeres Skelett zeigen
-  if(window.currentSport && window.currentSport.id !== 'fussball'){
-    const wrap=document.getElementById('scontent');
-    if(wrap) wrap.innerHTML=`<div style="text-align:center;padding:60px 24px;color:var(--gd2);font-family:'Barlow Condensed',sans-serif;">
-      <div style="font-size:48px;margin-bottom:16px;opacity:.4;">🏗️</div>
-      <div style="font-size:20px;font-weight:800;letter-spacing:1px;margin-bottom:8px;">Noch keine Inhalte</div>
-      <div style="font-size:13px;opacity:.6;">Für <strong>${window.currentSport.label}</strong> werden hier bald Übungen verfügbar sein.</div>
-    </div>`;
-    return;
-  }
-
+  const isOtherSport = window.currentSport && window.currentSport.id !== 'fussball';
   const sEx=exercises.filter(e=>e.section===activeSec);
   const q=(document.getElementById(`ss${activeSec}`)||{value:''}).value||'';
 
@@ -372,9 +362,11 @@ function renderSection(){
           </div>
           <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gm);margin-bottom:11px;">${filtered.length} von ${sEx.length} Übungen</div>
           <div class="exgrid${_catalogView==='collapsed'?' collapsed':''}">
-            ${filtered.length===0
-              ?`<div class="empty-grid"><div class="ei">⚽</div><h3>Keine Übungen gefunden</h3><p>${IS_ADMIN?'Über „+ Übung" hinzufügen.':'Filter anpassen.'}</p></div>`
-              :_applyRatingOrder(filtered).map(e=>cardHTML(e,col)).join('')
+            ${isOtherSport
+              ?`<div class="empty-grid"><div class="ei">${window.currentSport.icon?`<img src="${window.currentSport.icon}" style="width:48px;opacity:.4;">`:'🏗️'}</div><h3>Noch keine Inhalte</h3><p>Für <strong>${window.currentSport.label}</strong> werden hier bald Übungen verfügbar sein.</p></div>`
+              :filtered.length===0
+                ?`<div class="empty-grid"><div class="ei">⚽</div><h3>Keine Übungen gefunden</h3><p>${IS_ADMIN?'Über „+ Übung" hinzufügen.':'Filter anpassen.'}</p></div>`
+                :_applyRatingOrder(filtered).map(e=>cardHTML(e,col)).join('')
             }
           </div>
         </div>
