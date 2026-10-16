@@ -73,23 +73,35 @@ function renderHomeSportState() {
 function _updateHelpSport() {
   const sport = window.currentSport && window.currentSport.id;
   const isVb = sport === 'volleyball';
+  const isTn = sport === 'tennis';
+  const ballIcon = isVb ? '🏐' : isTn ? '🎾' : '⚽';
+
+  // Suchleiste Icon
+  const gsIco = document.getElementById('gsIco');
+  if (gsIco) gsIco.textContent = ballIcon;
+
   // Filter button label
   const editorBtn = document.querySelector('.haf-btn[onclick*="editor"]');
-  if (editorBtn) editorBtn.textContent = (isVb ? '🏐' : '⚽') + ' Feldeditor';
-  // Quick overview card text
+  if (editorBtn) editorBtn.textContent = ballIcon + ' Feldeditor';
+
+  // Quick overview card
   const qhEditor = document.getElementById('qhEditor');
   if (qhEditor) {
     if (isVb) {
       qhEditor.innerHTML = 'Spieler, Bälle, Hütchen und Laufwege auf dem Volleyballfeld platzieren. Kein Tor – dafür Vollfeld, Halbfeld und Beach. Raster (⛶) für gleichmäßige Abstände.';
+    } else if (isTn) {
+      qhEditor.innerHTML = 'Spieler, Bälle und Laufwege auf dem Tennisplatz platzieren. Raster (⛶) aktivieren für gleichmäßige Abstände.';
     } else {
       qhEditor.innerHTML = 'Spieler, Bälle, Tore, Hütchen und Laufwege auf dem Feld platzieren. Raster (⛶) aktivieren für gleichmäßige Abstände. Strg+C/V kopieren, Strg+Z rückgängig.';
     }
   }
   const qhEditorIcon = document.getElementById('qhEditorIcon');
-  if (qhEditorIcon) qhEditorIcon.textContent = isVb ? '🏐' : '⚽';
+  if (qhEditorIcon) qhEditorIcon.textContent = ballIcon;
+
   // Sport-specific help cards
-  document.querySelectorAll('.help-sport-fussball').forEach(el => el.style.display = isVb ? 'none' : '');
+  document.querySelectorAll('.help-sport-fussball').forEach(el => el.style.display = (isVb || isTn) ? 'none' : '');
   document.querySelectorAll('.help-sport-volleyball').forEach(el => el.style.display = isVb ? '' : 'none');
+  document.querySelectorAll('.help-sport-tennis').forEach(el => el.style.display = isTn ? '' : 'none');
 }
 
 function initSportSelection() {
