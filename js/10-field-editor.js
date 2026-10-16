@@ -1329,9 +1329,9 @@ function drawVolleyball(x,y,sel,sc){
   ctx.beginPath(); ctx.arc(0,0,R*s,0,Math.PI*2);
   ctx.fillStyle='#ffffff'; ctx.fill();
   ctx.clip();
-  ctx.font=`${Math.round(R*2*s)}px serif`;
+  ctx.font=`${Math.round(R*2.5*s)}px serif`;
   ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText('🏐',0,1);
+  ctx.fillText('🏐',0,R*s*0.08);
   ctx.restore();
 }
 
