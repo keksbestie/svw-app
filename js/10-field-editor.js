@@ -1325,6 +1325,7 @@ function drawVolleyball(x,y,sel,sc){
     ctx.beginPath(); ctx.arc(0,0,(R+4)*s,0,Math.PI*2); ctx.stroke();
     ctx.setLineDash([]);
   }
+  ctx.shadowBlur=0; ctx.shadowOffsetY=0; ctx.shadowColor='transparent';
   ctx.beginPath(); ctx.arc(0,0,R*s,0,Math.PI*2);
   ctx.fillStyle='#ffffff'; ctx.fill();
   ctx.clip();
