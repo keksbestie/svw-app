@@ -26,6 +26,7 @@ async function init(){
   updateApiBar();
   if(typeof updateSignInBtn==='function') updateSignInBtn();
   if(typeof loadSquad==='function') loadSquad();
+  if(typeof tkLoadTactics==='function') tkLoadTactics();
   setInterval(()=>{if(apiOnline)silentSync();},60000);
 }
 function hideLS(){const l=document.getElementById('ls');l.classList.add('fade');setTimeout(()=>l.style.display='none',400);}
@@ -239,6 +240,7 @@ function goPage(name,btn){
   if(name==='submit')renderSubmitPage();
   if(name==='account')renderAccountPage();
   if(name==='kader'&&typeof renderKaderPage==='function')renderKaderPage();
+  if(name==='taktik'&&typeof renderTaktikPage==='function')renderTaktikPage();
 
   // 3. Scroll to top
   document.documentElement.scrollTop=0; document.body.scrollTop=0;

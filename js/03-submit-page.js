@@ -128,6 +128,7 @@ async function doLogin(){
   updateSignInBtn();
   silentSync();       // sync data in background
   if(typeof loadSquad==='function') loadSquad();
+  if(typeof tkLoadTactics==='function') tkLoadTactics();
 }
 
 function toggleRegisterMode(){
