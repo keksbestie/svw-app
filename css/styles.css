@@ -111,6 +111,25 @@ header {
 .hbtn.pri:hover { background: var(--accent-d); }
 .abadge { background: #ffd700; color: #5a3e00; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; display: none; }
 .beta-badge { background: #ff6b00; color: #fff; padding: 2px 7px; border-radius: 5px; font-size: 10px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; vertical-align: middle; display: inline-block; }
+
+/* Club Admin Panel */
+.club-admin-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.club-admin-title { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 800; }
+.club-section-label { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--gd2); display: block; margin-bottom: 10px; }
+.club-slots-list { display: flex; flex-direction: column; gap: 8px; }
+.club-slot-row { display: flex; align-items: center; gap: 10px; background: var(--bg); border-radius: 8px; padding: 10px 14px; flex-wrap: wrap; }
+.slot-idx { font-size: 11px; font-weight: 700; color: var(--gd2); min-width: 44px; }
+.slot-email { font-size: 13px; flex: 1; }
+.slot-free { font-size: 12px; color: var(--gd2); flex: 1; font-style: italic; }
+.slot-locked { font-size: 11px; color: var(--gd2); }
+.slot-btn { padding: 5px 12px; border-radius: 7px; border: none; font-size: 12px; font-weight: 700; cursor: pointer; }
+.slot-btn-remove { background: #fee2e2; color: #b91c1c; }
+.slot-btn-remove:hover { background: #fecaca; }
+.slot-btn-copy { background: var(--accent); color: #fff; }
+.club-logo-section { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+.club-logo-preview { height: 40px; max-width: 100px; object-fit: contain; border-radius: 6px; border: 1px solid var(--border); }
+.club-consent-label { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: var(--gd2); line-height: 1.5; margin-top: 10px; cursor: pointer; }
+.club-consent-label input[type="checkbox"] { flex-shrink: 0; margin-top: 2px; accent-color: var(--accent); width: 15px; height: 15px; }
 .beta-badge--hero { font-size: 16px; padding: 4px 12px; border-radius: 8px; letter-spacing: 1.5px; }
 
 /* Settings / gear dropdown */

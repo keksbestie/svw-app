@@ -62,6 +62,7 @@
     <div class="gs-res" id="gsRes"></div>
   </div>
   <div class="hr">
+    <div id="clubLogoHeader" style="display:none;align-items:center;margin-right:8px;"></div>
     <div class="sdot" id="sdot"></div>
     <span class="abadge">Admin</span>
 
@@ -707,6 +708,9 @@
       <button id="accTabProfile" class="acc-tab acc-tab--active" onclick="switchAccTab('profile')">Profil</button>
       <button id="accTabPlans" class="acc-tab" onclick="switchAccTab('plans')">Meine Pläne</button>
     </div>
+
+    <!-- Vereins-Admin-Panel (nur für club_admin sichtbar) -->
+    <div id="clubAdminWrap" style="display:none;background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:20px;"></div>
 
     <!-- Tab: Profil -->
     <div id="accPanelProfile">
@@ -2237,6 +2241,7 @@ function filterHelpCards(q){
 <script src="js/11-app-start.js?v=20261008"></script>
 <script src="js/12-kader.js?v=20261008"></script>
 <script src="js/13-sport.js?v=20261014"></script>
+<script src="js/14-clubs.js?v=20261018"></script>
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {

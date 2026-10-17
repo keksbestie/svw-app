@@ -15,6 +15,7 @@ let IS_ADMIN=false, IS_REVIEWER=false, REVIEWER_SPORTS=[], apiOnline=false, sync
 async function init(){
   applyTheme(localStorage.getItem('tb_theme') || localStorage.getItem('svw_theme')||'light'); applyI18n(); applyFontSize(currentFsIdx);
   applyTheme(localStorage.getItem('tb_theme') || localStorage.getItem('svw_theme')||'light'); loadClubTheme();
+  if(typeof handleInviteToken==='function') handleInviteToken();
   // Show app instantly from local cache
   loadLocal();
   hideLS(); renderStbar(); renderSection(); renderSavedPlans(); renderLtp(); goPage('home');
@@ -44,10 +45,12 @@ async function loadAPI(){
     const {data:{user}}=await _supabase.auth.getUser();
     currentUser=user; IS_ADMIN=false;
     if(user){
-      const {data:profile}=await _supabase.from('profiles').select('role,reviewer_sports').eq('id',user.id).single();
+      const {data:profile}=await _supabase.from('profiles').select('role,reviewer_sports,club_id,club_role').eq('id',user.id).single();
       IS_ADMIN=profile?.role==='admin';
       IS_REVIEWER=profile?.role==='reviewer';
       REVIEWER_SPORTS=profile?.reviewer_sports||[];
+      if(typeof loadClubData==='function') await loadClubData(user.id);
+      if(typeof checkPendingToken==='function') await checkPendingToken(user.id);
     }
     document.body.classList.toggle('admin',IS_ADMIN);
     document.body.classList.toggle('reviewer',IS_REVIEWER);
@@ -237,7 +240,7 @@ function goPage(name,btn){
   if(name==='handbook')renderSection();
   if(name==='longterm')renderLtp();
   if(name==='submit')renderSubmitPage();
-  if(name==='account')renderAccountPage();
+  if(name==='account'){renderAccountPage();if(typeof renderClubAdminPanel==='function')renderClubAdminPanel();}
   if(name==='kader'&&typeof renderKaderPage==='function')renderKaderPage();
 
   // 3. Scroll to top
