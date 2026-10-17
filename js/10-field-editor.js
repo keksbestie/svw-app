@@ -297,12 +297,14 @@ function _updateFieldTypeOptions(){
   const sport=window.currentSport&&window.currentSport.id;
   const isVb=sport==='volleyball';
   const isTn=sport==='tennis';
-  // Show/hide optgroup and individual options based on sport
+  // Show/hide options based on sport
   const vbOpts=['vb-full','vb-half','vb-beach','vb-beach-half'];
+  const tnOpts=['tn-full','tn-half','tn-service'];
   const fbOpts=['full','half','small','neutral','penalty','sprint'];
   Array.from(sel.options).forEach(opt=>{
-    if(isVb) opt.hidden=fbOpts.includes(opt.value);
-    else opt.hidden=vbOpts.includes(opt.value);
+    if(isVb)       opt.hidden=fbOpts.includes(opt.value)||tnOpts.includes(opt.value);
+    else if(isTn)  opt.hidden=fbOpts.includes(opt.value)||vbOpts.includes(opt.value);
+    else           opt.hidden=vbOpts.includes(opt.value)||tnOpts.includes(opt.value);
   });
   // Update Gelb/TW → Gelb/Libero label
   const gelbOpt=document.getElementById('playerColorGelb');
@@ -315,11 +317,11 @@ function _updateFieldTypeOptions(){
   const btnAway2=document.getElementById('formationBtnAway');
   if(btnHome){ btnHome.style.background=isVb?'#ffffff':'#1565c0'; btnHome.style.color=isVb?'#111':'#fff'; }
   if(btnAway2){ btnAway2.style.background=isVb?'#e53935':'#b71c1c'; }
-  // Hide goal button and context for volleyball (no goals in VB)
+  // Hide goal button for volleyball and tennis
   const goalBtn=document.getElementById('tb_goal');
   const goalCtx=document.getElementById('ctx_goal');
-  if(goalBtn) goalBtn.style.display=isVb?'none':'';
-  if(goalCtx) goalCtx.style.display=isVb?'none':'';
+  if(goalBtn) goalBtn.style.display=(isVb||isTn)?'none':'';
+  if(goalCtx) goalCtx.style.display=(isVb||isTn)?'none':'';
   // Update sport icons
   const ballIcon=isVb?'🏐':isTn?'🎾':'⚽';
   const ballBtn=document.getElementById('tb_ball');
@@ -760,6 +762,11 @@ function drawField(){
     ctx.fillStyle=bgGrad; ctx.fillRect(0,0,W,H);
   } else if(ft==='vb-full'||ft==='vb-half'){
     ctx.fillStyle='#1e3f6e'; ctx.fillRect(0,0,W,H);
+  } else if(ft==='tn-full'||ft==='tn-half'||ft==='tn-service'){
+    // Hard court blue
+    const bgGrad=ctx.createLinearGradient(0,0,0,H);
+    bgGrad.addColorStop(0,'#1a4a7a'); bgGrad.addColorStop(.5,'#1e5490'); bgGrad.addColorStop(1,'#1a4a7a');
+    ctx.fillStyle=bgGrad; ctx.fillRect(0,0,W,H);
   } else {
   // Base grass gradient
   const grassGrad=ctx.createLinearGradient(0,0,0,H);
@@ -796,6 +803,9 @@ function drawField(){
   else if(ft==='vb-half')drawVbHalf(W,H,p);
   else if(ft==='vb-beach')drawVbBeach(W,H,p);
   else if(ft==='vb-beach-half')drawVbBeachHalf(W,H,p);
+  else if(ft==='tn-full')drawTennisFull(W,H,p);
+  else if(ft==='tn-half')drawTennisHalf(W,H,p);
+  else if(ft==='tn-service')drawTennisService(W,H,p);
   else drawNeutral(W,H,p);
 }
 
@@ -1258,15 +1268,120 @@ function drawPlayer(x,y,lbl,col,sel,ang,name){
   ctx.restore();
 }
 
+// ── TENNIS FIELDS ─────────────────────────────────
+// Court length 23.77m runs horizontally, width 10.97m vertically.
+// Net = vertical line at horizontal center.
+
+function _tnBase(W,H,p,cL,cW){
+  const s=Math.min((W-p*2)/cL,(H-p*2)/cW);
+  return {s, fw:cL*s, fh:cW*s, ox:(W-cL*s)/2, oy:(H-cW*s)/2};
+}
+
+function drawTennisFull(W,H,p){
+  const {s,fw,fh,ox,oy}=_tnBase(W,H,p,23.77,10.97);
+  const alley=1.37*s, svcD=6.40*s;
+  const netX=ox+fw/2, midY=oy+fh/2;
+  // Service box highlight
+  ctx.fillStyle='rgba(255,255,255,.07)';
+  ctx.fillRect(netX-svcD,oy+alley,svcD*2,fh-alley*2);
+  // Outer border
+  sr(ox,oy,fw,fh);
+  // Singles sidelines
+  sl(ox+alley,oy,ox+alley,oy+fh);
+  sl(ox+fw-alley,oy,ox+fw-alley,oy+fh);
+  // Net (dashed)
+  ctx.save();ctx.setLineDash([5,4]);ctx.lineWidth=2.5;
+  sl(netX,oy,netX,oy+fh);
+  ctx.setLineDash([]);ctx.restore();
+  // Service lines
+  sl(netX-svcD,oy+alley,netX-svcD,oy+fh-alley);
+  sl(netX+svcD,oy+alley,netX+svcD,oy+fh-alley);
+  // Center service lines
+  sl(netX-svcD,midY,netX,midY);
+  sl(netX,midY,netX+svcD,midY);
+  // Center marks on baselines
+  const cm=Math.max(0.15*s,5);
+  sl(ox,midY,ox+cm,midY);
+  sl(ox+fw-cm,midY,ox+fw,midY);
+}
+
+function drawTennisHalf(W,H,p){
+  // One side: baseline (left) to net (right), full doubles width
+  const {s,fw,fh,ox,oy}=_tnBase(W,H,p,11.885,10.97);
+  const alley=1.37*s, svcD=6.40*s;
+  const netX=ox+fw, midY=oy+fh/2;
+  // Service box highlight
+  ctx.fillStyle='rgba(255,255,255,.07)';
+  ctx.fillRect(netX-svcD,oy+alley,svcD,fh-alley*2);
+  // Border
+  sr(ox,oy,fw,fh);
+  // Singles sidelines
+  sl(ox+alley,oy,ox+alley,oy+fh);
+  sl(ox+fw-alley,oy,ox+fw-alley,oy+fh);
+  // Net (dashed, right edge)
+  ctx.save();ctx.setLineDash([5,4]);ctx.lineWidth=2.5;
+  sl(netX,oy,netX,oy+fh);
+  ctx.setLineDash([]);ctx.restore();
+  // Service line
+  sl(netX-svcD,oy+alley,netX-svcD,oy+fh-alley);
+  // Center service line
+  sl(netX-svcD,midY,netX,midY);
+  // Center mark on baseline
+  const cm=Math.max(0.15*s,5);
+  sl(ox,midY,ox+cm,midY);
+}
+
+function drawTennisService(W,H,p){
+  // T-to-T: both service boxes, 12.80m × 8.23m (singles width)
+  const {s,fw,fh,ox,oy}=_tnBase(W,H,p,12.80,8.23);
+  const netX=ox+fw/2, midY=oy+fh/2;
+  // Highlight both boxes
+  ctx.fillStyle='rgba(255,255,255,.07)';
+  ctx.fillRect(ox,oy,fw,fh);
+  // Border (= service lines left/right, singles sidelines top/bottom)
+  sr(ox,oy,fw,fh);
+  // Net (dashed)
+  ctx.save();ctx.setLineDash([5,4]);ctx.lineWidth=2.5;
+  sl(netX,oy,netX,oy+fh);
+  ctx.setLineDash([]);ctx.restore();
+  // Center service lines
+  sl(ox,midY,netX,midY);
+  sl(netX,midY,ox+fw,midY);
+}
+
 // ── Ball ──
 function _isVolleyballSport(){
   const ft=document.getElementById('fieldType')?.value||'';
   return ft==='vb-full'||ft==='vb-half'||ft==='vb-beach'||ft==='vb-beach-half'||
-    (window.currentSport&&(window.currentSport.id==='volleyball'||window.currentSport.id==='tennis'));
+    (window.currentSport&&window.currentSport.id==='volleyball');
+}
+function _isTennisSport(){
+  const ft=document.getElementById('fieldType')?.value||'';
+  return ft==='tn-full'||ft==='tn-half'||ft==='tn-service'||
+    (window.currentSport&&window.currentSport.id==='tennis');
+}
+
+function drawTennisBall(x,y,sel,sc){
+  const R=13, s=sc||1;
+  ctx.save();
+  ctx.translate(x,y);
+  if(sel){
+    ctx.strokeStyle='#ffe082';ctx.lineWidth=2;ctx.setLineDash([3,3]);
+    ctx.beginPath();ctx.arc(0,0,(R+4)*s,0,Math.PI*2);ctx.stroke();
+    ctx.setLineDash([]);
+  }
+  ctx.shadowBlur=0;ctx.shadowOffsetY=0;ctx.shadowColor='transparent';
+  ctx.beginPath();ctx.arc(0,0,R*s,0,Math.PI*2);
+  ctx.fillStyle='#ffffff';ctx.fill();ctx.clip();
+  ctx.font=`${Math.round(R*2.5*s)}px serif`;
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText('🎾',0,R*s*0.08);
+  ctx.restore();
 }
 
 function drawBall(x,y,sel,sc){
   if(_isVolleyballSport()){ drawVolleyball(x,y,sel,sc); return; }
+  if(_isTennisSport()){ drawTennisBall(x,y,sel,sc); return; }
   const R=13;
   const pr=R*0.306, dr=R*0.620;
   ctx.save();
