@@ -516,7 +516,8 @@ function loadMatIntoBuilder(matStr){
     const m=p.match(/^(\d+)\s*[x×]\s+(.+)$/i);
     if(m){const num=m[1];const name=m[2].trim();
       const sel=document.querySelector(`.mat-sel[data-mat="${name}"]`);
-      if(sel){sel.value=num;return;}
+      // Only set if not already set — first occurrence wins, duplicates ignored
+      if(sel){if(sel.value==='0')sel.value=num;return;}
     }
     // check if it's a counted mat without number
     const found=COUNTED_MATS.find(cm=>p.toLowerCase().includes(cm.toLowerCase()));
