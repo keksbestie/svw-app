@@ -107,6 +107,7 @@ function _updateHelpSport() {
   const isFb = !isVb && !isTn;
   document.querySelectorAll('.mat-sport-fussball').forEach(el => el.style.display = isFb ? '' : 'none');
   document.querySelectorAll('.mat-sport-volleyball').forEach(el => el.style.display = isVb ? '' : 'none');
+  document.querySelectorAll('.mat-not-fussball').forEach(el => el.style.display = isFb ? 'none' : '');
 }
 
 function initSportSelection() {
