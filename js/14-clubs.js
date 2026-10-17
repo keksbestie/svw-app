@@ -36,13 +36,16 @@ async function loadClubData(userId) {
 }
 
 function _renderClubLogo() {
-  const el = document.getElementById('clubLogoHeader');
-  if (!el) return;
-  if (clubLogoUrl) {
-    el.innerHTML = `<img src="${clubLogoUrl}" alt="Vereinslogo" style="height:32px;max-width:80px;object-fit:contain;">`;
-    el.style.display = 'flex';
+  const btn = document.getElementById('navClubBtn');
+  if (!btn) return;
+  if (currentClub) {
+    const logoHtml = clubLogoUrl
+      ? `<img src="${clubLogoUrl}" alt="" style="height:20px;max-width:48px;object-fit:contain;border-radius:3px;vertical-align:middle;margin-right:5px;">`
+      : '';
+    btn.innerHTML = `${logoHtml}Mein Verein`;
+    btn.style.display = 'inline-flex';
   } else {
-    el.style.display = 'none';
+    btn.style.display = 'none';
   }
 }
 
@@ -118,6 +121,13 @@ async function checkPendingToken(userId) {
 async function renderClubAdminPanel() {
   const wrap = document.getElementById('clubAdminWrap');
   if (!wrap) return;
+
+  // AssistCoach-Admin: Verein-Erstell-UI anzeigen
+  if (typeof IS_ADMIN !== 'undefined' && IS_ADMIN) {
+    _renderSuperAdminPanel(wrap);
+    return;
+  }
+
   if (!currentClub || currentClubRole !== 'club_admin') { wrap.style.display = 'none'; return; }
   wrap.style.display = '';
 
@@ -171,6 +181,51 @@ async function renderClubAdminPanel() {
     ${logoSection}
     <div class="club-section-label" style="margin-top:16px;">Trainer-Slots (${(slots||[]).filter(s=>s.user_id).length}/${currentClub.slot_count} belegt)</div>
     <div class="club-slots-list">${rows}</div>`;
+}
+
+async function _renderSuperAdminPanel(wrap) {
+  wrap.style.display = '';
+
+  // Alle Vereine laden
+  const { data: clubs } = await _supabase.from('clubs').select('id, name, slot_count, logo_url, created_at').order('created_at', { ascending: false });
+
+  const clubRows = (clubs || []).map(c => `
+    <div class="club-slot-row">
+      ${c.logo_url ? `<img src="${c.logo_url}" style="height:24px;max-width:40px;object-fit:contain;border-radius:3px;">` : '<span style="width:40px;display:inline-block;"></span>'}
+      <span style="flex:1;font-size:13px;font-weight:600;">${c.name}</span>
+      <span class="slot-idx">${c.slot_count} Slots</span>
+    </div>`).join('');
+
+  wrap.innerHTML = `
+    <div class="club-admin-header"><span class="club-admin-title">🏢 Vereinsverwaltung (Admin)</span></div>
+
+    <label class="club-section-label">Neuen Verein anlegen</label>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+      <input type="text" id="newClubName" class="fc" placeholder="Vereinsname" style="margin:0;">
+      <input type="number" id="newClubSlots" class="fc" placeholder="Anzahl Trainer-Slots" min="1" max="100" style="margin:0;">
+      <input type="email" id="newClubAdminEmail" class="fc" placeholder="E-Mail des Vereins-Admins (optional)" style="margin:0;">
+      <button class="bpr" onclick="createClubFromUI()">Verein anlegen</button>
+    </div>
+
+    <label class="club-section-label">Bestehende Vereine (${(clubs||[]).length})</label>
+    <div class="club-slots-list">${clubRows || '<span class="slot-free">Noch keine Vereine angelegt.</span>'}</div>`;
+}
+
+async function createClubFromUI() {
+  const name = document.getElementById('newClubName')?.value.trim();
+  const slots = parseInt(document.getElementById('newClubSlots')?.value);
+  const email = document.getElementById('newClubAdminEmail')?.value.trim();
+  if (!name || !slots || slots < 1) { showToast('Name und Slot-Anzahl erforderlich', 'err'); return; }
+
+  let adminUserId = null;
+  if (email) {
+    const { data: profile } = await _supabase.from('profiles').select('id').eq('email', email).single();
+    if (!profile) { showToast(`Kein Account mit E-Mail "${email}" gefunden`, 'err'); return; }
+    adminUserId = profile.id;
+  }
+
+  const club = await createClub(name, slots, adminUserId);
+  if (club) renderClubAdminPanel();
 }
 
 async function removeTrainerFromSlot(slotId) {
