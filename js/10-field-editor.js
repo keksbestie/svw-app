@@ -1281,25 +1281,22 @@ function drawTennisFull(W,H,p){
   const {s,fw,fh,ox,oy}=_tnBase(W,H,p,23.77,10.97);
   const alley=1.37*s, svcD=6.40*s;
   const netX=ox+fw/2, midY=oy+fh/2;
-  // Service box highlight
-  ctx.fillStyle='rgba(255,255,255,.07)';
-  ctx.fillRect(netX-svcD,oy+alley,svcD*2,fh-alley*2);
-  // Outer border
+  // Outer border (doubles boundary)
   sr(ox,oy,fw,fh);
-  // Singles sidelines
-  sl(ox+alley,oy,ox+alley,oy+fh);
-  sl(ox+fw-alley,oy,ox+fw-alley,oy+fh);
-  // Net (dashed)
+  // Singles sidelines (horizontal, parallel to length)
+  sl(ox,oy+alley,ox+fw,oy+alley);
+  sl(ox,oy+fh-alley,ox+fw,oy+fh-alley);
+  // Net (dashed vertical)
   ctx.save();ctx.setLineDash([5,4]);ctx.lineWidth=2.5;
   sl(netX,oy,netX,oy+fh);
   ctx.setLineDash([]);ctx.restore();
-  // Service lines
+  // Service lines (vertical, within singles width)
   sl(netX-svcD,oy+alley,netX-svcD,oy+fh-alley);
   sl(netX+svcD,oy+alley,netX+svcD,oy+fh-alley);
-  // Center service lines
+  // Center service lines (horizontal)
   sl(netX-svcD,midY,netX,midY);
   sl(netX,midY,netX+svcD,midY);
-  // Center marks on baselines
+  // Center marks on baselines (short horizontal ticks)
   const cm=Math.max(0.15*s,5);
   sl(ox,midY,ox+cm,midY);
   sl(ox+fw-cm,midY,ox+fw,midY);
@@ -1310,21 +1307,18 @@ function drawTennisHalf(W,H,p){
   const {s,fw,fh,ox,oy}=_tnBase(W,H,p,11.885,10.97);
   const alley=1.37*s, svcD=6.40*s;
   const netX=ox+fw, midY=oy+fh/2;
-  // Service box highlight
-  ctx.fillStyle='rgba(255,255,255,.07)';
-  ctx.fillRect(netX-svcD,oy+alley,svcD,fh-alley*2);
   // Border
   sr(ox,oy,fw,fh);
-  // Singles sidelines
-  sl(ox+alley,oy,ox+alley,oy+fh);
-  sl(ox+fw-alley,oy,ox+fw-alley,oy+fh);
+  // Singles sidelines (horizontal)
+  sl(ox,oy+alley,ox+fw,oy+alley);
+  sl(ox,oy+fh-alley,ox+fw,oy+fh-alley);
   // Net (dashed, right edge)
   ctx.save();ctx.setLineDash([5,4]);ctx.lineWidth=2.5;
   sl(netX,oy,netX,oy+fh);
   ctx.setLineDash([]);ctx.restore();
-  // Service line
+  // Service line (vertical)
   sl(netX-svcD,oy+alley,netX-svcD,oy+fh-alley);
-  // Center service line
+  // Center service line (horizontal)
   sl(netX-svcD,midY,netX,midY);
   // Center mark on baseline
   const cm=Math.max(0.15*s,5);
@@ -1335,16 +1329,13 @@ function drawTennisService(W,H,p){
   // T-to-T: both service boxes, 12.80m × 8.23m (singles width)
   const {s,fw,fh,ox,oy}=_tnBase(W,H,p,12.80,8.23);
   const netX=ox+fw/2, midY=oy+fh/2;
-  // Highlight both boxes
-  ctx.fillStyle='rgba(255,255,255,.07)';
-  ctx.fillRect(ox,oy,fw,fh);
-  // Border (= service lines left/right, singles sidelines top/bottom)
+  // Border (service lines = left/right edges, singles sidelines = top/bottom)
   sr(ox,oy,fw,fh);
   // Net (dashed)
   ctx.save();ctx.setLineDash([5,4]);ctx.lineWidth=2.5;
   sl(netX,oy,netX,oy+fh);
   ctx.setLineDash([]);ctx.restore();
-  // Center service lines
+  // Center service lines (horizontal)
   sl(ox,midY,netX,midY);
   sl(netX,midY,ox+fw,midY);
 }
@@ -1362,41 +1353,21 @@ function _isTennisSport(){
 }
 
 function drawTennisBall(x,y,sel,sc){
-  const R=13;
+  const R=13, s=sc||1;
   ctx.save();
-  ctx.translate(x,y);ctx.scale(sc||1,sc||1);
-  ctx.shadowColor='rgba(0,0,0,.5)';ctx.shadowBlur=7;ctx.shadowOffsetY=3;
-  // Yellow-green base
-  const grad=ctx.createRadialGradient(-R*0.3,-R*0.35,R*0.1,0,0,R);
-  grad.addColorStop(0,'#d4f033');
-  grad.addColorStop(0.6,'#b8d400');
-  grad.addColorStop(1,'#8fa800');
-  ctx.fillStyle=grad;
-  ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);ctx.fill();
-  ctx.shadowBlur=0;ctx.shadowOffsetY=0;
-  ctx.save();
-  ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);ctx.clip();
-  // White S-curve seam (tennis ball characteristic)
-  ctx.strokeStyle='rgba(255,255,255,0.9)';ctx.lineWidth=2.2;ctx.lineCap='round';
-  // Left seam: S-curve from top-left to bottom-right
-  ctx.beginPath();
-  ctx.moveTo(-R*0.2,-R);
-  ctx.bezierCurveTo(-R*0.9,-R*0.3, R*0.9,R*0.3, R*0.2,R);
-  ctx.stroke();
-  // Right seam: mirrored S-curve
-  ctx.beginPath();
-  ctx.moveTo(R*0.2,-R);
-  ctx.bezierCurveTo(R*0.9,-R*0.3, -R*0.9,R*0.3, -R*0.2,R);
-  ctx.stroke();
-  ctx.restore();
-  // Border
-  ctx.strokeStyle='rgba(0,0,0,.15)';ctx.lineWidth=1;
-  ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);ctx.stroke();
+  ctx.translate(x,y);
   if(sel){
     ctx.strokeStyle='#ffe082';ctx.lineWidth=2;ctx.setLineDash([3,3]);
-    ctx.beginPath();ctx.arc(0,0,R+4,0,Math.PI*2);ctx.stroke();
+    ctx.beginPath();ctx.arc(0,0,(R+4)*s,0,Math.PI*2);ctx.stroke();
     ctx.setLineDash([]);
   }
+  ctx.shadowBlur=0;ctx.shadowOffsetY=0;ctx.shadowColor='transparent';
+  ctx.beginPath();ctx.arc(0,0,R*s,0,Math.PI*2);
+  ctx.fillStyle='#ffffff';ctx.fill();
+  ctx.clip();
+  ctx.font=`${Math.round(R*2.5*s)}px serif`;
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText('🎾',0,R*s*0.08);
   ctx.restore();
 }
 
