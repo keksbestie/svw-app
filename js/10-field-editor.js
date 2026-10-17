@@ -1302,6 +1302,9 @@ function drawTennisFull(W,H,p){
   const cm=Math.max(0.15*s,5);
   sl(ox,midY,ox+cm,midY);
   sl(ox+fw-cm,midY,ox+fw,midY);
+  ctx.fillStyle='rgba(255,255,255,.4)'; ctx.font='bold 10px "Barlow Condensed",sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='bottom';
+  ctx.fillText('TENNIS  23,77m × 10,97m', W/2, oy-4);
 }
 
 function drawTennisHalf(W,H,p){
@@ -1325,6 +1328,9 @@ function drawTennisHalf(W,H,p){
   // Center mark on baseline
   const cm=Math.max(0.15*s,5);
   sl(ox,midY,ox+cm,midY);
+  ctx.fillStyle='rgba(255,255,255,.4)'; ctx.font='bold 10px "Barlow Condensed",sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='bottom';
+  ctx.fillText('HALBFELD  11,89m × 10,97m', W/2, oy-4);
 }
 
 function drawTennisService(W,H,p){
@@ -1340,6 +1346,9 @@ function drawTennisService(W,H,p){
   // Center service lines (horizontal)
   sl(ox,midY,netX,midY);
   sl(netX,midY,ox+fw,midY);
+  ctx.fillStyle='rgba(255,255,255,.4)'; ctx.font='bold 10px "Barlow Condensed",sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='bottom';
+  ctx.fillText('T-FELD  12,80m × 8,23m', W/2, oy-4);
 }
 
 // ── Ball ──
