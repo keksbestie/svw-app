@@ -1,4 +1,4 @@
-const CACHE = 'assistcoach-v107';
+const CACHE = 'assistcoach-v108';
 const ASSETS = [
   '/',
   '/index.html',
@@ -24,7 +24,7 @@ const ASSETS = [
   '/data/exercises.default.js',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
-  '/icons/tennis-ball.webp'
+  '/icons/tennis-ball.png'
 ];
 
 self.addEventListener('install', e => {

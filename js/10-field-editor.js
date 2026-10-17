@@ -9,7 +9,7 @@
 // FELD-EDITOR
 // ══════════════════════════════════════════════════════
 const _tennisBallImg = new Image();
-_tennisBallImg.src = 'icons/tennis-ball.webp';
+_tennisBallImg.src = 'icons/tennis-ball.png';
 let currentTool='player', canvasObjects=[], undoStack=[], lineCounter=0;
 let playerCounters={}, selectedObjIdx=null;
 let isDraggingObj=false, dragOffX=0, dragOffY=0;
