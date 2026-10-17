@@ -542,8 +542,8 @@ function editEx(id){if(!IS_ADMIN)return;const e=exercises.find(x=>x.id===id);if(
 function saveEx(){
   const name=document.getElementById('mName').value.trim();if(!name){showToast('Bitte Name eingeben','err');return;}
   const si=parseInt(document.getElementById('mSec').value);
-  // Auto-export canvas diagram as PNG if canvas has objects and no manual image
-  if(!formImg && canvasObjects.length>0){
+  // Auto-export canvas diagram as PNG if canvas has objects (always overrides old image)
+  if(canvasObjects.length>0){
     const c=document.getElementById('feldCanvas');
     if(c) formImg=c.toDataURL('image/png');
   }
