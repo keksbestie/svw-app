@@ -122,15 +122,21 @@ async function renderClubAdminPanel() {
   const wrap = document.getElementById('clubAdminWrap');
   if (!wrap) return;
 
-  // AssistCoach-Admin: Verein-Erstell-UI anzeigen
+  wrap.style.display = '';
+
+  // AssistCoach-Admin: Verein-Erstell-UI oben anzeigen
   if (typeof IS_ADMIN !== 'undefined' && IS_ADMIN) {
-    _renderSuperAdminPanel(wrap);
+    await _renderSuperAdminPanel(wrap);
     return;
   }
 
   if (!currentClub || currentClubRole !== 'club_admin') { wrap.style.display = 'none'; return; }
-  wrap.style.display = '';
 
+  wrap.innerHTML = `<div class="club-admin-header"><span class="club-admin-title">Vereinsverwaltung — ${currentClub.name}</span></div><div id="clubAdminPanelInner"></div>`;
+  await _renderClubSlots(document.getElementById('clubAdminPanelInner'));
+}
+
+async function _renderClubSlots(el) {
   const { data: slots } = await _supabase
     .from('club_slots')
     .select('id, slot_index, token, user_id, last_swapped_at, profiles(email)')
@@ -140,7 +146,7 @@ async function renderClubAdminPanel() {
   const now = new Date();
   const thisMonth = `${now.getFullYear()}-${now.getMonth()}`;
 
-  let rows = (slots || []).map(s => {
+  const rows = (slots || []).map(s => {
     const swappedMonth = s.last_swapped_at ? (() => { const d = new Date(s.last_swapped_at); return `${d.getFullYear()}-${d.getMonth()}`; })() : null;
     const canSwap = swappedMonth !== thisMonth;
     const email = s.profiles?.email || null;
@@ -152,17 +158,15 @@ async function renderClubAdminPanel() {
           ? `<span class="slot-email">${email}</span>
              ${canSwap
                ? `<button class="slot-btn slot-btn-remove" onclick="removeTrainerFromSlot('${s.id}')">Entfernen</button>`
-               : `<span class="slot-locked" title="Bereits diesen Monat getauscht">🔒 gesperrt bis nächsten Monat</span>`
-             }`
+               : `<span class="slot-locked" title="Bereits diesen Monat getauscht">🔒 gesperrt bis nächsten Monat</span>`}`
           : `<span class="slot-free">frei</span>
              <button class="slot-btn slot-btn-copy" onclick="copyInviteLink('${inviteUrl}')">Link kopieren</button>`
         }
       </div>`;
   }).join('');
 
-  // Logo-Upload
   const consentChecked = currentClub?.logo_public_consent ? 'checked' : '';
-  const logoSection = `
+  el.innerHTML = `
     <div class="club-logo-section">
       <label class="club-section-label">Vereinslogo</label>
       ${clubLogoUrl ? `<img src="${clubLogoUrl}" class="club-logo-preview" alt="Logo">` : '<span class="slot-free">Kein Logo hinterlegt</span>'}
@@ -172,19 +176,12 @@ async function renderClubAdminPanel() {
     <label class="club-consent-label">
       <input type="checkbox" id="clubLogoConsent" ${consentChecked} onchange="saveLogoConsent(this.checked)">
       <span>Als autorisierte:r Vertreter:in meines Vereins erkläre ich mich damit einverstanden, dass AssistCoach das Vereinslogo unentgeltlich und nicht-kommerziell auf der Webseite assistcoach.app zur Darstellung teilnehmender Vereine verwenden darf. Diese Einwilligung kann jederzeit durch Entfernen des Hakens widerrufen werden.</span>
-    </label>`;
-
-  wrap.innerHTML = `
-    <div class="club-admin-header">
-      <span class="club-admin-title">Vereinsverwaltung — ${currentClub.name}</span>
-    </div>
-    ${logoSection}
+    </label>
     <div class="club-section-label" style="margin-top:16px;">Trainer-Slots (${(slots||[]).filter(s=>s.user_id).length}/${currentClub.slot_count} belegt)</div>
     <div class="club-slots-list">${rows}</div>`;
 }
 
 async function _renderSuperAdminPanel(wrap) {
-  wrap.style.display = '';
 
   // Alle Vereine laden
   const { data: clubs } = await _supabase.from('clubs').select('id, name, slot_count, logo_url, created_at').order('created_at', { ascending: false });
@@ -209,7 +206,14 @@ async function _renderSuperAdminPanel(wrap) {
     </div>
 
     <label class="club-section-label">Bestehende Vereine (${(clubs||[]).length})</label>
-    <div class="club-slots-list">${clubRows || '<span class="slot-free">Noch keine Vereine angelegt.</span>'}</div>`;
+    <div class="club-slots-list">${clubRows || '<span class="slot-free">Noch keine Vereine angelegt.</span>'}</div>
+    ${currentClub ? '<div id="clubAdminPanelInner" style="margin-top:24px;border-top:1px solid var(--border);padding-top:20px;"></div>' : ''}`;
+
+  // Wenn eigener Verein: Slot-Panel darunter rendern
+  if (currentClub && currentClubRole === 'club_admin') {
+    const inner = document.getElementById('clubAdminPanelInner');
+    if (inner) await _renderClubSlots(inner);
+  }
 }
 
 async function assignAdminToClub(clubId) {
