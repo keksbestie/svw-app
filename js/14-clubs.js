@@ -245,6 +245,7 @@ async function _renderAdminView(wrap) {
         <input type="file" id="clubLogoInput" accept="image/*" style="display:none" onchange="uploadClubLogo(this)">
         <button class="slot-btn" onclick="document.getElementById('clubLogoInput').click()">Logo hochladen</button>
       </div>
+      <div style="font-size:11px;color:var(--gd2);margin-top:4px;">PNG mit transparentem Hintergrund, min. 300×300 px empfohlen.</div>
       <label class="club-consent-label">
         <input type="checkbox" id="clubLogoConsent" ${consentChecked} onchange="saveLogoConsent(this.checked)">
         <span>Als autorisierte:r Vertreter:in meines Vereins erkläre ich mich damit einverstanden, dass AssistCoach das Vereinslogo unentgeltlich und nicht-kommerziell auf der Webseite assistcoach.app zur Darstellung teilnehmender Vereine verwenden darf. Diese Einwilligung kann jederzeit durch Entfernen des Hakens widerrufen werden.</span>
@@ -258,7 +259,7 @@ async function _renderAdminView(wrap) {
 
     <div style="background:var(--surface);border-radius:12px;padding:20px;box-shadow:var(--sh);margin-bottom:14px;">
       <div class="club-section-label">Trainer-Slots (${slots.filter(s=>s.user_id).length}/${currentClub.slot_count} belegt)</div>
-      <div class="club-slots-list">${slotRows || '<div class="slot-free">Noch keine Slots. Werden nach Kauf freigeschaltet.</div>'}</div>
+      <div class="club-slots-list">${slotRows || '<div class="slot-free">In der aktuellen Version noch nicht verfügbar.</div>'}</div>
     </div>
 
     ${memberOpts ? `
