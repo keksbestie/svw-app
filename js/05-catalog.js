@@ -555,7 +555,7 @@ function saveEx(){
     _supabase.from('exercises').update({
       name:ex.name,players:ex.players,material:ex.material,section:ex.section,
       difficulty:ex.difficulty,duration:ex.duration,description:ex.desc,tags:ex.tags,
-      canvas_objects:ex.canvasObjects||[]
+      image:ex.image||null,canvas_objects:ex.canvasObjects||[]
     }).eq('id',editingId).then(({error})=>{
       if(error)showToast('Speichern fehlgeschlagen – bitte neu versuchen','err');
     });
