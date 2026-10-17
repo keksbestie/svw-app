@@ -506,20 +506,21 @@ function updateMatField(){
 function loadMatIntoBuilder(matStr){
   // reset all selects
   document.querySelectorAll('.mat-sel').forEach(s=>{s.value='0';});
-  if(!matStr){if(document.getElementById('mMatFree'))document.getElementById('mMatFree').value='';return;}
-  const COUNTED_MATS=['Stangen','Rebounder','Hürden','Ringe','Koordinationsleiter','Ballkorb','Zuspielring'];
+  if(document.getElementById('mMatFree'))document.getElementById('mMatFree').value='';
+  if(!matStr)return;
+  const COUNTED_MATS=['Minitore','Stangen','Jugendtore','Rebounder','Hürden','Ringe','Koordinationsleiter','Ballkorb','Zuspielring'];
   const parts=matStr.split(',').map(x=>x.trim()).filter(Boolean);
   const freeItems=[];
   parts.forEach(p=>{
-    // match "Nx Name" pattern
-    const m=p.match(/^(\d+)x?\s+(.+)$/i);
+    // match "Nx Name" or "N× Name" pattern (x or × separator)
+    const m=p.match(/^(\d+)\s*[x×]\s+(.+)$/i);
     if(m){const num=m[1];const name=m[2].trim();
       const sel=document.querySelector(`.mat-sel[data-mat="${name}"]`);
       if(sel){sel.value=num;return;}
     }
     // check if it's a counted mat without number
-    const sel=COUNTED_MATS.find(cm=>p.toLowerCase().includes(cm.toLowerCase()));
-    if(sel){const s=document.querySelector(`.mat-sel[data-mat="${sel}"]`);if(s&&s.value==='0')s.value='1';return;}
+    const found=COUNTED_MATS.find(cm=>p.toLowerCase().includes(cm.toLowerCase()));
+    if(found){const s=document.querySelector(`.mat-sel[data-mat="${found}"]`);if(s&&s.value==='0')s.value='1';return;}
     freeItems.push(p);
   });
   if(document.getElementById('mMatFree'))document.getElementById('mMatFree').value=freeItems.join(', ');
@@ -554,7 +555,9 @@ function saveEx(){
       name:ex.name,players:ex.players,material:ex.material,section:ex.section,
       difficulty:ex.difficulty,duration:ex.duration,description:ex.desc,tags:ex.tags,
       canvas_objects:ex.canvasObjects||[]
-    }).eq('id',editingId);
+    }).eq('id',editingId).then(({error})=>{
+      if(error)showToast('Speichern fehlgeschlagen – bitte neu versuchen','err');
+    });
   }
 }
 async function delEx(id){
