@@ -1362,20 +1362,41 @@ function _isTennisSport(){
 }
 
 function drawTennisBall(x,y,sel,sc){
-  const R=13, s=sc||1;
+  const R=13;
   ctx.save();
-  ctx.translate(x,y);
+  ctx.translate(x,y);ctx.scale(sc||1,sc||1);
+  ctx.shadowColor='rgba(0,0,0,.5)';ctx.shadowBlur=7;ctx.shadowOffsetY=3;
+  // Yellow-green base
+  const grad=ctx.createRadialGradient(-R*0.3,-R*0.35,R*0.1,0,0,R);
+  grad.addColorStop(0,'#d4f033');
+  grad.addColorStop(0.6,'#b8d400');
+  grad.addColorStop(1,'#8fa800');
+  ctx.fillStyle=grad;
+  ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);ctx.fill();
+  ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+  ctx.save();
+  ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);ctx.clip();
+  // White S-curve seam (tennis ball characteristic)
+  ctx.strokeStyle='rgba(255,255,255,0.9)';ctx.lineWidth=2.2;ctx.lineCap='round';
+  // Left seam: S-curve from top-left to bottom-right
+  ctx.beginPath();
+  ctx.moveTo(-R*0.2,-R);
+  ctx.bezierCurveTo(-R*0.9,-R*0.3, R*0.9,R*0.3, R*0.2,R);
+  ctx.stroke();
+  // Right seam: mirrored S-curve
+  ctx.beginPath();
+  ctx.moveTo(R*0.2,-R);
+  ctx.bezierCurveTo(R*0.9,-R*0.3, -R*0.9,R*0.3, -R*0.2,R);
+  ctx.stroke();
+  ctx.restore();
+  // Border
+  ctx.strokeStyle='rgba(0,0,0,.15)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);ctx.stroke();
   if(sel){
     ctx.strokeStyle='#ffe082';ctx.lineWidth=2;ctx.setLineDash([3,3]);
-    ctx.beginPath();ctx.arc(0,0,(R+4)*s,0,Math.PI*2);ctx.stroke();
+    ctx.beginPath();ctx.arc(0,0,R+4,0,Math.PI*2);ctx.stroke();
     ctx.setLineDash([]);
   }
-  ctx.shadowBlur=0;ctx.shadowOffsetY=0;ctx.shadowColor='transparent';
-  ctx.beginPath();ctx.arc(0,0,R*s,0,Math.PI*2);
-  ctx.fillStyle='#ffffff';ctx.fill();ctx.clip();
-  ctx.font=`${Math.round(R*2.5*s)}px serif`;
-  ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText('🎾',0,R*s*0.08);
   ctx.restore();
 }
 
