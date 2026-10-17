@@ -636,9 +636,12 @@ document.addEventListener('click',e=>{
 function switchAccTab(tab){
   document.getElementById('accPanelProfile').style.display=tab==='profile'?'':'none';
   document.getElementById('accPanelPlans').style.display=tab==='plans'?'':'none';
+  document.getElementById('accPanelClub').style.display=tab==='club'?'':'none';
   document.getElementById('accTabProfile').classList.toggle('acc-tab--active',tab==='profile');
   document.getElementById('accTabPlans').classList.toggle('acc-tab--active',tab==='plans');
+  document.getElementById('accTabClub').classList.toggle('acc-tab--active',tab==='club');
   if(tab==='plans') renderMyAccPlans();
+  if(tab==='club'&&typeof renderClubTab==='function') renderClubTab();
 }
 
 function renderAccountPage(){

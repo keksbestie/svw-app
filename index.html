@@ -707,10 +707,8 @@
     <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:22px;">
       <button id="accTabProfile" class="acc-tab acc-tab--active" onclick="switchAccTab('profile')">Profil</button>
       <button id="accTabPlans" class="acc-tab" onclick="switchAccTab('plans')">Meine Pläne</button>
+      <button id="accTabClub" class="acc-tab" onclick="switchAccTab('club')">Mein Verein</button>
     </div>
-
-    <!-- Vereins-Admin-Panel (nur für club_admin sichtbar) -->
-    <div id="clubAdminWrap" style="display:none;background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:20px;"></div>
 
     <!-- Tab: Profil -->
     <div id="accPanelProfile">
@@ -747,6 +745,8 @@
     </div>
 
     <!-- Tab: Meine Pläne -->
+    <div id="accPanelClub" style="display:none;"></div>
+
     <div id="accPanelPlans" style="display:none;">
       <div id="accPlansList" style="display:flex;flex-direction:column;gap:10px;">
         <div style="text-align:center;color:var(--gd2);font-size:14px;padding:40px 0;">Keine Pläne vorhanden.</div>

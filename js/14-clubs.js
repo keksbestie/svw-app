@@ -1,41 +1,28 @@
 // ══════════════════════════════════════════════════════════════════
 // MODUL: VEREINS-ACCOUNTS
 // ══════════════════════════════════════════════════════════════════
-// Verwaltet Vereins-Login via Invite-Token, Logo-Anzeige, Club-Admin-Panel
-// ══════════════════════════════════════════════════════════════════
 
-let currentClub = null;      // { id, name, logo_url, slot_count }
+let currentClub = null;      // { id, name, logo_url, slot_count, logo_public_consent }
 let currentClubRole = null;  // 'club_admin' | 'club_trainer' | null
 let clubLogoUrl = null;
 
-// ══════════════════════════════════════════════════════
-// INIT — wird nach Auth aufgerufen
-// ══════════════════════════════════════════════════════
+// ── Init nach Auth ────────────────────────────────────────────────
 async function loadClubData(userId) {
   if (!_supabase || !userId) return;
   try {
     const { data: profile } = await _supabase
-      .from('profiles')
-      .select('club_id, club_role')
-      .eq('id', userId)
-      .single();
-
-    if (!profile?.club_id) { currentClub = null; currentClubRole = null; clubLogoUrl = null; _renderClubLogo(); return; }
-
+      .from('profiles').select('club_id, club_role').eq('id', userId).single();
+    if (!profile?.club_id) { currentClub = null; currentClubRole = null; clubLogoUrl = null; _renderClubBtn(); return; }
     currentClubRole = profile.club_role;
     const { data: club } = await _supabase
-      .from('clubs')
-      .select('id, name, logo_url, slot_count, logo_public_consent')
-      .eq('id', profile.club_id)
-      .single();
-
+      .from('clubs').select('id, name, logo_url, slot_count, logo_public_consent').eq('id', profile.club_id).single();
     currentClub = club || null;
     clubLogoUrl = club?.logo_url || null;
-    _renderClubLogo();
+    _renderClubBtn();
   } catch(e) { console.warn('Club load error', e); }
 }
 
-function _renderClubLogo() {
+function _renderClubBtn() {
   const btn = document.getElementById('navClubBtn');
   if (!btn) return;
   if (currentClub) {
@@ -49,231 +36,323 @@ function _renderClubLogo() {
   }
 }
 
-// ══════════════════════════════════════════════════════
-// INVITE-LINK HANDLING
-// Beim App-Start prüfen ob ?token=... in der URL ist
-// ══════════════════════════════════════════════════════
+// ── Invite-Token-Flow ─────────────────────────────────────────────
 async function handleInviteToken() {
   const params = new URLSearchParams(window.location.search);
   const token = params.get('token');
   if (!token || !_supabase) return;
-
-  // Token validieren
-  const { data: slot, error } = await _supabase
-    .from('club_slots')
-    .select('id, club_id, user_id, last_swapped_at')
-    .eq('token', token)
-    .single();
-
-  if (error || !slot) { showToast('Einlade-Link ungültig oder abgelaufen.', 'err'); return; }
-  if (slot.user_id) { showToast('Dieser Trainer-Slot ist bereits vergeben.', 'err'); return; }
-
-  // User muss eingeloggt sein
+  const { data: slot } = await _supabase.from('club_slots').select('id, club_id, user_id').eq('token', token).single();
+  if (!slot || slot.user_id) { showToast(slot ? 'Dieser Slot ist bereits vergeben.' : 'Einlade-Link ungültig.', 'err'); return; }
   const { data: { user } } = await _supabase.auth.getUser();
   if (!user) {
-    // Token im localStorage merken und nach Login weiterverarbeiten
     try { localStorage.setItem('ac_pending_token', token); } catch {}
-    showToast('Bitte erst anmelden, dann wird der Zugang automatisch aktiviert.', '');
+    showToast('Bitte erst anmelden – Zugang wird dann automatisch aktiviert.');
     return;
   }
-
-  await _claimSlot(slot, user.id, token);
+  await _claimSlot(slot, user.id);
 }
 
-async function _claimSlot(slot, userId, token) {
-  // Slot belegen
-  const { error: slotErr } = await _supabase
-    .from('club_slots')
-    .update({ user_id: userId })
-    .eq('id', slot.id);
-  if (slotErr) { showToast('Aktivierung fehlgeschlagen.', 'err'); return; }
-
-  // Profil verknüpfen
+async function _claimSlot(slot, userId) {
+  await _supabase.from('club_slots').update({ user_id: userId }).eq('id', slot.id);
   await _supabase.from('profiles').update({ club_id: slot.club_id, club_role: 'club_trainer' }).eq('id', userId);
-
-  // URL bereinigen
   try { window.history.replaceState({}, '', window.location.pathname); } catch {}
   try { localStorage.removeItem('ac_pending_token'); } catch {}
-
   showToast('Vereinszugang aktiviert! Willkommen.');
   await loadClubData(userId);
 }
 
-// Nach Login: pending token prüfen
 async function checkPendingToken(userId) {
-  let token;
-  try { token = localStorage.getItem('ac_pending_token'); } catch {}
+  let token; try { token = localStorage.getItem('ac_pending_token'); } catch {}
   if (!token || !_supabase) return;
-
-  const { data: slot } = await _supabase
-    .from('club_slots')
-    .select('id, club_id, user_id')
-    .eq('token', token)
-    .single();
-
-  if (slot && !slot.user_id) await _claimSlot(slot, userId, token);
+  const { data: slot } = await _supabase.from('club_slots').select('id, club_id, user_id').eq('token', token).single();
+  if (slot && !slot.user_id) await _claimSlot(slot, userId);
   else { try { localStorage.removeItem('ac_pending_token'); } catch {} }
 }
 
-// ══════════════════════════════════════════════════════
-// CLUB ADMIN PANEL
-// ══════════════════════════════════════════════════════
-async function renderClubAdminPanel() {
-  const wrap = document.getElementById('clubAdminWrap');
+// ══════════════════════════════════════════════════════════════════
+// ACCOUNT-TAB: MEIN VEREIN
+// ══════════════════════════════════════════════════════════════════
+async function renderClubTab() {
+  const wrap = document.getElementById('accPanelClub');
   if (!wrap) return;
 
-  wrap.style.display = '';
-
-  // AssistCoach-Admin: Verein-Erstell-UI oben anzeigen
-  if (typeof IS_ADMIN !== 'undefined' && IS_ADMIN) {
-    await _renderSuperAdminPanel(wrap);
+  // Kein Verein → Optionen anzeigen
+  if (!currentClub) {
+    wrap.innerHTML = `
+      <div class="club-no-club">
+        <div class="club-section-label">Du bist noch keinem Verein zugeordnet.</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;">
+          <button class="bpr" style="flex:1;min-width:160px;" onclick="showCreateClub()">＋ Verein anlegen</button>
+          <button class="bsec" style="flex:1;min-width:160px;" onclick="showSearchClub()">🔍 Verein suchen</button>
+        </div>
+        <div id="clubFormArea"></div>
+      </div>`;
     return;
   }
 
-  if (!currentClub || currentClubRole !== 'club_admin') { wrap.style.display = 'none'; return; }
-
-  wrap.innerHTML = `<div class="club-admin-header"><span class="club-admin-title">Vereinsverwaltung — ${currentClub.name}</span></div><div id="clubAdminPanelInner"></div>`;
-  await _renderClubSlots(document.getElementById('clubAdminPanelInner'));
+  // Verein vorhanden
+  if (currentClubRole === 'club_admin') {
+    await _renderAdminView(wrap);
+  } else {
+    await _renderTrainerView(wrap);
+  }
 }
 
-async function _renderClubSlots(el) {
-  const { data: slots } = await _supabase
-    .from('club_slots')
-    .select('id, slot_index, token, user_id, last_swapped_at, profiles(email)')
-    .eq('club_id', currentClub.id)
-    .order('slot_index');
+// ── Verein anlegen ────────────────────────────────────────────────
+function showCreateClub() {
+  const area = document.getElementById('clubFormArea');
+  if (!area) return;
+  area.innerHTML = `
+    <div style="background:var(--surface);border-radius:12px;padding:20px;box-shadow:var(--sh);">
+      <div class="fsec" style="margin-top:0;">Neuen Verein anlegen</div>
+      <label class="club-section-label">Vereinsname</label>
+      <input type="text" id="createClubName" class="fc" placeholder="z.B. FC Beispielhausen 09" style="margin-bottom:12px;">
+      <label class="club-section-label">Logo (optional)</label>
+      <input type="file" id="createClubLogo" accept="image/*" style="margin-bottom:16px;font-size:13px;">
+      <button class="bpr" style="width:100%;" onclick="submitCreateClub()">Verein anlegen</button>
+    </div>`;
+}
 
+async function submitCreateClub() {
+  const name = document.getElementById('createClubName')?.value.trim();
+  if (!name) { showToast('Bitte einen Vereinsnamen eingeben.', 'err'); return; }
+  const { data: { user } } = await _supabase.auth.getUser();
+  if (!user) { showToast('Nicht eingeloggt.', 'err'); return; }
+
+  // Verein anlegen
+  const { data: club, error } = await _supabase.from('clubs').insert({ name, slot_count: 0 }).select().single();
+  if (error) { showToast('Fehler beim Anlegen.', 'err'); return; }
+
+  // Logo hochladen falls vorhanden
+  const logoInput = document.getElementById('createClubLogo');
+  if (logoInput?.files?.[0]) {
+    const file = logoInput.files[0];
+    const ext = file.name.split('.').pop();
+    const path = `club-logos/${club.id}.${ext}`;
+    const { error: upErr } = await _supabase.storage.from('exercise-images').upload(path, file, { upsert: true, contentType: file.type });
+    if (!upErr) {
+      const { data: { publicUrl } } = _supabase.storage.from('exercise-images').getPublicUrl(path);
+      await _supabase.from('clubs').update({ logo_url: publicUrl }).eq('id', club.id);
+      club.logo_url = publicUrl;
+    }
+  }
+
+  // Profil als club_admin verknüpfen
+  await _supabase.from('profiles').update({ club_id: club.id, club_role: 'club_admin' }).eq('id', user.id);
+
+  currentClub = club;
+  currentClubRole = 'club_admin';
+  clubLogoUrl = club.logo_url || null;
+  _renderClubBtn();
+  showToast(`Verein „${name}" angelegt!`);
+  renderClubTab();
+}
+
+// ── Verein suchen ─────────────────────────────────────────────────
+function showSearchClub() {
+  const area = document.getElementById('clubFormArea');
+  if (!area) return;
+  area.innerHTML = `
+    <div style="background:var(--surface);border-radius:12px;padding:20px;box-shadow:var(--sh);">
+      <div class="fsec" style="margin-top:0;">Verein suchen</div>
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <input type="text" id="clubSearchIn" class="fc" placeholder="Vereinsname eingeben…" style="margin:0;flex:1;" oninput="searchClubs()">
+      </div>
+      <div id="clubSearchResults"></div>
+    </div>`;
+}
+
+async function searchClubs() {
+  const q = document.getElementById('clubSearchIn')?.value.trim();
+  const res = document.getElementById('clubSearchResults');
+  if (!res) return;
+  if (!q || q.length < 2) { res.innerHTML = ''; return; }
+
+  const { data: clubs } = await _supabase.from('clubs').select('id, name, logo_url').ilike('name', `%${q}%`).limit(10);
+  if (!clubs?.length) { res.innerHTML = '<div class="slot-free" style="padding:8px 0;">Kein Verein gefunden.</div>'; return; }
+
+  res.innerHTML = clubs.map(c => `
+    <div class="club-slot-row" style="margin-bottom:6px;">
+      ${c.logo_url ? `<img src="${c.logo_url}" style="height:24px;max-width:40px;object-fit:contain;border-radius:3px;">` : '<span style="width:40px;display:inline-block;"></span>'}
+      <span style="flex:1;font-size:13px;font-weight:600;">${c.name}</span>
+      <button class="slot-btn slot-btn-copy" onclick="requestJoinClub('${c.id}','${c.name.replace(/'/g,"\\'")}')">Anfragen</button>
+    </div>`).join('');
+}
+
+async function requestJoinClub(clubId, clubName) {
+  const { data: { user } } = await _supabase.auth.getUser();
+  if (!user) { showToast('Nicht eingeloggt.', 'err'); return; }
+
+  const { error } = await _supabase.from('club_join_requests').insert({ club_id: clubId, user_id: user.id });
+  if (error) {
+    if (error.code === '23505') showToast('Du hast bereits eine Anfrage gestellt.', 'err');
+    else showToast('Fehler beim Anfragen.', 'err');
+    return;
+  }
+  showToast(`Anfrage an „${clubName}" gesendet!`);
+  document.getElementById('clubFormArea').innerHTML = `<div style="padding:12px 0;font-size:13px;color:var(--gd2);">✓ Deine Anfrage wurde gesendet. Der Vereins-Admin muss sie bestätigen.</div>`;
+}
+
+// ── Admin-Ansicht ─────────────────────────────────────────────────
+async function _renderAdminView(wrap) {
+  const [slotsRes, requestsRes] = await Promise.all([
+    _supabase.from('club_slots').select('id, slot_index, token, user_id, last_swapped_at, profiles(email)').eq('club_id', currentClub.id).order('slot_index'),
+    _supabase.from('club_join_requests').select('id, user_id, profiles(email)').eq('club_id', currentClub.id).eq('status', 'pending')
+  ]);
+
+  const slots = slotsRes.data || [];
+  const requests = requestsRes.data || [];
   const now = new Date();
   const thisMonth = `${now.getFullYear()}-${now.getMonth()}`;
 
-  const rows = (slots || []).map(s => {
+  const slotRows = slots.map(s => {
     const swappedMonth = s.last_swapped_at ? (() => { const d = new Date(s.last_swapped_at); return `${d.getFullYear()}-${d.getMonth()}`; })() : null;
     const canSwap = swappedMonth !== thisMonth;
     const email = s.profiles?.email || null;
     const inviteUrl = `${window.location.origin}${window.location.pathname}?token=${s.token}`;
-    return `
-      <div class="club-slot-row">
-        <span class="slot-idx">Slot ${s.slot_index}</span>
-        ${email
-          ? `<span class="slot-email">${email}</span>
-             ${canSwap
-               ? `<button class="slot-btn slot-btn-remove" onclick="removeTrainerFromSlot('${s.id}')">Entfernen</button>`
-               : `<span class="slot-locked" title="Bereits diesen Monat getauscht">🔒 gesperrt bis nächsten Monat</span>`}`
-          : `<span class="slot-free">frei</span>
-             <button class="slot-btn slot-btn-copy" onclick="copyInviteLink('${inviteUrl}')">Link kopieren</button>`
-        }
-      </div>`;
+    return `<div class="club-slot-row">
+      <span class="slot-idx">Slot ${s.slot_index}</span>
+      ${email
+        ? `<span class="slot-email">${email}</span>
+           ${canSwap ? `<button class="slot-btn slot-btn-remove" onclick="removeTrainerFromSlot('${s.id}')">Entfernen</button>` : `<span class="slot-locked">🔒 bis nächsten Monat</span>`}`
+        : `<span class="slot-free">frei</span><button class="slot-btn slot-btn-copy" onclick="copyInviteLink('${inviteUrl}')">Link kopieren</button>`}
+    </div>`;
   }).join('');
 
-  const consentChecked = currentClub?.logo_public_consent ? 'checked' : '';
-  el.innerHTML = `
-    <div class="club-logo-section">
-      <label class="club-section-label">Vereinslogo</label>
-      ${clubLogoUrl ? `<img src="${clubLogoUrl}" class="club-logo-preview" alt="Logo">` : '<span class="slot-free">Kein Logo hinterlegt</span>'}
-      <input type="file" id="clubLogoInput" accept="image/*" style="display:none" onchange="uploadClubLogo(this)">
-      <button class="slot-btn" onclick="document.getElementById('clubLogoInput').click()">Logo hochladen</button>
-    </div>
-    <label class="club-consent-label">
-      <input type="checkbox" id="clubLogoConsent" ${consentChecked} onchange="saveLogoConsent(this.checked)">
-      <span>Als autorisierte:r Vertreter:in meines Vereins erkläre ich mich damit einverstanden, dass AssistCoach das Vereinslogo unentgeltlich und nicht-kommerziell auf der Webseite assistcoach.app zur Darstellung teilnehmender Vereine verwenden darf. Diese Einwilligung kann jederzeit durch Entfernen des Hakens widerrufen werden.</span>
-    </label>
-    <div class="club-section-label" style="margin-top:16px;">Trainer-Slots (${(slots||[]).filter(s=>s.user_id).length}/${currentClub.slot_count} belegt)</div>
-    <div class="club-slots-list">${rows}</div>`;
-}
-
-async function _renderSuperAdminPanel(wrap) {
-
-  // Alle Vereine laden
-  const { data: clubs } = await _supabase.from('clubs').select('id, name, slot_count, logo_url, created_at').order('created_at', { ascending: false });
-
-  const clubRows = (clubs || []).map(c => `
+  const requestRows = requests.length ? requests.map(r => `
     <div class="club-slot-row">
-      ${c.logo_url ? `<img src="${c.logo_url}" style="height:24px;max-width:40px;object-fit:contain;border-radius:3px;">` : '<span style="width:40px;display:inline-block;"></span>'}
-      <span style="flex:1;font-size:13px;font-weight:600;">${c.name}</span>
-      <span class="slot-idx">${c.slot_count} Slots</span>
-      <button class="slot-btn slot-btn-copy" onclick="assignAdminToClub('${c.id}')">Admin zuweisen</button>
-    </div>`).join('');
+      <span class="slot-email" style="flex:1;">${r.profiles?.email || '–'}</span>
+      <button class="slot-btn slot-btn-copy" onclick="approveJoinRequest('${r.id}','${r.user_id}')">Annehmen</button>
+      <button class="slot-btn slot-btn-remove" onclick="rejectJoinRequest('${r.id}')">Ablehnen</button>
+    </div>`).join('') : '<div class="slot-free">Keine offenen Anfragen.</div>';
+
+  const consentChecked = currentClub?.logo_public_consent ? 'checked' : '';
+
+  // Mitglieder für Admin-Übergabe
+  const { data: members } = await _supabase.from('profiles').select('id, email').eq('club_id', currentClub.id).eq('club_role', 'club_trainer');
+  const memberOpts = (members || []).map(m => `<option value="${m.id}">${m.email}</option>`).join('');
 
   wrap.innerHTML = `
-    <div class="club-admin-header"><span class="club-admin-title">🏢 Vereinsverwaltung (Admin)</span></div>
+    <div style="background:var(--surface);border-radius:12px;padding:20px;box-shadow:var(--sh);margin-bottom:14px;">
+      <div class="club-admin-header">
+        <span class="club-admin-title">${currentClub.name}</span>
+        <span style="font-size:11px;color:var(--gd2);font-weight:600;">Club-Admin</span>
+      </div>
 
-    <label class="club-section-label">Neuen Verein anlegen</label>
-    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
-      <input type="text" id="newClubName" class="fc" placeholder="Vereinsname" style="margin:0;">
-      <input type="number" id="newClubSlots" class="fc" placeholder="Anzahl Trainer-Slots" min="1" max="100" style="margin:0;">
-      <input type="email" id="newClubAdminEmail" class="fc" placeholder="E-Mail des Vereins-Admins (optional)" style="margin:0;">
-      <button class="bpr" onclick="createClubFromUI()">Verein anlegen</button>
+      <div class="club-logo-section">
+        <label class="club-section-label">Vereinslogo</label>
+        ${clubLogoUrl ? `<img src="${clubLogoUrl}" class="club-logo-preview" alt="Logo">` : '<span class="slot-free">Kein Logo</span>'}
+        <input type="file" id="clubLogoInput" accept="image/*" style="display:none" onchange="uploadClubLogo(this)">
+        <button class="slot-btn" onclick="document.getElementById('clubLogoInput').click()">Logo hochladen</button>
+      </div>
+      <label class="club-consent-label">
+        <input type="checkbox" id="clubLogoConsent" ${consentChecked} onchange="saveLogoConsent(this.checked)">
+        <span>Als autorisierte:r Vertreter:in meines Vereins erkläre ich mich damit einverstanden, dass AssistCoach das Vereinslogo unentgeltlich und nicht-kommerziell auf der Webseite assistcoach.app zur Darstellung teilnehmender Vereine verwenden darf. Diese Einwilligung kann jederzeit durch Entfernen des Hakens widerrufen werden.</span>
+      </label>
     </div>
 
-    <label class="club-section-label">Bestehende Vereine (${(clubs||[]).length})</label>
-    <div class="club-slots-list">${clubRows || '<span class="slot-free">Noch keine Vereine angelegt.</span>'}</div>
-    ${currentClub ? '<div id="clubAdminPanelInner" style="margin-top:24px;border-top:1px solid var(--border);padding-top:20px;"></div>' : ''}`;
+    <div style="background:var(--surface);border-radius:12px;padding:20px;box-shadow:var(--sh);margin-bottom:14px;">
+      <div class="club-section-label">Beitrittsanfragen (${requests.length})</div>
+      <div class="club-slots-list">${requestRows}</div>
+    </div>
 
-  // Wenn eigener Verein: Slot-Panel darunter rendern
-  if (currentClub && currentClubRole === 'club_admin') {
-    const inner = document.getElementById('clubAdminPanelInner');
-    if (inner) await _renderClubSlots(inner);
-  }
+    <div style="background:var(--surface);border-radius:12px;padding:20px;box-shadow:var(--sh);margin-bottom:14px;">
+      <div class="club-section-label">Trainer-Slots (${slots.filter(s=>s.user_id).length}/${currentClub.slot_count} belegt)</div>
+      <div class="club-slots-list">${slotRows || '<div class="slot-free">Noch keine Slots. Werden nach Kauf freigeschaltet.</div>'}</div>
+    </div>
+
+    ${memberOpts ? `
+    <div style="background:var(--surface);border-radius:12px;padding:20px;box-shadow:var(--sh);">
+      <div class="club-section-label">Admin-Rolle übergeben</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <select id="transferAdminSel" class="fc" style="margin:0;flex:1;">${memberOpts}</select>
+        <button class="slot-btn slot-btn-remove" onclick="transferAdminRole()">Übergeben</button>
+      </div>
+    </div>` : ''}`;
 }
 
-async function assignAdminToClub(clubId) {
-  const email = prompt('E-Mail des Vereins-Admins:');
-  if (!email) return;
-  const { data: profile } = await _supabase.from('profiles').select('id').eq('email', email).single();
-  if (!profile) { showToast(`Kein Account mit E-Mail "${email}" gefunden`, 'err'); return; }
-  await _supabase.from('profiles').update({ club_id: clubId, club_role: 'club_admin' }).eq('id', profile.id);
-  showToast('Admin zugewiesen.');
-  renderClubAdminPanel();
+// ── Trainer-Ansicht ───────────────────────────────────────────────
+async function _renderTrainerView(wrap) {
+  wrap.innerHTML = `
+    <div style="background:var(--surface);border-radius:12px;padding:20px;box-shadow:var(--sh);">
+      <div class="club-admin-header">
+        ${clubLogoUrl ? `<img src="${clubLogoUrl}" style="height:36px;max-width:80px;object-fit:contain;border-radius:4px;">` : ''}
+        <span class="club-admin-title">${currentClub.name}</span>
+      </div>
+      <div style="font-size:13px;color:var(--gd2);">Du bist Trainer in diesem Verein.</div>
+      <button class="slot-btn slot-btn-remove" style="margin-top:16px;" onclick="leaveClub()">Verein verlassen</button>
+    </div>`;
 }
 
-async function createClubFromUI() {
-  const name = document.getElementById('newClubName')?.value.trim();
-  const slots = parseInt(document.getElementById('newClubSlots')?.value);
-  const email = document.getElementById('newClubAdminEmail')?.value.trim();
-  if (!name || !slots || slots < 1) { showToast('Name und Slot-Anzahl erforderlich', 'err'); return; }
+// ── Aktionen ──────────────────────────────────────────────────────
+async function approveJoinRequest(requestId, userId) {
+  if (!currentClub) return;
+  // Slot anlegen
+  const nextIndex = (currentClub.slot_count || 0) + 1;
+  await _supabase.from('club_slots').insert({ club_id: currentClub.id, slot_index: nextIndex, token: crypto.randomUUID(), user_id: userId });
+  await _supabase.from('clubs').update({ slot_count: nextIndex }).eq('id', currentClub.id);
+  await _supabase.from('profiles').update({ club_id: currentClub.id, club_role: 'club_trainer' }).eq('id', userId);
+  await _supabase.from('club_join_requests').update({ status: 'approved' }).eq('id', requestId);
+  currentClub.slot_count = nextIndex;
+  showToast('Mitglied aufgenommen.');
+  renderClubTab();
+}
 
-  let adminUserId = null;
-  if (email) {
-    const { data: profile } = await _supabase.from('profiles').select('id').eq('email', email).single();
-    if (!profile) { showToast(`Kein Account mit E-Mail "${email}" gefunden`, 'err'); return; }
-    adminUserId = profile.id;
-  }
-
-  const club = await createClub(name, slots, adminUserId);
-  if (club) renderClubAdminPanel();
+async function rejectJoinRequest(requestId) {
+  await _supabase.from('club_join_requests').update({ status: 'rejected' }).eq('id', requestId);
+  showToast('Anfrage abgelehnt.');
+  renderClubTab();
 }
 
 async function removeTrainerFromSlot(slotId) {
-  if (!_supabase || !currentClub) return;
   const { data: slot } = await _supabase.from('club_slots').select('user_id').eq('id', slotId).single();
   if (!slot?.user_id) return;
-
-  // Profil-Verknüpfung aufheben
   await _supabase.from('profiles').update({ club_id: null, club_role: null }).eq('id', slot.user_id);
-  // Neuen Token generieren + last_swapped_at setzen
-  const newToken = crypto.randomUUID();
-  await _supabase.from('club_slots').update({ user_id: null, token: newToken, last_swapped_at: new Date().toISOString() }).eq('id', slotId);
-  showToast('Trainer entfernt. Neuer Invite-Link generiert.');
-  renderClubAdminPanel();
+  await _supabase.from('club_slots').update({ user_id: null, token: crypto.randomUUID(), last_swapped_at: new Date().toISOString() }).eq('id', slotId);
+  showToast('Trainer entfernt.');
+  renderClubTab();
+}
+
+async function transferAdminRole() {
+  const sel = document.getElementById('transferAdminSel');
+  if (!sel?.value || !currentClub) return;
+  const { data: { user } } = await _supabase.auth.getUser();
+  // Neuer Admin
+  await _supabase.from('profiles').update({ club_role: 'club_admin' }).eq('id', sel.value);
+  // Alter Admin wird Trainer
+  await _supabase.from('profiles').update({ club_role: 'club_trainer' }).eq('id', user.id);
+  currentClubRole = 'club_trainer';
+  showToast('Admin-Rolle übergeben.');
+  renderClubTab();
+}
+
+async function leaveClub() {
+  const { data: { user } } = await _supabase.auth.getUser();
+  if (!user) return;
+  await _supabase.from('profiles').update({ club_id: null, club_role: null }).eq('id', user.id);
+  // Slot freigeben
+  await _supabase.from('club_slots').update({ user_id: null, token: crypto.randomUUID(), last_swapped_at: new Date().toISOString() }).eq('user_id', user.id);
+  currentClub = null; currentClubRole = null; clubLogoUrl = null;
+  _renderClubBtn();
+  showToast('Du hast den Verein verlassen.');
+  renderClubTab();
 }
 
 async function uploadClubLogo(input) {
   if (!input.files?.[0] || !_supabase || !currentClub) return;
   const file = input.files[0];
   if (file.size > 2 * 1024 * 1024) { showToast('Logo zu groß (max. 2 MB)', 'err'); return; }
-
   const ext = file.name.split('.').pop();
   const path = `club-logos/${currentClub.id}.${ext}`;
   const { error } = await _supabase.storage.from('exercise-images').upload(path, file, { upsert: true, contentType: file.type });
   if (error) { showToast('Upload fehlgeschlagen', 'err'); return; }
-
   const { data: { publicUrl } } = _supabase.storage.from('exercise-images').getPublicUrl(path);
   await _supabase.from('clubs').update({ logo_url: publicUrl }).eq('id', currentClub.id);
   clubLogoUrl = publicUrl;
   if (currentClub) currentClub.logo_url = publicUrl;
-  _renderClubLogo();
+  _renderClubBtn();
   showToast('Logo gespeichert.');
-  renderClubAdminPanel();
+  renderClubTab();
 }
 
 async function saveLogoConsent(checked) {
@@ -285,7 +364,6 @@ async function saveLogoConsent(checked) {
 
 function copyInviteLink(url) {
   navigator.clipboard.writeText(url).then(() => showToast('Invite-Link kopiert!')).catch(() => {
-    // Fallback: temp input
     const inp = document.createElement('input');
     inp.value = url; document.body.appendChild(inp); inp.select();
     document.execCommand('copy'); document.body.removeChild(inp);
@@ -293,33 +371,22 @@ function copyInviteLink(url) {
   });
 }
 
-// ══════════════════════════════════════════════════════
-// ADMIN: NEUEN VEREIN ANLEGEN (nur AssistCoach-Admin)
-// ══════════════════════════════════════════════════════
-async function createClub(name, slotCount, adminUserId) {
-  if (!_supabase || !IS_ADMIN) return;
+// ── AssistCoach-Admin: alle Vereine ──────────────────────────────
+async function renderClubAdminPanel() {
+  const wrap = document.getElementById('clubAdminWrap');
+  if (!wrap) return;
+  if (typeof IS_ADMIN === 'undefined' || !IS_ADMIN) { wrap.style.display = 'none'; return; }
 
-  // Verein anlegen
-  const { data: club, error: clubErr } = await _supabase
-    .from('clubs')
-    .insert({ name, slot_count: slotCount })
-    .select()
-    .single();
-  if (clubErr) { showToast('Verein anlegen fehlgeschlagen', 'err'); return; }
-
-  // Slots anlegen
-  const slotsToInsert = Array.from({ length: slotCount }, (_, i) => ({
-    club_id: club.id,
-    slot_index: i + 1,
-    token: crypto.randomUUID()
-  }));
-  await _supabase.from('club_slots').insert(slotsToInsert);
-
-  // Admin-Profil verknüpfen (wenn angegeben)
-  if (adminUserId) {
-    await _supabase.from('profiles').update({ club_id: club.id, club_role: 'club_admin' }).eq('id', adminUserId);
-  }
-
-  showToast(`Verein "${name}" mit ${slotCount} Slots angelegt.`);
-  return club;
+  const { data: clubs } = await _supabase.from('clubs').select('id, name, slot_count, logo_url, created_at').order('created_at', { ascending: false });
+  wrap.style.display = '';
+  wrap.innerHTML = `
+    <div class="club-admin-header"><span class="club-admin-title">🏢 Alle Vereine (${(clubs||[]).length})</span></div>
+    <div class="club-slots-list">
+      ${(clubs||[]).map(c => `
+        <div class="club-slot-row">
+          ${c.logo_url ? `<img src="${c.logo_url}" style="height:24px;max-width:40px;object-fit:contain;border-radius:3px;">` : '<span style="width:40px;display:inline-block;"></span>'}
+          <span style="flex:1;font-size:13px;font-weight:600;">${c.name}</span>
+          <span class="slot-idx">${c.slot_count} Slots</span>
+        </div>`).join('') || '<div class="slot-free">Noch keine Vereine.</div>'}
+    </div>`;
 }

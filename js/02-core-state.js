@@ -240,7 +240,7 @@ function goPage(name,btn){
   if(name==='handbook')renderSection();
   if(name==='longterm')renderLtp();
   if(name==='submit')renderSubmitPage();
-  if(name==='account'){renderAccountPage();if(typeof renderClubAdminPanel==='function')renderClubAdminPanel();}
+  if(name==='account')renderAccountPage();
   if(name==='kader'&&typeof renderKaderPage==='function')renderKaderPage();
 
   // 3. Scroll to top
