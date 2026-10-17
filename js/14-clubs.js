@@ -194,6 +194,7 @@ async function _renderSuperAdminPanel(wrap) {
       ${c.logo_url ? `<img src="${c.logo_url}" style="height:24px;max-width:40px;object-fit:contain;border-radius:3px;">` : '<span style="width:40px;display:inline-block;"></span>'}
       <span style="flex:1;font-size:13px;font-weight:600;">${c.name}</span>
       <span class="slot-idx">${c.slot_count} Slots</span>
+      <button class="slot-btn slot-btn-copy" onclick="assignAdminToClub('${c.id}')">Admin zuweisen</button>
     </div>`).join('');
 
   wrap.innerHTML = `
@@ -209,6 +210,16 @@ async function _renderSuperAdminPanel(wrap) {
 
     <label class="club-section-label">Bestehende Vereine (${(clubs||[]).length})</label>
     <div class="club-slots-list">${clubRows || '<span class="slot-free">Noch keine Vereine angelegt.</span>'}</div>`;
+}
+
+async function assignAdminToClub(clubId) {
+  const email = prompt('E-Mail des Vereins-Admins:');
+  if (!email) return;
+  const { data: profile } = await _supabase.from('profiles').select('id').eq('email', email).single();
+  if (!profile) { showToast(`Kein Account mit E-Mail "${email}" gefunden`, 'err'); return; }
+  await _supabase.from('profiles').update({ club_id: clubId, club_role: 'club_admin' }).eq('id', profile.id);
+  showToast('Admin zugewiesen.');
+  renderClubAdminPanel();
 }
 
 async function createClubFromUI() {
