@@ -421,9 +421,17 @@
           <div id="sMatBuilder" style="border:1.5px solid var(--border);border-radius:7px;padding:10px;background:var(--surface-2);">
             <div style="font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;">Zählbares Material (Anzahl wählen):</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+              <div class="mat-select-row mat-sport-fussball"><label class="mat-sel-lbl">Minitore</label>
+                <select class="fc mat-sel" data-smat="Minitore" style="padding:5px 8px;font-size:12px;" onchange="updateSMatField()">
+                  <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                </select></div>
               <div class="mat-select-row"><label class="mat-sel-lbl">Stangen</label>
                 <select class="fc mat-sel" data-smat="Stangen" style="padding:5px 8px;font-size:12px;" onchange="updateSMatField()">
                   <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                </select></div>
+              <div class="mat-select-row mat-sport-fussball"><label class="mat-sel-lbl">Jugendtore</label>
+                <select class="fc mat-sel" data-smat="Jugendtore" style="padding:5px 8px;font-size:12px;" onchange="updateSMatField()">
+                  <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>
                 </select></div>
               <div class="mat-select-row"><label class="mat-sel-lbl">Rebounder</label>
                 <select class="fc mat-sel" data-smat="Rebounder" style="padding:5px 8px;font-size:12px;" onchange="updateSMatField()">
@@ -445,7 +453,7 @@
                 <select class="fc mat-sel" data-smat="Ballkorb" style="padding:5px 8px;font-size:12px;" onchange="updateSMatField()">
                   <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
                 </select></div>
-              <div class="mat-select-row"><label class="mat-sel-lbl">Zuspielring</label>
+              <div class="mat-select-row mat-sport-volleyball"><label class="mat-sel-lbl">Zuspielring</label>
                 <select class="fc mat-sel" data-smat="Zuspielring" style="padding:5px 8px;font-size:12px;" onchange="updateSMatField()">
                   <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>
                 </select></div>
@@ -1805,9 +1813,17 @@ function filterHelpCards(q){
         <div id="matBuilder" style="border:1.5px solid var(--border);border-radius:7px;padding:10px;background:var(--surface-2);">
           <div style="font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--gm);margin-bottom:8px;">Zählbares Material (Anzahl wählen):</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+            <div class="mat-select-row mat-sport-fussball"><label class="mat-sel-lbl">Minitore</label>
+              <select class="fc mat-sel" data-mat="Minitore" style="padding:5px 8px;font-size:12px;" onchange="updateMatField()">
+                <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+              </select></div>
             <div class="mat-select-row"><label class="mat-sel-lbl">Stangen</label>
               <select class="fc mat-sel" data-mat="Stangen" style="padding:5px 8px;font-size:12px;" onchange="updateMatField()">
                 <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+              </select></div>
+            <div class="mat-select-row mat-sport-fussball"><label class="mat-sel-lbl">Jugendtore</label>
+              <select class="fc mat-sel" data-mat="Jugendtore" style="padding:5px 8px;font-size:12px;" onchange="updateMatField()">
+                <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>
               </select></div>
             <div class="mat-select-row"><label class="mat-sel-lbl">Rebounder</label>
               <select class="fc mat-sel" data-mat="Rebounder" style="padding:5px 8px;font-size:12px;" onchange="updateMatField()">
@@ -1829,7 +1845,7 @@ function filterHelpCards(q){
               <select class="fc mat-sel" data-mat="Ballkorb" style="padding:5px 8px;font-size:12px;" onchange="updateMatField()">
                 <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
               </select></div>
-            <div class="mat-select-row"><label class="mat-sel-lbl">Zuspielring</label>
+            <div class="mat-select-row mat-sport-volleyball"><label class="mat-sel-lbl">Zuspielring</label>
               <select class="fc mat-sel" data-mat="Zuspielring" style="padding:5px 8px;font-size:12px;" onchange="updateMatField()">
                 <option value="0">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>
               </select></div>

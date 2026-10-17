@@ -245,7 +245,7 @@ async function doLogout(){
 function updateSMatField(){
   const sels = document.querySelectorAll('.mat-sel[data-smat]');
   const counted = [];
-  sels.forEach(s=>{ const v=parseInt(s.value)||0; if(v>0) counted.push(v+'× '+s.dataset.smat); });
+  sels.forEach(s=>{ if(s.closest('.mat-select-row')?.style.display==='none') return; const v=parseInt(s.value)||0; if(v>0) counted.push(v+'× '+s.dataset.smat); });
   const free = (document.getElementById('sMatFree')||{value:''}).value.trim();
   const parts = [...counted];
   if(free) parts.push(...free.split(',').map(x=>x.trim()).filter(Boolean));

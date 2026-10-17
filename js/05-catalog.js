@@ -497,7 +497,7 @@ function cardHTML(e,col){
 function updateMatField(){
   const sels=document.querySelectorAll('.mat-sel');
   const counted=[];
-  sels.forEach(s=>{const v=parseInt(s.value)||0;if(v>0)counted.push(v+'x '+s.dataset.mat);});
+  sels.forEach(s=>{if(s.closest('.mat-select-row')?.style.display==='none')return;const v=parseInt(s.value)||0;if(v>0)counted.push(v+'x '+s.dataset.mat);});
   const free=(document.getElementById('mMatFree')||{value:''}).value.trim();
   const parts=[...counted];
   if(free)parts.push(...free.split(',').map(x=>x.trim()).filter(Boolean));

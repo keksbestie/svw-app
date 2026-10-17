@@ -102,6 +102,11 @@ function _updateHelpSport() {
   document.querySelectorAll('.help-sport-fussball').forEach(el => el.style.display = (isVb || isTn) ? 'none' : '');
   document.querySelectorAll('.help-sport-volleyball').forEach(el => el.style.display = isVb ? '' : 'none');
   document.querySelectorAll('.help-sport-tennis').forEach(el => el.style.display = isTn ? '' : 'none');
+
+  // Sport-specific material rows
+  const isFb = !isVb && !isTn;
+  document.querySelectorAll('.mat-sport-fussball').forEach(el => el.style.display = isFb ? '' : 'none');
+  document.querySelectorAll('.mat-sport-volleyball').forEach(el => el.style.display = isVb ? '' : 'none');
 }
 
 function initSportSelection() {
