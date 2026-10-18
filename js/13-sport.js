@@ -2,7 +2,7 @@
 // MODUL: SPORT-AUSWAHL
 // ══════════════════════════════════════════════════════════════════
 // Auf master nur freigeschaltete Sportarten anzeigen
-const SPORTS_ENABLED = ['fussball']; // dev: ['fussball','volleyball','tennis']
+const SPORTS_ENABLED = ['fussball', 'volleyball', 'tennis'];
 
 const SPORTS = [
   { id: 'fussball',   icon: 'icons/sport-fussball.png',   label: 'Fußball' },
