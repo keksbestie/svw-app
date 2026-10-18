@@ -1,11 +1,14 @@
 // ══════════════════════════════════════════════════════════════════
 // MODUL: SPORT-AUSWAHL
 // ══════════════════════════════════════════════════════════════════
+// Auf master nur freigeschaltete Sportarten anzeigen
+const SPORTS_ENABLED = ['fussball']; // dev: ['fussball','volleyball','tennis']
+
 const SPORTS = [
   { id: 'fussball',   icon: 'icons/sport-fussball.png',   label: 'Fußball' },
   { id: 'volleyball', icon: 'icons/sport-volleyball.png', label: 'Volleyball' },
   { id: 'tennis',     icon: 'icons/sport-tennis.png',     label: 'Tennis' },
-];
+].filter(s => SPORTS_ENABLED.includes(s.id));
 
 const SPORT_KEY = 'assistcoach_sport';
 
