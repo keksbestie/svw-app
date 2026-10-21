@@ -56,6 +56,13 @@ body { font-family: 'Barlow', sans-serif; background: var(--bg); color: var(--te
 .ls-t { font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 22px; color: #fff; letter-spacing: 3px; text-transform: uppercase; margin-top: 20px; }
 .ls-s { font-size: 10px; color: rgba(255,255,255,.45); letter-spacing: 2px; text-transform: uppercase; margin-top: 5px; }
 @keyframes spin { to { transform: rotate(360deg); } }
+@keyframes logoDrift {
+  0%   { transform: translateY(0px) rotate(var(--r, 0deg)); }
+  50%  { transform: translateY(-12px) rotate(var(--r, 0deg)); }
+  100% { transform: translateY(6px) rotate(var(--r, 0deg)); }
+}
+#clubLogoBg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+#page-home { position: relative; }
 
 /* ══════════════════════════════════════════════════
    HEADER

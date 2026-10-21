@@ -2,9 +2,81 @@
 // MODUL: VEREINS-ACCOUNTS
 // ══════════════════════════════════════════════════════════════════
 
-let currentClub = null;      // { id, name, logo_url, slot_count, logo_public_consent }
-let currentClubRole = null;  // 'club_admin' | 'club_trainer' | null
+let currentClub = null;
+let currentClubRole = null;
 let clubLogoUrl = null;
+
+// ── Vereinslogo-Hintergrund Startseite ────────────────────────────
+let _bgLogos = [];
+let _bgInterval = null;
+
+async function initClubLogoBg() {
+  const wrap = document.getElementById('clubLogoBg');
+  if (!wrap || !_supabase) return;
+  const { data } = await _supabase.from('clubs').select('id,name,logo_url').eq('logo_public_consent', true).not('logo_url', 'is', null);
+  _bgLogos = (data || []).filter(c => c.logo_url);
+  if (!_bgLogos.length) return;
+  _renderLogoBg(wrap);
+  clearInterval(_bgInterval);
+  _bgInterval = setInterval(() => _shuffleLogoBg(wrap), 4000);
+}
+
+function _renderLogoBg(wrap) {
+  if (!_bgLogos.length) return;
+  // Place each logo at a random position, grid-style with jitter
+  const count = _bgLogos.length;
+  const cols = Math.max(3, Math.ceil(Math.sqrt(count * 1.8)));
+  const rows = Math.ceil(count / cols) + 1;
+  // Generate positions (percentage-based, with jitter)
+  const positions = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      positions.push({
+        x: (c / cols * 100) + (Math.random() * 14 - 7),
+        y: (r / rows * 100) + (Math.random() * 14 - 7)
+      });
+    }
+  }
+  // Shuffle positions
+  for (let i = positions.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [positions[i], positions[j]] = [positions[j], positions[i]];
+  }
+  wrap.innerHTML = _bgLogos.map((c, i) => {
+    const pos = positions[i % positions.length];
+    const size = 44 + Math.random() * 28; // 44–72px
+    const op = 0.06 + Math.random() * 0.08; // 0.06–0.14
+    const rot = (Math.random() - 0.5) * 20; // -10 to +10 deg
+    const dur = 6 + Math.random() * 8; // 6–14s drift animation
+    const delay = Math.random() * -14;
+    return `<img src="${c.logo_url}" alt="${c.name}"
+      style="position:absolute;left:${pos.x}%;top:${pos.y}%;
+        width:${size}px;height:${size}px;object-fit:contain;
+        opacity:${op.toFixed(2)};transform:rotate(${rot.toFixed(1)}deg);
+        transition:left 3s cubic-bezier(.4,0,.2,1),top 3s cubic-bezier(.4,0,.2,1),opacity 1.5s;
+        animation:logoDrift ${dur.toFixed(1)}s ${delay.toFixed(1)}s ease-in-out infinite alternate;
+        filter:grayscale(30%);">`;
+  }).join('');
+}
+
+function _shuffleLogoBg(wrap) {
+  if (!wrap || !_bgLogos.length) return;
+  const imgs = wrap.querySelectorAll('img');
+  imgs.forEach(img => {
+    const nx = Math.random() * 92;
+    const ny = Math.random() * 88;
+    const no = (0.06 + Math.random() * 0.08).toFixed(2);
+    img.style.left = nx + '%';
+    img.style.top = ny + '%';
+    img.style.opacity = no;
+  });
+}
+
+function stopClubLogoBg() {
+  clearInterval(_bgInterval);
+  const wrap = document.getElementById('clubLogoBg');
+  if (wrap) wrap.innerHTML = '';
+}
 
 // ── Init nach Auth ────────────────────────────────────────────────
 async function loadClubData(userId) {
