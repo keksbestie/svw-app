@@ -506,13 +506,15 @@ function _showDeleteClubModal(clubId, clubName, isAdmin) {
       <label style="display:flex;align-items:flex-start;gap:12px;cursor:pointer;padding:14px;border:2px solid rgba(229,57,53,.3);border-radius:10px;background:rgba(229,57,53,.05);transition:border-color .2s;" id="deleteClubConsentLabel">
         <input type="checkbox" id="deleteClubConsent" onchange="
           const btn=document.getElementById('deleteClubConfirmBtn');
-          btn.style.display=this.checked?'inline-flex':'none';
+          btn.style.display=this.checked?'block':'none';
+          btn.style.color='#fff';
+          btn.style.webkitTextFillColor='#fff';
         " style="width:18px;height:18px;margin-top:2px;flex-shrink:0;accent-color:#e53935;cursor:pointer;">
         <span style="font-size:13px;font-weight:700;line-height:1.5;">Ich verstehe, dass der Verein und alle zugehörigen Daten <span style="color:#e53935;">dauerhaft und unwiderruflich gelöscht</span> werden und diese Daten auch durch den Support nicht wiederhergestellt werden können.</span>
       </label>
       <div style="display:flex;gap:10px;margin-top:18px;align-items:center;">
         <button onclick="document.getElementById('deleteClubModal').remove()" style="flex:1;padding:11px;background:var(--surface-2);color:var(--text-1);border:1px solid var(--border);border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;cursor:pointer;">Abbrechen</button>
-        <button id="deleteClubConfirmBtn" onclick="_executeDeleteClub('${clubId}','${clubName.replace(/'/g,"\\'")}')" style="display:none;flex:1;padding:11px;background:#c62828;color:#ffffff !important;border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;cursor:pointer;letter-spacing:.3px;">🗑 Verein final löschen</button>
+        <button id="deleteClubConfirmBtn" onclick="_executeDeleteClub('${clubId}','${clubName.replace(/'/g,"\\'")}')" style="display:none;flex:1;padding:11px;background:#c62828;color:#fff;-webkit-text-fill-color:#fff;border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;cursor:pointer;letter-spacing:.3px;text-shadow:none;filter:none;">🗑 Verein final löschen</button>
       </div>
     </div>`;
   document.body.appendChild(modal);
