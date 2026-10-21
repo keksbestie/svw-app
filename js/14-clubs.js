@@ -35,7 +35,7 @@ async function initClubLogoBg(sportId) {
   // Content ist max ~760px breit, zentriert → Ränder je (W-760)/2, min 60px
   const sideW = Math.max(60, (W - 760) / 2);
   wrap.innerHTML = logos.map(c => {
-    const size = (44 + Math.random() * 28) | 0;
+    const size = (60 + Math.random() * 40) | 0;
     // Zufällig links oder rechts platzieren
     let px;
     if (Math.random() < 0.5) {
@@ -46,7 +46,7 @@ async function initClubLogoBg(sportId) {
       px = ((W - sideW) + Math.random() * Math.max(0, sideW - size)) | 0;
     }
     const py = (Math.random() * Math.max(0, H - size)) | 0;
-    const op = (0.06 + Math.random() * 0.08).toFixed(2);
+    const op = (0.25 + Math.random() * 0.20).toFixed(2);
     return `<img src="${c.logo_url}" alt="${c.name}" loading="lazy"
       style="position:absolute;left:0;top:0;
         width:${size}px;height:${size}px;object-fit:contain;
