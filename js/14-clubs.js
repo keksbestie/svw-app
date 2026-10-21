@@ -303,7 +303,10 @@ async function _renderAdminView(wrap) {
     <div style="background:var(--surface);border-radius:12px;padding:20px;box-shadow:var(--sh);margin-bottom:14px;">
       <div class="club-section-label">Aktive Sportarten</div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px;">
-        ${clubSports.map(sp=>`<span style="padding:4px 10px;background:var(--accent);color:#fff;border-radius:20px;font-size:11px;font-weight:800;">${_sportLabel(sp)}</span>`).join('') || '<span style="font-size:12px;color:var(--gd2);">Noch keine Sportart aktiv.</span>'}
+        ${clubSports.map(sp=>`<span style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:var(--accent);color:#fff;border-radius:20px;font-size:11px;font-weight:800;">
+          ${_sportLabel(sp)}
+          <button onclick="removeSportFromClub('${sp}')" style="background:none;border:none;color:#fff;cursor:pointer;font-size:13px;line-height:1;padding:0;opacity:.8;" title="${_sportLabel(sp)} entfernen">×</button>
+        </span>`).join('') || '<span style="font-size:12px;color:var(--gd2);">Noch keine Sportart aktiv.</span>'}
       </div>
       ${addSportHtml}
     </div>
@@ -332,6 +335,24 @@ async function _renderAdminView(wrap) {
       <div style="font-size:12px;color:var(--gd2);margin-bottom:12px;">Löscht den Verein dauerhaft. Alle Mitglieder werden automatisch ausgetragen.</div>
       <button class="slot-btn slot-btn-remove" style="width:100%;" onclick="deleteClub()">🗑 Verein dauerhaft löschen</button>
     </div>`;
+}
+
+async function removeSportFromClub(sportId) {
+  if (!currentClub) return;
+  // Prüfen ob noch belegte Slots für diese Sportart existieren
+  const { data: occupied } = await _supabase.from('club_slots').select('id').eq('club_id', currentClub.id).eq('sport', sportId).not('user_id', 'is', null);
+  if (occupied?.length) {
+    showToast(`Es gibt noch ${occupied.length} aktive Trainer:in(nen) für ${_sportLabel(sportId)} – erst entfernen.`, 'err');
+    return;
+  }
+  // Leere Slots dieser Sportart löschen
+  await _supabase.from('club_slots').delete().eq('club_id', currentClub.id).eq('sport', sportId).is('user_id', null);
+  const sports = (currentClub.sports || []).filter(s => s !== sportId);
+  if (!sports.length) { showToast('Mind. eine Sportart muss aktiv bleiben.', 'err'); return; }
+  await _supabase.from('clubs').update({ sports }).eq('id', currentClub.id);
+  currentClub.sports = sports;
+  showToast(`${_sportLabel(sportId)} entfernt.`);
+  renderClubTab();
 }
 
 async function addSportToClub(sportId) {
