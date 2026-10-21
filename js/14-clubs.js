@@ -333,22 +333,64 @@ async function transferAdminRole() {
   renderClubTab();
 }
 
-async function deleteClub() {
+function deleteClub() {
   if (!currentClub) return;
-  if (!confirm(`Verein „${currentClub.name}" wirklich dauerhaft löschen? Diese Aktion kann nicht rückgängig gemacht werden.`)) return;
-  const clubId = currentClub.id;
-  // Alle Mitglieder austragen
+  _showDeleteClubModal(currentClub.id, currentClub.name, false);
+}
+
+async function _executeDeleteClub(clubId, clubName) {
   await _supabase.from('profiles').update({ club_id: null, club_role: null }).eq('club_id', clubId);
-  // Slots + Anfragen löschen
   await _supabase.from('club_slots').delete().eq('club_id', clubId);
   await _supabase.from('club_join_requests').delete().eq('club_id', clubId);
-  // Verein löschen
   const { error } = await _supabase.from('clubs').delete().eq('id', clubId);
   if (error) { showToast('Fehler beim Löschen: ' + error.message, 'err'); return; }
-  currentClub = null; currentClubRole = null; clubLogoUrl = null;
-  _renderClubBtn();
-  showToast('Verein wurde gelöscht.');
-  renderClubTab();
+  if (currentClub?.id === clubId) { currentClub = null; currentClubRole = null; clubLogoUrl = null; _renderClubBtn(); }
+  document.getElementById('deleteClubModal')?.remove();
+  showToast(`Verein „${clubName}" wurde gelöscht.`);
+  if (typeof IS_ADMIN !== 'undefined' && IS_ADMIN) { renderClubAdminPanel(); renderClubTab(); }
+  else renderClubTab();
+}
+
+function _showDeleteClubModal(clubId, clubName, isAdmin) {
+  let modal = document.getElementById('deleteClubModal');
+  if (modal) modal.remove();
+  modal = document.createElement('div');
+  modal.id = 'deleteClubModal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
+  modal.innerHTML = `
+    <div style="background:var(--bg);border-radius:16px;max-width:500px;width:100%;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.6);border:1px solid rgba(229,57,53,.4);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+        <span style="font-size:26px;">⚠️</span>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#e53935;">Verein löschen – bitte lies das sorgfältig</div>
+      </div>
+      <div style="background:rgba(229,57,53,.08);border:1px solid rgba(229,57,53,.3);border-radius:10px;padding:16px;margin-bottom:20px;font-size:13px;line-height:1.7;color:var(--text-1);">
+        <div>Du bist dabei, <strong>${clubName}</strong> dauerhaft zu löschen. Diese Aktion <strong>kann nicht rückgängig gemacht werden</strong> – auch nicht durch den Support.</div>
+        <div style="margin-top:12px;font-weight:700;font-size:12px;color:#e53935;text-transform:uppercase;letter-spacing:.5px;">Folgendes wird unwiderruflich gelöscht:</div>
+        <ul style="margin:6px 0 0 16px;padding:0;">
+          <li>Alle Vereinsinformationen (Name, Logo, Einstellungen)</li>
+          <li>Alle Vereinsdaten und Mitgliederlisten</li>
+          <li>Alle offenen Beitrittsanfragen</li>
+        </ul>
+        <div style="margin-top:12px;font-weight:700;font-size:12px;color:#e53935;text-transform:uppercase;letter-spacing:.5px;">Für alle Vereinsmitglieder gilt:</div>
+        <ul style="margin:6px 0 0 16px;padding:0;">
+          <li>Trainer:innen ohne eigenen Account verlieren ihren Zugang vollständig</li>
+          <li>Trainer:innen mit eigenem Account werden automatisch auf ihren persönlich gebuchten Plan zurückgestuft</li>
+        </ul>
+      </div>
+      <label style="display:flex;align-items:flex-start;gap:12px;cursor:pointer;padding:14px;border:2px solid rgba(229,57,53,.3);border-radius:10px;background:rgba(229,57,53,.05);transition:border-color .2s;" id="deleteClubConsentLabel">
+        <input type="checkbox" id="deleteClubConsent" onchange="
+          const btn=document.getElementById('deleteClubConfirmBtn');
+          btn.style.display=this.checked?'inline-flex':'none';
+        " style="width:18px;height:18px;margin-top:2px;flex-shrink:0;accent-color:#e53935;cursor:pointer;">
+        <span style="font-size:13px;font-weight:700;line-height:1.5;">Ich verstehe, dass der Verein und alle zugehörigen Daten <span style="color:#e53935;">dauerhaft und unwiderruflich gelöscht</span> werden und diese Daten auch durch den Support nicht wiederhergestellt werden können.</span>
+      </label>
+      <div style="display:flex;gap:10px;margin-top:18px;align-items:center;">
+        <button onclick="document.getElementById('deleteClubModal').remove()" style="flex:1;padding:11px;background:var(--surface-2);color:var(--text-1);border:1px solid var(--border);border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;cursor:pointer;">Abbrechen</button>
+        <button id="deleteClubConfirmBtn" onclick="_executeDeleteClub('${clubId}','${clubName.replace(/'/g,"\\'")}${isAdmin?'':''}')" style="display:none;flex:1;padding:11px;background:#e53935;color:#fff;border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;cursor:pointer;align-items:center;justify-content:center;gap:6px;">🗑 Verein final löschen</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
 }
 
 async function leaveClub() {
@@ -396,18 +438,9 @@ function copyInviteLink(url) {
   });
 }
 
-async function adminDeleteClub(clubId, clubName) {
+function adminDeleteClub(clubId, clubName) {
   if (!IS_ADMIN) return;
-  if (!confirm(`Verein „${clubName}" als Admin dauerhaft löschen?`)) return;
-  await _supabase.from('profiles').update({ club_id: null, club_role: null }).eq('club_id', clubId);
-  await _supabase.from('club_slots').delete().eq('club_id', clubId);
-  await _supabase.from('club_join_requests').delete().eq('club_id', clubId);
-  const { error } = await _supabase.from('clubs').delete().eq('id', clubId);
-  if (error) { showToast('Fehler: ' + error.message, 'err'); return; }
-  // Falls eigener Verein gelöscht
-  if (currentClub?.id === clubId) { currentClub = null; currentClubRole = null; clubLogoUrl = null; _renderClubBtn(); }
-  showToast(`Verein „${clubName}" gelöscht.`);
-  renderClubAdminPanel();
+  _showDeleteClubModal(clubId, clubName, true);
 }
 
 // ── AssistCoach-Admin: alle Vereine ──────────────────────────────
