@@ -120,8 +120,10 @@ let _ltpPublicPlans=[];
 async function renderLtpPlanLibrary(){
   const el=document.getElementById('ltpPlanList');if(!el)return;
   el.innerHTML='<div style="font-size:13px;color:var(--text-3);padding:20px 0;text-align:center;">Lädt …</div>';
-  if(!_ltpPublicPlans.length){
-    const {data}=await _supabase.from('submitted_plans').select('id,name,date,author_name,lanes,totals').eq('status','approved').order('submitted_at',{ascending:false});
+  const sport=window.currentSport?.id||'fussball';
+  // Always reload when sport may have changed
+  {
+    const {data}=await _supabase.from('submitted_plans').select('id,name,date,author_name,lanes,totals,sport').eq('status','approved').eq('sport',sport).order('submitted_at',{ascending:false});
     _ltpPublicPlans=data||[];
   }
   await loadPlanRatings();

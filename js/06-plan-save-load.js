@@ -87,6 +87,7 @@ async function submitPlanForReview(id){
     date:plan.date,
     lanes:plan.lanes,
     totals:plan.totals,
+    sport:window.currentSport?.id||'fussball',
     status:'pending',
     submitted_at:new Date().toISOString()
   },{onConflict:'id'});
