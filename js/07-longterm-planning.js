@@ -61,6 +61,61 @@ function switchLtpTab(idx){
   if(idx===2) renderLtpPlanLibrary();
 }
 
+// ── PLAN-BEWERTUNGSSYSTEM ──
+let _planRatings={};
+
+async function loadPlanRatings(){
+  if(!_supabase)return;
+  const {data}=await _supabase.from('plan_ratings').select('plan_id,stars,user_id');
+  if(!data)return;
+  _planRatings={};
+  data.forEach(r=>{
+    if(!_planRatings[r.plan_id])_planRatings[r.plan_id]={sum:0,count:0,userRating:0};
+    _planRatings[r.plan_id].sum+=r.stars;
+    _planRatings[r.plan_id].count+=1;
+    if(currentUser&&r.user_id===currentUser.id)_planRatings[r.plan_id].userRating=r.stars;
+  });
+}
+
+async function ratePlan(planId,stars,event){
+  if(event)event.stopPropagation();
+  if(!currentUser){showToast('Bitte anmelden um zu bewerten','err');return;}
+  const{error}=await _supabase.from('plan_ratings').upsert(
+    {plan_id:planId,user_id:currentUser.id,stars},
+    {onConflict:'plan_id,user_id'}
+  );
+  if(error){showToast('Fehler beim Speichern','err');return;}
+  await loadPlanRatings();
+  _renderLtpPlanRows(_ltpPublicPlans);
+  // update modal if open
+  const wrap=document.getElementById(`plan-rating-${planId}`);
+  if(wrap)wrap.outerHTML=_planRatingHTML(planId,true);
+}
+
+function _planRatingHTML(planId,inModal=false){
+  const r=_planRatings[planId]||{sum:0,count:0,userRating:0};
+  const avg=r.count>=3?(r.sum/r.count):null;
+  const userR=r.userRating;
+  const size=inModal?'20px':'13px';
+  const stars=[1,2,3,4,5].map(i=>`<span class="plan-star-btn" data-star="${i}" onclick="ratePlan('${planId}',${i},event)"
+    style="font-size:${size};cursor:pointer;color:${i<=(userR||Math.round(avg||0))?'#f59e0b':'var(--text-3)'};"
+    onmouseenter="this.parentElement.querySelectorAll('.plan-star-btn').forEach((s,j)=>s.style.color=j<${i}?'#fbbf24':'var(--text-3)')"
+    onmouseleave="_resetPlanStars('${planId}',this.parentElement)">★</span>`).join('');
+  const countLabel=avg!=null
+    ?`<span style="font-size:10px;color:var(--text-3);margin-left:4px;">${avg.toFixed(1)} (${r.count})</span>`
+    :r.count>0
+      ?`<span style="font-size:10px;color:var(--text-3);margin-left:4px;">(${r.count}/3 Bewertungen)</span>`
+      :'';
+  return`<div id="plan-rating-${planId}" class="rating-row" onclick="event.stopPropagation()" style="display:flex;align-items:center;gap:2px;margin-top:3px;">${stars}${countLabel}</div>`;
+}
+
+function _resetPlanStars(planId,container){
+  const r=_planRatings[planId]||{sum:0,count:0,userRating:0};
+  const avg=r.count>=3?(r.sum/r.count):null;
+  const active=r.userRating||Math.round(avg||0);
+  container.querySelectorAll('.plan-star-btn').forEach((s,i)=>s.style.color=i<active?'#f59e0b':'var(--text-3)');
+}
+
 let _ltpPublicPlans=[];
 async function renderLtpPlanLibrary(){
   const el=document.getElementById('ltpPlanList');if(!el)return;
@@ -69,6 +124,7 @@ async function renderLtpPlanLibrary(){
     const {data}=await _supabase.from('submitted_plans').select('id,name,date,author_name,lanes,totals').eq('status','approved').order('submitted_at',{ascending:false});
     _ltpPublicPlans=data||[];
   }
+  await loadPlanRatings();
   _renderLtpPlanRows(_ltpPublicPlans);
 }
 
@@ -86,6 +142,7 @@ function _renderLtpPlanRows(plans){
       <div style="flex:1;min-width:0;">
         <div style="font-weight:700;font-size:15px;">${p.name||'Plan'}</div>
         <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${p.author_name||''} · ${p.date||''} ${total?'· '+total:''}</div>
+        ${_planRatingHTML(p.id)}
       </div>
       <button onclick="event.stopPropagation();openLtpPlanPreview(${i})" style="padding:7px 14px;background:var(--surface-2);color:var(--text-1);border:1px solid var(--border);border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;">👁 Vorschau</button>
     </div>`;
@@ -142,8 +199,9 @@ async function openLtpPlanPreview(idx){
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;">${p.name}</div>
         <button onclick="document.getElementById('ltpPlanPreviewModal').remove()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-3);">✕</button>
       </div>
-      <div style="font-size:11px;color:var(--text-3);margin-bottom:4px;">von ${p.author_name||'Unbekannt'} · ${p.date||''}</div>
-      ${totalMin?`<div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:16px;">⏱ ca. ${totalMin} min Gesamtbelastung</div>`:'<div style="margin-bottom:16px;"></div>'}
+      <div style="font-size:11px;color:var(--text-3);margin-bottom:6px;">von ${p.author_name||'Unbekannt'} · ${p.date||''}</div>
+      ${_planRatingHTML(p.id,true)}
+      ${totalMin?`<div style="font-size:12px;font-weight:700;color:var(--accent);margin-top:8px;margin-bottom:16px;">⏱ ca. ${totalMin} min Gesamtbelastung</div>`:'<div style="margin-bottom:16px;"></div>'}
       <div>${secHtml||'<div style="color:var(--text-3);font-size:13px;">Keine Übungen.</div>'}</div>
       <button onclick="loadLtpPlanIntoPlanner(_ltpPublicPlans.find(x=>x.name===\`${p.name.replace(/`/g,"'")}\`))" style="width:100%;margin-top:20px;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;cursor:pointer;">→ In Trainingsplan laden</button>
     </div>`;
