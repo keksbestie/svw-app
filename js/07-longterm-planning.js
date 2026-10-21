@@ -51,8 +51,56 @@ function switchLtpTab(idx){
   activeLtpTab=idx;
   document.getElementById('ltpView0').style.display=idx===0?'block':'none';
   document.getElementById('ltpView1').style.display=idx===1?'block':'none';
-  document.querySelectorAll('#ltpTab0,#ltpTab1').forEach((b,i)=>b.classList.toggle('active',i===idx));
+  const v2=document.getElementById('ltpView2');if(v2)v2.style.display=idx===2?'block':'none';
+  ['ltpTab0','ltpTab1','ltpTab2'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.classList.remove('active');
+  });
+  const activeId=['ltpTab0','ltpTab1','ltpTab2'][idx==='0'?0:idx==='1'?1:idx==='2'?2:idx];
+  if(document.getElementById('ltpTab'+idx)) document.getElementById('ltpTab'+idx).classList.add('active');
   if(idx===1) renderLibrary();
+  if(idx===2) renderLtpPlanLibrary();
+}
+
+let _ltpPublicPlans=[];
+async function renderLtpPlanLibrary(){
+  const el=document.getElementById('ltpPlanList');if(!el)return;
+  el.innerHTML='<div style="font-size:13px;color:var(--text-3);padding:20px 0;text-align:center;">Lädt …</div>';
+  if(!_ltpPublicPlans.length){
+    const {data}=await _supabase.from('submitted_plans').select('id,name,date,author_name,lanes,totals').eq('status','approved').order('submitted_at',{ascending:false});
+    _ltpPublicPlans=data||[];
+  }
+  _renderLtpPlanRows(_ltpPublicPlans);
+}
+
+function filterLtpPlans(q){
+  const filtered=q?_ltpPublicPlans.filter(p=>(p.name||'').toLowerCase().includes(q.toLowerCase())):_ltpPublicPlans;
+  _renderLtpPlanRows(filtered);
+}
+
+function _renderLtpPlanRows(plans){
+  const el=document.getElementById('ltpPlanList');if(!el)return;
+  if(!plans.length){el.innerHTML='<div style="font-size:13px;color:var(--text-3);padding:20px 0;text-align:center;">Keine Pläne gefunden.</div>';return;}
+  el.innerHTML=plans.map(p=>{
+    const total=(p.totals||[]).filter(t=>t.count>0).map(t=>t.count+' '+t.name).join(', ');
+    return`<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:10px;display:flex;align-items:center;gap:12px;">
+      <div style="flex:1;min-width:0;">
+        <div style="font-weight:700;font-size:15px;">${p.name||'Plan'}</div>
+        <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${p.author_name||''} · ${p.date||''} ${total?'· '+total:''}</div>
+      </div>
+      <button onclick="loadLtpPlanIntoPlanner(${JSON.stringify(p).replace(/"/g,'&quot;')})" style="padding:7px 14px;background:var(--accent);color:#fff;border:none;border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;">→ Trainingsplan</button>
+    </div>`;
+  }).join('');
+}
+
+function loadLtpPlanIntoPlanner(p){
+  if(!confirm(`Plan "${p.name}" in den Trainingsplan laden?`))return;
+  currentPlan={name:p.name,lanes:(p.lanes||[]).map(l=>[...l])};
+  if(typeof document!=='undefined'){
+    const inp=document.getElementById('planName');if(inp)inp.value=p.name;
+  }
+  if(typeof renderPlanner==='function') renderPlanner();
+  goPage('planner');
+  showToast('✓ Plan geladen');
 }
 
 // ── RENDER ACTIVE BLOCKS ──
@@ -60,10 +108,13 @@ function renderLtp(){
   // Ensure active tab is shown
   const v0=document.getElementById('ltpView0');
   const v1=document.getElementById('ltpView1');
+  const v2=document.getElementById('ltpView2');
   if(v0) v0.style.display='block';
   if(v1) v1.style.display='none';
+  if(v2) v2.style.display='none';
   document.getElementById('ltpTab0')?.classList.add('active');
   document.getElementById('ltpTab1')?.classList.remove('active');
+  document.getElementById('ltpTab2')?.classList.remove('active');
   activeLtpTab=0;
 
   const el=document.getElementById('ltpBlockList'); if(!el)return;

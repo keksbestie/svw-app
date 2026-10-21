@@ -635,6 +635,7 @@
   <div class="inner">
     <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:24px;">
       <button class="mb active" id="ltpTab0" onclick="switchLtpTab(0)">Aktive Planung</button>
+      <button class="mb" id="ltpTab2" onclick="switchLtpTab(2)">Trainingsplan-Bibliothek</button>
       <button class="mb" id="ltpTab1" onclick="switchLtpTab(1)">Block-Bibliothek</button>
     </div>
 
@@ -650,6 +651,21 @@
       </div>
       <!-- Block list -->
       <div id="ltpBlockList"></div>
+    </div>
+
+    <!-- SUB-PAGE 2: Trainingsplan-Bibliothek -->
+    <div id="ltpView2" style="display:none;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+        <div style="flex:1;">
+          <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:var(--text-1);">Trainingsplan-Bibliothek</h3>
+          <p style="font-size:12px;color:var(--text-3);margin-top:2px;">Öffentliche Pläne durchsuchen und in den Trainingsplan laden</p>
+        </div>
+      </div>
+      <div style="position:relative;margin-bottom:14px;">
+        <input id="ltpPlanSearch" type="text" placeholder="Plan suchen …" oninput="filterLtpPlans(this.value)" style="width:100%;box-sizing:border-box;padding:9px 36px 9px 12px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface-2);color:var(--text-1);font-size:13px;outline:none;">
+        <span style="position:absolute;right:11px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--text-3);pointer-events:none;">🔍</span>
+      </div>
+      <div id="ltpPlanList"></div>
     </div>
 
     <!-- SUB-PAGE 1: Block library -->
