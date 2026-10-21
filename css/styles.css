@@ -300,9 +300,7 @@ header {
   border-color: rgba(255,255,255,.25) !important;
   color: #fff !important;
 }
-.nav-kader-btn { background: rgba(0,0,0,.07); color: var(--text-1); border: 1.5px solid var(--border-s); }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .nav-kader-btn { background: rgba(255,255,255,.12); color: #fff; border-color: rgba(255,255,255,.3); } }
-[data-theme="dark"] .nav-kader-btn { background: rgba(255,255,255,.12); color: #fff; border-color: rgba(255,255,255,.3); }
+.nav-kader-btn { background: #fff; color: #1a2b1c; border: none; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
 #homeSportBadge { color: var(--text-2); }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) #homeSportBadge { color: rgba(255,255,255,.8); }
