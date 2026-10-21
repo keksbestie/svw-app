@@ -181,8 +181,8 @@ async function previewSubmittedPlan(id){
     const items=(section||[]).map(raw=>{
       const item=typeof raw==='string'?{id:raw}:raw;
       const ex=exMap[item.id]||{name:'Unbekannte Übung',image:'',duration:'',players:'',difficulty:''};
-      const players=item.players??ex.players??'';
-      const duration=item.duration??ex.duration??'';
+      const players=item.players!=null?item.players:(ex.players||'');
+      const duration=item.duration!=null?item.duration:(ex.duration||'');
       return`<div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);">
         ${ex.image?`<img src="${ex.image}" style="width:56px;height:42px;object-fit:cover;border-radius:6px;flex-shrink:0;">`:`<div style="width:56px;height:42px;background:var(--border);border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;">📋</div>`}
         <div style="flex:1;min-width:0;">
