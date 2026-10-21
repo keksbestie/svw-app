@@ -209,7 +209,7 @@
   <div class="home-topbar" id="homeTopbar">
     <p class="home-motto" style="margin:0;position:absolute;left:50%;transform:translateX(-50%);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(100% - 140px);pointer-events:none;">und wenn es einem Kind, einer Spielerin, einem Coach oder Betreuer geholfen hat … dann hat sich die ganze Mühe gelohnt</p>
     <div class="lang-sel" id="homeLangSel">
-      <button class="lang-btn" onclick="toggleLangDrop('home')" id="homeLangBtn">
+      <button class="lang-btn" onclick="toggleLangDrop('home')" id="homeLangBtn" style="padding:7px 14px;background:#fff;color:#1a2b1c;border:none;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;letter-spacing:.5px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15);display:flex;align-items:center;gap:5px;">
         <span id="homeLangFlag">🇩🇪</span>
         <span id="homeLangCode">DE</span>
       </button>
@@ -219,7 +219,7 @@
         <div class="lang-opt" data-lang="es" onclick="setLang('es')"><span class="flag">🇪🇸</span> Español</div>
       </div>
     </div>
-    <button class="theme-btn" onclick="toggleTheme()" title="Theme wechseln" id="homeThemeBtn">🌙</button>
+    <button class="theme-btn" onclick="toggleTheme()" title="Theme wechseln" id="homeThemeBtn" style="padding:7px 12px;background:#fff;color:#1a2b1c;border:none;border-radius:20px;font-size:15px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15);line-height:1;">🌙</button>
     <button id="homeSignInBtn" onclick="goPage('submit')" style="padding:7px 18px;background:#fff;color:#1a2b1c;border:none;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;letter-spacing:.5px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15);">Anmelden</button>
   </div>
   <!-- Beta notice – left side -->
@@ -635,6 +635,7 @@
   <div class="inner">
     <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:24px;">
       <button class="mb active" id="ltpTab0" onclick="switchLtpTab(0)">Aktive Planung</button>
+      <button class="mb" id="ltpTab2" onclick="switchLtpTab(2)">Trainingsplan-Bibliothek</button>
       <button class="mb" id="ltpTab1" onclick="switchLtpTab(1)">Block-Bibliothek</button>
     </div>
 
@@ -650,6 +651,21 @@
       </div>
       <!-- Block list -->
       <div id="ltpBlockList"></div>
+    </div>
+
+    <!-- SUB-PAGE 2: Trainingsplan-Bibliothek -->
+    <div id="ltpView2" style="display:none;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+        <div style="flex:1;">
+          <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:var(--text-1);">Trainingsplan-Bibliothek</h3>
+          <p style="font-size:12px;color:var(--text-3);margin-top:2px;">Öffentliche Pläne durchsuchen und in den Trainingsplan laden</p>
+        </div>
+      </div>
+      <div style="position:relative;margin-bottom:14px;">
+        <input id="ltpPlanSearch" type="text" placeholder="Plan suchen …" oninput="filterLtpPlans(this.value)" style="width:100%;box-sizing:border-box;padding:9px 36px 9px 12px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface-2);color:var(--text-1);font-size:13px;outline:none;">
+        <span style="position:absolute;right:11px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--text-3);pointer-events:none;">🔍</span>
+      </div>
+      <div id="ltpPlanList"></div>
     </div>
 
     <!-- SUB-PAGE 1: Block library -->
@@ -822,7 +838,7 @@
       <div style="position:relative;z-index:1;">
         <div style="font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:10px;">Unsere Mission</div>
         <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:#fff;margin:0 0 16px;letter-spacing:.5px;line-height:1.1;">Besseres Training.<br>F&uuml;r alle.</h1>
-        <p style="font-size:14px;color:rgba(255,255,255,.85);line-height:1.7;margin:0;max-width:560px;">AssistCoach unterst&uuml;tzt Trainer:innen und Verantwortliche im Fu&szlig;ball auf allen Ebenen &ndash; in ihrer t&auml;glichen Arbeit. Gleichzeitig soll ein Ort entstehen, an dem das kollektive Wissen vieler zusammenkommt, damit wir alle gemeinsam wachsen und unseren Spieler:innen ein noch besseres Training bieten k&ouml;nnen.</p>
+        <p style="font-size:14px;color:rgba(255,255,255,.85);line-height:1.7;margin:0;max-width:560px;">AssistCoach unterst&uuml;tzt Trainer:innen und Verantwortliche im Nachwuchssport &ndash; egal ob Fu&szlig;ball, Volleyball oder Tennis. Gleichzeitig soll ein Ort entstehen, an dem das kollektive Wissen vieler zusammenkommt, damit wir alle gemeinsam wachsen und unseren Athlet:innen ein noch besseres Training bieten k&ouml;nnen.</p>
       </div>
     </div>
 
@@ -1369,6 +1385,7 @@
       <button class="haf-btn" onclick="filterHelpArea('konto')">👤 Konto</button>
       <button class="haf-btn" onclick="filterHelpArea('langzeit')">📅 Langzeit</button>
       <button class="haf-btn" onclick="filterHelpArea('kader')">👥 Kader</button>
+      <button class="haf-btn" onclick="filterHelpArea('verein')">🏟️ Verein</button>
     </div>
     <!-- Suche (nur im Detailguide) -->
     <div id="helpSearchWrap" style="display:none;position:relative;">
@@ -1441,6 +1458,15 @@
       <div class="hq-body">
         <div class="hq-title">Konto &amp; Mein Bereich</div>
         <div class="hq-text">Für Katalog und Planung kein Konto nötig. Zum Einreichen anmelden. Im „Mein Bereich" eigene Übungen und eingereichte Pläne verwalten.</div>
+      </div>
+      <div class="hq-arrow">›</div>
+    </div>
+
+    <div class="hq-card" onclick="switchHelpTab('detail');filterHelpArea('verein')">
+      <div class="hq-icon" style="background:#1a3a5c;">🏟️</div>
+      <div class="hq-body">
+        <div class="hq-title">Mein Verein</div>
+        <div class="hq-text">Verein anlegen oder einem bestehenden Verein beitreten. Als Vereinsadmin Logo hochladen, Mitglieder verwalten und die Adminrolle weitergeben.</div>
       </div>
       <div class="hq-arrow">›</div>
     </div>
@@ -1650,6 +1676,33 @@
         <div class="help-step"><span class="help-num">3</span><span>Klick auf Name → „Mein Bereich" oder „Abmelden"</span></div>
         <div class="help-step"><span class="help-num">4</span><span><strong>Mein Bereich:</strong> eigene Übungen mit Status (In Prüfung / Freigegeben)</span></div>
         <div class="help-step"><span class="help-num">5</span><span><strong>Mein Bereich:</strong> eingereichte Trainingspläne verwalten &amp; zurückziehen</span></div>
+      </div>
+    </div>
+
+    <!-- Verein -->
+    <div class="help-card" data-area="verein" data-tags="verein vereinsaccount admin logo mitglied beitreten anfrage einladung trainerzugang">
+      <div class="help-card-icon" style="background:#1a3a5c;">🏟️</div>
+      <div>
+        <div class="help-card-title">Mein Verein – Verein anlegen &amp; beitreten</div>
+        <p class="help-card-text">Angemeldete Nutzer:innen können einen Verein anlegen oder einem bestehenden beitreten.</p>
+        <div class="help-step"><span class="help-num">1</span><span>Im Account-Bereich auf den Tab <strong>„Mein Verein"</strong> wechseln</span></div>
+        <div class="help-step"><span class="help-num">2</span><span><strong>Verein anlegen:</strong> Name und Logo eingeben → du wirst automatisch Vereinsadmin</span></div>
+        <div class="help-step"><span class="help-num">3</span><span><strong>Verein suchen:</strong> nach bestehendem Verein suchen und Beitrittsanfrage stellen</span></div>
+        <div class="help-step"><span class="help-num">4</span><span>Der Vereinsadmin prüft Anfragen und kann sie annehmen oder ablehnen</span></div>
+        <div class="help-step"><span class="help-num">5</span><span>Nach Aufnahme erscheint oben im Header das Vereinslogo</span></div>
+      </div>
+    </div>
+
+    <div class="help-card" data-area="verein" data-tags="verein admin logo einwilligung übertragen abgeben mitglied entfernen">
+      <div class="help-card-icon" style="background:#1a3a5c;">⚙️</div>
+      <div>
+        <div class="help-card-title">Vereinsverwaltung (Admin)</div>
+        <p class="help-card-text">Als Vereinsadmin hast du die volle Kontrolle über deinen Vereinsaccount.</p>
+        <div class="help-step"><span class="help-num">1</span><span><strong>Logo hochladen:</strong> JPG oder PNG, mindestens 200×200px empfohlen</span></div>
+        <div class="help-step"><span class="help-num">2</span><span>Optional: Logo der AssistCoach-Website für Präsentationszwecke zur Verfügung stellen (freiwillig, jederzeit widerrufbar)</span></div>
+        <div class="help-step"><span class="help-num">3</span><span><strong>Beitrittsanfragen</strong> annehmen oder ablehnen</span></div>
+        <div class="help-step"><span class="help-num">4</span><span>Mitglieder aus dem Verein entfernen</span></div>
+        <div class="help-step"><span class="help-num">5</span><span><strong>Adminrolle übertragen:</strong> an ein anderes Mitglied abgeben – nur eine Person kann Admin sein</span></div>
       </div>
     </div>
 

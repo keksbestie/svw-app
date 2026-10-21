@@ -686,18 +686,27 @@ async function saveAccountVisibility(){
 function renderMyAccPlans(){
   const list=document.getElementById('accPlansList');
   if(!list) return;
-  const saved=JSON.parse(localStorage.getItem('savedPlans')||'[]');
-  if(!saved.length){
+  if(!savedPlans||!savedPlans.length){
     list.innerHTML='<div style="text-align:center;color:var(--gd2);font-size:14px;padding:40px 0;">Keine gespeicherten Pläne vorhanden.</div>';
     return;
   }
-  list.innerHTML=saved.map((p,i)=>`
+  const statusBadge=s=>{
+    if(s==='pending') return '<span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;background:#fff8e1;color:#f57f17;border:1px solid #ffe082;">In Prüfung</span>';
+    if(s==='approved') return '<span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;background:#e8f5e9;color:#1a7f4b;border:1px solid #a5d6a7;">Veröffentlicht</span>';
+    if(s==='rejected') return '<span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;background:#ffebee;color:#c62828;border:1px solid #ef9a9a;">Abgelehnt</span>';
+    return '';
+  };
+  list.innerHTML=savedPlans.map((p,i)=>`
     <div style="background:var(--surface);border-radius:10px;padding:14px 18px;box-shadow:var(--sh);display:flex;align-items:center;gap:12px;">
-      <div style="flex:1;">
-        <div style="font-weight:700;font-size:15px;">${p.name||'Plan '+(i+1)}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">${p.name||'Plan '+(i+1)} ${statusBadge(p.status)}</div>
         <div style="font-size:11px;color:var(--gd2);margin-top:2px;">${p.date||''}</div>
       </div>
-      <button onclick="goPage('planner')" style="padding:7px 14px;background:var(--accent);color:#fff;border:none;border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;">Öffnen</button>
+      <div style="display:flex;gap:6px;flex-shrink:0;">
+        <button onclick="loadPlan(savedPlans[${i}]);goPage('planner')" style="padding:7px 12px;background:var(--accent);color:#fff;border:none;border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;">Öffnen</button>
+        ${p.status==='pending'?`<button onclick="withdrawSubmittedPlan('${p.id}').then(()=>renderMyAccPlans())" style="padding:7px 10px;background:none;border:1px solid #c62828;color:#c62828;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;">Zurückziehen</button>`:''}
+        ${(!p.status||p.status==='private'||p.status==='rejected')?`<button onclick="if(confirm('Plan löschen?')){delPlan('${p.id}');renderMyAccPlans()}" style="padding:7px 10px;background:none;border:1px solid var(--border);color:var(--gd2);border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;">Löschen</button>`:''}
+      </div>
     </div>
   `).join('');
 }
