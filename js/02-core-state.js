@@ -64,7 +64,13 @@ async function loadAPI(){
     }
     if(user){
       const {data:plansData}=await _supabase.from('plans').select('*').eq('owner_id',user.id);
-      savedPlans=(plansData||[]).map(p=>({id:p.id||uid(),name:p.name||'Plan',date:p.date||'',lanes:p.lanes,totals:p.totals||[]}));
+      const localPlans=(plansData||[]).map(p=>({id:p.id||uid(),name:p.name||'Plan',date:p.date||'',lanes:p.lanes,totals:p.totals||[]}));
+      const {data:subPlans}=await _supabase.from('submitted_plans').select('*').eq('owner_id',user.id);
+      const submittedMapped=(subPlans||[]).map(p=>({id:p.id,name:p.name||'Plan',date:p.date||'',lanes:p.lanes,totals:p.totals||[],status:p.status}));
+      // Merge: submitted plans that aren't already in local plans
+      const localIds=new Set(localPlans.map(p=>p.id));
+      const merged=[...localPlans,...submittedMapped.filter(p=>!localIds.has(p.id))];
+      savedPlans=merged.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
       const {data:ltpData}=await _supabase.from('ltp_blocks').select('*').eq('owner_id',user.id);
       ltpBlocks=(ltpData||[]).map(b=>b.weeks);
     }
