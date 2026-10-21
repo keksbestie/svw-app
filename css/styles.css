@@ -63,6 +63,7 @@ body { font-family: 'Barlow', sans-serif; background: var(--bg); color: var(--te
 }
 #clubLogoBg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
 #page-home { position: relative; }
+@media (max-width: 767px) { #clubLogoBg { display: none; } }
 
 /* ══════════════════════════════════════════════════
    HEADER
