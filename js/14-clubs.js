@@ -386,7 +386,7 @@ function _showDeleteClubModal(clubId, clubName, isAdmin) {
       </label>
       <div style="display:flex;gap:10px;margin-top:18px;align-items:center;">
         <button onclick="document.getElementById('deleteClubModal').remove()" style="flex:1;padding:11px;background:var(--surface-2);color:var(--text-1);border:1px solid var(--border);border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;cursor:pointer;">Abbrechen</button>
-        <button id="deleteClubConfirmBtn" onclick="_executeDeleteClub('${clubId}','${clubName.replace(/'/g,"\\'")}${isAdmin?'':''}')" style="display:none;flex:1;padding:11px;background:#e53935;color:#fff;border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;cursor:pointer;align-items:center;justify-content:center;gap:6px;">🗑 Verein final löschen</button>
+        <button id="deleteClubConfirmBtn" onclick="_executeDeleteClub('${clubId}','${clubName.replace(/'/g,"\\'")}')" style="display:none;flex:1;padding:11px;background:#c62828;color:#ffffff !important;border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;cursor:pointer;letter-spacing:.3px;">🗑 Verein final löschen</button>
       </div>
     </div>`;
   document.body.appendChild(modal);
