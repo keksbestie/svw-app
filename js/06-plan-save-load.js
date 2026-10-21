@@ -142,20 +142,68 @@ function renderAdminPlanQueue(plans){
     <div class="sub-item">
       <div class="sub-item-name">📋 ${p.name} <span style="font-size:10px;color:var(--text-3);font-weight:400;">von ${p.author_name||'Unbekannt'} · ${p.date||''}</span></div>
       <div class="sub-item-meta" style="gap:6px;">
+        <button onclick="previewSubmittedPlan('${p.id}')" style="padding:4px 10px;background:var(--surface-2,#2a2a2a);color:var(--text-1);border:1px solid var(--border);border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;">👁 Anzeigen</button>
         <button onclick="approvePlan('${p.id}')" style="padding:4px 10px;background:#1a7f4b;color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;">✓ Freigeben</button>
         <button onclick="rejectPlan('${p.id}')" style="padding:4px 10px;background:#c62828;color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;">✕ Ablehnen</button>
       </div>
     </div>`).join('');
 }
 
+let _adminPlanCache=[];
+async function previewSubmittedPlan(id){
+  if(!_adminPlanCache.length){
+    const {data}=await _supabase.from('submitted_plans').select('*').eq('status','pending').order('submitted_at',{ascending:true});
+    _adminPlanCache=data||[];
+  }
+  const plan=_adminPlanCache.find(p=>p.id===id);
+  if(!plan)return;
+
+  const lanes=plan.lanes||[];
+  const rows=lanes.map(lane=>{
+    const ex=exercises.find(e=>e.id===lane.exerciseId)||{name:lane.exerciseName||'Unbekannte Übung',section:0,difficulty:'',duration:''};
+    return `<div style="display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);">
+      ${ex.image?`<img src="${ex.image}" style="width:52px;height:40px;object-fit:cover;border-radius:6px;flex-shrink:0;">`:'<div style="width:52px;height:40px;background:var(--border);border-radius:6px;flex-shrink:0;"></div>'}
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13px;font-weight:700;">${ex.name}</div>
+        <div style="font-size:11px;color:var(--gd2);">${lane.duration||ex.duration||''} ${lane.players||ex.players?'· '+( lane.players||ex.players)+' Spieler:innen':''}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Modal öffnen
+  let modal=document.getElementById('adminPlanPreviewModal');
+  if(!modal){
+    modal=document.createElement('div');
+    modal.id='adminPlanPreviewModal';
+    modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
+    modal.onclick=e=>{if(e.target===modal)modal.remove();};
+    document.body.appendChild(modal);
+  }
+  modal.innerHTML=`
+    <div style="background:var(--bg);border-radius:16px;max-width:540px;width:100%;max-height:80vh;overflow-y:auto;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.5);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;">${plan.name}</div>
+        <button onclick="document.getElementById('adminPlanPreviewModal').remove()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--gd2);">✕</button>
+      </div>
+      <div style="font-size:11px;color:var(--gd2);margin-bottom:16px;">von ${plan.author_name||'Unbekannt'} · ${plan.date||''} · ${lanes.length} Übungen</div>
+      <div>${rows||'<div style="color:var(--gd2);font-size:13px;">Keine Übungen im Plan.</div>'}</div>
+      <div style="display:flex;gap:8px;margin-top:20px;">
+        <button onclick="approvePlan('${plan.id}');document.getElementById('adminPlanPreviewModal').remove()" style="flex:1;padding:10px;background:#1a7f4b;color:#fff;border:none;border-radius:8px;font-weight:800;cursor:pointer;">✓ Freigeben</button>
+        <button onclick="rejectPlan('${plan.id}');document.getElementById('adminPlanPreviewModal').remove()" style="flex:1;padding:10px;background:#c62828;color:#fff;border:none;border-radius:8px;font-weight:800;cursor:pointer;">✕ Ablehnen</button>
+      </div>
+    </div>`;
+}
+
 async function approvePlan(id){
   await _supabase.from('submitted_plans').update({status:'approved'}).eq('id',id);
+  _adminPlanCache=[];
   showToast('Plan freigegeben');
   loadAdminPlanQueue();
 }
 async function rejectPlan(id){
   if(!confirm('Plan ablehnen?'))return;
   await _supabase.from('submitted_plans').update({status:'rejected'}).eq('id',id);
+  _adminPlanCache=[];
   showToast('Plan abgelehnt');
   loadAdminPlanQueue();
 }
