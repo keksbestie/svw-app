@@ -29,17 +29,29 @@ async function initClubLogoBg(sportId) {
   }
 
   if (!logos.length) return;
+  const W = window.innerWidth;
+  const H = window.innerHeight;
+  // Seitenrand-Breite: Bereich links und rechts vom zentrierten Content
+  // Content ist max ~760px breit, zentriert → Ränder je (W-760)/2, min 60px
+  const sideW = Math.max(60, (W - 760) / 2);
   wrap.innerHTML = logos.map(c => {
-    const x = (Math.random() * 88).toFixed(1);
-    const y = (Math.random() * 84).toFixed(1);
-    const size = (44 + Math.random() * 28).toFixed(0);
+    const size = (44 + Math.random() * 28) | 0;
+    // Zufällig links oder rechts platzieren
+    let px;
+    if (Math.random() < 0.5) {
+      // linker Rand: 0 bis sideW-size
+      px = (Math.random() * Math.max(0, sideW - size)) | 0;
+    } else {
+      // rechter Rand: W-sideW bis W-size
+      px = ((W - sideW) + Math.random() * Math.max(0, sideW - size)) | 0;
+    }
+    const py = (Math.random() * Math.max(0, H - size)) | 0;
     const op = (0.06 + Math.random() * 0.08).toFixed(2);
-    const rot = ((Math.random() - 0.5) * 24).toFixed(1);
     return `<img src="${c.logo_url}" alt="${c.name}" loading="lazy"
       style="position:absolute;left:0;top:0;
         width:${size}px;height:${size}px;object-fit:contain;
         opacity:${op};
-        transform:translate(${(x*window.innerWidth/100).toFixed(0)}px,${(y*window.innerHeight/100).toFixed(0)}px) rotate(${rot}deg);
+        transform:translate(${px}px,${py}px);
         filter:grayscale(20%);">`;
   }).join('');
 }
