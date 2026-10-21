@@ -263,13 +263,19 @@ async function _renderAdminView(wrap) {
     </div>
 
     ${memberOpts ? `
-    <div style="background:var(--surface);border-radius:12px;padding:20px;box-shadow:var(--sh);">
+    <div style="background:var(--surface);border-radius:12px;padding:20px;box-shadow:var(--sh);margin-bottom:14px;">
       <div class="club-section-label">Admin-Rolle übergeben</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <select id="transferAdminSel" class="fc" style="margin:0;flex:1;">${memberOpts}</select>
         <button class="slot-btn slot-btn-remove" onclick="transferAdminRole()">Übergeben</button>
       </div>
-    </div>` : ''}`;
+    </div>` : ''}
+
+    <div style="background:var(--surface);border-radius:12px;padding:20px;box-shadow:var(--sh);border:1px solid rgba(229,57,53,.25);">
+      <div class="club-section-label" style="color:#e53935;">Verein löschen</div>
+      <div style="font-size:12px;color:var(--gd2);margin-bottom:12px;">Löscht den Verein dauerhaft. Alle Mitglieder werden automatisch ausgetragen.</div>
+      <button class="slot-btn slot-btn-remove" style="width:100%;" onclick="deleteClub()">🗑 Verein dauerhaft löschen</button>
+    </div>`;
 }
 
 // ── Trainer-Ansicht ───────────────────────────────────────────────
@@ -327,6 +333,24 @@ async function transferAdminRole() {
   renderClubTab();
 }
 
+async function deleteClub() {
+  if (!currentClub) return;
+  if (!confirm(`Verein „${currentClub.name}" wirklich dauerhaft löschen? Diese Aktion kann nicht rückgängig gemacht werden.`)) return;
+  const clubId = currentClub.id;
+  // Alle Mitglieder austragen
+  await _supabase.from('profiles').update({ club_id: null, club_role: null }).eq('club_id', clubId);
+  // Slots + Anfragen löschen
+  await _supabase.from('club_slots').delete().eq('club_id', clubId);
+  await _supabase.from('club_join_requests').delete().eq('club_id', clubId);
+  // Verein löschen
+  const { error } = await _supabase.from('clubs').delete().eq('id', clubId);
+  if (error) { showToast('Fehler beim Löschen: ' + error.message, 'err'); return; }
+  currentClub = null; currentClubRole = null; clubLogoUrl = null;
+  _renderClubBtn();
+  showToast('Verein wurde gelöscht.');
+  renderClubTab();
+}
+
 async function leaveClub() {
   const { data: { user } } = await _supabase.auth.getUser();
   if (!user) return;
@@ -372,6 +396,20 @@ function copyInviteLink(url) {
   });
 }
 
+async function adminDeleteClub(clubId, clubName) {
+  if (!IS_ADMIN) return;
+  if (!confirm(`Verein „${clubName}" als Admin dauerhaft löschen?`)) return;
+  await _supabase.from('profiles').update({ club_id: null, club_role: null }).eq('club_id', clubId);
+  await _supabase.from('club_slots').delete().eq('club_id', clubId);
+  await _supabase.from('club_join_requests').delete().eq('club_id', clubId);
+  const { error } = await _supabase.from('clubs').delete().eq('id', clubId);
+  if (error) { showToast('Fehler: ' + error.message, 'err'); return; }
+  // Falls eigener Verein gelöscht
+  if (currentClub?.id === clubId) { currentClub = null; currentClubRole = null; clubLogoUrl = null; _renderClubBtn(); }
+  showToast(`Verein „${clubName}" gelöscht.`);
+  renderClubAdminPanel();
+}
+
 // ── AssistCoach-Admin: alle Vereine ──────────────────────────────
 async function renderClubAdminPanel() {
   const wrap = document.getElementById('clubAdminWrap');
@@ -388,6 +426,7 @@ async function renderClubAdminPanel() {
           ${c.logo_url ? `<img src="${c.logo_url}" style="height:24px;max-width:40px;object-fit:contain;border-radius:3px;">` : '<span style="width:40px;display:inline-block;"></span>'}
           <span style="flex:1;font-size:13px;font-weight:600;">${c.name}</span>
           <span class="slot-idx">${c.slot_count} Slots</span>
+          <button class="slot-btn slot-btn-remove" onclick="adminDeleteClub('${c.id}','${c.name.replace(/'/g,"\\'")}')">Löschen</button>
         </div>`).join('') || '<div class="slot-free">Noch keine Vereine.</div>'}
     </div>`;
 }
