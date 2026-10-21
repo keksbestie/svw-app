@@ -63,6 +63,7 @@ function renderHomeSportState() {
     if (sub) sub.textContent = 'Was möchtest du tun?';
     if (heroBtns) heroBtns.style.display = 'flex';
     window.currentSport = sport;
+    if (typeof initClubLogoBg === 'function') initClubLogoBg(sport.id);
   } else {
     grid.style.display = 'grid';
     cards.style.display = 'none';
@@ -70,6 +71,7 @@ function renderHomeSportState() {
     if (sub) sub.textContent = 'Übungen planen, strukturieren und langfristig periodisieren – alles an einem Ort.';
     if (heroBtns) heroBtns.style.display = 'none';
     window.currentSport = null;
+    if (typeof initClubLogoBg === 'function') initClubLogoBg(null);
   }
 }
 

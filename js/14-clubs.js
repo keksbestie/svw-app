@@ -10,15 +10,26 @@ let clubLogoUrl = null;
 let _bgLogos = [];
 let _bgInterval = null;
 
-async function initClubLogoBg() {
+// sportId: null = alle Vereine, string = nur Vereine mit dieser Sportart
+async function initClubLogoBg(sportId) {
   if (window.innerWidth < 768) return;
   const wrap = document.getElementById('clubLogoBg');
   if (!wrap || !_supabase) return;
-  if (wrap.childElementCount > 0) return; // bereits gerendert
-  const { data } = await _supabase.from('clubs').select('id,name,logo_url').eq('logo_public_consent', true).not('logo_url', 'is', null);
-  _bgLogos = (data || []).filter(c => c.logo_url);
-  if (!_bgLogos.length) return;
-  wrap.innerHTML = _bgLogos.map(c => {
+
+  // Immer neu rendern wenn Sportart wechselt
+  wrap.innerHTML = '';
+
+  let query = _supabase.from('clubs').select('id,name,logo_url,sports').eq('logo_public_consent', true).not('logo_url', 'is', null);
+  const { data } = await query;
+  let logos = (data || []).filter(c => c.logo_url);
+
+  // Auf Sport-Startseite: nur Vereine mit dieser Sportart
+  if (sportId) {
+    logos = logos.filter(c => (c.sports || []).includes(sportId));
+  }
+
+  if (!logos.length) return;
+  wrap.innerHTML = logos.map(c => {
     const x = (Math.random() * 88).toFixed(1);
     const y = (Math.random() * 84).toFixed(1);
     const size = (44 + Math.random() * 28).toFixed(0);
@@ -36,7 +47,6 @@ async function initClubLogoBg() {
 function stopClubLogoBg() {
   const wrap = document.getElementById('clubLogoBg');
   if (wrap) wrap.innerHTML = '';
-  _bgLogos = [];
 }
 
 // ── Init nach Auth ────────────────────────────────────────────────
