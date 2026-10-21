@@ -243,7 +243,7 @@ header {
   display: flex !important;
   flex-direction: column;
   background:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(26,127,75,.35) 0%, transparent 70%),
+    radial-gradient(ellipse 90% 60% at 50% 15%, rgba(26,127,75,.32) 0%, transparent 75%),
     linear-gradient(135deg, rgba(255,255,255,.045) 0%, transparent 55%, rgba(0,0,0,.08) 100%),
     var(--bg);
   overflow: hidden;
