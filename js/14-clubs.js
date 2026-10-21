@@ -11,58 +11,32 @@ let _bgLogos = [];
 let _bgInterval = null;
 
 async function initClubLogoBg() {
-  // Nur auf Tablet/Desktop anzeigen
   if (window.innerWidth < 768) return;
   const wrap = document.getElementById('clubLogoBg');
   if (!wrap || !_supabase) return;
+  if (wrap.childElementCount > 0) return; // bereits gerendert
   const { data } = await _supabase.from('clubs').select('id,name,logo_url').eq('logo_public_consent', true).not('logo_url', 'is', null);
   _bgLogos = (data || []).filter(c => c.logo_url);
   if (!_bgLogos.length) return;
-  _renderLogoBg(wrap);
-  clearInterval(_bgInterval);
-  // Logos alle 5s zu neuen Positionen bewegen (via transform — kein Reflow)
-  _bgInterval = setInterval(() => _shuffleLogoBg(wrap), 5000);
-}
-
-function _renderLogoBg(wrap) {
-  if (!_bgLogos.length) return;
   wrap.innerHTML = _bgLogos.map(c => {
-    const x = Math.random() * 90;
-    const y = Math.random() * 85;
-    const size = 44 + Math.random() * 28;
-    const op = 0.06 + Math.random() * 0.08;
-    const rot = (Math.random() - 0.5) * 20;
-    const dur = 7 + Math.random() * 8;
-    const delay = (Math.random() * -14).toFixed(1);
-    // Alle Positionierung über transform (GPU, kein Reflow)
+    const x = (Math.random() * 88).toFixed(1);
+    const y = (Math.random() * 84).toFixed(1);
+    const size = (44 + Math.random() * 28).toFixed(0);
+    const op = (0.06 + Math.random() * 0.08).toFixed(2);
+    const rot = ((Math.random() - 0.5) * 24).toFixed(1);
     return `<img src="${c.logo_url}" alt="${c.name}" loading="lazy"
       style="position:absolute;left:0;top:0;
-        width:${size.toFixed(0)}px;height:${size.toFixed(0)}px;object-fit:contain;
-        opacity:${op.toFixed(2)};
-        transform:translate(${(x * window.innerWidth / 100).toFixed(0)}px,${(y * window.innerHeight / 100).toFixed(0)}px) rotate(${rot.toFixed(1)}deg);
-        will-change:transform,opacity;
-        transition:transform 3s cubic-bezier(.4,0,.2,1),opacity 2s;
-        animation:logoDrift ${dur.toFixed(1)}s ${delay}s ease-in-out infinite alternate;
+        width:${size}px;height:${size}px;object-fit:contain;
+        opacity:${op};
+        transform:translate(${(x*window.innerWidth/100).toFixed(0)}px,${(y*window.innerHeight/100).toFixed(0)}px) rotate(${rot}deg);
         filter:grayscale(20%);">`;
   }).join('');
 }
 
-function _shuffleLogoBg(wrap) {
-  if (!wrap || !_bgLogos.length) return;
-  wrap.querySelectorAll('img').forEach(img => {
-    const nx = (Math.random() * 90 * window.innerWidth / 100).toFixed(0);
-    const ny = (Math.random() * 85 * window.innerHeight / 100).toFixed(0);
-    const rot = ((Math.random() - 0.5) * 20).toFixed(1);
-    const no = (0.06 + Math.random() * 0.08).toFixed(2);
-    img.style.transform = `translate(${nx}px,${ny}px) rotate(${rot}deg)`;
-    img.style.opacity = no;
-  });
-}
-
 function stopClubLogoBg() {
-  clearInterval(_bgInterval);
   const wrap = document.getElementById('clubLogoBg');
   if (wrap) wrap.innerHTML = '';
+  _bgLogos = [];
 }
 
 // ── Init nach Auth ────────────────────────────────────────────────
