@@ -158,15 +158,51 @@ async function previewSubmittedPlan(id){
   const plan=_adminPlanCache.find(p=>p.id===id);
   if(!plan)return;
 
-  const lanes=plan.lanes||[];
-  const rows=lanes.map(lane=>{
-    const ex=exercises.find(e=>e.id===lane.exerciseId)||{name:lane.exerciseName||'Unbekannte Übung',section:0,difficulty:'',duration:''};
-    return `<div style="display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);">
-      ${ex.image?`<img src="${ex.image}" style="width:52px;height:40px;object-fit:cover;border-radius:6px;flex-shrink:0;">`:'<div style="width:52px;height:40px;background:var(--border);border-radius:6px;flex-shrink:0;"></div>'}
-      <div style="flex:1;min-width:0;">
-        <div style="font-size:13px;font-weight:700;">${ex.name}</div>
-        <div style="font-size:11px;color:var(--gd2);">${lane.duration||ex.duration||''} ${lane.players||ex.players?'· '+( lane.players||ex.players)+' Spieler:innen':''}</div>
+  const planLanes=plan.lanes||[];
+  // Collect all exercise IDs across all sections
+  const allIds=[];
+  planLanes.forEach(section=>{
+    (section||[]).forEach(raw=>{
+      const item=typeof raw==='string'?{id:raw}:raw;
+      if(item.id) allIds.push(item.id);
+    });
+  });
+
+  // Fetch exercise data from Supabase (includes pending/unapproved)
+  let exMap={};
+  if(allIds.length){
+    const {data:exData}=await _supabase.from('exercises').select('id,name,image,duration,players,difficulty,section').in('id',allIds);
+    (exData||[]).forEach(e=>{exMap[e.id]=e;});
+  }
+
+  const totalCount=allIds.length;
+  const secColors=['#e53935','#1e88e5','#43a047','#fb8c00','#8e24aa'];
+  const secHtml=planLanes.map((section,si)=>{
+    const items=(section||[]).map(raw=>{
+      const item=typeof raw==='string'?{id:raw}:raw;
+      const ex=exMap[item.id]||{name:'Unbekannte Übung',image:'',duration:'',players:'',difficulty:''};
+      const players=item.players??ex.players??'';
+      const duration=item.duration??ex.duration??'';
+      return`<div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);">
+        ${ex.image?`<img src="${ex.image}" style="width:56px;height:42px;object-fit:cover;border-radius:6px;flex-shrink:0;">`:`<div style="width:56px;height:42px;background:var(--border);border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;">📋</div>`}
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:700;line-height:1.3;">${ex.name}</div>
+          <div style="font-size:11px;color:var(--text-3);margin-top:2px;">
+            ${duration?`<span style="margin-right:8px;">⏱ ${duration}</span>`:''}
+            ${players?`<span>👥 ${players}</span>`:''}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+    if(!items) return '';
+    const sec=SECS&&SECS[si]?SECS[si]:{name:`Abschnitt ${si+1}`,color:secColors[si]||'#888'};
+    return`<div style="margin-bottom:12px;">
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;background:${sec.color}18;margin-bottom:4px;">
+        <div style="width:10px;height:10px;border-radius:50%;background:${sec.color};flex-shrink:0;"></div>
+        <div style="font-size:11px;font-weight:800;color:${sec.color};letter-spacing:.5px;text-transform:uppercase;">${sec.name}</div>
+        <div style="font-size:10px;color:var(--text-3);margin-left:auto;">${(section||[]).length} Übung${(section||[]).length!==1?'en':''}</div>
       </div>
+      ${items}
     </div>`;
   }).join('');
 
@@ -180,13 +216,13 @@ async function previewSubmittedPlan(id){
     document.body.appendChild(modal);
   }
   modal.innerHTML=`
-    <div style="background:var(--bg);border-radius:16px;max-width:540px;width:100%;max-height:80vh;overflow-y:auto;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.5);">
+    <div style="background:var(--bg);border-radius:16px;max-width:560px;width:100%;max-height:85vh;overflow-y:auto;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.5);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;">${plan.name}</div>
-        <button onclick="document.getElementById('adminPlanPreviewModal').remove()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--gd2);">✕</button>
+        <button onclick="document.getElementById('adminPlanPreviewModal').remove()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-3);">✕</button>
       </div>
-      <div style="font-size:11px;color:var(--gd2);margin-bottom:16px;">von ${plan.author_name||'Unbekannt'} · ${plan.date||''} · ${lanes.length} Übungen</div>
-      <div>${rows||'<div style="color:var(--gd2);font-size:13px;">Keine Übungen im Plan.</div>'}</div>
+      <div style="font-size:11px;color:var(--text-3);margin-bottom:16px;">von ${plan.author_name||'Unbekannt'} · ${plan.date||''} · ${totalCount} Übung${totalCount!==1?'en':''}</div>
+      <div>${secHtml||'<div style="color:var(--text-3);font-size:13px;">Keine Übungen im Plan.</div>'}</div>
       <div style="display:flex;gap:8px;margin-top:20px;">
         <button onclick="approvePlan('${plan.id}');document.getElementById('adminPlanPreviewModal').remove()" style="flex:1;padding:10px;background:#1a7f4b;color:#fff;border:none;border-radius:8px;font-weight:800;cursor:pointer;">✓ Freigeben</button>
         <button onclick="rejectPlan('${plan.id}');document.getElementById('adminPlanPreviewModal').remove()" style="flex:1;padding:10px;background:#c62828;color:#fff;border:none;border-radius:8px;font-weight:800;cursor:pointer;">✕ Ablehnen</button>
