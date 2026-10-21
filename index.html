@@ -822,7 +822,7 @@
       <div style="position:relative;z-index:1;">
         <div style="font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:10px;">Unsere Mission</div>
         <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:#fff;margin:0 0 16px;letter-spacing:.5px;line-height:1.1;">Besseres Training.<br>F&uuml;r alle.</h1>
-        <p style="font-size:14px;color:rgba(255,255,255,.85);line-height:1.7;margin:0;max-width:560px;">AssistCoach unterst&uuml;tzt Trainer:innen und Verantwortliche im Fu&szlig;ball auf allen Ebenen &ndash; in ihrer t&auml;glichen Arbeit. Gleichzeitig soll ein Ort entstehen, an dem das kollektive Wissen vieler zusammenkommt, damit wir alle gemeinsam wachsen und unseren Spieler:innen ein noch besseres Training bieten k&ouml;nnen.</p>
+        <p style="font-size:14px;color:rgba(255,255,255,.85);line-height:1.7;margin:0;max-width:560px;">AssistCoach unterst&uuml;tzt Trainer:innen und Verantwortliche im Nachwuchssport &ndash; egal ob Fu&szlig;ball, Volleyball oder Tennis. Gleichzeitig soll ein Ort entstehen, an dem das kollektive Wissen vieler zusammenkommt, damit wir alle gemeinsam wachsen und unseren Athlet:innen ein noch besseres Training bieten k&ouml;nnen.</p>
       </div>
     </div>
 
@@ -1369,6 +1369,7 @@
       <button class="haf-btn" onclick="filterHelpArea('konto')">👤 Konto</button>
       <button class="haf-btn" onclick="filterHelpArea('langzeit')">📅 Langzeit</button>
       <button class="haf-btn" onclick="filterHelpArea('kader')">👥 Kader</button>
+      <button class="haf-btn" onclick="filterHelpArea('verein')">🏟️ Verein</button>
     </div>
     <!-- Suche (nur im Detailguide) -->
     <div id="helpSearchWrap" style="display:none;position:relative;">
@@ -1441,6 +1442,15 @@
       <div class="hq-body">
         <div class="hq-title">Konto &amp; Mein Bereich</div>
         <div class="hq-text">Für Katalog und Planung kein Konto nötig. Zum Einreichen anmelden. Im „Mein Bereich" eigene Übungen und eingereichte Pläne verwalten.</div>
+      </div>
+      <div class="hq-arrow">›</div>
+    </div>
+
+    <div class="hq-card" onclick="switchHelpTab('detail');filterHelpArea('verein')">
+      <div class="hq-icon" style="background:#1a3a5c;">🏟️</div>
+      <div class="hq-body">
+        <div class="hq-title">Mein Verein</div>
+        <div class="hq-text">Verein anlegen oder einem bestehenden Verein beitreten. Als Vereinsadmin Logo hochladen, Mitglieder verwalten und die Adminrolle weitergeben.</div>
       </div>
       <div class="hq-arrow">›</div>
     </div>
@@ -1650,6 +1660,33 @@
         <div class="help-step"><span class="help-num">3</span><span>Klick auf Name → „Mein Bereich" oder „Abmelden"</span></div>
         <div class="help-step"><span class="help-num">4</span><span><strong>Mein Bereich:</strong> eigene Übungen mit Status (In Prüfung / Freigegeben)</span></div>
         <div class="help-step"><span class="help-num">5</span><span><strong>Mein Bereich:</strong> eingereichte Trainingspläne verwalten &amp; zurückziehen</span></div>
+      </div>
+    </div>
+
+    <!-- Verein -->
+    <div class="help-card" data-area="verein" data-tags="verein vereinsaccount admin logo mitglied beitreten anfrage einladung trainerzugang">
+      <div class="help-card-icon" style="background:#1a3a5c;">🏟️</div>
+      <div>
+        <div class="help-card-title">Mein Verein – Verein anlegen &amp; beitreten</div>
+        <p class="help-card-text">Angemeldete Nutzer:innen können einen Verein anlegen oder einem bestehenden beitreten.</p>
+        <div class="help-step"><span class="help-num">1</span><span>Im Account-Bereich auf den Tab <strong>„Mein Verein"</strong> wechseln</span></div>
+        <div class="help-step"><span class="help-num">2</span><span><strong>Verein anlegen:</strong> Name und Logo eingeben → du wirst automatisch Vereinsadmin</span></div>
+        <div class="help-step"><span class="help-num">3</span><span><strong>Verein suchen:</strong> nach bestehendem Verein suchen und Beitrittsanfrage stellen</span></div>
+        <div class="help-step"><span class="help-num">4</span><span>Der Vereinsadmin prüft Anfragen und kann sie annehmen oder ablehnen</span></div>
+        <div class="help-step"><span class="help-num">5</span><span>Nach Aufnahme erscheint oben im Header das Vereinslogo</span></div>
+      </div>
+    </div>
+
+    <div class="help-card" data-area="verein" data-tags="verein admin logo einwilligung übertragen abgeben mitglied entfernen">
+      <div class="help-card-icon" style="background:#1a3a5c;">⚙️</div>
+      <div>
+        <div class="help-card-title">Vereinsverwaltung (Admin)</div>
+        <p class="help-card-text">Als Vereinsadmin hast du die volle Kontrolle über deinen Vereinsaccount.</p>
+        <div class="help-step"><span class="help-num">1</span><span><strong>Logo hochladen:</strong> JPG oder PNG, mindestens 200×200px empfohlen</span></div>
+        <div class="help-step"><span class="help-num">2</span><span>Optional: Logo der AssistCoach-Website für Präsentationszwecke zur Verfügung stellen (freiwillig, jederzeit widerrufbar)</span></div>
+        <div class="help-step"><span class="help-num">3</span><span><strong>Beitrittsanfragen</strong> annehmen oder ablehnen</span></div>
+        <div class="help-step"><span class="help-num">4</span><span>Mitglieder aus dem Verein entfernen</span></div>
+        <div class="help-step"><span class="help-num">5</span><span><strong>Adminrolle übertragen:</strong> an ein anderes Mitglied abgeben – nur eine Person kann Admin sein</span></div>
       </div>
     </div>
 
