@@ -80,25 +80,81 @@ function filterLtpPlans(q){
 function _renderLtpPlanRows(plans){
   const el=document.getElementById('ltpPlanList');if(!el)return;
   if(!plans.length){el.innerHTML='<div style="font-size:13px;color:var(--text-3);padding:20px 0;text-align:center;">Keine Pläne gefunden.</div>';return;}
-  el.innerHTML=plans.map(p=>{
+  el.innerHTML=plans.map((p,i)=>{
     const total=(p.totals||[]).filter(t=>t.count>0).map(t=>t.count+' '+t.name).join(', ');
-    return`<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:10px;display:flex;align-items:center;gap:12px;">
+    return`<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="openLtpPlanPreview(${i})">
       <div style="flex:1;min-width:0;">
         <div style="font-weight:700;font-size:15px;">${p.name||'Plan'}</div>
         <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${p.author_name||''} · ${p.date||''} ${total?'· '+total:''}</div>
       </div>
-      <button onclick="loadLtpPlanIntoPlanner(${JSON.stringify(p).replace(/"/g,'&quot;')})" style="padding:7px 14px;background:var(--accent);color:#fff;border:none;border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;">→ Trainingsplan</button>
+      <button onclick="event.stopPropagation();openLtpPlanPreview(${i})" style="padding:7px 14px;background:var(--surface-2);color:var(--text-1);border:1px solid var(--border);border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;">👁 Vorschau</button>
     </div>`;
   }).join('');
 }
 
-function loadLtpPlanIntoPlanner(p){
-  if(!confirm(`Plan "${p.name}" in den Trainingsplan laden?`))return;
-  currentPlan={name:p.name,lanes:(p.lanes||[]).map(l=>[...l])};
-  if(typeof document!=='undefined'){
-    const inp=document.getElementById('planName');if(inp)inp.value=p.name;
+async function openLtpPlanPreview(idx){
+  const plans=document.getElementById('ltpPlanSearch')?.value
+    ?_ltpPublicPlans.filter(p=>(p.name||'').toLowerCase().includes(document.getElementById('ltpPlanSearch').value.toLowerCase()))
+    :_ltpPublicPlans;
+  const p=plans[idx];if(!p)return;
+
+  // Fetch exercise data for all IDs in lanes
+  const allIds=[];
+  (p.lanes||[]).forEach(sec=>(sec||[]).forEach(raw=>{const id=typeof raw==='string'?raw:(raw.id||'');if(id)allIds.push(id);}));
+  let exMap={};
+  if(allIds.length){
+    const {data}=await _supabase.from('exercises').select('id,name,image,duration,players,section').in('id',allIds);
+    (data||[]).forEach(e=>{exMap[e.id]=e;});
   }
+
+  const secColors=['#e53935','#1e88e5','#43a047','#fb8c00','#8e24aa'];
+  let totalMin=0;
+  const secHtml=(p.lanes||[]).map((sec,si)=>{
+    const items=(sec||[]).map(raw=>{
+      const item=typeof raw==='string'?{id:raw}:raw;
+      const ex=exMap[item.id]||{name:'Unbekannte Übung',image:'',duration:'',players:''};
+      const dur=item.duration!=null?item.duration:(ex.duration||'');
+      const pl=item.players!=null?item.players:(ex.players||'');
+      if(dur&&!isNaN(parseInt(dur))) totalMin+=parseInt(dur);
+      return`<div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);">
+        ${ex.image?`<img src="${ex.image}" style="width:52px;height:40px;object-fit:cover;border-radius:6px;flex-shrink:0;">`:`<div style="width:52px;height:40px;background:var(--border);border-radius:6px;flex-shrink:0;"></div>`}
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:700;">${ex.name}</div>
+          <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${dur?'⏱ '+dur+' min ':''} ${pl?'· 👥 '+pl:''}</div>
+        </div>
+      </div>`;
+    }).join('');
+    if(!items)return'';
+    const sec2=SECS&&SECS[si]?SECS[si]:{name:'Abschnitt '+(si+1),color:secColors[si]||'#888'};
+    return`<div style="margin-bottom:12px;">
+      <div style="display:flex;align-items:center;gap:8px;padding:5px 10px;border-radius:8px;background:${sec2.color}18;margin-bottom:4px;">
+        <div style="width:9px;height:9px;border-radius:50%;background:${sec2.color};flex-shrink:0;"></div>
+        <div style="font-size:11px;font-weight:800;color:${sec2.color};text-transform:uppercase;letter-spacing:.5px;">${sec2.name}</div>
+        <div style="font-size:10px;color:var(--text-3);margin-left:auto;">${(sec||[]).length} Übung${(sec||[]).length!==1?'en':''}</div>
+      </div>${items}</div>`;
+  }).join('');
+
+  let modal=document.getElementById('ltpPlanPreviewModal');
+  if(!modal){modal=document.createElement('div');modal.id='ltpPlanPreviewModal';modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';modal.onclick=e=>{if(e.target===modal)modal.remove();};document.body.appendChild(modal);}
+  modal.innerHTML=`
+    <div style="background:var(--bg);border-radius:16px;max-width:560px;width:100%;max-height:88vh;overflow-y:auto;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.5);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;">${p.name}</div>
+        <button onclick="document.getElementById('ltpPlanPreviewModal').remove()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-3);">✕</button>
+      </div>
+      <div style="font-size:11px;color:var(--text-3);margin-bottom:4px;">von ${p.author_name||'Unbekannt'} · ${p.date||''}</div>
+      ${totalMin?`<div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:16px;">⏱ ca. ${totalMin} min Gesamtbelastung</div>`:'<div style="margin-bottom:16px;"></div>'}
+      <div>${secHtml||'<div style="color:var(--text-3);font-size:13px;">Keine Übungen.</div>'}</div>
+      <button onclick="loadLtpPlanIntoPlanner(_ltpPublicPlans.find(x=>x.name===\`${p.name.replace(/`/g,"'")}\`))" style="width:100%;margin-top:20px;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;cursor:pointer;">→ In Trainingsplan laden</button>
+    </div>`;
+}
+
+function loadLtpPlanIntoPlanner(p){
+  if(!p)return;
+  currentPlan={name:p.name,lanes:(p.lanes||[]).map(l=>[...l])};
+  const inp=document.getElementById('planName');if(inp)inp.value=p.name;
   if(typeof renderPlanner==='function') renderPlanner();
+  const m=document.getElementById('ltpPlanPreviewModal');if(m)m.remove();
   goPage('planner');
   showToast('✓ Plan geladen');
 }
