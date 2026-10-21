@@ -15,7 +15,7 @@ async function loadClubData(userId) {
     if (!profile?.club_id) { currentClub = null; currentClubRole = null; clubLogoUrl = null; _renderClubBtn(); return; }
     currentClubRole = profile.club_role;
     const { data: club } = await _supabase
-      .from('clubs').select('id, name, logo_url, slot_count, logo_public_consent').eq('id', profile.club_id).single();
+      .from('clubs').select('id, name, logo_url, slot_count, logo_public_consent, sports').eq('id', profile.club_id).single();
     currentClub = club || null;
     clubLogoUrl = club?.logo_url || null;
     _renderClubBtn();
@@ -98,6 +98,28 @@ async function renderClubTab() {
   }
 }
 
+// ── Sportarten-Helper ─────────────────────────────────────────────
+function _availableSports() {
+  return (typeof SPORTS !== 'undefined' ? SPORTS : []).filter(s =>
+    typeof SPORTS_ENABLED === 'undefined' || SPORTS_ENABLED.includes(s.id)
+  );
+}
+function _sportLabel(id) {
+  return _availableSports().find(s => s.id === id)?.label || id;
+}
+function _sportCheckboxes(selectedIds = []) {
+  return _availableSports().map(s => `
+    <label style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--surface-2);border-radius:8px;cursor:pointer;border:1.5px solid ${selectedIds.includes(s.id)?'var(--accent)':'var(--border)'};transition:border-color .15s;" id="sportLabel_${s.id}">
+      <input type="checkbox" value="${s.id}" class="club-sport-check" ${selectedIds.includes(s.id)?'checked':''}
+        onchange="document.getElementById('sportLabel_${s.id}').style.borderColor=this.checked?'var(--accent)':'var(--border)'"
+        style="width:15px;height:15px;accent-color:var(--accent);cursor:pointer;">
+      <span style="font-size:13px;font-weight:700;">${s.label}</span>
+    </label>`).join('');
+}
+function _getCheckedSports() {
+  return [...document.querySelectorAll('.club-sport-check:checked')].map(c => c.value);
+}
+
 // ── Verein anlegen ────────────────────────────────────────────────
 function showCreateClub() {
   const area = document.getElementById('clubFormArea');
@@ -106,7 +128,9 @@ function showCreateClub() {
     <div style="background:var(--surface);border-radius:12px;padding:20px;box-shadow:var(--sh);">
       <div class="fsec" style="margin-top:0;">Neuen Verein anlegen</div>
       <label class="club-section-label">Vereinsname</label>
-      <input type="text" id="createClubName" class="fc" placeholder="z.B. FC Beispielhausen 09" style="margin-bottom:12px;">
+      <input type="text" id="createClubName" class="fc" placeholder="z.B. FC Beispielhausen 09" style="margin-bottom:16px;">
+      <label class="club-section-label">Sportarten (mind. 1 auswählen)</label>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px;">${_sportCheckboxes()}</div>
       <label class="club-section-label">Logo (optional)</label>
       <input type="file" id="createClubLogo" accept="image/*" style="margin-bottom:16px;font-size:13px;">
       <button class="bpr" style="width:100%;" onclick="submitCreateClub()">Verein anlegen</button>
@@ -116,14 +140,14 @@ function showCreateClub() {
 async function submitCreateClub() {
   const name = document.getElementById('createClubName')?.value.trim();
   if (!name) { showToast('Bitte einen Vereinsnamen eingeben.', 'err'); return; }
+  const sports = _getCheckedSports();
+  if (!sports.length) { showToast('Bitte mind. eine Sportart auswählen.', 'err'); return; }
   const { data: { user } } = await _supabase.auth.getUser();
   if (!user) { showToast('Nicht eingeloggt.', 'err'); return; }
 
-  // Verein anlegen
-  const { data: club, error } = await _supabase.from('clubs').insert({ name, slot_count: 0 }).select().single();
+  const { data: club, error } = await _supabase.from('clubs').insert({ name, slot_count: 0, sports }).select().single();
   if (error) { showToast('Fehler beim Anlegen.', 'err'); return; }
 
-  // Logo hochladen falls vorhanden
   const logoInput = document.getElementById('createClubLogo');
   if (logoInput?.files?.[0]) {
     const file = logoInput.files[0];
@@ -137,9 +161,7 @@ async function submitCreateClub() {
     }
   }
 
-  // Profil als club_admin verknüpfen
   await _supabase.from('profiles').update({ club_id: club.id, club_role: 'club_admin' }).eq('id', user.id);
-
   currentClub = club;
   currentClubRole = 'club_admin';
   clubLogoUrl = club.logo_url || null;
@@ -196,7 +218,7 @@ async function requestJoinClub(clubId, clubName) {
 // ── Admin-Ansicht ─────────────────────────────────────────────────
 async function _renderAdminView(wrap) {
   const [slotsRes, requestsRes] = await Promise.all([
-    _supabase.from('club_slots').select('id, slot_index, token, user_id, last_swapped_at, profiles(email)').eq('club_id', currentClub.id).order('slot_index'),
+    _supabase.from('club_slots').select('id, slot_index, token, user_id, sport, last_swapped_at, profiles(email)').eq('club_id', currentClub.id).order('slot_index'),
     _supabase.from('club_join_requests').select('id, user_id, profiles(email)').eq('club_id', currentClub.id).eq('status', 'pending')
   ]);
 
@@ -204,18 +226,40 @@ async function _renderAdminView(wrap) {
   const requests = requestsRes.data || [];
   const now = new Date();
   const thisMonth = `${now.getFullYear()}-${now.getMonth()}`;
+  const clubSports = currentClub.sports || [];
+  const availSports = _availableSports();
 
-  const slotRows = slots.map(s => {
-    const swappedMonth = s.last_swapped_at ? (() => { const d = new Date(s.last_swapped_at); return `${d.getFullYear()}-${d.getMonth()}`; })() : null;
-    const canSwap = swappedMonth !== thisMonth;
-    const email = s.profiles?.email || null;
-    const inviteUrl = `${window.location.origin}${window.location.pathname}?token=${s.token}`;
-    return `<div class="club-slot-row">
-      <span class="slot-idx">Slot ${s.slot_index}</span>
-      ${email
-        ? `<span class="slot-email">${email}</span>
-           ${canSwap ? `<button class="slot-btn slot-btn-remove" onclick="removeTrainerFromSlot('${s.id}')">Entfernen</button>` : `<span class="slot-locked">🔒 bis nächsten Monat</span>`}`
-        : `<span class="slot-free">frei</span><button class="slot-btn slot-btn-copy" onclick="copyInviteLink('${inviteUrl}')">Link kopieren</button>`}
+  // Slots gruppiert nach Sportart
+  const slotsBySport = {};
+  clubSports.forEach(sp => { slotsBySport[sp] = []; });
+  slots.forEach(s => {
+    const sp = s.sport || 'fussball';
+    if (!slotsBySport[sp]) slotsBySport[sp] = [];
+    slotsBySport[sp].push(s);
+  });
+
+  const sportSlotsHtml = clubSports.map(sp => {
+    const spSlots = slotsBySport[sp] || [];
+    const sportObj = availSports.find(s => s.id === sp) || { label: sp };
+    const rows = spSlots.map(s => {
+      const swappedMonth = s.last_swapped_at ? (() => { const d = new Date(s.last_swapped_at); return `${d.getFullYear()}-${d.getMonth()}`; })() : null;
+      const canSwap = swappedMonth !== thisMonth;
+      const email = s.profiles?.email || null;
+      const inviteUrl = `${window.location.origin}${window.location.pathname}?token=${s.token}`;
+      return `<div class="club-slot-row">
+        <span class="slot-idx">Slot ${s.slot_index}</span>
+        ${email
+          ? `<span class="slot-email">${email}</span>
+             ${canSwap ? `<button class="slot-btn slot-btn-remove" onclick="removeTrainerFromSlot('${s.id}')">Entfernen</button>` : `<span class="slot-locked">🔒 bis nächsten Monat</span>`}`
+          : `<span class="slot-free">frei</span><button class="slot-btn slot-btn-copy" onclick="copyInviteLink('${inviteUrl}')">Link kopieren</button>`}
+      </div>`;
+    }).join('');
+    return `<div style="margin-bottom:14px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+        <div style="font-size:12px;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;">${sportObj.label} (${spSlots.filter(s=>s.user_id).length}/${spSlots.length} belegt)</div>
+        <button class="slot-btn slot-btn-copy" onclick="addSlotForSport('${sp}')">+ Slot</button>
+      </div>
+      <div class="club-slots-list">${rows || '<div class="slot-free">Noch keine Slots – klicke auf "+ Slot".</div>'}</div>
     </div>`;
   }).join('');
 
@@ -227,10 +271,15 @@ async function _renderAdminView(wrap) {
     </div>`).join('') : '<div class="slot-free">Keine offenen Anfragen.</div>';
 
   const consentChecked = currentClub?.logo_public_consent ? 'checked' : '';
-
-  // Mitglieder für Admin-Übergabe
   const { data: members } = await _supabase.from('profiles').select('id, email').eq('club_id', currentClub.id).eq('club_role', 'club_trainer');
   const memberOpts = (members || []).map(m => `<option value="${m.id}">${m.email}</option>`).join('');
+
+  // Sportarten die noch nicht aktiv sind (zum Hinzufügen)
+  const addableSports = availSports.filter(s => !clubSports.includes(s.id));
+  const addSportHtml = addableSports.length ? `
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
+      ${addableSports.map(s => `<button class="slot-btn slot-btn-copy" onclick="addSportToClub('${s.id}')">+ ${s.label}</button>`).join('')}
+    </div>` : '';
 
   wrap.innerHTML = `
     <div style="background:var(--surface);border-radius:12px;padding:20px;box-shadow:var(--sh);margin-bottom:14px;">
@@ -238,7 +287,6 @@ async function _renderAdminView(wrap) {
         <span class="club-admin-title">${currentClub.name}</span>
         <span style="font-size:11px;color:var(--gd2);font-weight:600;">Club-Admin</span>
       </div>
-
       <div class="club-logo-section">
         <label class="club-section-label">Vereinslogo</label>
         ${clubLogoUrl ? `<img src="${clubLogoUrl}" class="club-logo-preview" alt="Logo">` : '<span class="slot-free">Kein Logo</span>'}
@@ -253,13 +301,21 @@ async function _renderAdminView(wrap) {
     </div>
 
     <div style="background:var(--surface);border-radius:12px;padding:20px;box-shadow:var(--sh);margin-bottom:14px;">
+      <div class="club-section-label">Aktive Sportarten</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px;">
+        ${clubSports.map(sp=>`<span style="padding:4px 10px;background:var(--accent);color:#fff;border-radius:20px;font-size:11px;font-weight:800;">${_sportLabel(sp)}</span>`).join('') || '<span style="font-size:12px;color:var(--gd2);">Noch keine Sportart aktiv.</span>'}
+      </div>
+      ${addSportHtml}
+    </div>
+
+    <div style="background:var(--surface);border-radius:12px;padding:20px;box-shadow:var(--sh);margin-bottom:14px;">
       <div class="club-section-label">Beitrittsanfragen (${requests.length})</div>
       <div class="club-slots-list">${requestRows}</div>
     </div>
 
     <div style="background:var(--surface);border-radius:12px;padding:20px;box-shadow:var(--sh);margin-bottom:14px;">
-      <div class="club-section-label">Trainer-Slots (${slots.filter(s=>s.user_id).length}/${currentClub.slot_count} belegt)</div>
-      <div class="club-slots-list">${slotRows || '<div class="slot-free">In der aktuellen Version noch nicht verfügbar.</div>'}</div>
+      <div class="club-section-label">Trainer-Slots</div>
+      ${sportSlotsHtml || '<div class="slot-free">Noch keine Sportart aktiv.</div>'}
     </div>
 
     ${memberOpts ? `
@@ -278,25 +334,74 @@ async function _renderAdminView(wrap) {
     </div>`;
 }
 
+async function addSportToClub(sportId) {
+  if (!currentClub) return;
+  const sports = [...(currentClub.sports || [])];
+  if (sports.includes(sportId)) return;
+  sports.push(sportId);
+  await _supabase.from('clubs').update({ sports }).eq('id', currentClub.id);
+  currentClub.sports = sports;
+  showToast(`${_sportLabel(sportId)} hinzugefügt.`);
+  renderClubTab();
+}
+
+async function addSlotForSport(sportId) {
+  if (!currentClub) return;
+  const nextIndex = (currentClub.slot_count || 0) + 1;
+  await _supabase.from('club_slots').insert({ club_id: currentClub.id, slot_index: nextIndex, token: crypto.randomUUID(), sport: sportId });
+  await _supabase.from('clubs').update({ slot_count: nextIndex }).eq('id', currentClub.id);
+  currentClub.slot_count = nextIndex;
+  showToast(`Slot für ${_sportLabel(sportId)} erstellt.`);
+  renderClubTab();
+}
+
 // ── Trainer-Ansicht ───────────────────────────────────────────────
 async function _renderTrainerView(wrap) {
+  const { data: { user } } = await _supabase.auth.getUser();
+  let mySport = '';
+  if (user) {
+    const { data: slot } = await _supabase.from('club_slots').select('sport').eq('club_id', currentClub.id).eq('user_id', user.id).single();
+    mySport = slot?.sport || '';
+  }
   wrap.innerHTML = `
     <div style="background:var(--surface);border-radius:12px;padding:20px;box-shadow:var(--sh);">
       <div class="club-admin-header">
         ${clubLogoUrl ? `<img src="${clubLogoUrl}" style="height:36px;max-width:80px;object-fit:contain;border-radius:4px;">` : ''}
         <span class="club-admin-title">${currentClub.name}</span>
       </div>
-      <div style="font-size:13px;color:var(--gd2);">Du bist Trainer in diesem Verein.</div>
-      <button class="slot-btn slot-btn-remove" style="margin-top:16px;" onclick="leaveClub()">Verein verlassen</button>
+      <div style="font-size:13px;color:var(--gd2);margin-bottom:8px;">Du bist Trainer:in in diesem Verein.</div>
+      ${mySport ? `<div style="display:inline-block;padding:4px 12px;background:var(--accent);color:#fff;border-radius:20px;font-size:12px;font-weight:800;margin-bottom:14px;">Sportart: ${_sportLabel(mySport)}</div>` : ''}
+      <button class="slot-btn slot-btn-remove" style="margin-top:8px;" onclick="leaveClub()">Verein verlassen</button>
     </div>`;
 }
 
 // ── Aktionen ──────────────────────────────────────────────────────
-async function approveJoinRequest(requestId, userId) {
+function approveJoinRequest(requestId, userId) {
   if (!currentClub) return;
-  // Slot anlegen
+  const clubSports = currentClub.sports || [];
+  if (clubSports.length === 1) {
+    _doApproveJoinRequest(requestId, userId, clubSports[0]);
+    return;
+  }
+  // Sportart wählen
+  const opts = clubSports.map(sp => `<option value="${sp}">${_sportLabel(sp)}</option>`).join('');
+  const modal = document.createElement('div');
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
+  modal.innerHTML = `<div style="background:var(--bg);border-radius:14px;padding:24px;max-width:340px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.5);">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;margin-bottom:14px;">Für welche Sportart?</div>
+    <select id="_approveSpSel" class="fc" style="margin-bottom:16px;">${opts}</select>
+    <div style="display:flex;gap:8px;">
+      <button onclick="this.closest('div[style]').remove()" class="slot-btn" style="flex:1;">Abbrechen</button>
+      <button onclick="_doApproveJoinRequest('${requestId}','${userId}',document.getElementById('_approveSpSel').value);this.closest('[style*=fixed]').remove();" class="slot-btn slot-btn-copy" style="flex:1;">Annehmen</button>
+    </div>
+  </div>`;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+}
+
+async function _doApproveJoinRequest(requestId, userId, sport) {
   const nextIndex = (currentClub.slot_count || 0) + 1;
-  await _supabase.from('club_slots').insert({ club_id: currentClub.id, slot_index: nextIndex, token: crypto.randomUUID(), user_id: userId });
+  await _supabase.from('club_slots').insert({ club_id: currentClub.id, slot_index: nextIndex, token: crypto.randomUUID(), user_id: userId, sport });
   await _supabase.from('clubs').update({ slot_count: nextIndex }).eq('id', currentClub.id);
   await _supabase.from('profiles').update({ club_id: currentClub.id, club_role: 'club_trainer' }).eq('id', userId);
   await _supabase.from('club_join_requests').update({ status: 'approved' }).eq('id', requestId);
