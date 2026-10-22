@@ -1528,14 +1528,14 @@ function drawEquip(x,y,sub,sel,ang,sc){
 
   } else if(sub==='bike'){
     ctx.shadowBlur=0;
-    const sz=32;
+    const sz=40;
     if(_bikeImg.complete&&_bikeImg.naturalWidth){
       ctx.drawImage(_bikeImg,-sz/2,-sz/2,sz,sz);
     } else { _bikeImg.onload=()=>redraw&&redraw(); }
 
   } else if(sub==='yogamat'){
     ctx.shadowBlur=0;
-    const sz=32;
+    const sz=44;
     if(_yogamatImg.complete&&_yogamatImg.naturalWidth){
       ctx.drawImage(_yogamatImg,-sz/2,-sz/2,sz,sz);
     } else { _yogamatImg.onload=()=>redraw&&redraw(); }
