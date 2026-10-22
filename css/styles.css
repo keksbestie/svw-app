@@ -462,6 +462,8 @@ header {
   padding: 0 24px;
 }
 .home-sport-card {
+  position: relative;
+  z-index: 1;
   background: linear-gradient(160deg, #162b18 0%, #0e1e10 100%);
   border: 1.5px solid #1e3d21;
   border-radius: 20px;
