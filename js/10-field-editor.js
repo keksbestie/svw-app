@@ -1464,8 +1464,8 @@ function drawEquip(x,y,sub,sel,ang,sc){
   ctx.translate(x,y); ctx.rotate(ang||0); ctx.scale(sc||1,sc||1);
   ctx.shadowColor='rgba(0,0,0,.35)'; ctx.shadowBlur=5; ctx.shadowOffsetY=2;
 
-  if(sub==='cone'||sub==='cone-orange'||sub==='cone-yellow'||sub==='cone-blue'||sub==='cone-red'){
-    const cols={'cone':'#e65100','cone-orange':'#e65100','cone-yellow':'#f9a825','cone-blue':'#1565c0','cone-red':'#c62828'};
+  if(sub==='cone'||sub==='cone-orange'||sub==='cone-yellow'||sub==='cone-blue'||sub==='cone-red'||sub==='cone-green'||sub==='cone-white'){
+    const cols={'cone':'#e65100','cone-orange':'#e65100','cone-yellow':'#f9a825','cone-blue':'#1565c0','cone-red':'#c62828','cone-green':'#2e7d32','cone-white':'#eeeeee'};
     const cc=cols[sub]||'#e65100';
     // Flatter cone — top cut off (trapezoid, no sharp tip)
     ctx.fillStyle=cc;
@@ -1510,9 +1510,37 @@ function drawEquip(x,y,sub,sel,ang,sc){
 
   } else if(sub==='ring'){
     ctx.shadowBlur=0;
-    // Flat ring — simple thick circle, no 3D ellipse
     ctx.strokeStyle='#fdd835'; ctx.lineWidth=5;
     ctx.beginPath(); ctx.arc(0,0,12,0,Math.PI*2); ctx.stroke();
+
+  } else if(sub==='dumbbell'){
+    ctx.shadowBlur=0;
+    ctx.fillStyle='#555';
+    ctx.fillRect(-14,-4,28,8);
+    ctx.fillStyle='#888';
+    ctx.fillRect(-18,-9,7,18); ctx.fillRect(11,-9,7,18);
+    ctx.fillRect(-22,-7,6,14); ctx.fillRect(16,-7,6,14);
+
+  } else if(sub==='bike'){
+    ctx.shadowBlur=0;
+    ctx.strokeStyle='#888'; ctx.lineWidth=2.5; ctx.lineCap='round';
+    ctx.beginPath(); ctx.arc(-10,4,9,0,Math.PI*2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(10,4,9,0,Math.PI*2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(-10,4); ctx.lineTo(0,-2); ctx.lineTo(10,4); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0,-2); ctx.lineTo(0,-10); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(-4,-10); ctx.lineTo(4,-10); ctx.stroke();
+
+  } else if(sub==='yogamat'){
+    ctx.shadowBlur=0;
+    ctx.fillStyle='#7b1fa2';
+    ctx.beginPath(); ctx.roundRect(-18,-8,36,16,4); ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,.3)'; ctx.lineWidth=1.5;
+    for(let i=-12;i<=12;i+=6){
+      ctx.beginPath(); ctx.moveTo(i,-8); ctx.lineTo(i,8); ctx.stroke();
+    }
+    ctx.fillStyle='rgba(255,255,255,.25)';
+    ctx.fillRect(-17,-7,5,14);
+    ctx.fillRect(12,-7,5,14);
   }
 
   if(sel){
