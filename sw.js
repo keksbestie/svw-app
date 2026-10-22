@@ -1,4 +1,4 @@
-const CACHE = 'assistcoach-v144';
+const CACHE = 'assistcoach-v145';
 const ASSETS = [
   '/',
   '/index.html',
@@ -25,7 +25,10 @@ const ASSETS = [
   '/icons/icon-192.png',
   '/icons/icon-512.png',
   '/icons/tennis-ball.png',
-  '/js/14-clubs.js'
+  '/js/14-clubs.js',
+  '/icons/equip-dumbbell.png',
+  '/icons/equip-bike.png',
+  '/icons/equip-yogamat.png'
 ];
 
 self.addEventListener('install', e => {
