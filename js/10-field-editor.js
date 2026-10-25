@@ -1793,7 +1793,7 @@ function exportCanvas(){
           uploadImageToStorage(croppedUrl).then(url=>{
             const imgUrl=url||croppedUrl;
             e.image=imgUrl;
-            _supabase.from('exercises').update({image:imgUrl,canvas_objects:canvasObjects}).eq('id',_catalogEditExId);
+            _supabase.from('exercises').update({image:imgUrl,canvas_objects:canvasObjects,field_type:document.getElementById('fieldType')?.value||'small'}).eq('id',_catalogEditExId);
             renderSection();
           });
         }
