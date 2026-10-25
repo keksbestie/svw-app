@@ -56,6 +56,9 @@ body { font-family: 'Barlow', sans-serif; background: var(--bg); color: var(--te
 .ls-t { font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 22px; color: #fff; letter-spacing: 3px; text-transform: uppercase; margin-top: 20px; }
 .ls-s { font-size: 10px; color: rgba(255,255,255,.45); letter-spacing: 2px; text-transform: uppercase; margin-top: 5px; }
 @keyframes spin { to { transform: rotate(360deg); } }
+#clubLogoBg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+#page-home { position: relative; }
+@media (max-width: 767px) { #clubLogoBg { display: none; } }
 
 /* ══════════════════════════════════════════════════
    HEADER
@@ -300,9 +303,7 @@ header {
   border-color: rgba(255,255,255,.25) !important;
   color: #fff !important;
 }
-.nav-kader-btn { background: rgba(0,0,0,.07); color: var(--text-1); border: 1.5px solid var(--border-s); }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .nav-kader-btn { background: rgba(255,255,255,.12); color: #fff; border-color: rgba(255,255,255,.3); } }
-[data-theme="dark"] .nav-kader-btn { background: rgba(255,255,255,.12); color: #fff; border-color: rgba(255,255,255,.3); }
+.nav-kader-btn { background: #fff; color: #1a2b1c; border: none; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
 #homeSportBadge { color: var(--text-2); }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) #homeSportBadge { color: rgba(255,255,255,.8); }
@@ -461,6 +462,8 @@ header {
   padding: 0 24px;
 }
 .home-sport-card {
+  position: relative;
+  z-index: 1;
   background: linear-gradient(160deg, #162b18 0%, #0e1e10 100%);
   border: 1.5px solid #1e3d21;
   border-radius: 20px;

@@ -49,7 +49,7 @@ function renderHomeSportState() {
   _updateHelpSport();
   const onbSub=document.getElementById('onboardingSubtitle');
   if(onbSub){
-    const sportName=sport?{fussball:'(Nachwuchs)fußball',volleyball:'(Nachwuchs)Volleyball',tennis:'(Nachwuchs)Tennis'}[sport.id]||sport.label:'(Nachwuchs)fußball';
+    const sportName=sport?{fussball:'(Nachwuchs)Fußball',volleyball:'(Nachwuchs)Volleyball',tennis:'(Nachwuchs)Tennis'}[sport.id]||sport.label:'(Nachwuchs)Fußball';
     onbSub.textContent=`Dein Trainingsassistent für den ${sportName}. Plane Einheiten, verwalte deinen Kader und strukturiere die ganze Saison – alles an einem Ort.`;
   }
 
@@ -63,6 +63,7 @@ function renderHomeSportState() {
     if (sub) sub.textContent = 'Was möchtest du tun?';
     if (heroBtns) heroBtns.style.display = 'flex';
     window.currentSport = sport;
+    if (typeof initClubLogoBg === 'function') initClubLogoBg(sport.id);
   } else {
     grid.style.display = 'grid';
     cards.style.display = 'none';
@@ -70,6 +71,7 @@ function renderHomeSportState() {
     if (sub) sub.textContent = 'Übungen planen, strukturieren und langfristig periodisieren – alles an einem Ort.';
     if (heroBtns) heroBtns.style.display = 'none';
     window.currentSport = null;
+    if (typeof initClubLogoBg === 'function') initClubLogoBg(null);
   }
 }
 
