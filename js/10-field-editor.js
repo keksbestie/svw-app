@@ -1397,42 +1397,17 @@ function drawBall(x,y,sel,sc){
   if(_isVolleyballSport()){ drawVolleyball(x,y,sel,sc); return; }
   if(_isTennisSport()){ drawTennisBall(x,y,sel,sc); return; }
   const R=13;
-  const pr=R*0.306, dr=R*0.620;
+  const s=sc||1;
   ctx.save();
   ctx.translate(x,y);
-  ctx.scale(sc||1,sc||1);
-  ctx.shadowColor='rgba(0,0,0,.5)'; ctx.shadowBlur=7; ctx.shadowOffsetY=3;
-  ctx.fillStyle='#f4f4f4';
-  ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.fill();
-  ctx.shadowBlur=0; ctx.shadowOffsetY=0;
-  const bVerts=(px,py,r,rot)=>{const v=[];for(let i=0;i<5;i++){const a=i*Math.PI*2/5+rot;v.push([px+r*Math.cos(a),py+r*Math.sin(a)]);}return v;};
-  const fillP=v=>{ctx.beginPath();v.forEach(([vx,vy],i)=>i?ctx.lineTo(vx,vy):ctx.moveTo(vx,vy));ctx.closePath();ctx.fill();};
-  const strokeP=v=>{ctx.beginPath();v.forEach(([vx,vy],i)=>i?ctx.lineTo(vx,vy):ctx.moveTo(vx,vy));ctx.closePath();ctx.stroke();};
-  const near=(vArr,t)=>vArr.reduce((b,v)=>Math.hypot(v[0]-t[0],v[1]-t[1])<Math.hypot(b[0]-t[0],b[1]-t[1])?v:b);
-  const cRot=-Math.PI/2;
-  const cV=bVerts(0,0,pr,cRot);
-  const ring=[];
-  for(let i=0;i<5;i++){
-    const ang=cRot+(2*i+1)*Math.PI/5;
-    const rot=ang+Math.PI-Math.PI/5;
-    ring.push({px:dr*Math.cos(ang),py:dr*Math.sin(ang),v:bVerts(dr*Math.cos(ang),dr*Math.sin(ang),pr,rot)});
+  if(sel){
+    ctx.strokeStyle='#ffe082'; ctx.lineWidth=2; ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.arc(0,0,(R+4)*s,0,Math.PI*2); ctx.stroke();
+    ctx.setLineDash([]);
   }
-  ctx.save();
-  ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.clip();
-  ctx.fillStyle='#111';
-  fillP(cV); ring.forEach(r=>fillP(r.v));
-  ctx.strokeStyle='rgba(255,255,255,.9)'; ctx.lineWidth=1.2; ctx.lineJoin='round'; ctx.lineCap='round';
-  strokeP(cV); ring.forEach(r=>strokeP(r.v));
-  cV.forEach((cv0,i)=>{
-    const nA=near(ring[(i+4)%5].v,cv0), nB=near(ring[i].v,cv0);
-    ctx.beginPath();ctx.moveTo(cv0[0],cv0[1]);ctx.lineTo(nA[0],nA[1]);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(cv0[0],cv0[1]);ctx.lineTo(nB[0],nB[1]);ctx.stroke();
-  });
-  for(let i=0;i<5;i++){
-    const rA=ring[i],rB=ring[(i+1)%5];
-    const nA=near(rA.v,[rB.px,rB.py]), nB=near(rB.v,[rA.px,rA.py]);
-    ctx.beginPath();ctx.moveTo(nA[0],nA[1]);ctx.lineTo(nB[0],nB[1]);ctx.stroke();
-  }
+  ctx.font=`${Math.round(R*2.5*s)}px serif`;
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('⚽',0,R*s*0.08);
   ctx.restore();
   ctx.strokeStyle='#222'; ctx.lineWidth=1;
   ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.stroke();
