@@ -374,6 +374,8 @@ async function submitExercise(){
   const sPreview=document.getElementById('sPreviewWrap');
   if(sPreview) sPreview.style.display='none';
   canvasObjects=[];playerCounters={};undoStack=[];selectedObjIdx=null;linePhase=0;lineStart=null;
+  const ftSel=document.getElementById('fieldType');if(ftSel)ftSel.value='small';
+  if(typeof redraw==='function')redraw();
   await loadSubmissions();
   _renderMySubmissionsFromCache();
   if(IS_ADMIN||IS_REVIEWER) _renderAdminQueueFromCache();

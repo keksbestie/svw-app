@@ -555,7 +555,8 @@ function saveEx(){
     _supabase.from('exercises').update({
       name:ex.name,players:ex.players,material:ex.material,section:ex.section,
       difficulty:ex.difficulty,duration:ex.duration,description:ex.desc,tags:ex.tags,
-      image:ex.image||null,canvas_objects:ex.canvasObjects||[]
+      image:ex.image||null,canvas_objects:ex.canvasObjects||[],
+      field_type:document.getElementById('fieldType')?.value||'small'
     }).eq('id',editingId).then(({error})=>{
       if(error)showToast('Speichern fehlgeschlagen – bitte neu versuchen','err');
     });
@@ -659,12 +660,13 @@ function openCatalogFieldEdit(id){
   if(!IS_ADMIN) return;
   const e=exercises.find(x=>x.id===id); if(!e) return;
   _catalogEditExId=id;
-  // Load existing canvas objects if present
   if(e.canvasObjects&&e.canvasObjects.length){
     canvasObjects=JSON.parse(JSON.stringify(e.canvasObjects));
   } else {
     canvasObjects=[];
   }
+  const ftSel=document.getElementById('fieldType');
+  if(ftSel) ftSel.value=e.fieldType||'small';
   playerCounters={}; undoStack=[]; selectedObjIdx=null; selectedIndices=[];
   openFieldOverlay('catalog-edit');
 }

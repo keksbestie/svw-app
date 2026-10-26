@@ -317,9 +317,23 @@ function _updateFieldTypeOptions(){
   // Update Gelb/TW → Gelb/Libero label
   const gelbOpt=document.getElementById('playerColorGelb');
   if(gelbOpt) gelbOpt.textContent=isVb?'● Gelb / Libero':'● Gelb / TW';
-  // Update Dribbelweg → Angriff for volleyball
+  // Arrow button visibility: Tennis hides dribble+shot, renames pass→Angriff; Fb/Vb show shot
   const dribbleBtn=document.getElementById('tb_dribble');
-  if(dribbleBtn) dribbleBtn.title=isVb?'Angriff (2× klicken)':'Dribbelweg (2× klicken)';
+  const shotBtn=document.getElementById('tb_shot');
+  const passBtn=document.getElementById('tb_pass');
+  if(isTn){
+    if(dribbleBtn) dribbleBtn.style.display='none';
+    if(passBtn) passBtn.style.display='none';
+    if(shotBtn){ shotBtn.style.display=''; shotBtn.title='Angriff (2× klicken)'; }
+  } else if(isVb){
+    if(dribbleBtn) dribbleBtn.style.display='none';
+    if(passBtn){ passBtn.style.display=''; passBtn.title='Passweg (2× klicken)'; }
+    if(shotBtn){ shotBtn.style.display=''; shotBtn.title='Angriff (2× klicken)'; }
+  } else {
+    if(dribbleBtn){ dribbleBtn.style.display=''; dribbleBtn.title='Dribbelweg (2× klicken)'; }
+    if(passBtn){ passBtn.style.display=''; passBtn.title='Passweg (2× klicken)'; }
+    if(shotBtn){ shotBtn.style.display=''; shotBtn.title='Schuss (2× klicken)'; }
+  }
   // Formation buttons: Heim=Weiß/Gast=Rot bei VB, sonst Blau/DunkelRot
   const btnHome=document.getElementById('formationBtnHome');
   const btnAway2=document.getElementById('formationBtnAway');
@@ -354,6 +368,11 @@ function _updateFieldTypeOptions(){
 
 function openFieldOverlay(mode){
   _cvMode=mode||'edit';
+  // Reset canvas for every mode except catalog-edit (which loads objects before calling this)
+  if(mode!=='catalog-edit'){
+    canvasObjects=[]; playerCounters={}; undoStack=[]; linePhase=0; lineStart=null;
+    selectedObjIdx=null; selectedIndices=[];
+  }
   const ov=document.getElementById('fieldOverlay');
   if(ov) ov.style.display='flex';
   _updateFieldTypeOptions();
@@ -481,7 +500,7 @@ function cvDown({x,y}){
     else{canvasObjects.push({type:'dribble',x1:lineStart.x,y1:lineStart.y,x2:x,y2:y,label:''});linePhase=0;lineStart=null;redraw();}
     return;
   }
-  if(t==='pass'||t==='run'){
+  if(t==='pass'||t==='run'||t==='shot'){
     if(!linePhase){pushUndo();linePhase=1;lineStart={x,y};}
     else{canvasObjects.push({type:t,x1:lineStart.x,y1:lineStart.y,x2:x,y2:y,label:''});linePhase=0;lineStart=null;redraw();}
     return;
@@ -537,6 +556,10 @@ function cvMove({x,y}){
     ctx.lineWidth=2; ctx.setLineDash(currentTool==='run'?[7,5]:[]);
     ctx.beginPath();ctx.moveTo(lineStart.x,lineStart.y);ctx.lineTo(x,y);ctx.stroke();
     ctx.setLineDash([]);ctx.restore();
+  }
+  if(currentTool==='shot'&&linePhase&&lineStart){
+    redraw();
+    drawDoubleArrowLine(lineStart.x,lineStart.y,x,y,false);
   }
 }
 function cvUp({x,y}){
@@ -602,7 +625,7 @@ function _updateCtxBar(t){
   const ctxIds=['ctx_player','ctx_equip','ctx_goal','ctx_line','ctx_select'];
   ctxIds.forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
   const map={player:'ctx_player',ball:null,equip:'ctx_equip',goal:'ctx_goal',
-             pass:'ctx_line',run:'ctx_line',dribble:'ctx_line',select:'ctx_select',erase:null};
+             pass:'ctx_line',run:'ctx_line',dribble:'ctx_line',shot:'ctx_line',select:'ctx_select',erase:null};
   const target=map[t];
   if(target){const el=document.getElementById(target);if(el)el.style.display='flex';}
   // Rotation bleibt sichtbar wenn bereits aktiv – updateRotCtrl steuert das
@@ -1116,6 +1139,7 @@ function drawObj(o,sel){
   if(o.type==='pass')     {drawArrowLine(o.x1,o.y1,o.x2,o.y2,'pass',sel);_drawLineLabel(o.x1,o.y1,o.x2,o.y2,o.label);}
   else if(o.type==='run') {drawArrowLine(o.x1,o.y1,o.x2,o.y2,'run',sel);_drawLineLabel(o.x1,o.y1,o.x2,o.y2,o.label);}
   else if(o.type==='dribble') {drawSnakeLine(o.x1,o.y1,o.x2,o.y2,sel);_drawLineLabel(o.x1,o.y1,o.x2,o.y2,o.label);}
+  else if(o.type==='shot')    {drawDoubleArrowLine(o.x1,o.y1,o.x2,o.y2,sel);_drawLineLabel(o.x1,o.y1,o.x2,o.y2,o.label);}
   else if(o.type==='player')  drawPlayer(o.x,o.y,o.label,o.color,sel,o.angle||0,o.name||'');
   else if(o.type==='ball')    drawBall(o.x,o.y,sel,_objSc(o));
   else if(o.type==='equip')   drawEquip(o.x,o.y,o.subtype,sel,o.angle||0,_objSc(o));
@@ -1164,6 +1188,33 @@ function drawArrowLine(x1,y1,x2,y2,kind,sel){
   ctx.closePath(); ctx.fill();
   // Start dot
   ctx.fillStyle=col; ctx.beginPath(); ctx.arc(x1,y1,2.5,0,Math.PI*2); ctx.fill();
+  ctx.restore();
+}
+
+// ── Double-arrow line (Schuss / Angriff) ──
+function drawDoubleArrowLine(x1,y1,x2,y2,sel){
+  const col=sel?'#555':'#111';
+  const len=Math.hypot(x2-x1,y2-y1);
+  if(len<4) return;
+  const a=Math.atan2(y2-y1,x2-x1);
+  const off=3;
+  const px=-Math.sin(a)*off, py=Math.cos(a)*off;
+  const aw=20, ah=0.42;
+  // lines stop before arrowhead
+  const ex=x2-aw*0.9*Math.cos(a), ey=y2-aw*0.9*Math.sin(a);
+  ctx.save();
+  ctx.shadowColor='rgba(0,0,0,.35)'; ctx.shadowBlur=3; ctx.shadowOffsetY=1;
+  ctx.strokeStyle=col; ctx.lineWidth=2; ctx.lineCap='round';
+  ctx.beginPath(); ctx.moveTo(x1+px,y1+py); ctx.lineTo(ex+px,ey+py); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x1-px,y1-py); ctx.lineTo(ex-px,ey-py); ctx.stroke();
+  // filled arrowhead (larger)
+  ctx.shadowBlur=0; ctx.fillStyle=col;
+  ctx.beginPath();
+  ctx.moveTo(x2,y2);
+  ctx.lineTo(x2-aw*Math.cos(a-ah), y2-aw*Math.sin(a-ah));
+  ctx.lineTo(x2-aw*0.4*Math.cos(a), y2-aw*0.4*Math.sin(a));
+  ctx.lineTo(x2-aw*Math.cos(a+ah), y2-aw*Math.sin(a+ah));
+  ctx.closePath(); ctx.fill();
   ctx.restore();
 }
 
@@ -1793,7 +1844,7 @@ function exportCanvas(){
           uploadImageToStorage(croppedUrl).then(url=>{
             const imgUrl=url||croppedUrl;
             e.image=imgUrl;
-            _supabase.from('exercises').update({image:imgUrl,canvas_objects:canvasObjects}).eq('id',_catalogEditExId);
+            _supabase.from('exercises').update({image:imgUrl,canvas_objects:canvasObjects,field_type:document.getElementById('fieldType')?.value||'small'}).eq('id',_catalogEditExId);
             renderSection();
           });
         }
