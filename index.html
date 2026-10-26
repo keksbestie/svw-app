@@ -1422,7 +1422,7 @@
       <div class="hq-icon" style="background:#006064;" id="qhEditorIcon">⚽</div>
       <div class="hq-body">
         <div class="hq-title">Felddiagramm-Editor</div>
-        <div class="hq-text" id="qhEditor">Spieler, Bälle, Tore, Hütchen und Laufwege auf dem Feld platzieren. Raster (⛶) aktivieren für gleichmäßige Abstände. Strg+C/V kopieren, Strg+Z rückgängig.</div>
+        <div class="hq-text" id="qhEditor">Spieler, Bälle, Tore, Material und Wege (Pass, Lauf, Dribbling, Schuss – auch geschwungen) auf dem Feld platzieren. Raster (⛶) für gleichmäßige Abstände. Strg+C/V kopieren, Strg+Z rückgängig.</div>
       </div>
       <div class="hq-arrow">›</div>
     </div>
@@ -1440,7 +1440,7 @@
       <div class="hq-icon" style="background:#4a148c;">📅</div>
       <div class="hq-body">
         <div class="hq-title">Langzeitplanung</div>
-        <div class="hq-text">Trainingsblöcke für die gesamte Saison anlegen und Belastungsverläufe visualisieren.</div>
+        <div class="hq-text">Trainingsblöcke für die gesamte Saison anlegen und Belastungsverläufe visualisieren. Neu: Trainingsplan-Bibliothek mit freigegebenen Plänen anderer Trainer:innen (bewerten &amp; laden).</div>
       </div>
       <div class="hq-arrow">›</div>
     </div>
@@ -1467,7 +1467,7 @@
       <div class="hq-icon" style="background:#1a3a5c;">🏟️</div>
       <div class="hq-body">
         <div class="hq-title">Mein Verein</div>
-        <div class="hq-text">Verein anlegen oder einem bestehenden Verein beitreten. Als Vereinsadmin Logo hochladen, Mitglieder verwalten und die Adminrolle weitergeben.</div>
+        <div class="hq-text">Verein mit einer oder mehreren Sportarten anlegen oder beitreten. Als Vereinsadmin Logo hochladen, Slots je Sportart verwalten, Adminrolle weitergeben oder den Verein löschen.</div>
       </div>
       <div class="hq-arrow">›</div>
     </div>
@@ -1643,6 +1643,85 @@
       </div>
     </div>
 
+    <!-- Linien & Pfeile je Sportart -->
+    <div class="help-card help-sport-fussball" data-area="editor" data-tags="linien pfeile passweg laufweg dribbling schuss doppelpfeil nummer beschriften">
+      <div class="help-card-icon" style="background:#006064;">➜</div>
+      <div>
+        <div class="help-card-title">Linien &amp; Pfeile (Fußball)</div>
+        <p class="help-card-text">Im Bereich „Linien" der Toolbar stehen vier Pfeilarten zur Verfügung – jeweils mit 2 Klicks (Start, Ende) gezeichnet.</p>
+        <div class="help-step"><span class="help-num">1</span><span><strong>→ Passweg:</strong> durchgezogene Linie mit Pfeilspitze</span></div>
+        <div class="help-step"><span class="help-num">2</span><span><strong>⤳ Laufweg:</strong> gestrichelte Linie</span></div>
+        <div class="help-step"><span class="help-num">3</span><span><strong>〰 Dribbling:</strong> Schlangenlinie (bleibt immer gerade)</span></div>
+        <div class="help-step"><span class="help-num">4</span><span><strong>⇒ Schuss:</strong> Doppellinie mit großer Pfeilspitze</span></div>
+        <div class="help-step"><span class="help-num">5</span><span>Linie auswählen (↖) → unter „Nummer" eine Zahl an die Pfeilspitze schreiben</span></div>
+      </div>
+    </div>
+
+    <div class="help-card help-sport-volleyball" data-area="editor" data-tags="linien pfeile passweg zuspiel laufweg angriff doppelpfeil nummer beschriften" style="display:none;">
+      <div class="help-card-icon" style="background:#006064;">➜</div>
+      <div>
+        <div class="help-card-title">Linien &amp; Pfeile (Volleyball)</div>
+        <p class="help-card-text">Im Bereich „Linien" stehen drei Pfeilarten zur Verfügung – jeweils mit 2 Klicks (Start, Ende) gezeichnet.</p>
+        <div class="help-step"><span class="help-num">1</span><span><strong>→ Passweg / Zuspiel:</strong> durchgezogene Linie mit Pfeilspitze</span></div>
+        <div class="help-step"><span class="help-num">2</span><span><strong>⤳ Laufweg:</strong> gestrichelte Linie</span></div>
+        <div class="help-step"><span class="help-num">3</span><span><strong>⇒ Angriff:</strong> Doppellinie mit großer Pfeilspitze</span></div>
+        <div class="help-step"><span class="help-num">4</span><span>Kein Dribbling im Volleyball – die Schlangenlinie ist ausgeblendet</span></div>
+        <div class="help-step"><span class="help-num">5</span><span>Linie auswählen (↖) → unter „Nummer" eine Zahl an die Pfeilspitze schreiben</span></div>
+      </div>
+    </div>
+
+    <div class="help-card help-sport-tennis" data-area="editor" data-tags="linien pfeile laufweg angriff schlag doppelpfeil nummer beschriften" style="display:none;">
+      <div class="help-card-icon" style="background:#006064;">➜</div>
+      <div>
+        <div class="help-card-title">Linien &amp; Pfeile (Tennis)</div>
+        <p class="help-card-text">Im Bereich „Linien" stehen zwei Pfeilarten zur Verfügung – jeweils mit 2 Klicks (Start, Ende) gezeichnet.</p>
+        <div class="help-step"><span class="help-num">1</span><span><strong>⤳ Laufweg:</strong> gestrichelte Linie</span></div>
+        <div class="help-step"><span class="help-num">2</span><span><strong>⇒ Angriff:</strong> Doppellinie mit großer Pfeilspitze für Schläge und Angriffsrichtungen</span></div>
+        <div class="help-step"><span class="help-num">3</span><span>Kein Passweg und kein Dribbling im Tennis – beide Werkzeuge sind ausgeblendet</span></div>
+        <div class="help-step"><span class="help-num">4</span><span>Linie auswählen (↖) → unter „Nummer" eine Zahl an die Pfeilspitze schreiben</span></div>
+      </div>
+    </div>
+
+    <div class="help-card" data-area="editor" data-tags="geschwungen kurve kurvenpunkt gerade pfeil flugbahn laufweg bogen griff">
+      <div class="help-card-icon" style="background:#006064;">⤴</div>
+      <div>
+        <div class="help-card-title">Geschwungene Pfeile</div>
+        <p class="help-card-text">Für Laufwege mit Bogen oder Bälle mit gekrümmter Flugbahn – in allen Sportarten. Gilt für Pass-, Lauf-, Schuss- und Angriffspfeile (nicht für das Dribbling).</p>
+        <div class="help-step"><span class="help-num">1</span><span>Linien-Werkzeug wählen und in der Leiste darunter <strong>„☐ Geschwungen"</strong> ankreuzen (Standard: <strong>„☑ Gerade"</strong> – es ist immer nur eins aktiv)</span></div>
+        <div class="help-step"><span class="help-num">2</span><span><strong>3 Klicks:</strong> Startpunkt → Kurvenpunkt → Endpunkt. Der Kurvenpunkt wirkt wie ein Magnet: Die Linie biegt sich zu ihm hin, ohne ihn zu berühren</span></div>
+        <div class="help-step"><span class="help-num">3</span><span>Bestehenden Pfeil mit dem Auswählen-Werkzeug (↖) anklicken → unter <strong>„FORM"</strong> zwischen „Gerade" und „Geschwungen" umschalten</span></div>
+        <div class="help-step"><span class="help-num">4</span><span>Bei ausgewähltem geschwungenem Pfeil erscheint ein <strong>gelber Griff</strong> – ziehen, um die Krümmung anzupassen</span></div>
+        <div class="help-step"><span class="help-num">5</span><span>Beim Verschieben, Kopieren und Einfügen wandert der Kurvenpunkt automatisch mit</span></div>
+      </div>
+    </div>
+
+    <div class="help-card" data-area="editor" data-tags="material hütchen farben stange hürde koordinationsleiter ring sonder kraft hantel regeneration rad prävention yogamatte equipment größe ball">
+      <div class="help-card-icon" style="background:#006064;">🟠</div>
+      <div>
+        <div class="help-card-title">Material &amp; Sonderobjekte</div>
+        <p class="help-card-text">Das Equipment-Werkzeug hat drei Auswahlmenüs. Nach der Auswahl ins Feld klicken, um das Objekt zu platzieren.</p>
+        <div class="help-step"><span class="help-num">1</span><span><strong>Hütchen:</strong> Orange, Gelb, Blau, Rot, Grün oder Weiß</span></div>
+        <div class="help-step"><span class="help-num">2</span><span><strong>Material:</strong> Stange, Hürde, Koordinationsleiter, Ring</span></div>
+        <div class="help-step"><span class="help-num">3</span><span><strong>Sonder:</strong> Kraft (Hantel), Regeneration (Rad), Prävention (Yogamatte) – für Athletik-, Reha- und Präventionsübungen</span></div>
+        <div class="help-step"><span class="help-num">4</span><span>Es ist immer nur ein Menü aktiv – die Auswahl in einem Menü setzt die anderen zurück</span></div>
+        <div class="help-step"><span class="help-num">5</span><span>Platzierte Objekte mit Rechtsklick drehen; Bälle und Material lassen sich über den Griff am Rand in der Größe ändern</span></div>
+        <div class="help-step"><span class="help-num">6</span><span>Der Ball wird im Feld genauso dargestellt wie im Werkzeug-Button</span></div>
+      </div>
+    </div>
+
+    <div class="help-card" data-area="editor" data-tags="speichern verwerfen leeren feldtyp übernehmen katalog bearbeiten admin zurücksetzen neu öffnen">
+      <div class="help-card-icon" style="background:#006064;">💾</div>
+      <div>
+        <div class="help-card-title">Felddiagramm speichern &amp; verwerfen</div>
+        <p class="help-card-text">So verhält sich der Editor beim Öffnen und Schließen.</p>
+        <div class="help-step"><span class="help-num">1</span><span>Der Editor öffnet sich <strong>immer mit leerer Fläche</strong> – nicht übernommene Zeichnungen werden beim Schließen verworfen, auch beim Wechsel der Sportart</span></div>
+        <div class="help-step"><span class="help-num">2</span><span>Erst <strong>„✓ Übernehmen"</strong> hängt das Diagramm an die Übung</span></div>
+        <div class="help-step"><span class="help-num">3</span><span>Nach dem Einreichen einer Übung ist der Editor wieder leer und auf „Kleines Feld" zurückgesetzt</span></div>
+        <div class="help-step"><span class="help-num">4</span><span>Der gewählte <strong>Feldtyp wird pro Übung gespeichert</strong> und beim erneuten Bearbeiten wiederhergestellt</span></div>
+        <div class="help-step"><span class="help-num">5</span><span><em>Admins:</em> Im Katalog über 🎨 das Felddiagramm einer bestehenden Übung öffnen und ändern</span></div>
+      </div>
+    </div>
+
     <div class="help-card" data-area="editor" data-tags="raster einrasten snap ausrichtung gleichmäßig abstände grid hilfslinien">
       <div class="help-card-icon" style="background:#006064;">⛶</div>
       <div>
@@ -1705,7 +1784,7 @@
         <div class="help-card-title">Mein Verein – Verein anlegen &amp; beitreten</div>
         <p class="help-card-text">Angemeldete Nutzer:innen können einen Verein anlegen oder einem bestehenden beitreten.</p>
         <div class="help-step"><span class="help-num">1</span><span>Im Account-Bereich auf den Tab <strong>„Mein Verein"</strong> wechseln</span></div>
-        <div class="help-step"><span class="help-num">2</span><span><strong>Verein anlegen:</strong> Name und Logo eingeben → du wirst automatisch Vereinsadmin</span></div>
+        <div class="help-step"><span class="help-num">2</span><span><strong>Verein anlegen:</strong> Name, Logo und mindestens eine <strong>Sportart</strong> (Checkbox) wählen → du wirst automatisch Vereinsadmin</span></div>
         <div class="help-step"><span class="help-num">3</span><span><strong>Verein suchen:</strong> nach bestehendem Verein suchen und Beitrittsanfrage stellen</span></div>
         <div class="help-step"><span class="help-num">4</span><span>Der Vereinsadmin prüft Anfragen und kann sie annehmen oder ablehnen</span></div>
         <div class="help-step"><span class="help-num">5</span><span>Nach Aufnahme erscheint oben im Header das Vereinslogo</span></div>
@@ -1722,6 +1801,31 @@
         <div class="help-step"><span class="help-num">3</span><span><strong>Beitrittsanfragen</strong> annehmen oder ablehnen</span></div>
         <div class="help-step"><span class="help-num">4</span><span>Mitglieder aus dem Verein entfernen</span></div>
         <div class="help-step"><span class="help-num">5</span><span><strong>Adminrolle übertragen:</strong> an ein anderes Mitglied abgeben – nur eine Person kann Admin sein</span></div>
+      </div>
+    </div>
+
+    <div class="help-card" data-area="verein" data-tags="verein sportart sportarten slot slots einladungslink invite hinzufügen entfernen pill mehrsport trainer">
+      <div class="help-card-icon" style="background:#1a3a5c;">🏅</div>
+      <div>
+        <div class="help-card-title">Sportarten &amp; Slots im Verein</div>
+        <p class="help-card-text">Ein Verein kann mehrere Sportarten haben – Trainerplätze (Slots) werden je Sportart verwaltet.</p>
+        <div class="help-step"><span class="help-num">1</span><span>Aktive Sportarten erscheinen als grüne Pills; über die Buttons <strong>„+ Volleyball"</strong>, <strong>„+ Tennis"</strong> usw. aktivierst du weitere (angezeigt werden die noch nicht aktiven)</span></div>
+        <div class="help-step"><span class="help-num">2</span><span>Die Slots sind nach Sportart gruppiert – <strong>„+ Slot"</strong> erstellt einen Einladungslink für genau diese Sportart</span></div>
+        <div class="help-step"><span class="help-num">3</span><span>Bei Beitrittsanfragen in Mehrsport-Vereinen wählst du beim Annehmen die Sportart aus</span></div>
+        <div class="help-step"><span class="help-num">4</span><span><strong>×</strong> auf einer Sportart-Pill entfernt sie – nur möglich, wenn kein Slot dieser Sportart mehr belegt ist (leere Slots werden dabei gelöscht)</span></div>
+        <div class="help-step"><span class="help-num">5</span><span>Trainer:innen sehen ihre eigene Sportart als Badge</span></div>
+      </div>
+    </div>
+
+    <div class="help-card" data-area="verein" data-tags="verein logo startseite hintergrund einwilligung zustimmung löschen dauerhaft sportart gäste">
+      <div class="help-card-icon" style="background:#1a3a5c;">🖼️</div>
+      <div>
+        <div class="help-card-title">Vereinslogos auf der Startseite &amp; Verein löschen</div>
+        <p class="help-card-text">Logos von Vereinen mit Einwilligung werden als Hintergrund der Startseite angezeigt.</p>
+        <div class="help-step"><span class="help-num">1</span><span>Voraussetzung: Der Vereinsadmin hat der <strong>Anzeige des Logos</strong> zugestimmt (freiwillig, jederzeit widerrufbar)</span></div>
+        <div class="help-step"><span class="help-num">2</span><span>Die Logos erscheinen links und rechts neben dem Inhalt – auf der ersten Startseite und auf der Startseite der jeweiligen Sportart, <strong>auch für Besucher:innen ohne Konto</strong></span></div>
+        <div class="help-step"><span class="help-num">3</span><span>In einer Sportart werden nur Logos von Vereinen dieser Sportart gezeigt</span></div>
+        <div class="help-step"><span class="help-num">4</span><span><strong>Verein löschen:</strong> Vereinsadmin → roter Block „Verein dauerhaft löschen" im Tab „Mein Verein"; eine Warnung mit Bestätigungs-Checkbox verhindert versehentliches Löschen. Mitglieder werden ausgetragen, Slots und Anfragen entfernt</span></div>
       </div>
     </div>
 
@@ -1770,6 +1874,20 @@
         <div class="help-step"><span class="help-num">2</span><span>Mehrere Blöcke bilden die Saison-Übersicht</span></div>
         <div class="help-step"><span class="help-num">3</span><span>Block anklicken → Wochen und Trainingseinheiten bearbeiten</span></div>
         <div class="help-step"><span class="help-num">4</span><span>Belastungsverlauf (Hoch / Mittel / Niedrig) wird farblich dargestellt</span></div>
+      </div>
+    </div>
+
+    <div class="help-card" data-area="langzeit" data-tags="trainingsplan bibliothek pläne anderer trainer vorschau laden bewerten sterne suche sportart veröffentlicht">
+      <div class="help-card-icon" style="background:#4a148c;">📚</div>
+      <div>
+        <div class="help-card-title">Trainingsplan-Bibliothek</div>
+        <p class="help-card-text">Freigegebene Trainingspläne anderer Trainer:innen entdecken, bewerten und als Vorlage übernehmen.</p>
+        <div class="help-step"><span class="help-num">1</span><span>In der Langzeitplanung den Tab <strong>„Trainingsplan-Bibliothek"</strong> öffnen</span></div>
+        <div class="help-step"><span class="help-num">2</span><span>Es werden nur Pläne der <strong>aktuell gewählten Sportart</strong> angezeigt; das Suchfeld filtert nach Planname</span></div>
+        <div class="help-step"><span class="help-num">3</span><span>Plan anklicken → <strong>Vorschau</strong> mit allen Übungen nach Abschnitt (Bild, Name, Dauer, Spieler:innenzahl) und der Gesamtbelastung</span></div>
+        <div class="help-step"><span class="help-num">4</span><span><strong>„In Trainingsplan laden"</strong> übernimmt den Plan in deinen Planer</span></div>
+        <div class="help-step"><span class="help-num">5</span><span>Pläne mit Sternen bewerten (in der Liste und in der Vorschau); der Durchschnitt wird ab 3 Bewertungen angezeigt</span></div>
+        <div class="help-step"><span class="help-num">6</span><span>Eigene Pläne erscheinen hier, sobald sie über „↑ Veröffentlichen" eingereicht und freigegeben wurden</span></div>
       </div>
     </div>
 

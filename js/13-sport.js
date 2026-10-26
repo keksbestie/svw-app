@@ -93,11 +93,11 @@ function _updateHelpSport() {
   const qhEditor = document.getElementById('qhEditor');
   if (qhEditor) {
     if (isVb) {
-      qhEditor.innerHTML = 'Spieler, Bälle, Hütchen und Laufwege auf dem Volleyballfeld platzieren. Kein Tor – dafür Vollfeld, Halbfeld und Beach. Raster (⛶) für gleichmäßige Abstände.';
+      qhEditor.innerHTML = 'Spieler, Bälle, Material und Wege (Pass, Lauf, Angriff – auch geschwungen) auf dem Volleyballfeld platzieren. Kein Tor – dafür Vollfeld, Halbfeld und Beach. Raster (⛶) für gleichmäßige Abstände.';
     } else if (isTn) {
-      qhEditor.innerHTML = 'Spieler, Bälle und Laufwege auf dem Tennisplatz platzieren. Raster (⛶) aktivieren für gleichmäßige Abstände.';
+      qhEditor.innerHTML = 'Spieler, Bälle, Material und Wege (Lauf, Angriff – auch geschwungen) auf dem Tennisplatz platzieren. Raster (⛶) aktivieren für gleichmäßige Abstände.';
     } else {
-      qhEditor.innerHTML = 'Spieler, Bälle, Tore, Hütchen und Laufwege auf dem Feld platzieren. Raster (⛶) aktivieren für gleichmäßige Abstände. Strg+C/V kopieren, Strg+Z rückgängig.';
+      qhEditor.innerHTML = 'Spieler, Bälle, Tore, Material und Wege (Pass, Lauf, Dribbling, Schuss – auch geschwungen) auf dem Feld platzieren. Raster (⛶) für gleichmäßige Abstände. Strg+C/V kopieren, Strg+Z rückgängig.';
     }
   }
   const qhEditorIcon = document.getElementById('qhEditorIcon');
