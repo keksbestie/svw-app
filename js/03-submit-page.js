@@ -99,10 +99,8 @@ async function renderSubmitPage(){
     _renderMySubmissionsFromCache();
     loadMySubmittedPlans();
     const canReview=IS_ADMIN||IS_REVIEWER;
-    if(IS_ADMIN) renderUserList();
     if(canReview){ _renderAdminQueueFromCache(); loadAdminPlanQueue(); }
     document.getElementById('adminQueueWrap').style.display = canReview ? 'block' : 'none';
-    document.getElementById('adminUserWrap').style.display = IS_ADMIN ? 'block' : 'none';
     document.getElementById('adminPlanQueueWrap').style.display = canReview ? 'block' : 'none';
     // Canvas wird per Button im fieldOverlay geöffnet
   }
@@ -530,20 +528,64 @@ function _userActions(u){
       <button onclick="setUserRole('${u.id}','${reviewerActive?'coach':'reviewer'}')" style="${btnStyle}background:${reviewerActive?'var(--surface-2)':'#1565c0'};${reviewerActive?'border:1px solid var(--border);color:var(--text-1);':'color:#fff;'}">
         ${reviewerActive?'Reviewer entziehen':'Reviewer machen'}
       </button>
-      <button onclick="setUserRole('${u.id}','admin')" style="${btnStyle}background:var(--g);color:#fff;">Admin machen</button>
+      <button onclick="setUserRole('${u.id}','admin')" style="${btnStyle}background:var(--accent);color:#fff;">Admin machen</button>
     </div>
   </div>`;
 }
 
+let _adminUsers=[], _clubNames={}, _userFilter='all', _userQuery='', _userListOpen=true;
+const _USER_FILTERS=[
+  {id:'all',label:'Alle',test:()=>true},
+  {id:'admin',label:'Admins',test:u=>u.role==='admin'},
+  {id:'reviewer',label:'Reviewer',test:u=>u.role==='reviewer'},
+  {id:'clubadmin',label:'Vereinsadmins',test:u=>u.club_role==='club_admin'},
+  {id:'coach',label:'Trainer:innen',test:u=>u.role!=='admin'&&u.role!=='reviewer'&&u.club_role!=='club_admin'}
+];
+
+function _escUser(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+function _clubLabel(u){
+  if(!u.club_role) return '';
+  const name=_clubNames[u.club_id]?` (${_escUser(_clubNames[u.club_id])})`:'';
+  return u.club_role==='club_admin'?` · Vereinsadmin${name}`:` · Vereinstrainer:in${name}`;
+}
+
+function toggleUserList(){
+  _userListOpen=!_userListOpen;
+  const b=document.getElementById('userListBody'), c=document.getElementById('userListChevron');
+  if(b) b.style.display=_userListOpen?'':'none';
+  if(c) c.textContent=_userListOpen?'▾':'▸';
+}
+
+function setUserFilter(id){ _userFilter=id; renderUserListView(); }
+
 async function renderUserList(){
   const el=document.getElementById('userList');if(!el)return;
-  const {data:users}=await _supabase.from('profiles').select('id,email,role,reviewer_sports');
-  if(!users||!users.length){el.innerHTML='<div style="font-size:13px;color:var(--text-3);">Keine Nutzer:innen gefunden.</div>';return;}
-  el.innerHTML=users.map(u=>`
+  const {data:users}=await _supabase.from('profiles').select('id,email,role,reviewer_sports,club_id,club_role');
+  const {data:clubs}=await _supabase.from('clubs').select('id,name');
+  _clubNames={}; (clubs||[]).forEach(c=>{_clubNames[c.id]=c.name;});
+  _adminUsers=(users||[]).slice().sort((a,b)=>(a.email||'').localeCompare(b.email||''));
+  renderUserListView();
+}
+
+function renderUserListView(){
+  const el=document.getElementById('userList');if(!el)return;
+  const q=_userQuery.trim().toLowerCase();
+  const filt=_USER_FILTERS.find(f=>f.id===_userFilter)||_USER_FILTERS[0];
+  const list=_adminUsers.filter(u=>filt.test(u)&&(!q||(u.email||'').toLowerCase().includes(q)));
+  const chips=document.getElementById('userFilterChips');
+  if(chips) chips.innerHTML=_USER_FILTERS.map(f=>{
+    const n=_adminUsers.filter(f.test).length, on=f.id===_userFilter;
+    return `<button onclick="setUserFilter('${f.id}')" style="padding:5px 11px;border-radius:16px;border:1.5px solid ${on?'var(--accent)':'var(--border)'};background:${on?'var(--accent)':'none'};color:${on?'#fff':'var(--text-2)'};font-size:12px;font-weight:700;cursor:pointer;">${f.label} (${n})</button>`;
+  }).join('');
+  const cnt=document.getElementById('userCount');
+  if(cnt) cnt.textContent=(list.length===_adminUsers.length)?`${_adminUsers.length} Nutzer:innen`:`${list.length} von ${_adminUsers.length} Nutzer:innen`;
+  if(!list.length){el.innerHTML='<div style="font-size:13px;color:var(--text-3);padding:6px 0;">Keine Nutzer:innen gefunden.</div>';return;}
+  el.innerHTML=list.map(u=>`
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:12px 14px;background:var(--surface-2);border-radius:9px;border:1px solid var(--border);">
-      <div>
-        <div style="font-size:13px;font-weight:700;color:var(--text-1);">${u.email||u.id}</div>
-        <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${_roleLabel(u)}</div>
+      <div style="min-width:0;">
+        <div style="font-size:13px;font-weight:700;color:var(--text-1);word-break:break-all;">${_escUser(u.email||u.id)}</div>
+        <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${_roleLabel(u)}${_clubLabel(u)}</div>
       </div>
       <div>${_userActions(u)}</div>
     </div>`).join('');
@@ -556,6 +598,7 @@ async function _toggleReviewerSport(cb){
   if(cb.checked) sports=[...new Set([...sports,sport])];
   else sports=sports.filter(s=>s!==sport);
   await _supabase.from('profiles').update({reviewer_sports:sports}).eq('id',userId);
+  const cu=_adminUsers.find(u=>u.id===userId); if(cu) cu.reviewer_sports=sports;
   showToast('Sportarten aktualisiert');
 }
 
@@ -639,15 +682,20 @@ function switchAccTab(tab){
   document.getElementById('accPanelProfile').style.display=tab==='profile'?'':'none';
   document.getElementById('accPanelPlans').style.display=tab==='plans'?'':'none';
   document.getElementById('accPanelClub').style.display=tab==='club'?'':'none';
+  document.getElementById('accPanelUsers').style.display=tab==='users'?'':'none';
   document.getElementById('accTabProfile').classList.toggle('acc-tab--active',tab==='profile');
   document.getElementById('accTabPlans').classList.toggle('acc-tab--active',tab==='plans');
   document.getElementById('accTabClub').classList.toggle('acc-tab--active',tab==='club');
+  document.getElementById('accTabUsers').classList.toggle('acc-tab--active',tab==='users');
+  if(tab==='users'&&IS_ADMIN) renderUserList();
   if(tab==='plans') renderMyAccPlans();
   if(tab==='club'&&typeof renderClubTab==='function') renderClubTab();
 }
 
 function renderAccountPage(){
   if(!currentUser) return;
+  const usersTab=document.getElementById('accTabUsers');
+  if(usersTab) usersTab.style.display=IS_ADMIN?'':'none';
   const name=currentUser.user_metadata?.username||'';
   document.getElementById('accUsernameIn').value=name;
   document.getElementById('accEmailIn').value=currentUser.email||'';
