@@ -325,9 +325,13 @@ function _updateFieldTypeOptions(){
     if(dribbleBtn) dribbleBtn.style.display='none';
     if(shotBtn) shotBtn.style.display='none';
     if(passBtn) passBtn.title='Angriff (2× klicken)';
+  } else if(isVb){
+    if(dribbleBtn) dribbleBtn.style.display='none';
+    if(shotBtn){ shotBtn.style.display=''; shotBtn.title='Angriff (2× klicken)'; }
+    if(passBtn) passBtn.title='Passweg (2× klicken)';
   } else {
     if(dribbleBtn){ dribbleBtn.style.display=''; dribbleBtn.title='Dribbelweg (2× klicken)'; }
-    if(shotBtn){ shotBtn.style.display=''; shotBtn.title=isVb?'Angriff (2× klicken)':'Schuss (2× klicken)'; }
+    if(shotBtn){ shotBtn.style.display=''; shotBtn.title='Schuss (2× klicken)'; }
     if(passBtn) passBtn.title='Passweg (2× klicken)';
   }
   // Formation buttons: Heim=Weiß/Gast=Rot bei VB, sonst Blau/DunkelRot
