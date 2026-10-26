@@ -20,6 +20,8 @@ let currentTool='player', canvasObjects=[], undoStack=[], lineCounter=0;
 let playerCounters={}, selectedObjIdx=null;
 let isDraggingObj=false, dragOffX=0, dragOffY=0;
 let isResizing=false, resizeObjIdx=null;
+let _lineCurveMode=false, lineCtrl=null, isCtrlDrag=false;
+const _LINE_TYPES=['pass','run','dribble','shot'];
 let linePhase=0, lineStart=null;
 // dribblePoints / isDribbling entfernt (nie genutzt)
 let canvasEl=null, ctx=null, _cvInited=false;
@@ -92,7 +94,7 @@ function updateSelLineLabel(val){
   const idx=selectedIndices.length===1?selectedIndices[0]:selectedObjIdx;
   if(idx===null||idx<0) return;
   const o=canvasObjects[idx];
-  if(o.type!=='pass'&&o.type!=='run'&&o.type!=='dribble') return;
+  if(!_LINE_TYPES.includes(o.type)) return;
   o.label=val;
   redraw();
 }
@@ -106,7 +108,7 @@ function _updatePlayerEdit(){
   const idx=selectedIndices.length===1?selectedIndices[0]:(selectedObjIdx!==null&&selectedObjIdx>=0?selectedObjIdx:null);
   const o=idx!==null?canvasObjects[idx]:null;
   const isPlayer=o?.type==='player';
-  const isLine=o?.type==='pass'||o?.type==='run'||o?.type==='dribble';
+  const isLine=!!o&&_LINE_TYPES.includes(o.type);
   editEl.style.display=isPlayer?'flex':'none';
   if(lineEditEl) lineEditEl.style.display=isLine?'flex':'none';
   if(hintEl) hintEl.style.display=(isPlayer||isLine)?'none':'inline';
@@ -119,7 +121,77 @@ function _updatePlayerEdit(){
   if(isLine){
     const inp=document.getElementById('lineLabelInput');
     if(inp) inp.value=o.label||'';
+    const cs=document.getElementById('lineCurveSel');
+    if(cs) cs.style.display=o.type==='dribble'?'none':'flex';
+    _setCurveBtns('curveSel',!!o.curved);
   }
+}
+
+// ── Kurven (quadratische Bezier-Kurve, Kurvenpunkt wirkt als Magnet) ──
+function _setCurveBtns(prefix,curved){
+  const on='#1a7f4b', off='#344736';
+  const a=document.getElementById(prefix+'Straight'), b=document.getElementById(prefix+'Curved');
+  if(a){a.style.background=curved?off:on;a.style.color=curved?'#aaa':'#fff';a.textContent=(curved?'\u2610':'\u2611')+' Gerade';}
+  if(b){b.style.background=curved?on:off;b.style.color=curved?'#fff':'#aaa';b.textContent=(curved?'\u2611':'\u2610')+' Geschwungen';}
+}
+function setDrawCurveMode(curved){
+  _lineCurveMode=curved; linePhase=0; lineStart=null; lineCtrl=null;
+  _syncCurveUI(); redraw();
+}
+function _syncCurveUI(){
+  _setCurveBtns('drawCurve',_lineCurveMode);
+  const h=document.getElementById('lineHint');
+  const isDr=currentTool==='dribble';
+  if(h) h.textContent=(_lineCurveMode&&!isDr)?'1. Startpunkt \u2192 2. Kurvenpunkt (zieht die Linie an) \u2192 3. Endpunkt':'1. Startpunkt klicken \u2192 2. Endpunkt klicken';
+  const w=document.getElementById('drawCurveWrap');
+  if(w) w.style.display=isDr?'none':'flex';
+}
+function setSelLineCurve(curved){
+  const idx=selectedIndices.length===1?selectedIndices[0]:selectedObjIdx;
+  if(idx===null||idx<0) return;
+  const o=canvasObjects[idx];
+  if(!o||!_LINE_TYPES.includes(o.type)||o.type==='dribble') return;
+  if(!!o.curved===curved) return;
+  pushUndo();
+  if(curved){
+    const mx=(o.x1+o.x2)/2, my=(o.y1+o.y2)/2;
+    const dx=o.x2-o.x1, dy=o.y2-o.y1, len=Math.hypot(dx,dy)||1;
+    const off=Math.max(24,len*0.25);
+    o.curved=true; o.cx=mx-dy/len*off; o.cy=my+dx/len*off;
+  } else { o.curved=false; delete o.cx; delete o.cy; }
+  _setCurveBtns('curveSel',curved);
+  redraw();
+}
+function _ctrlOf(o){ return (o.curved&&o.cx!==undefined)?{x:o.cx,y:o.cy}:null; }
+function _curvePts(x1,y1,cx,cy,x2,y2,n){
+  const pts=[]; n=n||40;
+  for(let i=0;i<=n;i++){
+    const t=i/n,u=1-t;
+    pts.push({x:u*u*x1+2*u*t*cx+t*t*x2, y:u*u*y1+2*u*t*cy+t*t*y2});
+  }
+  return pts;
+}
+function _trimPts(pts,dist){
+  let acc=0;
+  for(let i=pts.length-1;i>0;i--){
+    const d=Math.hypot(pts[i].x-pts[i-1].x,pts[i].y-pts[i-1].y);
+    if(acc+d>=dist){
+      const f=(dist-acc)/d;
+      const q={x:pts[i].x+(pts[i-1].x-pts[i].x)*f,y:pts[i].y+(pts[i-1].y-pts[i].y)*f};
+      return pts.slice(0,i).concat([q]);
+    }
+    acc+=d;
+  }
+  return pts.slice(0,1);
+}
+function _drawCtrlHandle(o){
+  const c=_ctrlOf(o); if(!c) return;
+  ctx.save();
+  ctx.setLineDash([3,3]); ctx.strokeStyle='rgba(255,224,130,.8)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(o.x1,o.y1); ctx.lineTo(c.x,c.y); ctx.lineTo(o.x2,o.y2); ctx.stroke();
+  ctx.setLineDash([]); ctx.fillStyle='#ffe082'; ctx.strokeStyle='#333'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.arc(c.x,c.y,6,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.restore();
 }
 
 // ── SNAP / ALIGNMENT ──────────────────────────────────
@@ -441,7 +513,7 @@ function hitAt(x,y){
   for(let i=canvasObjects.length-1;i>=0;i--){
     const o=canvasObjects[i];
     if((o.type==='player'||o.type==='ball'||o.type==='equip'||o.type==='goal')&&Math.hypot(x-o.x,y-o.y)<22*_objSc(o)) return i;
-    if((o.type==='pass'||o.type==='run'||o.type==='dribble')&&ptNearSeg(x,y,o.x1,o.y1,o.x2,o.y2,12)) return i;
+    if(_LINE_TYPES.includes(o.type)&&_hitLine(o,x,y)) return i;
   }
   return -1;
 }
@@ -454,6 +526,13 @@ function objectsInRect(rx1,ry1,rx2,ry2){
     else if(o.x1!==undefined){const mx=(o.x1+o.x2)/2,my=(o.y1+o.y2)/2;if(mx>=minX&&mx<=maxX&&my>=minY&&my<=maxY)result.push(i);}
   });
   return result;
+}
+function _hitLine(o,x,y){
+  const c=_ctrlOf(o);
+  if(!c) return ptNearSeg(x,y,o.x1,o.y1,o.x2,o.y2,12);
+  const p=_curvePts(o.x1,o.y1,c.x,c.y,o.x2,o.y2,30);
+  for(let i=1;i<p.length;i++) if(ptNearSeg(x,y,p[i-1].x,p[i-1].y,p[i].x,p[i].y,12)) return true;
+  return false;
 }
 function ptNearSeg(px,py,x1,y1,x2,y2,t){
   const dx=x2-x1,dy=y2-y1,l2=dx*dx+dy*dy;
@@ -475,6 +554,10 @@ function cvDown({x,y}){
           pushUndo();isResizing=true;resizeObjIdx=selectedIndices[0];selectedObjIdx=selectedIndices[0];return;
         }
       }
+    }
+    if(selectedIndices.length===1){
+      const co=canvasObjects[selectedIndices[0]], cc=co&&_ctrlOf(co);
+      if(cc&&Math.hypot(x-cc.x,y-cc.y)<11){ pushUndo(); isCtrlDrag=true; selectedObjIdx=selectedIndices[0]; return; }
     }
     const i=hitAt(x,y);
     if(i>=0){
@@ -502,7 +585,12 @@ function cvDown({x,y}){
   }
   if(t==='pass'||t==='run'||t==='shot'){
     if(!linePhase){pushUndo();linePhase=1;lineStart={x,y};}
-    else{canvasObjects.push({type:t,x1:lineStart.x,y1:lineStart.y,x2:x,y2:y,label:''});linePhase=0;lineStart=null;redraw();}
+    else if(_lineCurveMode&&linePhase===1){lineCtrl={x,y};linePhase=2;redraw();}
+    else{
+      const ob={type:t,x1:lineStart.x,y1:lineStart.y,x2:x,y2:y,label:''};
+      if(_lineCurveMode&&lineCtrl){ob.curved=true;ob.cx=lineCtrl.x;ob.cy=lineCtrl.y;}
+      canvasObjects.push(ob);linePhase=0;lineStart=null;lineCtrl=null;redraw();
+    }
     return;
   }
   const sp=_snapPoint(x,y,[]);
@@ -516,6 +604,11 @@ function cvMove({x,y}){
     redraw();return;
   }
   // Lasso: update rect
+  if(isCtrlDrag&&selectedObjIdx!==null){
+    const o=canvasObjects[selectedObjIdx];
+    if(o){o.cx=x;o.cy=y;}
+    redraw();return;
+  }
   if(isLasso&&lassoStart){
     lassoRect={x1:Math.min(lassoStart.x,x),y1:Math.min(lassoStart.y,y),x2:Math.max(lassoStart.x,x),y2:Math.max(lassoStart.y,y)};
     redraw(); return;
@@ -527,7 +620,7 @@ function cvMove({x,y}){
       selectedIndices.forEach(i=>{
         const o=canvasObjects[i]; if(!o)return;
         if(o.x!==undefined){o.x+=dX;o.y+=dY;}
-        else if(o.x1!==undefined){o.x1+=dX;o.y1+=dY;o.x2+=dX;o.y2+=dY;}
+        else if(o.x1!==undefined){o.x1+=dX;o.y1+=dY;o.x2+=dX;o.y2+=dY;if(o.cx!==undefined){o.cx+=dX;o.cy+=dY;}}
         else if(o.pts){o.pts=o.pts.map(p=>({x:p.x+dX,y:p.y+dY}));}
       });
       dragAnchor={x,y};
@@ -539,7 +632,7 @@ function cvMove({x,y}){
         const sn=_snapPoint(raw.x,raw.y,[selectedObjIdx]);
         o.x=sn.x;o.y=sn.y;
       }
-      else if(o.x1!==undefined&&o.x2!==undefined){const dx=x-dragOffX-o.x1,dy=y-dragOffY-o.y1;o.x1+=dx;o.y1+=dy;o.x2+=dx;o.y2+=dy;}
+      else if(o.x1!==undefined&&o.x2!==undefined){const dx=x-dragOffX-o.x1,dy=y-dragOffY-o.y1;o.x1+=dx;o.y1+=dy;o.x2+=dx;o.y2+=dy;if(o.cx!==undefined){o.cx+=dx;o.cy+=dy;}}
       else if(o.pts){const dx=x-dragOffX-(o.pts[0].x||0),dy=y-dragOffY-(o.pts[0].y||0);o.pts=o.pts.map(p=>({x:p.x+dx,y:p.y+dy}));}
     }
     redraw(); return;
@@ -549,20 +642,23 @@ function cvMove({x,y}){
     drawSinePreview(lineStart.x,lineStart.y,x,y,'rgba(129,199,132,.5)');
     return;
   }
-  if((currentTool==='pass'||currentTool==='run')&&linePhase&&lineStart){
+  if((currentTool==='pass'||currentTool==='run'||currentTool==='shot')&&linePhase&&lineStart){
     redraw();
-    ctx.save();
-    ctx.strokeStyle='rgba(0,0,0,.45)';
-    ctx.lineWidth=2; ctx.setLineDash(currentTool==='run'?[7,5]:[]);
-    ctx.beginPath();ctx.moveTo(lineStart.x,lineStart.y);ctx.lineTo(x,y);ctx.stroke();
-    ctx.setLineDash([]);ctx.restore();
-  }
-  if(currentTool==='shot'&&linePhase&&lineStart){
-    redraw();
-    drawDoubleArrowLine(lineStart.x,lineStart.y,x,y,false);
+    if(_lineCurveMode&&linePhase===1){
+      ctx.save();ctx.strokeStyle='rgba(0,0,0,.35)';ctx.lineWidth=1.5;ctx.setLineDash([4,4]);
+      ctx.beginPath();ctx.moveTo(lineStart.x,lineStart.y);ctx.lineTo(x,y);ctx.stroke();
+      ctx.setLineDash([]);ctx.fillStyle='rgba(255,224,130,.9)';ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fill();ctx.restore();
+      return;
+    }
+    const cc=(_lineCurveMode&&lineCtrl)?lineCtrl:null;
+    ctx.save(); ctx.globalAlpha=0.6;
+    if(currentTool==='shot') drawDoubleArrowLine(lineStart.x,lineStart.y,x,y,false,cc?cc.x:undefined,cc?cc.y:undefined);
+    else drawArrowLine(lineStart.x,lineStart.y,x,y,currentTool,false,cc?cc.x:undefined,cc?cc.y:undefined);
+    ctx.restore();
   }
 }
 function cvUp({x,y}){
+  if(isCtrlDrag){isCtrlDrag=false;redraw();return;}
   if(isResizing){isResizing=false;resizeObjIdx=null;redraw();return;}
   if(isDraggingObj){isDraggingObj=false;dragAnchor=null;_activeSnapLines=[];redraw();return;}
   if(isLasso){
@@ -628,6 +724,7 @@ function _updateCtxBar(t){
              pass:'ctx_line',run:'ctx_line',dribble:'ctx_line',shot:'ctx_line',select:'ctx_select',erase:null};
   const target=map[t];
   if(target){const el=document.getElementById(target);if(el)el.style.display='flex';}
+  if(target==='ctx_line') _syncCurveUI();
   // Rotation bleibt sichtbar wenn bereits aktiv – updateRotCtrl steuert das
 }
 
@@ -688,7 +785,7 @@ document.addEventListener('keydown', function(e){
     const off=20;
     const pasted=clipboardObjects.map(o=>{const c=JSON.parse(JSON.stringify(o));
       if(c.x!==undefined){c.x+=off;c.y+=off;}
-      else if(c.x1!==undefined){c.x1+=off;c.y1+=off;c.x2+=off;c.y2+=off;}
+      else if(c.x1!==undefined){c.x1+=off;c.y1+=off;c.x2+=off;c.y2+=off;if(c.cx!==undefined){c.cx+=off;c.cy+=off;}}
       return c;
     });
     const startIdx=canvasObjects.length;
@@ -766,8 +863,12 @@ function redraw(){
     const o=canvasObjects[selectedObjIdx];
     if(o&&(o.type==='ball'||o.type==='equip'||o.type==='goal')) _drawResizeHandle(o);
   }
+  if(selectedIndices.length===1){const so=canvasObjects[selectedIndices[0]]; if(so) _drawCtrlHandle(so);}
+  else if(selectedIndices.length===0&&selectedObjIdx!==null&&selectedObjIdx>=0){const so=canvasObjects[selectedObjIdx]; if(so) _drawCtrlHandle(so);}
   if(linePhase&&lineStart){
-    ctx.save();ctx.fillStyle='rgba(255,255,255,.7)';ctx.beginPath();ctx.arc(lineStart.x,lineStart.y,5,0,Math.PI*2);ctx.fill();ctx.restore();
+    ctx.save();ctx.fillStyle='rgba(255,255,255,.7)';ctx.beginPath();ctx.arc(lineStart.x,lineStart.y,5,0,Math.PI*2);ctx.fill();
+    if(linePhase===2&&lineCtrl){ctx.fillStyle='rgba(255,224,130,.9)';ctx.beginPath();ctx.arc(lineCtrl.x,lineCtrl.y,5,0,Math.PI*2);ctx.fill();}
+    ctx.restore();
   }
   // Draw lasso rectangle
   if(isLasso&&lassoRect){
@@ -1136,10 +1237,11 @@ function _drawLineLabel(x1,y1,x2,y2,label){
   ctx.restore();
 }
 function drawObj(o,sel){
-  if(o.type==='pass')     {drawArrowLine(o.x1,o.y1,o.x2,o.y2,'pass',sel);_drawLineLabel(o.x1,o.y1,o.x2,o.y2,o.label);}
-  else if(o.type==='run') {drawArrowLine(o.x1,o.y1,o.x2,o.y2,'run',sel);_drawLineLabel(o.x1,o.y1,o.x2,o.y2,o.label);}
+  const _c=_ctrlOf(o), _cx=_c?_c.x:undefined, _cy=_c?_c.y:undefined;
+  if(o.type==='pass')     {drawArrowLine(o.x1,o.y1,o.x2,o.y2,'pass',sel,_cx,_cy);_drawLineLabel(_c?_c.x:o.x1,_c?_c.y:o.y1,o.x2,o.y2,o.label);}
+  else if(o.type==='run') {drawArrowLine(o.x1,o.y1,o.x2,o.y2,'run',sel,_cx,_cy);_drawLineLabel(_c?_c.x:o.x1,_c?_c.y:o.y1,o.x2,o.y2,o.label);}
   else if(o.type==='dribble') {drawSnakeLine(o.x1,o.y1,o.x2,o.y2,sel);_drawLineLabel(o.x1,o.y1,o.x2,o.y2,o.label);}
-  else if(o.type==='shot')    {drawDoubleArrowLine(o.x1,o.y1,o.x2,o.y2,sel);_drawLineLabel(o.x1,o.y1,o.x2,o.y2,o.label);}
+  else if(o.type==='shot')    {drawDoubleArrowLine(o.x1,o.y1,o.x2,o.y2,sel,_cx,_cy);_drawLineLabel(_c?_c.x:o.x1,_c?_c.y:o.y1,o.x2,o.y2,o.label);}
   else if(o.type==='player')  drawPlayer(o.x,o.y,o.label,o.color,sel,o.angle||0,o.name||'');
   else if(o.type==='ball')    drawBall(o.x,o.y,sel,_objSc(o));
   else if(o.type==='equip')   drawEquip(o.x,o.y,o.subtype,sel,o.angle||0,_objSc(o));
@@ -1161,7 +1263,7 @@ function _drawResizeHandle(o){
 }
 
 // ── Arrow lines (pass / run) ──
-function drawArrowLine(x1,y1,x2,y2,kind,sel){
+function drawArrowLine(x1,y1,x2,y2,kind,sel,cx,cy){
   const isRun=kind==='run';
   const col=sel?'#555':'#111';
   const len=Math.hypot(x2-x1,y2-y1);
@@ -1173,10 +1275,13 @@ function drawArrowLine(x1,y1,x2,y2,kind,sel){
   ctx.strokeStyle=col; ctx.lineWidth=isRun?2:2.2;
   ctx.setLineDash(isRun?[9,5]:[]);
   ctx.lineCap='round';
-  ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+  const curved=cx!==undefined;
+  ctx.beginPath(); ctx.moveTo(x1,y1);
+  if(curved) ctx.quadraticCurveTo(cx,cy,x2,y2); else ctx.lineTo(x2,y2);
+  ctx.stroke();
   ctx.setLineDash([]);
   // Arrowhead — solid filled triangle
-  const a=Math.atan2(y2-y1,x2-x1);
+  const a=curved?Math.atan2(y2-cy,x2-cx):Math.atan2(y2-y1,x2-x1);
   const aw=isRun?15:12, ah=isRun?0.38:0.38;
   ctx.shadowBlur=0;
   ctx.fillStyle=col;
@@ -1192,22 +1297,28 @@ function drawArrowLine(x1,y1,x2,y2,kind,sel){
 }
 
 // ── Double-arrow line (Schuss / Angriff) ──
-function drawDoubleArrowLine(x1,y1,x2,y2,sel){
+function drawDoubleArrowLine(x1,y1,x2,y2,sel,cx,cy){
   const col=sel?'#555':'#111';
   const len=Math.hypot(x2-x1,y2-y1);
   if(len<4) return;
-  const a=Math.atan2(y2-y1,x2-x1);
-  const off=3;
-  const px=-Math.sin(a)*off, py=Math.cos(a)*off;
-  const aw=20, ah=0.42;
-  // lines stop before arrowhead
-  const ex=x2-aw*0.9*Math.cos(a), ey=y2-aw*0.9*Math.sin(a);
+  const curved=cx!==undefined;
+  const a=curved?Math.atan2(y2-cy,x2-cx):Math.atan2(y2-y1,x2-x1);
+  const off=3, aw=20, ah=0.42;
+  let pts=curved?_curvePts(x1,y1,cx,cy,x2,y2,40):[{x:x1,y:y1},{x:x2,y:y2}];
+  pts=_trimPts(pts,aw*0.9);
   ctx.save();
   ctx.shadowColor='rgba(0,0,0,.35)'; ctx.shadowBlur=3; ctx.shadowOffsetY=1;
-  ctx.strokeStyle=col; ctx.lineWidth=2; ctx.lineCap='round';
-  ctx.beginPath(); ctx.moveTo(x1+px,y1+py); ctx.lineTo(ex+px,ey+py); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(x1-px,y1-py); ctx.lineTo(ex-px,ey-py); ctx.stroke();
-  // filled arrowhead (larger)
+  ctx.strokeStyle=col; ctx.lineWidth=2; ctx.lineCap='round'; ctx.lineJoin='round';
+  [1,-1].forEach(sg=>{
+    ctx.beginPath();
+    pts.forEach((p,i)=>{
+      const q=pts[Math.min(i+1,pts.length-1)], r=pts[Math.max(i-1,0)];
+      const ta=Math.atan2(q.y-r.y,q.x-r.x);
+      const px=p.x-Math.sin(ta)*off*sg, py=p.y+Math.cos(ta)*off*sg;
+      if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+    });
+    ctx.stroke();
+  });
   ctx.shadowBlur=0; ctx.fillStyle=col;
   ctx.beginPath();
   ctx.moveTo(x2,y2);
@@ -1703,9 +1814,10 @@ function _getCropBounds(){
   const W=canvasEl.offsetWidth, H=canvasEl.offsetHeight;
   let x0=W,y0=H,x1=0,y1=0;
   canvasObjects.forEach(o=>{
-    if(o.type==='pass'||o.type==='run'||o.type==='dribble'){
-      x0=Math.min(x0,o.x1,o.x2);y0=Math.min(y0,o.y1,o.y2);
-      x1=Math.max(x1,o.x1,o.x2);y1=Math.max(y1,o.y1,o.y2);
+    if(_LINE_TYPES.includes(o.type)){
+      const _cc=_ctrlOf(o);
+      const _p=_cc?_curvePts(o.x1,o.y1,_cc.x,_cc.y,o.x2,o.y2,20):[{x:o.x1,y:o.y1},{x:o.x2,y:o.y2}];
+      _p.forEach(p=>{x0=Math.min(x0,p.x);y0=Math.min(y0,p.y);x1=Math.max(x1,p.x);y1=Math.max(y1,p.y);});
     } else if(o.x!==undefined){
       const r=_baseR(o)*_objSc(o)+8;
       x0=Math.min(x0,o.x-r);y0=Math.min(y0,o.y-r);
