@@ -350,7 +350,7 @@ function renderSection(){
                 <button class="view-toggle-btn ${_catalogView==='expanded'?'active':''}" onclick="setCatalogView('expanded')" title="Ausgeklappt">☰☰</button>
                 <button class="view-toggle-btn ${_catalogView==='collapsed'?'active':''}" onclick="setCatalogView('collapsed')" title="Eingeklappt">≡</button>
               </div>
-              ${IS_ADMIN?`<button class="gbtn" onclick="openNewEx(${activeSec})">+ Übung</button><button class="gbtn" onclick="openTagMod(${activeSec})">Tags</button><button class="gbtn" onclick="batchRegenerateThumbnails()" title="Alle Felddiagramm-Thumbnails neu rendern">🔄 Thumbnails</button>`:''}
+              ${IS_ADMIN?`<button class="gbtn" onclick="openNewEx(${activeSec})">+ Übung</button><button class="gbtn" onclick="openTagMod(${activeSec})">Tags</button>`:''}
             </div>
           </div>
           <div class="tag-bar">
