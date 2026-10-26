@@ -548,6 +548,10 @@ function cvMove({x,y}){
     ctx.beginPath();ctx.moveTo(lineStart.x,lineStart.y);ctx.lineTo(x,y);ctx.stroke();
     ctx.setLineDash([]);ctx.restore();
   }
+  if(currentTool==='shot'&&linePhase&&lineStart){
+    redraw();
+    drawDoubleArrowLine(lineStart.x,lineStart.y,x,y,false);
+  }
 }
 function cvUp({x,y}){
   if(isResizing){isResizing=false;resizeObjIdx=null;redraw();return;}
