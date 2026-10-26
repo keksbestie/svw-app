@@ -1653,6 +1653,45 @@ function drawGoal(x,y,sub,sel,ang,sc){
 function pushUndo(){undoStack.push(JSON.stringify(canvasObjects));if(undoStack.length>40)undoStack.shift();}
 function undoDraw(){if(!undoStack.length){showToast('Nichts rückgängig');return;}canvasObjects=JSON.parse(undoStack.pop());redraw();}
 function clearCanvas(){if(!confirm('Diagramm leeren?'))return;pushUndo();canvasObjects=[];playerCounters={};lineCounter=0;linePhase=0;lineStart=null;isDribbling=false;dribblePoints=[];selectedObjIdx=null;redraw();}
+
+// ── BATCH THUMBNAIL REGENERATION (Admin) ──────────────
+async function batchRegenerateThumbnails(){
+  if(!IS_ADMIN){showToast('Nur für Admins','err');return;}
+  const toUpdate=(typeof exercises!=='undefined'?exercises:[]).filter(e=>e.canvasObjects&&e.canvasObjects.length);
+  if(!toUpdate.length){showToast('Keine Felddiagramme gefunden');return;}
+  if(!confirm(`${toUpdate.length} Thumbnails neu rendern?`))return;
+  showToast(`Starte Regenerierung (${toUpdate.length})…`,'');
+  // Save globals
+  const _savedCtx=ctx,_savedEl=canvasEl,_savedObjs=canvasObjects;
+  // Offscreen canvas 800×480
+  const off=document.createElement('canvas');
+  off.width=800; off.height=480;
+  canvasEl=off; ctx=off.getContext('2d');
+  // fieldType select for drawField()
+  const ftSel=document.getElementById('fieldType');
+  const _savedFt=ftSel?ftSel.value:'small';
+  let done=0,failed=0;
+  for(const ex of toUpdate){
+    try{
+      canvasObjects=ex.canvasObjects;
+      if(ftSel) ftSel.value=ex.fieldType||'small';
+      redraw();
+      const dataUrl=off.toDataURL('image/png');
+      const url=await uploadImageToStorage(dataUrl);
+      if(url&&_supabase){
+        await _supabase.from('exercises').update({image:url}).eq('id',ex.id);
+        ex.image=url;
+        done++;
+      } else { failed++; }
+    }catch(e){console.warn('Thumbnail fehler',ex.id,e);failed++;}
+  }
+  // Restore globals
+  ctx=_savedCtx; canvasEl=_savedEl; canvasObjects=_savedObjs;
+  if(ftSel) ftSel.value=_savedFt;
+  if(typeof save==='function') save();
+  if(typeof renderSection==='function') renderSection();
+  showToast(`${done} Thumbnails aktualisiert${failed?' ('+failed+' Fehler)':''}`);
+}
 // ── CROP DIALOG ──────────────────────────────────────
 let _cropImg=null, _cropRect={x:0,y:0,w:0,h:0};
 let _cropHandle=null, _cropDragStart=null, _cropRectStart=null;
