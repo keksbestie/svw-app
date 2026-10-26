@@ -1194,15 +1194,15 @@ function drawDoubleArrowLine(x1,y1,x2,y2,sel){
   const a=Math.atan2(y2-y1,x2-x1);
   const off=3;
   const px=-Math.sin(a)*off, py=Math.cos(a)*off;
-  const aw=12, ah=0.38;
+  const aw=20, ah=0.42;
   // lines stop before arrowhead
-  const ex=x2-aw*0.85*Math.cos(a), ey=y2-aw*0.85*Math.sin(a);
+  const ex=x2-aw*0.9*Math.cos(a), ey=y2-aw*0.9*Math.sin(a);
   ctx.save();
   ctx.shadowColor='rgba(0,0,0,.35)'; ctx.shadowBlur=3; ctx.shadowOffsetY=1;
-  ctx.strokeStyle=col; ctx.lineWidth=1.8; ctx.lineCap='round';
+  ctx.strokeStyle=col; ctx.lineWidth=2; ctx.lineCap='round';
   ctx.beginPath(); ctx.moveTo(x1+px,y1+py); ctx.lineTo(ex+px,ey+py); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(x1-px,y1-py); ctx.lineTo(ex-px,ey-py); ctx.stroke();
-  // filled arrowhead
+  // filled arrowhead (larger)
   ctx.shadowBlur=0; ctx.fillStyle=col;
   ctx.beginPath();
   ctx.moveTo(x2,y2);
@@ -1210,8 +1210,6 @@ function drawDoubleArrowLine(x1,y1,x2,y2,sel){
   ctx.lineTo(x2-aw*0.4*Math.cos(a), y2-aw*0.4*Math.sin(a));
   ctx.lineTo(x2-aw*Math.cos(a+ah), y2-aw*Math.sin(a+ah));
   ctx.closePath(); ctx.fill();
-  // start dot
-  ctx.fillStyle=col; ctx.beginPath(); ctx.arc(x1,y1,2.5,0,Math.PI*2); ctx.fill();
   ctx.restore();
 }
 
