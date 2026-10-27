@@ -1,8 +1,10 @@
 // ══════════════════════════════════════════════════════════════════
 // MODUL: SPORT-AUSWAHL
 // ══════════════════════════════════════════════════════════════════
-// Auf master nur freigeschaltete Sportarten anzeigen
 const SPORTS_ENABLED = ['fussball', 'volleyball', 'tennis'];
+// Sportarten ohne Inhalte sind für normale Nutzer gesperrt und schalten sich automatisch frei,
+// sobald mindestens SPORT_MIN_EXERCISES freigegebene Übungen existieren (Admins/Reviewer sehen sie immer).
+const SPORT_MIN_EXERCISES = 1;
 
 const SPORTS = [
   { id: 'fussball',   icon: 'icons/sport-fussball.png',   label: 'Fußball' },
@@ -12,8 +14,40 @@ const SPORTS = [
 
 const SPORT_KEY = 'assistcoach_sport';
 
+function sportExerciseCount(id) {
+  return (typeof exercises !== 'undefined' ? exercises : []).filter(e => (e.sport || 'fussball') === id).length;
+}
+
+function isSportAvailable(id) {
+  if (id === 'fussball') return true;
+  if (typeof IS_ADMIN !== 'undefined' && IS_ADMIN) return true;
+  if (typeof IS_REVIEWER !== 'undefined' && IS_REVIEWER && (REVIEWER_SPORTS || []).includes(id)) return true;
+  return sportExerciseCount(id) >= SPORT_MIN_EXERCISES;
+}
+
 function getSavedSport() {
-  try { return JSON.parse(localStorage.getItem(SPORT_KEY)); } catch { return null; }
+  try {
+    const s = JSON.parse(localStorage.getItem(SPORT_KEY));
+    return (s && isSportAvailable(s.id)) ? s : null;
+  } catch { return null; }
+}
+
+let _sportSig = '';
+function _sportAvailSig() { return SPORTS.map(s => s.id + ':' + (isSportAvailable(s.id) ? 1 : 0)).join(','); }
+function refreshSportAvailability() { if (_sportAvailSig() !== _sportSig) renderHomeSportState(); }
+
+function _syncSportCards() {
+  document.querySelectorAll('.home-sport-card[data-sport]').forEach(btn => {
+    const id = btn.dataset.sport, avail = isSportAvailable(id);
+    const empty = id !== 'fussball' && sportExerciseCount(id) < SPORT_MIN_EXERCISES;
+    btn.classList.toggle('home-sport-card--locked', !avail);
+    btn.setAttribute('aria-disabled', avail ? 'false' : 'true');
+    const soon = btn.querySelector('.home-sport-soon');
+    if (soon) {
+      soon.style.display = (!avail || empty) ? '' : 'none';
+      soon.textContent = !avail ? 'Bald verfügbar' : 'Noch ohne Inhalte (nur Admin)';
+    }
+  });
 }
 
 function saveSport(sport) {
@@ -24,6 +58,10 @@ function saveSport(sport) {
 function selectSport(id) {
   const sport = SPORTS.find(s => s.id === id);
   if (!sport) return;
+  if (!isSportAvailable(id)) {
+    if (typeof showToast === 'function') showToast(sport.label + ' ist bald verfügbar', '');
+    return;
+  }
   saveSport(sport);
   renderHomeSportState();
 }
@@ -36,6 +74,8 @@ function changeSport() {
 }
 
 function renderHomeSportState() {
+  _sportSig = _sportAvailSig();
+  _syncSportCards();
   const sport = getSavedSport();
   const grid = document.getElementById('homeSportGrid');
   const cards = document.getElementById('homeCards');

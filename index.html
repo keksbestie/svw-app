@@ -246,17 +246,20 @@
 
   <!-- Sport-Auswahl -->
   <div id="homeSportGrid" class="home-sport-grid" style="display:none;">
-    <button class="home-sport-card" onclick="selectSport('fussball')">
+    <button class="home-sport-card" data-sport="fussball" onclick="selectSport('fussball')">
       <img src="icons/sport-fussball.png" class="home-sport-img" alt="Fußball">
       <span class="home-sport-label">Fußball</span>
+      <span class="home-sport-soon" style="display:none;"></span>
     </button>
-    <button class="home-sport-card" onclick="selectSport('volleyball')">
+    <button class="home-sport-card" data-sport="volleyball" onclick="selectSport('volleyball')">
       <img src="icons/sport-volleyball.png" class="home-sport-img" alt="Volleyball">
       <span class="home-sport-label">Volleyball</span>
+      <span class="home-sport-soon" style="display:none;"></span>
     </button>
-    <button class="home-sport-card" onclick="selectSport('tennis')">
+    <button class="home-sport-card" data-sport="tennis" onclick="selectSport('tennis')">
       <img src="icons/sport-tennis.png" class="home-sport-img" alt="Tennis">
       <span class="home-sport-label">Tennis</span>
+      <span class="home-sport-soon" style="display:none;"></span>
     </button>
   </div>
 

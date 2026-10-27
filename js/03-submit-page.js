@@ -302,8 +302,9 @@ async function doLogout(){
   await _supabase.auth.signOut();
   try{ localStorage.removeItem('ac_squad'); }catch(e){}
   if(typeof squad!=='undefined') squad=[];
-  currentUser=null; IS_ADMIN=false;
+  currentUser=null; IS_ADMIN=false; IS_REVIEWER=false; REVIEWER_SPORTS=[];
   document.body.classList.remove('admin');
+  if(typeof refreshSportAvailability==='function') refreshSportAvailability();
   submitUser=null; submitTags=[]; submitCanvasData=null;
   renderSubmitPage();
   updateSignInBtn();

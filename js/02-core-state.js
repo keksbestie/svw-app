@@ -148,6 +148,7 @@ async function silentSync(){
     }
     if(typeof loadRatings==='function') await loadRatings();
     apiOnline=true; setStat('ok'); updateCnt(); renderSection(); cacheLocal();
+    if(typeof refreshSportAvailability==='function') refreshSportAvailability();
   }catch{apiOnline=false; setStat('err');}
 }
 async function saveAPI(){
