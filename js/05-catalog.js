@@ -538,7 +538,25 @@ function editEx(id){if(!IS_ADMIN)return;const e=exercises.find(x=>x.id===id);if(
     setTimeout(()=>{canvasObjects=JSON.parse(JSON.stringify(e.canvasObjects));redraw();},120);
   }
 }
-function saveEx(){
+// Neue Katalog-Übung dauerhaft in Supabase speichern (für alle sichtbar). Gibt {id,image} oder null zurück.
+async function _persistNewExercise(ex){
+  if(!_supabase||!currentUser) return null;
+  let img=ex.image||null;
+  if(img&&img.startsWith('data:')){const up=await uploadImageToStorage(img);if(up) img=up;}
+  const {data,error}=await _supabase.from('exercises').insert({
+    name:ex.name,description:ex.desc||'',players:ex.players||'',material:ex.material||'',
+    section:ex.section,difficulty:ex.difficulty||'',duration:ex.duration||null,
+    tags:ex.tags||[],image:img,
+    canvas_objects:(ex.canvasObjects&&ex.canvasObjects.length)?ex.canvasObjects:null,
+    field_type:ex.fieldType||document.getElementById('fieldType')?.value||'small',
+    created_by:currentUser.id,author_name:null,sport:ex.sport||'fussball',status:'approved'
+  }).select().single();
+  if(error){console.warn('Übung speichern fehlgeschlagen:',error);return null;}
+  return {id:data.id,image:img};
+}
+let _savingEx=false;
+async function saveEx(){
+  if(_savingEx) return;
   const name=document.getElementById('mName').value.trim();if(!name){showToast('Bitte Name eingeben','err');return;}
   const si=parseInt(document.getElementById('mSec').value);
   // Auto-export canvas diagram as PNG if canvas has objects (always overrides old image)
@@ -548,14 +566,25 @@ function saveEx(){
   }
   updateMatField();const ex={id:editingId||uid(),name,players:document.getElementById('mPl').value.trim(),material:document.getElementById('mMat').value.trim(),section:si,difficulty:document.getElementById('mDif').value,duration:document.getElementById('mDur')?parseInt(document.getElementById('mDur').value)||null:null,desc:document.getElementById('mDesc').value.trim(),tags:[...formTags],image:formImg,canvasObjects:[...canvasObjects]};
   ex.sport=editingId?((exercises.find(e=>e.id===editingId)||{}).sport||_curSportId()):_curSportId();
+  // Neue Übung: ZUERST in Supabase speichern, sonst wäre sie nur lokal vorhanden und für andere unsichtbar
+  if(!editingId){
+    if(!_supabase||!apiOnline){showToast('Keine Verbindung – Übung kann nicht für alle gespeichert werden','err');return;}
+    _savingEx=true;
+    const saved=await _persistNewExercise(ex);
+    _savingEx=false;
+    if(!saved){showToast('Speichern fehlgeschlagen – bitte erneut versuchen','err');return;}
+    ex.id=saved.id; ex.image=saved.image;
+  }
   if(editingId)exercises=exercises.map(e=>e.id===editingId?ex:e);else exercises.push(ex);
   save();activeSec=si;renderStbar();renderSection();closeMod('exMod');showToast(editingId?'Übung aktualisiert':'Übung gespeichert');
-  // Persist changes to Supabase so they survive a reload
+  // Änderungen an bestehenden Übungen dauerhaft in Supabase speichern
   if(editingId&&_supabase&&apiOnline){
+    let img=ex.image||null;
+    if(img&&img.startsWith('data:')){const up=await uploadImageToStorage(img);if(up){img=up;ex.image=up;}}
     _supabase.from('exercises').update({
       name:ex.name,players:ex.players,material:ex.material,section:ex.section,
       difficulty:ex.difficulty,duration:ex.duration,description:ex.desc,tags:ex.tags,
-      image:ex.image||null,canvas_objects:ex.canvasObjects||[],
+      image:img,canvas_objects:ex.canvasObjects||[],
       field_type:document.getElementById('fieldType')?.value||'small'
     }).eq('id',editingId).then(({error})=>{
       if(error)showToast('Speichern fehlgeschlagen – bitte neu versuchen','err');

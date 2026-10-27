@@ -872,7 +872,27 @@ function addLtpBlock(){openNewBlockWizard();}
 
 function exportCSV(){const h='Name,Spieleranzahl,Material,Abschnitt,Schwierigkeit,Beschreibung,Tags';const rows=exercises.map(e=>[e.name,e.players||'',e.material||'',e.section,e.difficulty||'',e.desc||'',(e.tags||[]).join('|')].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','));dl('trainingsbuch.csv',[h,...rows].join('\n'),'text/csv');showToast('CSV exportiert');}
 function downloadTemplate(){dl('vorlage.csv','Name,Spieleranzahl,Material,Abschnitt,Schwierigkeit,Beschreibung,Tags\n"Beispiel",6,"Hütchen, Bälle",1,"Mittel","Beschreibung.","TAG1|TAG2"','text/csv');}
-function importCSV(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{const ls=e.target.result.split('\n').filter(l=>l.trim());let c=0;ls.slice(1).forEach(line=>{const cols=parseCSV(line);if(!cols[0])return;exercises.push({id:uid(),name:cols[0],players:cols[1]||'',material:cols[2]||'',section:Math.min(4,Math.max(0,parseInt(cols[3])||0)),difficulty:cols[4]||'',desc:cols[5]||'',tags:cols[6]?cols[6].split('|').map(t=>t.trim().toUpperCase()).filter(Boolean):[],image:null});c++;});save();renderSection();showToast(`${c} Übungen importiert`);}catch{showToast('Import-Fehler','err');}};r.readAsText(f);inp.value='';}
+function importCSV(inp){
+  const f=inp.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=async e=>{
+    try{
+      const ls=e.target.result.split('\n').filter(l=>l.trim());
+      const list=[];
+      ls.slice(1).forEach(line=>{
+        const cols=parseCSV(line);if(!cols[0])return;
+        list.push({id:uid(),name:cols[0],players:cols[1]||'',material:cols[2]||'',section:Math.min(4,Math.max(0,parseInt(cols[3])||0)),difficulty:cols[4]||'',desc:cols[5]||'',tags:cols[6]?cols[6].split('|').map(t=>t.trim().toUpperCase()).filter(Boolean):[],image:null,canvasObjects:[],fieldType:'small',sport:_curSportId()});
+      });
+      if(!list.length){showToast('Keine Übungen in der Datei gefunden','err');return;}
+      if(!(_supabase&&apiOnline&&IS_ADMIN)){showToast('Import nur online als Admin möglich – sonst wären die Übungen nicht für alle sichtbar','err');return;}
+      let c=0;
+      for(const ex of list){const saved=await _persistNewExercise(ex);if(saved){ex.id=saved.id;exercises.push(ex);c++;}}
+      save();renderSection();
+      showToast(c+' von '+list.length+' Übungen importiert'+(c<list.length?' (Rest fehlgeschlagen)':''),c<list.length?'err':'');
+    }catch{showToast('Import-Fehler','err');}
+  };
+  r.readAsText(f);inp.value='';
+}
 function parseCSV(l){const r=[];let c='',q=false;for(let i=0;i<l.length;i++){const ch=l[i];if(ch==='"'){if(q&&l[i+1]==='"'){c+='"';i++;}else q=!q;}else if(ch===','&&!q){r.push(c.trim());c='';}else c+=ch;}r.push(c.trim());return r;}
 function dl(n,cnt,t){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+cnt],{type:t}));a.download=n;a.click();}
 function downloadITDoc(){dl('SVW_IT.txt','SVW Trainingsbuch — IT\n\nGET /data → JSON zurückgeben\nPOST /data → JSON speichern\nCORS: Access-Control-Allow-Origin: *\nHeader: Content-Type, X-API-Key\n\nNode.js:\nconst e=require("express"),f=require("fs"),a=e();a.use(e.json({limit:"20mb"}));a.use((q,r,n)=>{r.header("Access-Control-Allow-Origin","*");r.header("Access-Control-Allow-Headers","Content-Type,X-API-Key");r.header("Access-Control-Allow-Methods","GET,POST,OPTIONS");n();});a.get("/api/trainingsbuch/data",(q,r)=>r.json(JSON.parse(f.existsSync("data.json")?f.readFileSync("data.json"):"{}")));a.post("/api/trainingsbuch/data",(q,r)=>{f.writeFileSync("data.json",JSON.stringify(q.body));r.sendStatus(200);});a.listen(3000);','text/plain');showToast('IT-Dokument heruntergeladen');}
