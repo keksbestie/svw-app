@@ -271,6 +271,8 @@ header {
 }
 /* page-home is no longer in normal page flow */
 #page-home.page { display: flex !important; }
+/* Startseite scrollt selbst – die Seite dahinter nicht (sonst doppelter Scrollbalken) */
+body.on-home { overflow: hidden; }
 /* subtle grid pattern */
 #page-home::before {
   content: '';
@@ -483,6 +485,10 @@ header {
   transform: translateY(-3px);
   box-shadow: 0 8px 24px rgba(34,160,95,.18), inset 0 1px 0 rgba(34,160,95,.3);
 }
+.home-sport-card--locked { opacity: .5; cursor: not-allowed; }
+.home-sport-card--locked:hover { border-color: #1e3d21; background: linear-gradient(160deg, #162b18 0%, #0e1e10 100%); transform: none; box-shadow: inset 0 1px 0 rgba(34,160,95,.15); }
+.home-sport-card--locked:hover .home-sport-img { filter: invert(1) sepia(1) saturate(4) hue-rotate(95deg) brightness(.9) contrast(1.1); }
+.home-sport-soon { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .5px; color: rgba(255,255,255,.75); margin-top: -4px; text-align: center; }
 .home-sport-img { width: 80px; height: 80px; object-fit: contain; filter: invert(1) sepia(1) saturate(4) hue-rotate(95deg) brightness(.9) contrast(1.1); mix-blend-mode: screen; transition: filter .2s; }
 .home-sport-card:hover .home-sport-img { filter: invert(1) sepia(1) saturate(5) hue-rotate(95deg) brightness(1.1) contrast(1.2); }
 .home-sport-label {
@@ -1300,7 +1306,17 @@ body:not(.on-home) .home-topbar { display: none; }
   /* ── Header ── */
   .mnav { display: none; }
   .gs-wrap { max-width: 180px; margin: 0 6px; flex: 1; }
-  .gs-in { font-size: 13px; }
+  .gs-in { font-size: 16px; }
+  /* iOS zoomt bei Eingabefeldern < 16px automatisch hinein */
+  input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]):not([type=color]),
+  select, textarea { font-size: 16px; }
+  /* Tippflächen für Chips (Filter, Tags, Altersstufen) */
+  .cpill, .tchip { min-height: 32px; display: inline-flex; align-items: center; }
+  .age-chip { min-height: 34px; padding: 6px 12px !important; }
+  #ltpTab0, #ltpTab1, #ltpTab2 { white-space: nowrap; flex-shrink: 0; }
+  /* Felddiagramm-Editor: größere Tippflächen */
+  #fieldOverlay .tb { min-width: 38px; min-height: 38px; }
+  #fieldOverlay button, #fieldOverlay select { min-height: 36px; }
   .logo-s { display: none; }
   .hr .hbtn:not(.pri) { display: none; }
   .hr .theme-btn, .hr .lang-btn, .hr .cfg-btn, .hr .cfg-sel { display: none; }
@@ -1308,6 +1324,11 @@ body:not(.on-home) .home-topbar { display: none; }
   .logo-t { font-size: 15px; }
   .hdr { padding: 0 10px; }
   .hr { gap: 6px; }
+  header { padding: 0 10px; gap: 8px; }
+  header #hcnt { display: none; }
+  header .beta-badge { display: none; }
+  /* Kader/Verein sprengen den Header – sie stehen im „Mehr“-Menü */
+  header #navKaderBtn, header #navClubBtn { display: none !important; }
 
   /* ── Section tabs ── */
   .stbar { top: var(--header-h); padding: 0 10px; }
@@ -1416,3 +1437,22 @@ body:not(.on-home) .home-topbar { display: none; }
    ══════════════════════════════════════════════════ */
 .theme-swatch { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: all .15s; }
 .theme-swatch.active { border-color: var(--text-1); transform: scale(1.1); }
+
+/* ── Mobiles „Mehr“-Menü ── */
+.more-sheet { position: fixed; inset: 0; z-index: 400; background: rgba(0,0,0,.45); display: flex; align-items: flex-end; }
+.more-panel { width: 100%; background: var(--surface); border-radius: 16px 16px 0 0; padding: 10px 12px calc(76px + env(safe-area-inset-bottom)); box-shadow: 0 -8px 30px rgba(0,0,0,.25); }
+.more-item { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 48px; padding: 10px 12px; background: none; border: none; border-radius: 10px; font-family: 'Barlow Condensed', sans-serif; font-size: 17px; font-weight: 800; letter-spacing: .3px; color: var(--text-1); text-align: left; cursor: pointer; }
+.more-item:active { background: var(--accent-l); }
+.more-ico { font-size: 20px; width: 26px; text-align: center; }
+.more-links { display: flex; justify-content: center; gap: 18px; padding: 12px 0 0; margin-top: 6px; border-top: 1px solid var(--border); }
+.more-links a { font-size: 12px; color: var(--text-3); text-decoration: underline; padding: 8px 4px; cursor: pointer; }
+@media (min-width: 768px) { .more-sheet { display: none !important; } #bnavMore { display: none; } }
+
+/* Tablet-Hochformat: Header darf nicht breiter als der Bildschirm werden */
+@media (min-width: 768px) and (max-width: 1100px) {
+  header { padding: 0 14px; gap: 8px; }
+  header #hcnt, header .logo-s, header .beta-badge { display: none; }
+  .gs-wrap { max-width: 110px; margin: 0 4px; }
+  header .hr { gap: 4px; }
+  header #authBtn, header #navKaderBtn, header #navClubBtn { padding: 7px 10px !important; }
+}

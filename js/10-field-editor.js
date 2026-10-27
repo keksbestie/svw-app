@@ -190,7 +190,7 @@ function _drawCtrlHandle(o){
   ctx.setLineDash([3,3]); ctx.strokeStyle='rgba(255,224,130,.8)'; ctx.lineWidth=1;
   ctx.beginPath(); ctx.moveTo(o.x1,o.y1); ctx.lineTo(c.x,c.y); ctx.lineTo(o.x2,o.y2); ctx.stroke();
   ctx.setLineDash([]); ctx.fillStyle='#ffe082'; ctx.strokeStyle='#333'; ctx.lineWidth=1.5;
-  ctx.beginPath(); ctx.arc(c.x,c.y,6,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.arc(c.x,c.y,8,0,Math.PI*2); ctx.fill(); ctx.stroke();
   ctx.restore();
 }
 
@@ -557,7 +557,7 @@ function cvDown({x,y}){
     }
     if(selectedIndices.length===1){
       const co=canvasObjects[selectedIndices[0]], cc=co&&_ctrlOf(co);
-      if(cc&&Math.hypot(x-cc.x,y-cc.y)<11){ pushUndo(); isCtrlDrag=true; selectedObjIdx=selectedIndices[0]; return; }
+      if(cc&&Math.hypot(x-cc.x,y-cc.y)<20){ pushUndo(); isCtrlDrag=true; selectedObjIdx=selectedIndices[0]; return; }
     }
     const i=hitAt(x,y);
     if(i>=0){

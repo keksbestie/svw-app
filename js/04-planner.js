@@ -163,7 +163,7 @@ function openLanePicker(si){
 function renderLanePickerList(q){
   const si=_lanePickerSec;
   const el=document.getElementById('lanePickerList');if(!el)return;
-  const secEx=exercises.filter(e=>e.section===si);
+  const secEx=sportExercises().filter(e=>e.section===si);
   const filtered=q?secEx.filter(e=>e.name.toLowerCase().includes(q.toLowerCase())||
     (e.tags||[]).some(t=>t.toLowerCase().includes(q.toLowerCase()))):secEx;
   if(!filtered.length){el.innerHTML='<div style="padding:20px;text-align:center;color:var(--text-3);font-size:13px;">Keine Übungen gefunden</div>';return;}

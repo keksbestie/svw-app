@@ -33,6 +33,30 @@ const _isMobile = /iphone|ipad|ipod|android/i.test(navigator.userAgent);
   }
 })();
 
+// QR-Code auf der Startseite (nur Desktop; Bibliothek wird erst dann nachgeladen)
+(function initHomeQr() {
+  const box = document.getElementById('homeQr');
+  if (!box) return;
+  const isTouch = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+  if (_isMobile || _isStandalone || isTouch) { box.remove(); return; }
+  const s = document.createElement('script');
+  s.src = 'js/vendor/qrcode-generator.js';
+  s.onload = () => {
+    try {
+      const qr = qrcode(0, 'M');
+      qr.addData(location.origin + '/');
+      qr.make();
+      const target = document.getElementById('homeQrCode');
+      target.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 16, scalable: true });
+      const svg = target.querySelector('svg');
+      if (svg) { svg.style.width = '100%'; svg.style.height = '100%'; svg.style.display = 'block'; }
+      box.style.display = 'flex';
+    } catch (e) { box.remove(); }
+  };
+  s.onerror = () => box.remove();
+  document.head.appendChild(s);
+})();
+
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
   _pwaPrompt = e;

@@ -40,7 +40,7 @@ if(error){console.error('loadSubmissions error:',error);submissions=[];return;}
     id:e.id,name:e.name,desc:e.description,players:e.players,
     duration:e.duration,material:e.material,section:e.section,
     intensity:e.difficulty,tags:e.tags||[],diagram:e.image,
-    author:e.author_name||e.created_by,status:e.status,sport:e.sport||'',
+    author:e.author_name||e.created_by,status:e.status,sport:e.sport||'',ageGroups:e.age_groups||[],
     submittedAt:new Date(e.created_at).toLocaleDateString('de-DE'),
     submittedTs:new Date(e.created_at).getTime()
   }));
@@ -243,9 +243,9 @@ function _showDeleteAccountModal(){
   document.getElementById('deleteAccountModal')?.remove();
   const modal=document.createElement('div');
   modal.id='deleteAccountModal';
-  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;display:flex;overflow-y:auto;padding:16px;';
   modal.innerHTML=`
-    <div style="background:var(--bg);border-radius:16px;max-width:500px;width:100%;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.6);border:1px solid rgba(229,57,53,.4);">
+    <div style="margin:auto;background:var(--bg);border-radius:16px;max-width:500px;width:100%;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.6);border:1px solid rgba(229,57,53,.4);">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
         <span style="font-size:26px;">⚠️</span>
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#e53935;">Konto löschen – bitte lies das sorgfältig</div>
@@ -302,8 +302,9 @@ async function doLogout(){
   await _supabase.auth.signOut();
   try{ localStorage.removeItem('ac_squad'); }catch(e){}
   if(typeof squad!=='undefined') squad=[];
-  currentUser=null; IS_ADMIN=false;
+  currentUser=null; IS_ADMIN=false; IS_REVIEWER=false; REVIEWER_SPORTS=[];
   document.body.classList.remove('admin');
+  if(typeof refreshSportAvailability==='function') refreshSportAvailability();
   submitUser=null; submitTags=[]; submitCanvasData=null;
   renderSubmitPage();
   updateSignInBtn();
@@ -332,6 +333,7 @@ function renderSubmitChecklist_init(){
   document.getElementById('sIntensity').value='';
   document.getElementById('sMat').value='';
   document.getElementById('sDescCount').textContent='0 Zeichen';
+  renderAgePicker('sAgePick',[]);
   updateSubmitChecklist();
 }
 
@@ -433,6 +435,7 @@ async function submitExercise(){
     created_by:currentUser.id,
     author_name:submitUser.name||null,
     sport:window.currentSport?.id||'',
+    ...(getAgeSel('sAgePick').length?{age_groups:getAgeSel('sAgePick')}:{}),
     status:'pending'
   });
   if(error){showToast('Fehler beim Einreichen','err');return;}
@@ -562,6 +565,7 @@ function openReviewMod(id){
   document.getElementById('rv-sec').value = s.section;
   document.getElementById('rv-intensity').value = s.intensity||'Leicht';
   document.getElementById('rv-tags').value = (s.tags||[]).join(', ');
+  renderAgePicker('rvAgePick', s.ageGroups||[]);
   // Show diagram
   const cw = document.getElementById('rv-canvas-wrap');
   if(s.diagram){ cw.innerHTML=`<img src="${s.diagram}" style="width:100%;display:block;border-radius:6px;">`; }
@@ -689,6 +693,8 @@ async function reviewAction(action){
     difficulty:document.getElementById('rv-intensity').value,
     tags:document.getElementById('rv-tags').value.split(',').map(t=>t.trim().toUpperCase()).filter(Boolean)
   };
+  { const _ra=getAgeSel('rvAgePick'),_prev=((submissions.find(x=>x.id===reviewingId)||{}).ageGroups||[]);
+    if(_ra.length||_prev.length) updates.age_groups=_ra.length?_ra:null; }
   if(action==='delete'){
     await _supabase.from('exercises').delete().eq('id',reviewingId);
     showToast('Übung abgelehnt');

@@ -201,6 +201,11 @@
     <div class="bnav-label" data-i18n="nav_longterm">Blöcke</div>
     <div class="bnav-dot"></div>
   </button>
+  <button class="bnav-item" id="bnavMore" onclick="openMoreSheet()">
+    <div class="bnav-icon">☰</div>
+    <div class="bnav-label">Mehr</div>
+    <div class="bnav-dot"></div>
+  </button>
 </nav>
 
 <!-- PAGE: HOME -->
@@ -241,17 +246,20 @@
 
   <!-- Sport-Auswahl -->
   <div id="homeSportGrid" class="home-sport-grid" style="display:none;">
-    <button class="home-sport-card" onclick="selectSport('fussball')">
+    <button class="home-sport-card" data-sport="fussball" onclick="selectSport('fussball')">
       <img src="icons/sport-fussball.png" class="home-sport-img" alt="Fußball">
       <span class="home-sport-label">Fußball</span>
+      <span class="home-sport-soon" style="display:none;"></span>
     </button>
-    <button class="home-sport-card" onclick="selectSport('volleyball')">
+    <button class="home-sport-card" data-sport="volleyball" onclick="selectSport('volleyball')">
       <img src="icons/sport-volleyball.png" class="home-sport-img" alt="Volleyball">
       <span class="home-sport-label">Volleyball</span>
+      <span class="home-sport-soon" style="display:none;"></span>
     </button>
-    <button class="home-sport-card" onclick="selectSport('tennis')">
+    <button class="home-sport-card" data-sport="tennis" onclick="selectSport('tennis')">
       <img src="icons/sport-tennis.png" class="home-sport-img" alt="Tennis">
       <span class="home-sport-label">Tennis</span>
+      <span class="home-sport-soon" style="display:none;"></span>
     </button>
   </div>
 
@@ -314,6 +322,15 @@
       <div class="home-card-arrow">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </div>
+    </div>
+  </div>
+  <!-- QR-Code: nur Desktop (Handy hat das Installationsbanner) -->
+  <div id="homeQr" style="display:none;align-items:center;justify-content:center;gap:16px;margin:0 auto 22px;padding:14px 18px;max-width:420px;border-radius:14px;background:rgba(20,40,22,.55);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(6px);position:relative;z-index:2;">
+    <div id="homeQrCode" aria-label="QR-Code zur Seite" style="width:104px;height:104px;flex-shrink:0;background:#fff;border-radius:8px;padding:0;box-sizing:border-box;overflow:hidden;"></div>
+    <div style="text-align:left;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:#fff;letter-spacing:.3px;">📲 Auch auf dem Handy</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.85);line-height:1.5;margin-top:2px;">QR-Code mit der Handykamera scannen und AssistCoach als App speichern.</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.6);line-height:1.5;margin-top:4px;">iPhone: Teilen ↗ → Zum Home-Bildschirm<br>Android: Menü ⋮ → App installieren</div>
     </div>
   </div>
   <footer style="text-align:center;padding:20px 24px;font-family:'Barlow Condensed',sans-serif;font-size:12px;color:rgba(255,255,255,.45);letter-spacing:.3px;border-top:1px solid rgba(255,255,255,.1);margin-top:auto;">
@@ -419,6 +436,7 @@
             <div class="fg"><label>Anzahl Spieler:innen *</label><input class="fc" id="sPlayers" type="text" placeholder="z.B. 6–12" oninput="updateSubmitChecklist()"></div>
             <div class="fg"><label>Belastungszeit (min) *</label><input class="fc" id="sDuration" type="number" min="1" max="60" placeholder="z.B. 12" oninput="updateSubmitChecklist()"></div>
           </div>
+          <div class="fg"><label>Altersstufen <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-3);">(optional)</span></label><div id="sAgePick"></div></div>
           <div class="fg"><label>Material</label>
           <div id="sMatBuilder" style="border:1.5px solid var(--border);border-radius:7px;padding:10px;background:var(--surface-2);">
             <div style="font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;">Zählbares Material (Anzahl wählen):</div>
@@ -628,7 +646,7 @@
 <!-- PAGE: LANGZEIT -->
 <div id="page-longterm" class="page">
   <div class="inner">
-    <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:24px;">
+    <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:24px;overflow-x:auto;">
       <button class="mb active" id="ltpTab0" onclick="switchLtpTab(0)">Aktive Planung</button>
       <button class="mb" id="ltpTab2" onclick="switchLtpTab(2)">Trainingsplan-Bibliothek</button>
       <button class="mb" id="ltpTab1" onclick="switchLtpTab(1)">Block-Bibliothek</button>
@@ -1096,11 +1114,11 @@
   </g>
 </svg></div>
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;letter-spacing:.5px;color:var(--text);margin-bottom:8px;">Willkommen bei AssistCoach</div>
-        <div id="onboardingSubtitle" style="font-size:14px;color:var(--text-2);line-height:1.6;">Dein Trainingsassistent f&uuml;r den (Nachwuchs)Fu&szlig;ball. Plane Einheiten, verwalte deinen Kader und strukturiere die ganze Saison – alles an einem Ort.</div>
+        <div id="onboardingSubtitle" style="font-size:14px;color:var(--text-2);line-height:1.6;">Dein Trainingsassistent f&uuml;r den (Nachwuchs)Sport &ndash; Fu&szlig;ball, Volleyball und Tennis. Plane Einheiten, verwalte deinen Kader und strukturiere die ganze Saison – alles an einem Ort.</div>
       </div>
 
-      <!-- Slide 2: Katalog & Plan (Fußball) -->
-      <div class="ob-slide" data-sport="fussball" style="padding:36px 28px 28px;box-sizing:border-box;text-align:center;">
+      <!-- Slide 2: Katalog & Plan (alle Sportarten) -->
+      <div class="ob-slide" style="padding:36px 28px 28px;box-sizing:border-box;text-align:center;">
         <div style="font-size:48px;margin-bottom:14px;">📚</div>
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:var(--text);margin-bottom:8px;">Übungskatalog</div>
         <div style="font-size:13px;color:var(--text-2);line-height:1.7;text-align:left;">
@@ -1108,17 +1126,6 @@
           <div style="display:flex;gap:10px;margin-bottom:8px;"><span style="color:var(--accent);font-weight:800;">2</span> Übungen bewerten (⭐) und die besten nach oben sortieren</div>
           <div style="display:flex;gap:10px;margin-bottom:8px;"><span style="color:var(--accent);font-weight:800;">3</span> Mit <strong>+ Plan</strong> Übungen direkt in den Trainingsplan legen</div>
           <div style="display:flex;gap:10px;"><span style="color:var(--accent);font-weight:800;">4</span> Fertigen Plan als PDF drucken oder speichern</div>
-        </div>
-      </div>
-
-      <!-- Slide 2b: Katalog (Volleyball / Tennis) -->
-      <div class="ob-slide" data-sport="volleyball tennis" style="padding:36px 28px 28px;box-sizing:border-box;text-align:center;">
-        <div style="font-size:48px;margin-bottom:14px;">📚</div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:var(--text);margin-bottom:8px;">Übungskatalog</div>
-        <div style="font-size:13px;color:var(--text-2);line-height:1.7;text-align:left;">
-          <div style="display:flex;gap:10px;margin-bottom:8px;"><span style="color:var(--accent);font-weight:800;">1</span> Übungen werden bald speziell für deine Sportart ergänzt</div>
-          <div style="display:flex;gap:10px;margin-bottom:8px;"><span style="color:var(--accent);font-weight:800;">2</span> Mit <strong>+ Plan</strong> legst du Übungen direkt in den Trainingsplan</div>
-          <div style="display:flex;gap:10px;"><span style="color:var(--accent);font-weight:800;">3</span> Fertigen Plan als PDF drucken oder speichern</div>
         </div>
       </div>
 
@@ -1551,6 +1558,7 @@
         <div class="help-step"><span class="help-num">3</span><span>Tags direkt auf der Karte anklicken → nach diesem Tag filtern</span></div>
         <div class="help-step"><span class="help-num">4</span><span>Suchfeld: Text sucht in Name, Beschreibung und Tags</span></div>
         <div class="help-step"><span class="help-num">5</span><span>Globale Suche (Lupe oben) findet Übungen aus <em>allen</em> Abschnitten</span></div>
+        <div class="help-step"><span class="help-num">7</span><span><strong>Altersstufe:</strong> Die Chips „U7 … Erwachsene" filtern nach Jahrgang. Übungen ohne Altersangabe gelten für alle Altersstufen und bleiben immer sichtbar</span></div>
         <div class="help-step"><span class="help-num">6</span><span>☰☰ / ≡ Toggle: zwischen vollständigen Karten und kompakter Liste wechseln</span></div>
       </div>
     </div>
@@ -1810,8 +1818,9 @@
         <div class="help-step"><span class="help-num">2</span><span>Pflichtfelder ausfüllen: Name, Abschnitt, Spieler:innenzahl, Beschreibung</span></div>
         <div class="help-step"><span class="help-num">3</span><span>Tags eingeben – <strong>Vorschläge</strong> aus ähnlichen Übungen werden automatisch angezeigt</span></div>
         <div class="help-step"><span class="help-num">4</span><span>Belastungsintensität und -dauer angeben</span></div>
-        <div class="help-step"><span class="help-num">5</span><span>Optional: Felddiagramm im Editor zeichnen</span></div>
-        <div class="help-step"><span class="help-num">6</span><span>„Einreichen" → wird geprüft und freigeschaltet</span></div>
+        <div class="help-step"><span class="help-num">5</span><span>Optional: <strong>Altersstufen</strong> wählen – zwei Jahrgänge antippen markiert alles dazwischen (z. B. U9 und U13 ergibt U9–U13); ohne Auswahl gilt „Alle Altersstufen"</span></div>
+        <div class="help-step"><span class="help-num">6</span><span>Optional: Felddiagramm im Editor zeichnen</span></div>
+        <div class="help-step"><span class="help-num">7</span><span>„Einreichen" → wird geprüft und freigeschaltet</span></div>
       </div>
     </div>
 
@@ -2046,6 +2055,7 @@ function filterHelpCards(q){
         </div>
         <div class="fg"><label>Anzahl Spieler:innen</label><input class="fc" id="mPl" type="text" placeholder="z.B. 6-12"></div>
       </div>
+      <div class="fg"><label>Altersstufen (optional)</label><div id="mAgePick"></div></div>
       <div class="fr">
         <div class="fg" style="display:none"><!-- placeholder --></div>
         <div class="fg"><label>Material</label>
@@ -2420,6 +2430,7 @@ function filterHelpCards(q){
         <div class="fg"><label>Anzahl Spieler:innen</label><input class="fc" id="rv-players" type="text"></div>
         <div class="fg"><label>Belastungszeit (min)</label><input class="fc" id="rv-duration" type="number"></div>
       </div>
+      <div class="fg"><label>Altersstufen (optional)</label><div id="rvAgePick"></div></div>
       <div class="fg"><label>Material</label><input class="fc" id="rv-mat" type="text"></div>
       <div class="fg"><label>Tags</label><input class="fc" id="rv-tags" type="text" placeholder="Kommagetrennt, z.B. DRIBBLING, 1VS1"></div>
       <div class="fg"><label>Felddiagramm</label><div id="rv-canvas-wrap" style="border:1px solid var(--border);border-radius:8px;overflow:hidden;"></div></div>

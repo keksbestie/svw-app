@@ -37,7 +37,60 @@ function hideLS(){const l=document.getElementById('ls');l.classList.add('fade');
 function mapExercise(e){
   return {id:e.id,name:e.name,players:e.players,material:e.material,section:e.section,
     difficulty:e.difficulty,desc:e.description,tags:e.tags||[],image:e.image,status:e.status,duration:e.duration,
-    canvasObjects:e.canvas_objects||[],fieldType:e.field_type||'small'};
+    canvasObjects:e.canvas_objects||[],fieldType:e.field_type||'small',sport:e.sport||'fussball',ageGroups:e.age_groups||[]};
+}
+// Sportartfilter: Übungen ohne sport-Angabe gelten als Fußball
+function _curSportId(){return (window.currentSport&&window.currentSport.id)||'fussball';}
+function sportExercises(){const s=_curSportId();return exercises.filter(e=>(e.sport||'fussball')===s);}
+
+// ── Altersstufen ──
+const AGE_GROUPS=['U7','U9','U11','U13','U15','U17','U19','Erwachsene'];
+let ageFilter=null;
+const _agePickState={};
+function ageLabel(arr){
+  if(!arr||!arr.length) return '';
+  const idx=arr.map(a=>AGE_GROUPS.indexOf(a)).filter(i=>i>=0).sort((a,b)=>a-b);
+  if(!idx.length) return arr.join(', ');
+  const contiguous=idx.every((v,i)=>i===0||v===idx[i-1]+1);
+  if(contiguous){const a=AGE_GROUPS[idx[0]],b=AGE_GROUPS[idx[idx.length-1]];return a===b?a:a+'–'+b;}
+  return idx.map(i=>AGE_GROUPS[i]).join(', ');
+}
+function _ageChip(label,on,fn,small){
+  const pad=small?'4px 10px':'6px 12px', fs=small?'11px':'12px';
+  return '<button type="button" class="age-chip" onclick="'+fn+'" style="padding:'+pad+';border-radius:16px;border:1.5px solid '+(on?'var(--accent)':'var(--border)')+';background:'+(on?'var(--accent)':'var(--surface-2)')+';color:'+(on?'#fff':'var(--text-2)')+';font-size:'+fs+';font-weight:700;cursor:pointer;">'+label+'</button>';
+}
+function renderAgePicker(id,sel){
+  const el=document.getElementById(id);if(!el)return;
+  _agePickState[id]={sel:AGE_GROUPS.filter(a=>(sel||[]).includes(a)),anchor:null};
+  _paintAgePicker(id);
+}
+function getAgeSel(id){return (_agePickState[id]&&_agePickState[id].sel)||[];}
+function _paintAgePicker(id){
+  const el=document.getElementById(id),st=_agePickState[id];if(!el||!st)return;
+  const hint=st.anchor?'Jetzt den zweiten Jahrgang antippen – alles dazwischen wird mitgewählt.':'Tipp: Zwei Jahrgänge antippen wählt alles dazwischen. Ohne Auswahl gilt „Alle Altersstufen“.';
+  el.innerHTML='<div style="display:flex;flex-wrap:wrap;gap:6px;">'
+    +_ageChip('Alle',!st.sel.length,"clearAgePicker('"+id+"')")
+    +AGE_GROUPS.map(a=>_ageChip(a,st.sel.includes(a),"toggleAgeChip('"+id+"','"+a+"')")).join('')
+    +'</div><div style="font-size:11px;color:var(--text-3);margin-top:6px;">'+hint+'</div>';
+}
+function clearAgePicker(id){const st=_agePickState[id];if(!st)return;st.sel=[];st.anchor=null;_paintAgePicker(id);}
+function toggleAgeChip(id,a){
+  const st=_agePickState[id];if(!st)return;
+  if(st.anchor&&st.anchor!==a){
+    const i1=AGE_GROUPS.indexOf(st.anchor),i2=AGE_GROUPS.indexOf(a);
+    const lo=Math.min(i1,i2),hi=Math.max(i1,i2);
+    AGE_GROUPS.slice(lo,hi+1).forEach(x=>{if(!st.sel.includes(x))st.sel.push(x);});
+    st.anchor=null;
+  } else if(st.sel.includes(a)){
+    st.sel=st.sel.filter(x=>x!==a);st.anchor=null;
+  } else {st.sel.push(a);st.anchor=a;}
+  st.sel=AGE_GROUPS.filter(x=>st.sel.includes(x));
+  _paintAgePicker(id);
+}
+function setAgeFilter(a){ageFilter=(ageFilter===a)?null:a;renderSection();}
+function ageFilterHTML(){
+  return _ageChip('Alle',!ageFilter,"setAgeFilter(ageFilter)",true)
+    +AGE_GROUPS.map(a=>_ageChip(a,ageFilter===a,"setAgeFilter('"+a+"')",true)).join('');
 }
 async function loadAPI(){
   if(!_supabase)return false;
@@ -95,6 +148,7 @@ async function silentSync(){
     }
     if(typeof loadRatings==='function') await loadRatings();
     apiOnline=true; setStat('ok'); updateCnt(); renderSection(); cacheLocal();
+    if(typeof refreshSportAvailability==='function') refreshSportAvailability();
   }catch{apiOnline=false; setStat('err');}
 }
 async function saveAPI(){
@@ -273,7 +327,7 @@ function onGS(){
   document.getElementById('gsX').style.display=q?'block':'none';
   if(!q){closeGS();return;}
   const ql=q.toLowerCase();
-  const res=exercises.filter(e=>[e.name,e.desc||'',...(e.tags||[]),SECS[e.section]?.name||''].join(' ').toLowerCase().includes(ql));
+  const res=sportExercises().filter(e=>[e.name,e.desc||'',...(e.tags||[]),SECS[e.section]?.name||''].join(' ').toLowerCase().includes(ql));
   const el=document.getElementById('gsRes');
   if(!res.length){el.innerHTML=`<div class="gs-empty">Keine Treffer für „${q}"</div>`;el.classList.add('open');return;}
   const byS={};res.forEach(e=>{if(!byS[e.section])byS[e.section]=[];byS[e.section].push(e);});

@@ -243,6 +243,7 @@ function openExDetail(id){
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
       ${e.players?`<span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px;background:#e8f5e9;color:#1a7f4b;">👥 ${e.players} Spieler:innen</span>`:''}
       ${e.duration?`<span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px;background:#e8f0fe;color:#1a56c4;">⏱ ${e.duration} min</span>`:''}
+      ${e.ageGroups&&e.ageGroups.length?`<span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px;background:#e6f4ea;color:#1b6b3a;">${ageLabel(e.ageGroups)}</span>`:''}
       ${e.difficulty?`<span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px;background:${dc}20;color:${dc};">◉ ${diffLbl}</span>`:''}
     </div>
     ${e.image?`<div style="margin-bottom:16px;border-radius:10px;overflow:hidden;border:1px solid var(--border);cursor:zoom-in;" onclick="openImgLightbox('${e.image}')"><img src="${e.image}" style="width:100%;display:block;max-height:320px;object-fit:cover;"></div>`:''}
@@ -285,8 +286,7 @@ function saveDesc(){
 function renderSection(){
   const s=SECS[activeSec];const col=s.color;
 
-  const isOtherSport = window.currentSport && window.currentSport.id !== 'fussball';
-  const sEx=exercises.filter(e=>e.section===activeSec);
+  const sEx=sportExercises().filter(e=>e.section===activeSec);
   const q=(document.getElementById(`ss${activeSec}`)||{value:''}).value||'';
 
   // ── FILTER: cluster (OR) + individual tags (AND) + text ──
@@ -297,7 +297,8 @@ function renderSection(){
     const cf=clusterFilterTags.length===0||clusterFilterTags.some(t=>exTags.includes(t.toUpperCase()));
     // individual tag filter: AND — exercise must have ALL selected tags
     const tg=selectedTags.length===0||selectedTags.every(t=>exTags.includes(t.toUpperCase()));
-    return tm&&cf&&tg;
+    const ag=!ageFilter||!(e.ageGroups&&e.ageGroups.length)||e.ageGroups.includes(ageFilter);
+    return tm&&cf&&tg&&ag;
   });
 
   // ── BUILD CLUSTER LEGEND from tags that actually exist on exercises in this section ──
@@ -334,7 +335,7 @@ function renderSection(){
       </div>
     </div>
     <div class="inner" style="padding-top:0;">
-      ${!isOtherSport&&clusterLegend?`<div class="cleg">
+      ${clusterLegend?`<div class="cleg">
         <span class="cleg-t">Kategorien:</span>
         ${clusterLegend}
         ${activeCluster?`<span onclick="toggleCluster(null)" style="font-size:10px;font-weight:700;color:var(--gm);cursor:pointer;margin-left:2px;">✕ Alle</span>`:''}
@@ -342,16 +343,20 @@ function renderSection(){
       </div>`:''}
       <div id="catalogLayout" class="catalog-layout">
         <div>
-          ${!isOtherSport?`<div class="fbar">
+          <div class="fbar">
             <div class="ftop">
               <input class="fin" id="ss${activeSec}" type="text" placeholder="In ${s.name} suchen…" value="${q}" oninput="renderSection()">
-              <button class="gbtn" onclick="selectedTags=[];activeCluster=null;clusterFilterTags=[];renderSection()">✕ Reset</button>
+              <button class="gbtn" onclick="selectedTags=[];activeCluster=null;clusterFilterTags=[];ageFilter=null;renderSection()">✕ Reset</button>
               <div class="view-toggle">
                 <button class="view-toggle-btn ${_catalogView==='expanded'?'active':''}" onclick="setCatalogView('expanded')" title="Ausgeklappt">☰☰</button>
                 <button class="view-toggle-btn ${_catalogView==='collapsed'?'active':''}" onclick="setCatalogView('collapsed')" title="Eingeklappt">≡</button>
               </div>
               ${IS_ADMIN?`<button class="gbtn" onclick="openNewEx(${activeSec})">+ Übung</button><button class="gbtn" onclick="openTagMod(${activeSec})">Tags</button>`:''}
             </div>
+          </div>
+          <div class="tag-bar" style="margin-bottom:6px;">
+            <span class="tlbl">Altersstufe:</span>
+            ${ageFilterHTML()}
           </div>
           <div class="tag-bar">
             <span class="tlbl">Tags:</span>
@@ -360,13 +365,13 @@ function renderSection(){
             }).join('')}
             ${!allTags.length?'<span style="font-size:10px;color:var(--gm);">Noch keine Tags</span>':''}
           </div>
-          <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gm);margin-bottom:11px;">${filtered.length} von ${sEx.length} Übungen</div>`:''}
+          <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gm);margin-bottom:11px;">${filtered.length} von ${sEx.length} Übungen</div>
           <div class="exgrid${_catalogView==='collapsed'?' collapsed':''}">
-            ${isOtherSport
-              ?`<div class="empty-grid"><div class="ei">${window.currentSport.icon?`<img src="${window.currentSport.icon}" style="width:48px;opacity:.4;">`:'🏗️'}</div><h3>Noch keine Inhalte</h3><p>Für <strong>${window.currentSport.label}</strong> werden hier bald Übungen verfügbar sein.</p></div>`
-              :filtered.length===0
-                ?`<div class="empty-grid"><div class="ei">⚽</div><h3>Keine Übungen gefunden</h3><p>${IS_ADMIN?'Über „+ Übung" hinzufügen.':'Filter anpassen.'}</p></div>`
-                :_applyRatingOrder(filtered).map(e=>cardHTML(e,col)).join('')
+            ${filtered.length===0
+              ?(sEx.length===0&&_curSportId()!=='fussball'
+                ?`<div class="empty-grid"><div class="ei">${window.currentSport&&window.currentSport.icon?`<img src="${window.currentSport.icon}" style="width:48px;opacity:.4;">`:'🏗️'}</div><h3>Noch keine Inhalte</h3><p>Für <strong>${window.currentSport?window.currentSport.label:''}</strong> werden hier bald Übungen verfügbar sein.</p></div>`
+                :`<div class="empty-grid"><div class="ei">${window.currentSport&&window.currentSport.icon?`<img src="${window.currentSport.icon}" style="width:48px;opacity:.4;">`:'⚽'}</div><h3>Keine Übungen gefunden</h3><p>${IS_ADMIN?'Über „+ Übung" hinzufügen.':'Filter anpassen.'}</p></div>`)
+              :_applyRatingOrder(filtered).map(e=>cardHTML(e,col)).join('')
             }
           </div>
         </div>
@@ -434,7 +439,7 @@ function toggleCluster(name){
 
 function getSecTags(idx){
   const s=new Set();
-  exercises.filter(e=>e.section===idx).forEach(e=>(e.tags||[]).forEach(t=>s.add(t.toUpperCase())));
+  sportExercises().filter(e=>e.section===idx).forEach(e=>(e.tags||[]).forEach(t=>s.add(t.toUpperCase())));
   (sectionCustomTags[idx]||[]).forEach(t=>s.add(t.toUpperCase()));
   return[...s].sort();
 }
@@ -479,6 +484,7 @@ function cardHTML(e,col){
         ${e.players?`<span class="mbadge p">👥 ${e.players}</span>`:''}
         ${e.difficulty?`<span class="mbadge ${dc}">${diffLabel}</span>`:''}
         ${e.duration?`<span class="mbadge" style="background:#e8f0fe;color:#1a56c4;">⏱ ${e.duration} min</span>`:''}
+        ${e.ageGroups&&e.ageGroups.length?`<span class="mbadge" style="background:#e6f4ea;color:#1b6b3a;">${ageLabel(e.ageGroups)}</span>`:''}
       </div>
       ${mats?`<div class="matlist">${mats}</div>`:''}
       ${e.desc?`<div class="cdesc">${e.desc.length>110?e.desc.slice(0,110)+'…':e.desc}</div>`:''}
@@ -532,14 +538,33 @@ function loadMatIntoBuilder(matStr){
 // ══════════════════════════════════════════════════════
 function openImgLightbox(src){const lb=document.getElementById('imgLightbox');const img=document.getElementById('imgLightboxImg');if(!lb||!img)return;img.src=src;lb.style.display='flex';}
 function closeImgLightbox(){const lb=document.getElementById('imgLightbox');if(lb)lb.style.display='none';}
-function openNewEx(si){if(!IS_ADMIN)return;editingId=null;formTags=[];formImg=null;canvasObjects=[];playerCounters={};undoStack=[];selectedObjIdx=null;selectedIndices=[];['mName','mPl','mMat','mTagIn','mMatFree'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.querySelectorAll('.mat-sel').forEach(s=>s.value='0');document.getElementById('mDesc').value='';document.getElementById('mDif').value='';if(document.getElementById('mDur'))document.getElementById('mDur').value='';document.getElementById('mSec').value=si||activeSec;document.getElementById('mId').value='';document.getElementById('mTit').textContent='Neue Übung';document.getElementById('mIco').style.background=SECS[si||activeSec].color+'22';renderIZ();renderMTags();openMod('exMod');}
-function editEx(id){if(!IS_ADMIN)return;const e=exercises.find(x=>x.id===id);if(!e)return;editingId=e.id;formTags=[...(e.tags||[]).map(t=>t.toUpperCase())];formImg=e.image||null;canvasObjects=[];playerCounters={};undoStack=[];selectedObjIdx=null;selectedIndices=[];document.getElementById('mName').value=e.name;document.getElementById('mPl').value=e.players||'';document.getElementById('mDesc').value=e.desc||'';document.getElementById('mDif').value=e.difficulty||'';if(document.getElementById('mDur'))document.getElementById('mDur').value=e.duration||'';loadMatIntoBuilder(e.material||'');document.getElementById('mSec').value=e.section||0;document.getElementById('mId').value=e.id;document.getElementById('mTit').textContent='Übung bearbeiten';renderIZ();renderMTags();openMod('exMod');
+function openNewEx(si){if(!IS_ADMIN)return;editingId=null;formTags=[];formImg=null;canvasObjects=[];playerCounters={};undoStack=[];selectedObjIdx=null;selectedIndices=[];['mName','mPl','mMat','mTagIn','mMatFree'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.querySelectorAll('.mat-sel').forEach(s=>s.value='0');document.getElementById('mDesc').value='';document.getElementById('mDif').value='';if(document.getElementById('mDur'))document.getElementById('mDur').value='';document.getElementById('mSec').value=si||activeSec;document.getElementById('mId').value='';document.getElementById('mTit').textContent='Neue Übung';document.getElementById('mIco').style.background=SECS[si||activeSec].color+'22';renderIZ();renderMTags();renderAgePicker('mAgePick',[]);openMod('exMod');}
+function editEx(id){if(!IS_ADMIN)return;const e=exercises.find(x=>x.id===id);if(!e)return;editingId=e.id;formTags=[...(e.tags||[]).map(t=>t.toUpperCase())];formImg=e.image||null;canvasObjects=[];playerCounters={};undoStack=[];selectedObjIdx=null;selectedIndices=[];document.getElementById('mName').value=e.name;document.getElementById('mPl').value=e.players||'';document.getElementById('mDesc').value=e.desc||'';document.getElementById('mDif').value=e.difficulty||'';if(document.getElementById('mDur'))document.getElementById('mDur').value=e.duration||'';loadMatIntoBuilder(e.material||'');document.getElementById('mSec').value=e.section||0;document.getElementById('mId').value=e.id;document.getElementById('mTit').textContent='Übung bearbeiten';renderIZ();renderMTags();renderAgePicker('mAgePick',e.ageGroups||[]);openMod('exMod');
   // Restore canvas objects if saved
   if(e.canvasObjects&&e.canvasObjects.length){
     setTimeout(()=>{canvasObjects=JSON.parse(JSON.stringify(e.canvasObjects));redraw();},120);
   }
 }
-function saveEx(){
+// Neue Katalog-Übung dauerhaft in Supabase speichern (für alle sichtbar). Gibt {id,image} oder null zurück.
+async function _persistNewExercise(ex){
+  if(!_supabase||!currentUser) return null;
+  let img=ex.image||null;
+  if(img&&img.startsWith('data:')){const up=await uploadImageToStorage(img);if(up) img=up;}
+  const {data,error}=await _supabase.from('exercises').insert({
+    name:ex.name,description:ex.desc||'',players:ex.players||'',material:ex.material||'',
+    section:ex.section,difficulty:ex.difficulty||'',duration:ex.duration||null,
+    tags:ex.tags||[],image:img,
+    canvas_objects:(ex.canvasObjects&&ex.canvasObjects.length)?ex.canvasObjects:null,
+    field_type:ex.fieldType||document.getElementById('fieldType')?.value||'small',
+    created_by:currentUser.id,author_name:null,sport:ex.sport||'fussball',status:'approved',
+    ...((ex.ageGroups&&ex.ageGroups.length)?{age_groups:ex.ageGroups}:{})
+  }).select().single();
+  if(error){console.warn('Übung speichern fehlgeschlagen:',error);return null;}
+  return {id:data.id,image:img};
+}
+let _savingEx=false;
+async function saveEx(){
+  if(_savingEx) return;
   const name=document.getElementById('mName').value.trim();if(!name){showToast('Bitte Name eingeben','err');return;}
   const si=parseInt(document.getElementById('mSec').value);
   // Auto-export canvas diagram as PNG if canvas has objects (always overrides old image)
@@ -548,15 +573,30 @@ function saveEx(){
     if(c) formImg=c.toDataURL('image/png');
   }
   updateMatField();const ex={id:editingId||uid(),name,players:document.getElementById('mPl').value.trim(),material:document.getElementById('mMat').value.trim(),section:si,difficulty:document.getElementById('mDif').value,duration:document.getElementById('mDur')?parseInt(document.getElementById('mDur').value)||null:null,desc:document.getElementById('mDesc').value.trim(),tags:[...formTags],image:formImg,canvasObjects:[...canvasObjects]};
+  const _prevAges=((exercises.find(e=>e.id===editingId)||{}).ageGroups||[]);
+  ex.ageGroups=getAgeSel('mAgePick');
+  ex.sport=editingId?((exercises.find(e=>e.id===editingId)||{}).sport||_curSportId()):_curSportId();
+  // Neue Übung: ZUERST in Supabase speichern, sonst wäre sie nur lokal vorhanden und für andere unsichtbar
+  if(!editingId){
+    if(!_supabase||!apiOnline){showToast('Keine Verbindung – Übung kann nicht für alle gespeichert werden','err');return;}
+    _savingEx=true;
+    const saved=await _persistNewExercise(ex);
+    _savingEx=false;
+    if(!saved){showToast('Speichern fehlgeschlagen – bitte erneut versuchen','err');return;}
+    ex.id=saved.id; ex.image=saved.image;
+  }
   if(editingId)exercises=exercises.map(e=>e.id===editingId?ex:e);else exercises.push(ex);
   save();activeSec=si;renderStbar();renderSection();closeMod('exMod');showToast(editingId?'Übung aktualisiert':'Übung gespeichert');
-  // Persist changes to Supabase so they survive a reload
+  // Änderungen an bestehenden Übungen dauerhaft in Supabase speichern
   if(editingId&&_supabase&&apiOnline){
+    let img=ex.image||null;
+    if(img&&img.startsWith('data:')){const up=await uploadImageToStorage(img);if(up){img=up;ex.image=up;}}
     _supabase.from('exercises').update({
       name:ex.name,players:ex.players,material:ex.material,section:ex.section,
       difficulty:ex.difficulty,duration:ex.duration,description:ex.desc,tags:ex.tags,
-      image:ex.image||null,canvas_objects:ex.canvasObjects||[],
-      field_type:document.getElementById('fieldType')?.value||'small'
+      image:img,canvas_objects:ex.canvasObjects||[],
+      field_type:document.getElementById('fieldType')?.value||'small',
+      ...((_prevAges.length||ex.ageGroups.length)?{age_groups:ex.ageGroups.length?ex.ageGroups:null}:{})
     }).eq('id',editingId).then(({error})=>{
       if(error)showToast('Speichern fehlgeschlagen – bitte neu versuchen','err');
     });
