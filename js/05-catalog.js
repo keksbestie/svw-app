@@ -538,11 +538,14 @@ function loadMatIntoBuilder(matStr){
 // ══════════════════════════════════════════════════════
 function openImgLightbox(src){const lb=document.getElementById('imgLightbox');const img=document.getElementById('imgLightboxImg');if(!lb||!img)return;img.src=src;lb.style.display='flex';}
 function closeImgLightbox(){const lb=document.getElementById('imgLightbox');if(lb)lb.style.display='none';}
-function openNewEx(si){if(!IS_ADMIN)return;editingId=null;formTags=[];formImg=null;canvasObjects=[];playerCounters={};undoStack=[];selectedObjIdx=null;selectedIndices=[];['mName','mPl','mMat','mTagIn','mMatFree'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.querySelectorAll('.mat-sel').forEach(s=>s.value='0');document.getElementById('mDesc').value='';document.getElementById('mDif').value='';if(document.getElementById('mDur'))document.getElementById('mDur').value='';document.getElementById('mSec').value=si||activeSec;document.getElementById('mId').value='';document.getElementById('mTit').textContent='Neue Übung';document.getElementById('mIco').style.background=SECS[si||activeSec].color+'22';renderIZ();renderMTags();renderAgePicker('mAgePick',[]);openMod('exMod');}
+function openNewEx(si){if(!IS_ADMIN)return;editingId=null;formTags=[];formImg=null;canvasObjects=[];playerCounters={};undoStack=[];selectedObjIdx=null;selectedIndices=[];['mName','mPl','mMat','mTagIn','mMatFree'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.querySelectorAll('.mat-sel').forEach(s=>s.value='0');document.getElementById('mDesc').value='';document.getElementById('mDif').value='';if(document.getElementById('mDur'))document.getElementById('mDur').value='';document.getElementById('mSec').value=si||activeSec;document.getElementById('mId').value='';document.getElementById('mTit').textContent='Neue Übung';document.getElementById('mIco').style.background=SECS[si||activeSec].color+'22';renderIZ();renderMTags();renderAgePicker('mAgePick',[]);{const _ft=document.getElementById('fieldType');if(_ft){_ft.value='small';if(typeof _updateFieldTypeOptions==='function')_updateFieldTypeOptions();}}openMod('exMod');}
 function editEx(id){if(!IS_ADMIN)return;const e=exercises.find(x=>x.id===id);if(!e)return;editingId=e.id;formTags=[...(e.tags||[]).map(t=>t.toUpperCase())];formImg=e.image||null;canvasObjects=[];playerCounters={};undoStack=[];selectedObjIdx=null;selectedIndices=[];document.getElementById('mName').value=e.name;document.getElementById('mPl').value=e.players||'';document.getElementById('mDesc').value=e.desc||'';document.getElementById('mDif').value=e.difficulty||'';if(document.getElementById('mDur'))document.getElementById('mDur').value=e.duration||'';loadMatIntoBuilder(e.material||'');document.getElementById('mSec').value=e.section||0;document.getElementById('mId').value=e.id;document.getElementById('mTit').textContent='Übung bearbeiten';renderIZ();renderMTags();renderAgePicker('mAgePick',e.ageGroups||[]);openMod('exMod');
+  // Feldtyp der Übung einstellen (sonst bleibt das Editor-Dropdown auf dem Wert der letzten Übung)
+  {const _ft=document.getElementById('fieldType');if(_ft){_ft.value=e.fieldType||'small';if(typeof _updateFieldTypeOptions==='function')_updateFieldTypeOptions();}}
   // Restore canvas objects if saved
   if(e.canvasObjects&&e.canvasObjects.length){
-    setTimeout(()=>{canvasObjects=JSON.parse(JSON.stringify(e.canvasObjects));redraw();},120);
+    canvasObjects=JSON.parse(JSON.stringify(e.canvasObjects)); // sofort laden (kein Wettlauf mit dem Speichern)
+    setTimeout(()=>{redraw();},120);
   }
 }
 // Neue Katalog-Übung dauerhaft in Supabase speichern (für alle sichtbar). Gibt {id,image} oder null zurück.
@@ -577,8 +580,13 @@ async function saveEx(){
   const _prevAges=_prevEx.ageGroups||[];
   ex.ageGroups=getAgeSel('mAgePick');
   ex.sport=editingId?(_prevEx.sport||_curSportId()):_curSportId();
-  // Feldtyp/Status der bestehenden Übung beibehalten (nicht aus dem globalen Editor-Dropdown übernehmen)
-  if(editingId){ex.fieldType=_prevEx.fieldType||'small';ex.status=_prevEx.status||'approved';}
+  // Feldtyp: Dropdown (wurde beim Öffnen auf die Übung gesetzt, spiegelt auch eine Änderung im Editor); Status beibehalten
+  ex.fieldType=document.getElementById('fieldType')?.value||_prevEx.fieldType||'small';
+  if(editingId){ex.status=_prevEx.status||'approved';}
+  // Schutz: eine vorhandene Zeichnung nie durch eine leere überschreiben
+  if(editingId&&!(ex.canvasObjects&&ex.canvasObjects.length)&&_prevEx.canvasObjects&&_prevEx.canvasObjects.length){
+    ex.canvasObjects=JSON.parse(JSON.stringify(_prevEx.canvasObjects));
+  }
   // Neue Übung: ZUERST in Supabase speichern, sonst wäre sie nur lokal vorhanden und für andere unsichtbar
   if(!editingId){
     if(!_supabase||!apiOnline){showToast('Keine Verbindung – Übung kann nicht für alle gespeichert werden','err');return;}
