@@ -436,7 +436,7 @@
             <div class="fg"><label>Anzahl Spieler:innen *</label><input class="fc" id="sPlayers" type="text" placeholder="z.B. 6–12" oninput="updateSubmitChecklist()"></div>
             <div class="fg"><label>Belastungszeit (min) *</label><input class="fc" id="sDuration" type="number" min="1" max="60" placeholder="z.B. 12" oninput="updateSubmitChecklist()"></div>
           </div>
-          <div class="fg"><label>Altersstufen <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-3);">(optional)</span></label><div id="sAgePick"></div></div>
+          <div class="fg"><label>Altersstufen *</label><div id="sAgePick"></div></div>
           <div class="fg"><label>Material</label>
           <div id="sMatBuilder" style="border:1.5px solid var(--border);border-radius:7px;padding:10px;background:var(--surface-2);">
             <div style="font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;">Zählbares Material (Anzahl wählen):</div>
@@ -518,6 +518,7 @@
             <div class="chk-item" id="chk-duration"><div class="chk-dot"></div><div class="chk-label">Belastungszeit angegeben</div></div>
             <div class="chk-item" id="chk-intensity"><div class="chk-dot"></div><div class="chk-label">Belastungsintensität gewählt</div></div>
             <div class="chk-item" id="chk-section"><div class="chk-dot"></div><div class="chk-label">Abschnitt gewählt</div></div>
+            <div class="chk-item" id="chk-age"><div class="chk-dot"></div><div class="chk-label">Altersstufe(n) gewählt</div></div>
             <div class="chk-item" id="chk-tags"><div class="chk-dot"></div><div class="chk-label">Min. 3 Tags hinzugefügt</div></div>
             <div class="chk-item" id="chk-canvas"><div class="chk-dot"></div><div class="chk-label">Felddiagramm gezeichnet</div></div>
           </div>
@@ -1818,7 +1819,7 @@
         <div class="help-step"><span class="help-num">2</span><span>Pflichtfelder ausfüllen: Name, Abschnitt, Spieler:innenzahl, Beschreibung</span></div>
         <div class="help-step"><span class="help-num">3</span><span>Tags eingeben – <strong>Vorschläge</strong> aus ähnlichen Übungen werden automatisch angezeigt</span></div>
         <div class="help-step"><span class="help-num">4</span><span>Belastungsintensität und -dauer angeben</span></div>
-        <div class="help-step"><span class="help-num">5</span><span>Optional: <strong>Altersstufen</strong> wählen – zwei Jahrgänge antippen markiert alles dazwischen (z. B. U9 und U13 ergibt U9–U13); ohne Auswahl gilt „Alle Altersstufen"</span></div>
+        <div class="help-step"><span class="help-num">5</span><span><strong>Altersstufen</strong> wählen (Pflicht) – zwei Jahrgänge antippen markiert alles dazwischen (z. B. U9 und U13 ergibt U9–U13); „Alle auswählen" wählt jede Altersstufe</span></div>
         <div class="help-step"><span class="help-num">6</span><span>Optional: Felddiagramm im Editor zeichnen</span></div>
         <div class="help-step"><span class="help-num">7</span><span>„Einreichen" → wird geprüft und freigeschaltet</span></div>
       </div>
