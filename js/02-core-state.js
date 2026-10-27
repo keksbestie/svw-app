@@ -37,8 +37,11 @@ function hideLS(){const l=document.getElementById('ls');l.classList.add('fade');
 function mapExercise(e){
   return {id:e.id,name:e.name,players:e.players,material:e.material,section:e.section,
     difficulty:e.difficulty,desc:e.description,tags:e.tags||[],image:e.image,status:e.status,duration:e.duration,
-    canvasObjects:e.canvas_objects||[],fieldType:e.field_type||'small'};
+    canvasObjects:e.canvas_objects||[],fieldType:e.field_type||'small',sport:e.sport||'fussball'};
 }
+// Sportartfilter: Übungen ohne sport-Angabe gelten als Fußball
+function _curSportId(){return (window.currentSport&&window.currentSport.id)||'fussball';}
+function sportExercises(){const s=_curSportId();return exercises.filter(e=>(e.sport||'fussball')===s);}
 async function loadAPI(){
   if(!_supabase)return false;
   try{
@@ -273,7 +276,7 @@ function onGS(){
   document.getElementById('gsX').style.display=q?'block':'none';
   if(!q){closeGS();return;}
   const ql=q.toLowerCase();
-  const res=exercises.filter(e=>[e.name,e.desc||'',...(e.tags||[]),SECS[e.section]?.name||''].join(' ').toLowerCase().includes(ql));
+  const res=sportExercises().filter(e=>[e.name,e.desc||'',...(e.tags||[]),SECS[e.section]?.name||''].join(' ').toLowerCase().includes(ql));
   const el=document.getElementById('gsRes');
   if(!res.length){el.innerHTML=`<div class="gs-empty">Keine Treffer für „${q}"</div>`;el.classList.add('open');return;}
   const byS={};res.forEach(e=>{if(!byS[e.section])byS[e.section]=[];byS[e.section].push(e);});

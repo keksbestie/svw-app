@@ -285,8 +285,7 @@ function saveDesc(){
 function renderSection(){
   const s=SECS[activeSec];const col=s.color;
 
-  const isOtherSport = window.currentSport && window.currentSport.id !== 'fussball';
-  const sEx=exercises.filter(e=>e.section===activeSec);
+  const sEx=sportExercises().filter(e=>e.section===activeSec);
   const q=(document.getElementById(`ss${activeSec}`)||{value:''}).value||'';
 
   // ── FILTER: cluster (OR) + individual tags (AND) + text ──
@@ -334,7 +333,7 @@ function renderSection(){
       </div>
     </div>
     <div class="inner" style="padding-top:0;">
-      ${!isOtherSport&&clusterLegend?`<div class="cleg">
+      ${clusterLegend?`<div class="cleg">
         <span class="cleg-t">Kategorien:</span>
         ${clusterLegend}
         ${activeCluster?`<span onclick="toggleCluster(null)" style="font-size:10px;font-weight:700;color:var(--gm);cursor:pointer;margin-left:2px;">✕ Alle</span>`:''}
@@ -342,7 +341,7 @@ function renderSection(){
       </div>`:''}
       <div id="catalogLayout" class="catalog-layout">
         <div>
-          ${!isOtherSport?`<div class="fbar">
+          <div class="fbar">
             <div class="ftop">
               <input class="fin" id="ss${activeSec}" type="text" placeholder="In ${s.name} suchen…" value="${q}" oninput="renderSection()">
               <button class="gbtn" onclick="selectedTags=[];activeCluster=null;clusterFilterTags=[];renderSection()">✕ Reset</button>
@@ -360,13 +359,13 @@ function renderSection(){
             }).join('')}
             ${!allTags.length?'<span style="font-size:10px;color:var(--gm);">Noch keine Tags</span>':''}
           </div>
-          <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gm);margin-bottom:11px;">${filtered.length} von ${sEx.length} Übungen</div>`:''}
+          <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gm);margin-bottom:11px;">${filtered.length} von ${sEx.length} Übungen</div>
           <div class="exgrid${_catalogView==='collapsed'?' collapsed':''}">
-            ${isOtherSport
-              ?`<div class="empty-grid"><div class="ei">${window.currentSport.icon?`<img src="${window.currentSport.icon}" style="width:48px;opacity:.4;">`:'🏗️'}</div><h3>Noch keine Inhalte</h3><p>Für <strong>${window.currentSport.label}</strong> werden hier bald Übungen verfügbar sein.</p></div>`
-              :filtered.length===0
-                ?`<div class="empty-grid"><div class="ei">⚽</div><h3>Keine Übungen gefunden</h3><p>${IS_ADMIN?'Über „+ Übung" hinzufügen.':'Filter anpassen.'}</p></div>`
-                :_applyRatingOrder(filtered).map(e=>cardHTML(e,col)).join('')
+            ${filtered.length===0
+              ?(sEx.length===0&&_curSportId()!=='fussball'
+                ?`<div class="empty-grid"><div class="ei">${window.currentSport&&window.currentSport.icon?`<img src="${window.currentSport.icon}" style="width:48px;opacity:.4;">`:'🏗️'}</div><h3>Noch keine Inhalte</h3><p>Für <strong>${window.currentSport?window.currentSport.label:''}</strong> werden hier bald Übungen verfügbar sein.</p></div>`
+                :`<div class="empty-grid"><div class="ei">${window.currentSport&&window.currentSport.icon?`<img src="${window.currentSport.icon}" style="width:48px;opacity:.4;">`:'⚽'}</div><h3>Keine Übungen gefunden</h3><p>${IS_ADMIN?'Über „+ Übung" hinzufügen.':'Filter anpassen.'}</p></div>`)
+              :_applyRatingOrder(filtered).map(e=>cardHTML(e,col)).join('')
             }
           </div>
         </div>
@@ -434,7 +433,7 @@ function toggleCluster(name){
 
 function getSecTags(idx){
   const s=new Set();
-  exercises.filter(e=>e.section===idx).forEach(e=>(e.tags||[]).forEach(t=>s.add(t.toUpperCase())));
+  sportExercises().filter(e=>e.section===idx).forEach(e=>(e.tags||[]).forEach(t=>s.add(t.toUpperCase())));
   (sectionCustomTags[idx]||[]).forEach(t=>s.add(t.toUpperCase()));
   return[...s].sort();
 }
@@ -548,6 +547,7 @@ function saveEx(){
     if(c) formImg=c.toDataURL('image/png');
   }
   updateMatField();const ex={id:editingId||uid(),name,players:document.getElementById('mPl').value.trim(),material:document.getElementById('mMat').value.trim(),section:si,difficulty:document.getElementById('mDif').value,duration:document.getElementById('mDur')?parseInt(document.getElementById('mDur').value)||null:null,desc:document.getElementById('mDesc').value.trim(),tags:[...formTags],image:formImg,canvasObjects:[...canvasObjects]};
+  ex.sport=editingId?((exercises.find(e=>e.id===editingId)||{}).sport||_curSportId()):_curSportId();
   if(editingId)exercises=exercises.map(e=>e.id===editingId?ex:e);else exercises.push(ex);
   save();activeSec=si;renderStbar();renderSection();closeMod('exMod');showToast(editingId?'Übung aktualisiert':'Übung gespeichert');
   // Persist changes to Supabase so they survive a reload
