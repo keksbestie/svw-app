@@ -257,12 +257,11 @@ function _showDeleteAccountModal(){
           <li>Dein Login (E-Mail, Benutzername, Passwort)</li>
           <li>Dein Kader mit allen Spieler:innen</li>
           <li>Deine gespeicherten Trainingspläne und Langzeit-Blöcke</li>
-          <li>Deine eingereichten Trainingspläne</li>
           <li>Deine Bewertungen und offene Beitrittsanfragen</li>
         </ul>
         <div style="margin-top:12px;font-weight:700;font-size:12px;color:#e53935;text-transform:uppercase;letter-spacing:.5px;">Außerdem gilt:</div>
         <ul style="margin:6px 0 0 16px;padding:0;">
-          <li><strong>Von dir eingereichte Übungen bleiben bestehen</strong> (im Katalog bzw. in der Prüfung), werden aber anonymisiert – ohne deinen Namen. Sie verschwinden nur, wenn sie manuell gelöscht werden</li>
+          <li><strong>Von dir eingereichte Übungen und Trainingspläne bleiben bestehen</strong> (im Katalog, in der Bibliothek bzw. in der Prüfung), werden aber anonymisiert – ohne deinen Namen. Sie verschwinden nur, wenn sie manuell gelöscht werden</li>
           <li>Ein belegter Vereins-Slot wird freigegeben</li>
         </ul>
       </div>
