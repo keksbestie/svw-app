@@ -49,7 +49,7 @@ function renderHomeSportState() {
   _updateHelpSport();
   const onbSub=document.getElementById('onboardingSubtitle');
   if(onbSub){
-    const sportName=sport?{fussball:'(Nachwuchs)Fußball',volleyball:'(Nachwuchs)Volleyball',tennis:'(Nachwuchs)Tennis'}[sport.id]||sport.label:'(Nachwuchs)Fußball';
+    const sportName=sport?{fussball:'(Nachwuchs)Fußball',volleyball:'(Nachwuchs)Volleyball',tennis:'(Nachwuchs)Tennis'}[sport.id]||sport.label:'(Nachwuchs)Sport – Fußball, Volleyball und Tennis';
     onbSub.textContent=`Dein Trainingsassistent für den ${sportName}. Plane Einheiten, verwalte deinen Kader und strukturiere die ganze Saison – alles an einem Ort.`;
   }
 
