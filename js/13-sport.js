@@ -2,9 +2,10 @@
 // MODUL: SPORT-AUSWAHL
 // ══════════════════════════════════════════════════════════════════
 const SPORTS_ENABLED = ['fussball', 'volleyball', 'tennis'];
-// Sportarten ohne Inhalte sind für normale Nutzer gesperrt und schalten sich automatisch frei,
-// sobald mindestens SPORT_MIN_EXERCISES freigegebene Übungen existieren (Admins/Reviewer sehen sie immer).
-const SPORT_MIN_EXERCISES = 1;
+// Sportarten sind für normale Nutzer gesperrt und schalten sich automatisch frei, sobald JEDER Abschnitt
+// (Open Field, Warm Up, …) mindestens SPORT_MIN_PER_SECTION freigegebene Übungen hat (Admins/Reviewer sehen sie immer).
+// Fußball ist immer offen.
+const SPORT_MIN_PER_SECTION = 8;
 
 const SPORTS = [
   { id: 'fussball',   icon: 'icons/sport-fussball.png',   label: 'Fußball' },
@@ -14,15 +15,22 @@ const SPORTS = [
 
 const SPORT_KEY = 'assistcoach_sport';
 
-function sportExerciseCount(id) {
-  return (typeof exercises !== 'undefined' ? exercises : []).filter(e => (e.sport || 'fussball') === id).length;
+// Anzahl Abschnitte, die die Mindestmenge erreicht haben (z. B. 3 von 6)
+function sportSectionStatus(id) {
+  const total = (typeof SECS !== 'undefined') ? SECS.length : 6;
+  const counts = new Array(total).fill(0);
+  (typeof exercises !== 'undefined' ? exercises : []).forEach(e => {
+    if ((e.sport || 'fussball') === id && e.section >= 0 && e.section < total) counts[e.section]++;
+  });
+  const full = counts.filter(c => c >= SPORT_MIN_PER_SECTION).length;
+  return { full, total, counts, ready: full === total };
 }
 
 function isSportAvailable(id) {
   if (id === 'fussball') return true;
   if (typeof IS_ADMIN !== 'undefined' && IS_ADMIN) return true;
   if (typeof IS_REVIEWER !== 'undefined' && IS_REVIEWER && (REVIEWER_SPORTS || []).includes(id)) return true;
-  return sportExerciseCount(id) >= SPORT_MIN_EXERCISES;
+  return sportSectionStatus(id).ready;
 }
 
 function getSavedSport() {
@@ -39,13 +47,15 @@ function refreshSportAvailability() { if (_sportAvailSig() !== _sportSig) render
 function _syncSportCards() {
   document.querySelectorAll('.home-sport-card[data-sport]').forEach(btn => {
     const id = btn.dataset.sport, avail = isSportAvailable(id);
-    const empty = id !== 'fussball' && sportExerciseCount(id) < SPORT_MIN_EXERCISES;
+    const st = sportSectionStatus(id);
+    const notReady = id !== 'fussball' && !st.ready;
     btn.classList.toggle('home-sport-card--locked', !avail);
     btn.setAttribute('aria-disabled', avail ? 'false' : 'true');
     const soon = btn.querySelector('.home-sport-soon');
     if (soon) {
-      soon.style.display = (!avail || empty) ? '' : 'none';
-      soon.textContent = !avail ? 'Bald verfügbar' : 'Noch ohne Inhalte (nur Admin)';
+      soon.style.display = (!avail || notReady) ? '' : 'none';
+      soon.textContent = !avail ? 'Bald verfügbar'
+        : 'Nur Admin · ' + st.full + '/' + st.total + ' Bereiche mit ' + SPORT_MIN_PER_SECTION + '+ Übungen';
     }
   });
 }
