@@ -573,9 +573,12 @@ async function saveEx(){
     if(c) formImg=c.toDataURL('image/png');
   }
   updateMatField();const ex={id:editingId||uid(),name,players:document.getElementById('mPl').value.trim(),material:document.getElementById('mMat').value.trim(),section:si,difficulty:document.getElementById('mDif').value,duration:document.getElementById('mDur')?parseInt(document.getElementById('mDur').value)||null:null,desc:document.getElementById('mDesc').value.trim(),tags:[...formTags],image:formImg,canvasObjects:[...canvasObjects]};
-  const _prevAges=((exercises.find(e=>e.id===editingId)||{}).ageGroups||[]);
+  const _prevEx=exercises.find(e=>e.id===editingId)||{};
+  const _prevAges=_prevEx.ageGroups||[];
   ex.ageGroups=getAgeSel('mAgePick');
-  ex.sport=editingId?((exercises.find(e=>e.id===editingId)||{}).sport||_curSportId()):_curSportId();
+  ex.sport=editingId?(_prevEx.sport||_curSportId()):_curSportId();
+  // Feldtyp/Status der bestehenden Übung beibehalten (nicht aus dem globalen Editor-Dropdown übernehmen)
+  if(editingId){ex.fieldType=_prevEx.fieldType||'small';ex.status=_prevEx.status||'approved';}
   // Neue Übung: ZUERST in Supabase speichern, sonst wäre sie nur lokal vorhanden und für andere unsichtbar
   if(!editingId){
     if(!_supabase||!apiOnline){showToast('Keine Verbindung – Übung kann nicht für alle gespeichert werden','err');return;}
@@ -595,11 +598,13 @@ async function saveEx(){
       name:ex.name,players:ex.players,material:ex.material,section:ex.section,
       difficulty:ex.difficulty,duration:ex.duration,description:ex.desc,tags:ex.tags,
       image:img,canvas_objects:ex.canvasObjects||[],
-      field_type:document.getElementById('fieldType')?.value||'small',
+      field_type:ex.fieldType||'small',
       ...((_prevAges.length||ex.ageGroups.length)?{age_groups:ex.ageGroups.length?ex.ageGroups:null}:{})
     }).eq('id',editingId).then(({error})=>{
       if(error)showToast('Speichern fehlgeschlagen – bitte neu versuchen','err');
     });
+  } else if(editingId){
+    showToast('Keine Verbindung – Änderung nur lokal gespeichert, nicht für alle','err');
   }
 }
 async function delEx(id){
