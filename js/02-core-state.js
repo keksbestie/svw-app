@@ -59,21 +59,29 @@ function _ageChip(label,on,fn,small){
   const pad=small?'4px 10px':'6px 12px', fs=small?'11px':'12px';
   return '<button type="button" class="age-chip" onclick="'+fn+'" style="padding:'+pad+';border-radius:16px;border:1.5px solid '+(on?'var(--accent)':'var(--border)')+';background:'+(on?'var(--accent)':'var(--surface-2)')+';color:'+(on?'#fff':'var(--text-2)')+';font-size:'+fs+';font-weight:700;cursor:pointer;">'+label+'</button>';
 }
-function renderAgePicker(id,sel){
+function renderAgePicker(id,sel,opts){
   const el=document.getElementById(id);if(!el)return;
-  _agePickState[id]={sel:AGE_GROUPS.filter(a=>(sel||[]).includes(a)),anchor:null};
+  _agePickState[id]={sel:AGE_GROUPS.filter(a=>(sel||[]).includes(a)),anchor:null,required:!!(opts&&opts.required),onChange:(opts&&opts.onChange)||null};
   _paintAgePicker(id);
 }
 function getAgeSel(id){return (_agePickState[id]&&_agePickState[id].sel)||[];}
 function _paintAgePicker(id){
   const el=document.getElementById(id),st=_agePickState[id];if(!el||!st)return;
-  const hint=st.anchor?'Jetzt den zweiten Jahrgang antippen – alles dazwischen wird mitgewählt.':'Tipp: Zwei Jahrgänge antippen wählt alles dazwischen. Ohne Auswahl gilt „Alle Altersstufen“.';
+  let hint;
+  if(st.anchor) hint='Jetzt den zweiten Jahrgang antippen – alles dazwischen wird mitgewählt.';
+  else if(st.required) hint='Pflichtfeld: Mindestens einen Jahrgang wählen. Zwei Jahrgänge antippen wählt alles dazwischen.';
+  else hint='Tipp: Zwei Jahrgänge antippen wählt alles dazwischen. Ohne Auswahl gilt „Alle Altersstufen“.';
+  const first=st.required
+    ?_ageChip('Alle auswählen',st.sel.length===AGE_GROUPS.length,"selectAllAges('"+id+"')")
+    :_ageChip('Alle',!st.sel.length,"clearAgePicker('"+id+"')");
   el.innerHTML='<div style="display:flex;flex-wrap:wrap;gap:6px;">'
-    +_ageChip('Alle',!st.sel.length,"clearAgePicker('"+id+"')")
+    +first
     +AGE_GROUPS.map(a=>_ageChip(a,st.sel.includes(a),"toggleAgeChip('"+id+"','"+a+"')")).join('')
     +'</div><div style="font-size:11px;color:var(--text-3);margin-top:6px;">'+hint+'</div>';
 }
-function clearAgePicker(id){const st=_agePickState[id];if(!st)return;st.sel=[];st.anchor=null;_paintAgePicker(id);}
+function _ageChanged(id){const st=_agePickState[id];_paintAgePicker(id);if(st&&st.onChange)st.onChange();}
+function clearAgePicker(id){const st=_agePickState[id];if(!st)return;st.sel=[];st.anchor=null;_ageChanged(id);}
+function selectAllAges(id){const st=_agePickState[id];if(!st)return;st.sel=AGE_GROUPS.slice();st.anchor=null;_ageChanged(id);}
 function toggleAgeChip(id,a){
   const st=_agePickState[id];if(!st)return;
   if(st.anchor&&st.anchor!==a){
@@ -85,7 +93,7 @@ function toggleAgeChip(id,a){
     st.sel=st.sel.filter(x=>x!==a);st.anchor=null;
   } else {st.sel.push(a);st.anchor=a;}
   st.sel=AGE_GROUPS.filter(x=>st.sel.includes(x));
-  _paintAgePicker(id);
+  _ageChanged(id);
 }
 function setAgeFilter(a){ageFilter=(ageFilter===a)?null:a;renderSection();}
 function ageFilterHTML(){

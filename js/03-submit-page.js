@@ -333,7 +333,7 @@ function renderSubmitChecklist_init(){
   document.getElementById('sIntensity').value='';
   document.getElementById('sMat').value='';
   document.getElementById('sDescCount').textContent='0 Zeichen';
-  renderAgePicker('sAgePick',[]);
+  renderAgePicker('sAgePick',[],{required:true,onChange:updateSubmitChecklist});
   updateSubmitChecklist();
 }
 
@@ -354,6 +354,7 @@ function updateSubmitChecklist(){
     'chk-duration': duration.length > 0 && parseInt(duration) > 0,
     'chk-intensity': intensity !== '',
     'chk-section': sec !== '',
+    'chk-age': getAgeSel('sAgePick').length > 0,
     'chk-tags': submitTags.length >= 3,
     'chk-canvas': !!submitCanvasData,
   };
@@ -413,6 +414,7 @@ function renderSTagSuggestions(){
 // ── Submit exercise ──────────────────────────────────
 async function submitExercise(){
   if(!submitUser||!currentUser)return;
+  if(!getAgeSel('sAgePick').length){showToast('Bitte mindestens eine Altersstufe wählen','err');return;}
   const sec=parseInt(document.getElementById('sSec').value);
   // Upload image to Storage (avoid storing large base64 in DB)
   let imageUrl=submitCanvasData||null;
@@ -435,10 +437,10 @@ async function submitExercise(){
     created_by:currentUser.id,
     author_name:submitUser.name||null,
     sport:window.currentSport?.id||'',
-    ...(getAgeSel('sAgePick').length?{age_groups:getAgeSel('sAgePick')}:{}),
+    age_groups:getAgeSel('sAgePick'),
     status:'pending'
   });
-  if(error){showToast('Fehler beim Einreichen','err');return;}
+  if(error){showToast(/age_groups/.test(error.message||'')?'Fehler: Datenbank-Spalte age_groups fehlt (Admin informieren)':'Fehler beim Einreichen','err');return;}
   showToast('✓ Übung eingereicht! Das Admin-Team prüft sie.');
   renderSubmitChecklist_init();
   submitCanvasData=null;
