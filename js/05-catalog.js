@@ -544,7 +544,8 @@ function editEx(id){if(!IS_ADMIN)return;const e=exercises.find(x=>x.id===id);if(
   {const _ft=document.getElementById('fieldType');if(_ft){_ft.value=e.fieldType||'small';if(typeof _updateFieldTypeOptions==='function')_updateFieldTypeOptions();}}
   // Restore canvas objects if saved
   if(e.canvasObjects&&e.canvasObjects.length){
-    setTimeout(()=>{canvasObjects=JSON.parse(JSON.stringify(e.canvasObjects));redraw();},120);
+    canvasObjects=JSON.parse(JSON.stringify(e.canvasObjects)); // sofort laden (kein Wettlauf mit dem Speichern)
+    setTimeout(()=>{redraw();},120);
   }
 }
 // Neue Katalog-Übung dauerhaft in Supabase speichern (für alle sichtbar). Gibt {id,image} oder null zurück.
@@ -582,6 +583,10 @@ async function saveEx(){
   // Feldtyp: Dropdown (wurde beim Öffnen auf die Übung gesetzt, spiegelt auch eine Änderung im Editor); Status beibehalten
   ex.fieldType=document.getElementById('fieldType')?.value||_prevEx.fieldType||'small';
   if(editingId){ex.status=_prevEx.status||'approved';}
+  // Schutz: eine vorhandene Zeichnung nie durch eine leere überschreiben
+  if(editingId&&!(ex.canvasObjects&&ex.canvasObjects.length)&&_prevEx.canvasObjects&&_prevEx.canvasObjects.length){
+    ex.canvasObjects=JSON.parse(JSON.stringify(_prevEx.canvasObjects));
+  }
   // Neue Übung: ZUERST in Supabase speichern, sonst wäre sie nur lokal vorhanden und für andere unsichtbar
   if(!editingId){
     if(!_supabase||!apiOnline){showToast('Keine Verbindung – Übung kann nicht für alle gespeichert werden','err');return;}
