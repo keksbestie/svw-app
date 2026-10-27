@@ -419,6 +419,7 @@
             <div class="fg"><label>Anzahl Spieler:innen *</label><input class="fc" id="sPlayers" type="text" placeholder="z.B. 6–12" oninput="updateSubmitChecklist()"></div>
             <div class="fg"><label>Belastungszeit (min) *</label><input class="fc" id="sDuration" type="number" min="1" max="60" placeholder="z.B. 12" oninput="updateSubmitChecklist()"></div>
           </div>
+          <div class="fg"><label>Altersstufen <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-3);">(optional)</span></label><div id="sAgePick"></div></div>
           <div class="fg"><label>Material</label>
           <div id="sMatBuilder" style="border:1.5px solid var(--border);border-radius:7px;padding:10px;background:var(--surface-2);">
             <div style="font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;">Zählbares Material (Anzahl wählen):</div>
@@ -1551,6 +1552,7 @@
         <div class="help-step"><span class="help-num">3</span><span>Tags direkt auf der Karte anklicken → nach diesem Tag filtern</span></div>
         <div class="help-step"><span class="help-num">4</span><span>Suchfeld: Text sucht in Name, Beschreibung und Tags</span></div>
         <div class="help-step"><span class="help-num">5</span><span>Globale Suche (Lupe oben) findet Übungen aus <em>allen</em> Abschnitten</span></div>
+        <div class="help-step"><span class="help-num">7</span><span><strong>Altersstufe:</strong> Die Chips „U7 … Erwachsene" filtern nach Jahrgang. Übungen ohne Altersangabe gelten für alle Altersstufen und bleiben immer sichtbar</span></div>
         <div class="help-step"><span class="help-num">6</span><span>☰☰ / ≡ Toggle: zwischen vollständigen Karten und kompakter Liste wechseln</span></div>
       </div>
     </div>
@@ -1810,8 +1812,9 @@
         <div class="help-step"><span class="help-num">2</span><span>Pflichtfelder ausfüllen: Name, Abschnitt, Spieler:innenzahl, Beschreibung</span></div>
         <div class="help-step"><span class="help-num">3</span><span>Tags eingeben – <strong>Vorschläge</strong> aus ähnlichen Übungen werden automatisch angezeigt</span></div>
         <div class="help-step"><span class="help-num">4</span><span>Belastungsintensität und -dauer angeben</span></div>
-        <div class="help-step"><span class="help-num">5</span><span>Optional: Felddiagramm im Editor zeichnen</span></div>
-        <div class="help-step"><span class="help-num">6</span><span>„Einreichen" → wird geprüft und freigeschaltet</span></div>
+        <div class="help-step"><span class="help-num">5</span><span>Optional: <strong>Altersstufen</strong> wählen – zwei Jahrgänge antippen markiert alles dazwischen (z. B. U9 und U13 ergibt U9–U13); ohne Auswahl gilt „Alle Altersstufen"</span></div>
+        <div class="help-step"><span class="help-num">6</span><span>Optional: Felddiagramm im Editor zeichnen</span></div>
+        <div class="help-step"><span class="help-num">7</span><span>„Einreichen" → wird geprüft und freigeschaltet</span></div>
       </div>
     </div>
 
@@ -2046,6 +2049,7 @@ function filterHelpCards(q){
         </div>
         <div class="fg"><label>Anzahl Spieler:innen</label><input class="fc" id="mPl" type="text" placeholder="z.B. 6-12"></div>
       </div>
+      <div class="fg"><label>Altersstufen (optional)</label><div id="mAgePick"></div></div>
       <div class="fr">
         <div class="fg" style="display:none"><!-- placeholder --></div>
         <div class="fg"><label>Material</label>
@@ -2420,6 +2424,7 @@ function filterHelpCards(q){
         <div class="fg"><label>Anzahl Spieler:innen</label><input class="fc" id="rv-players" type="text"></div>
         <div class="fg"><label>Belastungszeit (min)</label><input class="fc" id="rv-duration" type="number"></div>
       </div>
+      <div class="fg"><label>Altersstufen (optional)</label><div id="rvAgePick"></div></div>
       <div class="fg"><label>Material</label><input class="fc" id="rv-mat" type="text"></div>
       <div class="fg"><label>Tags</label><input class="fc" id="rv-tags" type="text" placeholder="Kommagetrennt, z.B. DRIBBLING, 1VS1"></div>
       <div class="fg"><label>Felddiagramm</label><div id="rv-canvas-wrap" style="border:1px solid var(--border);border-radius:8px;overflow:hidden;"></div></div>

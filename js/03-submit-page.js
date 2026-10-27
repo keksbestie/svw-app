@@ -40,7 +40,7 @@ if(error){console.error('loadSubmissions error:',error);submissions=[];return;}
     id:e.id,name:e.name,desc:e.description,players:e.players,
     duration:e.duration,material:e.material,section:e.section,
     intensity:e.difficulty,tags:e.tags||[],diagram:e.image,
-    author:e.author_name||e.created_by,status:e.status,sport:e.sport||'',
+    author:e.author_name||e.created_by,status:e.status,sport:e.sport||'',ageGroups:e.age_groups||[],
     submittedAt:new Date(e.created_at).toLocaleDateString('de-DE'),
     submittedTs:new Date(e.created_at).getTime()
   }));
@@ -332,6 +332,7 @@ function renderSubmitChecklist_init(){
   document.getElementById('sIntensity').value='';
   document.getElementById('sMat').value='';
   document.getElementById('sDescCount').textContent='0 Zeichen';
+  renderAgePicker('sAgePick',[]);
   updateSubmitChecklist();
 }
 
@@ -433,6 +434,7 @@ async function submitExercise(){
     created_by:currentUser.id,
     author_name:submitUser.name||null,
     sport:window.currentSport?.id||'',
+    ...(getAgeSel('sAgePick').length?{age_groups:getAgeSel('sAgePick')}:{}),
     status:'pending'
   });
   if(error){showToast('Fehler beim Einreichen','err');return;}
@@ -562,6 +564,7 @@ function openReviewMod(id){
   document.getElementById('rv-sec').value = s.section;
   document.getElementById('rv-intensity').value = s.intensity||'Leicht';
   document.getElementById('rv-tags').value = (s.tags||[]).join(', ');
+  renderAgePicker('rvAgePick', s.ageGroups||[]);
   // Show diagram
   const cw = document.getElementById('rv-canvas-wrap');
   if(s.diagram){ cw.innerHTML=`<img src="${s.diagram}" style="width:100%;display:block;border-radius:6px;">`; }
@@ -689,6 +692,8 @@ async function reviewAction(action){
     difficulty:document.getElementById('rv-intensity').value,
     tags:document.getElementById('rv-tags').value.split(',').map(t=>t.trim().toUpperCase()).filter(Boolean)
   };
+  { const _ra=getAgeSel('rvAgePick'),_prev=((submissions.find(x=>x.id===reviewingId)||{}).ageGroups||[]);
+    if(_ra.length||_prev.length) updates.age_groups=_ra.length?_ra:null; }
   if(action==='delete'){
     await _supabase.from('exercises').delete().eq('id',reviewingId);
     showToast('Übung abgelehnt');
