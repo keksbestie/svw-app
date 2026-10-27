@@ -440,8 +440,8 @@ function _updateFieldTypeOptions(){
 
 function openFieldOverlay(mode){
   _cvMode=mode||'edit';
-  // Reset canvas for every mode except catalog-edit (which loads objects before calling this)
-  if(mode!=='catalog-edit'){
+  // Nur beim Einreichen leeren; im Bearbeiten-Fenster (✏️) und catalog-edit (🎨) sind die Objekte der Übung bereits geladen
+  if(mode==='submit'){
     canvasObjects=[]; playerCounters={}; undoStack=[]; linePhase=0; lineStart=null;
     selectedObjIdx=null; selectedIndices=[];
   }
