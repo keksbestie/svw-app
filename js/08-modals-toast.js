@@ -37,6 +37,30 @@ async function sendFeedback(){
   }
 }
 
+// ── Mobiles „Mehr“-Menü (Header-Menüs sind auf dem Handy ausgeblendet) ──
+function closeMoreSheet(){document.getElementById('moreSheet')?.remove();}
+function openMoreSheet(){
+  closeMoreSheet();
+  const loggedIn=!!(typeof currentUser!=='undefined'&&currentUser);
+  const items=[];
+  if(loggedIn){
+    items.push(['👤','Mein Account',"goPage('account')"]);
+    items.push(['👥','Mein Kader',"goPage('kader')"]);
+    if(typeof currentClub!=='undefined'&&currentClub) items.push(['🏟️','Mein Verein',"goPage('account');setTimeout(()=>switchAccTab('club'),50)"]);
+  } else items.push(['🔑','Anmelden',"openLoginMod()"]);
+  items.push(['❓','Hilfe',"toggleHelpPanel()"]);
+  items.push(['💬','Feedback senden',"openMod('feedbackMod')"]);
+  const sheet=document.createElement('div');
+  sheet.id='moreSheet';
+  sheet.className='more-sheet';
+  sheet.innerHTML='<div class="more-panel">'
+    +items.map(i=>'<button class="more-item" onclick="closeMoreSheet();'+i[2]+'"><span class="more-ico">'+i[0]+'</span>'+i[1]+'</button>').join('')
+    +'<div class="more-links"><a onclick="closeMoreSheet();goPage(\'impressum\')">Impressum</a><a onclick="closeMoreSheet();goPage(\'datenschutz\')">Datenschutz</a><a onclick="closeMoreSheet();goPage(\'agb\')">AGB</a></div>'
+    +'</div>';
+  sheet.addEventListener('click',e=>{if(e.target===sheet)closeMoreSheet();});
+  document.body.appendChild(sheet);
+}
+
 // ══════════════════════════════════════════════════════
 // DEFAULT DATA
 // ══════════════════════════════════════════════════════

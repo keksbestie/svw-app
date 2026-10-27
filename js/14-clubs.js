@@ -537,9 +537,9 @@ function _showDeleteClubModal(clubId, clubName, isAdmin) {
   if (modal) modal.remove();
   modal = document.createElement('div');
   modal.id = 'deleteClubModal';
-  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;display:flex;overflow-y:auto;padding:16px;';
   modal.innerHTML = `
-    <div style="background:var(--bg);border-radius:16px;max-width:500px;width:100%;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.6);border:1px solid rgba(229,57,53,.4);">
+    <div style="margin:auto;background:var(--bg);border-radius:16px;max-width:500px;width:100%;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.6);border:1px solid rgba(229,57,53,.4);">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
         <span style="font-size:26px;">⚠️</span>
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#e53935;">Verein löschen – bitte lies das sorgfältig</div>

@@ -57,7 +57,7 @@ function ageLabel(arr){
 }
 function _ageChip(label,on,fn,small){
   const pad=small?'4px 10px':'6px 12px', fs=small?'11px':'12px';
-  return '<button type="button" onclick="'+fn+'" style="padding:'+pad+';border-radius:16px;border:1.5px solid '+(on?'var(--accent)':'var(--border)')+';background:'+(on?'var(--accent)':'var(--surface-2)')+';color:'+(on?'#fff':'var(--text-2)')+';font-size:'+fs+';font-weight:700;cursor:pointer;">'+label+'</button>';
+  return '<button type="button" class="age-chip" onclick="'+fn+'" style="padding:'+pad+';border-radius:16px;border:1.5px solid '+(on?'var(--accent)':'var(--border)')+';background:'+(on?'var(--accent)':'var(--surface-2)')+';color:'+(on?'#fff':'var(--text-2)')+';font-size:'+fs+';font-weight:700;cursor:pointer;">'+label+'</button>';
 }
 function renderAgePicker(id,sel){
   const el=document.getElementById(id);if(!el)return;
