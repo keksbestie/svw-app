@@ -230,8 +230,78 @@ async function doSetNewPassword(){
   updateSignInBtn();
 }
 
+function deleteAccount(){
+  if(!currentUser) return;
+  if(IS_ADMIN){ showToast('App-Admins können ihr Konto nicht selbst löschen.','err'); return; }
+  if(typeof currentClubRole!=='undefined'&&currentClubRole==='club_admin'){
+    showToast('Du bist Vereinsadmin: Übergib zuerst die Admin-Rolle oder lösche den Verein.','err'); return;
+  }
+  _showDeleteAccountModal();
+}
+
+function _showDeleteAccountModal(){
+  document.getElementById('deleteAccountModal')?.remove();
+  const modal=document.createElement('div');
+  modal.id='deleteAccountModal';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
+  modal.innerHTML=`
+    <div style="background:var(--bg);border-radius:16px;max-width:500px;width:100%;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.6);border:1px solid rgba(229,57,53,.4);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+        <span style="font-size:26px;">⚠️</span>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#e53935;">Konto löschen – bitte lies das sorgfältig</div>
+      </div>
+      <div style="background:rgba(229,57,53,.08);border:1px solid rgba(229,57,53,.3);border-radius:10px;padding:16px;margin-bottom:20px;font-size:13px;line-height:1.7;color:var(--text-1);">
+        <div>Du bist dabei, dein Konto <strong>${_escUser(currentUser.email||'')}</strong> dauerhaft zu löschen. Diese Aktion <strong>kann nicht rückgängig gemacht werden</strong> – auch nicht durch den Support.</div>
+        <div style="margin-top:12px;font-weight:700;font-size:12px;color:#e53935;text-transform:uppercase;letter-spacing:.5px;">Folgendes wird unwiderruflich gelöscht:</div>
+        <ul style="margin:6px 0 0 16px;padding:0;">
+          <li>Dein Login (E-Mail, Benutzername, Passwort)</li>
+          <li>Dein Kader mit allen Spieler:innen</li>
+          <li>Deine gespeicherten Trainingspläne und Langzeit-Blöcke</li>
+          <li>Deine Bewertungen und offene Beitrittsanfragen</li>
+        </ul>
+        <div style="margin-top:12px;font-weight:700;font-size:12px;color:#e53935;text-transform:uppercase;letter-spacing:.5px;">Außerdem gilt:</div>
+        <ul style="margin:6px 0 0 16px;padding:0;">
+          <li><strong>Von dir eingereichte Übungen und Trainingspläne bleiben bestehen</strong> (im Katalog, in der Bibliothek bzw. in der Prüfung), werden aber anonymisiert – ohne deinen Namen. Sie verschwinden nur, wenn sie manuell gelöscht werden</li>
+          <li>Ein belegter Vereins-Slot wird freigegeben</li>
+        </ul>
+      </div>
+      <label style="display:flex;align-items:flex-start;gap:12px;cursor:pointer;padding:14px;border:2px solid rgba(229,57,53,.3);border-radius:10px;background:rgba(229,57,53,.05);">
+        <input type="checkbox" id="deleteAccountConsent" onchange="
+          const btn=document.getElementById('deleteAccountConfirmBtn');
+          btn.style.display=this.checked?'block':'none';
+          btn.style.color='#fff';
+          btn.style.webkitTextFillColor='#fff';
+        " style="width:18px;height:18px;margin-top:2px;flex-shrink:0;accent-color:#e53935;cursor:pointer;">
+        <span style="font-size:13px;font-weight:700;line-height:1.5;">Ich verstehe, dass mein Konto und alle zugehörigen Daten <span style="color:#e53935;">dauerhaft und unwiderruflich gelöscht</span> werden und nicht wiederhergestellt werden können.</span>
+      </label>
+      <div style="display:flex;gap:10px;margin-top:18px;align-items:center;">
+        <button onclick="document.getElementById('deleteAccountModal').remove()" style="flex:1;padding:11px;background:var(--surface-2);color:var(--text-1);border:1px solid var(--border);border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;cursor:pointer;">Abbrechen</button>
+        <button id="deleteAccountConfirmBtn" onclick="_executeDeleteAccount()" style="display:none;flex:1;padding:11px;background:#c62828;color:#fff;-webkit-text-fill-color:#fff;border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;cursor:pointer;letter-spacing:.3px;text-shadow:none;filter:none;">🗑 Konto final löschen</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+  modal.addEventListener('click',e=>{ if(e.target===modal) modal.remove(); });
+}
+
+async function _executeDeleteAccount(){
+  const btn=document.getElementById('deleteAccountConfirmBtn');
+  if(btn){ btn.disabled=true; btn.textContent='Wird gelöscht …'; }
+  const {error}=await _supabase.rpc('delete_my_account');
+  if(error){
+    if(btn){ btn.disabled=false; btn.textContent='🗑 Konto final löschen'; }
+    showToast('Konto konnte nicht gelöscht werden: '+error.message,'err');
+    return;
+  }
+  document.getElementById('deleteAccountModal')?.remove();
+  await doLogout();
+  goPage('home');
+  showToast('Dein Konto wurde dauerhaft gelöscht.');
+}
+
 async function doLogout(){
   await _supabase.auth.signOut();
+  try{ localStorage.removeItem('ac_squad'); }catch(e){}
+  if(typeof squad!=='undefined') squad=[];
   currentUser=null; IS_ADMIN=false;
   document.body.classList.remove('admin');
   submitUser=null; submitTags=[]; submitCanvasData=null;

@@ -754,6 +754,12 @@
         <div class="fsec" style="margin-top:0;color:#e53935;">Konto</div>
         <button onclick="doLogout()" style="width:100%;padding:11px;background:#fce4ec;color:#c62828;border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;cursor:pointer;letter-spacing:.3px;">Abmelden</button>
       </div>
+
+      <div style="background:var(--surface);border-radius:12px;padding:20px;box-shadow:var(--sh);border:1px solid rgba(229,57,53,.25);margin-top:14px;">
+        <div class="club-section-label" style="color:#e53935;">Konto löschen</div>
+        <div style="font-size:12px;color:var(--gd2);margin-bottom:12px;">Löscht dein Konto und alle damit verbundenen Daten dauerhaft.</div>
+        <button class="slot-btn slot-btn-remove" style="width:100%;" onclick="deleteAccount()">🗑 Konto dauerhaft löschen</button>
+      </div>
     </div>
 
     <!-- Tab: Meine Pläne -->
@@ -930,7 +936,7 @@
       <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Ihre Daten werden zum einen dadurch erhoben, dass Sie uns diese mitteilen. Hierbei kann es sich z.&nbsp;B. um Daten handeln, die Sie in ein Kontaktformular eingeben.</p>
       <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Andere Daten werden automatisch oder nach Ihrer Einwilligung beim Besuch der Website durch unsere IT-Systeme erfasst. Das sind vor allem technische Daten (z.&nbsp;B. Internetbrowser, Betriebssystem oder Uhrzeit des Seitenaufrufs). Die Erfassung dieser Daten erfolgt automatisch, sobald Sie diese Website betreten.</p>
       <p style="font-size:13px;font-weight:600;margin:0 0 4px;color:var(--gd2);">Wof&uuml;r nutzen wir Ihre Daten?</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Ein Teil der Daten wird erhoben, um eine fehlerfreie Bereitstellung der Website zu gew&auml;hrleisten. Andere Daten k&ouml;nnen zur Analyse Ihres Nutzerverhaltens verwendet werden. Sofern &uuml;ber die Website Vertr&auml;ge geschlossen oder angebahnt werden k&ouml;nnen, werden die &uuml;bermittelten Daten auch f&uuml;r Vertragsangebote, Bestellungen oder sonstige Auftragsanfragen verarbeitet.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Ein Teil der Daten wird erhoben, um eine fehlerfreie Bereitstellung der Website zu gew&auml;hrleisten. Au&szlig;erdem verarbeiten wir Daten, um die Funktionen der App bereitzustellen (Nutzerkonto, Kader, Trainingspl&auml;ne, Einreichung und Bewertung von &Uuml;bungen, Vereinsverwaltung). Eine Analyse Ihres Nutzerverhaltens durch Tracking- oder Analysedienste findet nicht statt.</p>
       <p style="font-size:13px;font-weight:600;margin:0 0 4px;color:var(--gd2);">Welche Rechte haben Sie bez&uuml;glich Ihrer Daten?</p>
       <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Sie haben jederzeit das Recht, unentgeltlich Auskunft &uuml;ber Herkunft, Empf&auml;nger und Zweck Ihrer gespeicherten personenbezogenen Daten zu erhalten. Sie haben au&szlig;erdem ein Recht, die Berichtigung oder L&ouml;schung dieser Daten zu verlangen. Wenn Sie eine Einwilligung zur Datenverarbeitung erteilt haben, k&ouml;nnen Sie diese Einwilligung jederzeit f&uuml;r die Zukunft widerrufen. Au&szlig;erdem haben Sie das Recht, unter bestimmten Umst&auml;nden die Einschr&auml;nkung der Verarbeitung Ihrer personenbezogenen Daten zu verlangen. Des Weiteren steht Ihnen ein Beschwerderecht bei der zust&auml;ndigen Aufsichtsbeh&ouml;rde zu.</p>
       <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Hierzu sowie zu weiteren Fragen zum Thema Datenschutz k&ouml;nnen Sie sich jederzeit an uns wenden.</p>
@@ -952,7 +958,31 @@
     </div>
 
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
-      <div class="fsec" style="margin-top:0;">3. Allgemeine Hinweise und Pflichtinformationen</div>
+      <div class="fsec" style="margin-top:0;">3. Nutzerkonto, Kader und App-Funktionen</div>
+      <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Registrierung und Nutzerkonto</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Wenn Sie ein Konto anlegen, verarbeiten wir Ihre E-Mail-Adresse, Ihren Benutzernamen und Ihr Passwort (nur in verschl&uuml;sselter Form). Rechtsgrundlage ist die Vertragserf&uuml;llung (Art. 6 Abs. 1 lit. b DSGVO). Die Daten werden gespeichert, bis Sie Ihr Konto l&ouml;schen lassen.</p>
+      <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Eingereichte Inhalte, Pl&auml;ne und Bewertungen</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">&Uuml;bungen, Trainingspl&auml;ne und Bewertungen, die Sie einreichen, werden Ihrem Konto zugeordnet. Ihr Benutzername wird im &ouml;ffentlichen Katalog nur angezeigt, wenn Sie dies in &bdquo;Mein Account&ldquo; ausdr&uuml;cklich aktivieren (Art. 6 Abs. 1 lit. a DSGVO). Sie k&ouml;nnen diese Einwilligung jederzeit mit Wirkung f&uuml;r die Zukunft widerrufen.</p>
+      <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Kader (Spielerdaten)</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Angemeldete Trainer:innen k&ouml;nnen Spieler:innen mit Name, R&uuml;ckennummer, Position und Altersgruppe in einem Kader speichern. Der Kader ist nur f&uuml;r das Konto sichtbar, das ihn angelegt hat. Zus&auml;tzlich wird er als Zwischenspeicher im Browser abgelegt. Die Eintr&auml;ge k&ouml;nnen jederzeit in der App ge&auml;ndert oder gel&ouml;scht werden.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">F&uuml;r die Rechtm&auml;&szlig;igkeit dieser Daten &ndash; insbesondere bei Minderj&auml;hrigen &ndash; ist die nutzende Trainerin bzw. der nutzende Trainer verantwortlich (z. B. Information und Einwilligung der Spieler:innen bzw. Erziehungsberechtigten, Vorgaben des Vereins). Wir empfehlen, nur Vornamen oder K&uuml;rzel zu verwenden.</p>
+      <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Verein und Vereinslogo</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Im Vereinsbereich werden Vereinsname, Logo, Sportarten sowie die E-Mail-Adressen der Vereinsmitglieder f&uuml;r den Vereinsadmin sichtbar verarbeitet. Ein Vereinslogo wird auf der Startseite &ouml;ffentlich &ndash; auch ohne Anmeldung &ndash; nur angezeigt, wenn der Vereinsadmin dem ausdr&uuml;cklich zugestimmt hat (Art. 6 Abs. 1 lit. a DSGVO). Die Zustimmung ist jederzeit widerrufbar.</p>
+      <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Speicherdauer und L&ouml;schung</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 0px;">Sie k&ouml;nnen Ihr Konto jederzeit selbst unter &bdquo;Mein Account&ldquo; &rarr; &bdquo;Konto l&ouml;schen&ldquo; dauerhaft l&ouml;schen. Dabei werden Ihr Login, Ihr Kader, Ihre privat gespeicherten Trainingspl&auml;ne und Bewertungen entfernt. Von Ihnen eingereichte &Uuml;bungen und Trainingspl&auml;ne bleiben ohne Namensangabe erhalten und werden nur auf manuelle L&ouml;schung entfernt. Alternativ gen&uuml;gt eine E-Mail an assistcoach2026@gmail.com.</p>
+    </div>
+    <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
+      <div class="fsec" style="margin-top:0;">4. Weitere Dienste und lokale Speicherung</div>
+      <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Feedback-Formular (EmailJS)</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Wenn Sie &uuml;ber das Feedback-Formular der App eine Nachricht senden, werden Name, optional Ihre E-Mail-Adresse und Ihre Nachricht &uuml;ber den Dienst EmailJS an uns versendet. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b bzw. lit. f DSGVO. Dabei kann eine &Uuml;bermittlung in Drittl&auml;nder erfolgen; die Grundlage hierf&uuml;r sind EU-Standardvertragsklauseln bzw. ein Angemessenheitsbeschluss.</p>
+      <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Content Delivery Network (jsDelivr)</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Zur Bereitstellung der App laden wir Programmbibliotheken (z. B. f&uuml;r Datenbankanbindung und E-Mail-Versand) &uuml;ber das Content Delivery Network jsDelivr. Dabei wird Ihre IP-Adresse an den Betreiber &uuml;bermittelt. Rechtsgrundlage ist unser berechtigtes Interesse an einer sicheren und schnellen Bereitstellung (Art. 6 Abs. 1 lit. f DSGVO).</p>
+      <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Lokale Speicherung im Browser</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 0px;">Die App speichert technisch erforderliche Informationen im Browser (localStorage und Service-Worker-Cache), z. B. Spracheinstellung, Farbdesign, Onboarding-Status, Trainingspl&auml;ne und einen Zwischenspeicher des Kaders, damit die App schnell l&auml;dt und auch bei schlechter Verbindung funktioniert. Es werden keine Tracking-Cookies eingesetzt. Rechtsgrundlage ist &sect; 25 Abs. 2 Nr. 2 TDDDG. Sie k&ouml;nnen diese Daten jederzeit in den Browsereinstellungen l&ouml;schen.</p>
+    </div>
+
+    <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
+      <div class="fsec" style="margin-top:0;">5. Allgemeine Hinweise und Pflichtinformationen</div>
       <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Hinweis zur verantwortlichen Stelle</p>
       <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 6px;">Die verantwortliche Stelle f&uuml;r die Datenverarbeitung auf dieser Website ist:</p>
       <p style="font-size:13px;color:var(--gd2);margin:0 0 12px;">Niklas Boenisch<br>Hansaring 111-113<br>50670 K&ouml;ln<br>Deutschland<br>E-Mail: assistcoach2026@gmail.com</p>
@@ -966,14 +996,14 @@
     </div>
 
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
-      <div class="fsec" style="margin-top:0;">4. Datenerfassung auf dieser Website</div>
+      <div class="fsec" style="margin-top:0;">6. Datenerfassung auf dieser Website</div>
       <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Anfrage per E-Mail</p>
       <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Wenn Sie uns per E-Mail kontaktieren, wird Ihre Anfrage inklusive aller daraus hervorgehenden personenbezogenen Daten zum Zwecke der Bearbeitung Ihres Anliegens bei uns gespeichert und verarbeitet. Diese Daten geben wir nicht ohne Ihre Einwilligung weiter.</p>
       <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Rechtsgrundlage: Art. 6 Abs. 1 lit. b und f DSGVO.</p>
     </div>
 
     <p style="font-size:11px;color:var(--gd2);text-align:center;margin-top:24px;">Quelle: <a href="https://www.e-recht24.de" target="_blank" rel="noopener noreferrer" style="color:var(--gd2);">e-recht24.de</a> &nbsp;&middot;&nbsp; Stand: <span id="datenschutzDate"></span></p>
-    <script>document.getElementById('datenschutzDate').textContent=new Date().toLocaleDateString('de-DE',{month:'long',year:'numeric'});</script>
+    <script>document.getElementById('datenschutzDate').textContent='Oktober 2026';</script>
   </div>
 </div>
 
@@ -995,12 +1025,14 @@
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
       <div class="fsec" style="margin-top:0;">&sect; 3 Registrierung und Nutzerkonto</div>
       <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Die Nutzung bestimmter Funktionen setzt eine Registrierung voraus. Nutzer m&uuml;ssen bei der Registrierung wahrheitsgem&auml;&szlig;e Angaben machen und ihr Konto vor unbefugtem Zugriff sch&uuml;tzen.</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Der Anbieter beh&auml;lt sich vor, Konten bei Versto&szlig; gegen diese AGB zu sperren oder zu l&ouml;schen.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Der Anbieter beh&auml;lt sich vor, Konten bei Versto&szlig; gegen diese AGB zu sperren oder zu l&ouml;schen.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 0px;">Die Registrierung ist ab 16 Jahren zul&auml;ssig. Nutzer k&ouml;nnen ihr Konto jederzeit selbst unter &bdquo;Mein Account&ldquo; l&ouml;schen oder die L&ouml;schung per E-Mail an assistcoach2026@gmail.com verlangen.</p>
     </div>
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
       <div class="fsec" style="margin-top:0;">&sect; 4 Einreichung von Inhalten</div>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Mit der Einreichung von &Uuml;bungen oder Trainingsp&auml;nen r&auml;umt der Nutzer dem Anbieter das nicht-exklusive, unentgeltliche Recht ein, diese Inhalte auf der Plattform zu ver&ouml;ffentlichen und zu bearbeiten.</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Der Nutzer versichert, dass eingereichte Inhalte keine Rechte Dritter verletzen.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Mit der Einreichung von &Uuml;bungen oder Trainingspl&auml;nen r&auml;umt der Nutzer dem Anbieter das nicht-exklusive, r&auml;umlich unbeschr&auml;nkte, unentgeltliche Recht ein, diese Inhalte zu speichern, zu ver&ouml;ffentlichen, zu vervielf&auml;ltigen und redaktionell zu bearbeiten (z. B. zu k&uuml;rzen oder zu formatieren) sowie anderen Nutzern im Rahmen der Plattform zug&auml;nglich zu machen. Dies umfasst die &Uuml;bernahme in deren Trainingspl&auml;ne, die Bewertung sowie den Ausdruck und die Speicherung als PDF zur eigenen Nutzung. Das Recht besteht bis zur L&ouml;schung des jeweiligen Inhalts fort, auch nach Beendigung oder L&ouml;schung des Nutzerkontos; eingereichte &Uuml;bungen und Trainingspl&auml;ne werden dann ohne Namensangabe weitergef&uuml;hrt; bereits erstellte Pl&auml;ne und Ausdrucke anderer Nutzer bleiben unber&uuml;hrt. Der Name des Nutzers wird nur angezeigt, wenn er die &ouml;ffentliche Namensanzeige aktiviert hat.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Der Nutzer versichert, dass eingereichte Inhalte keine Rechte Dritter verletzen.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 0px;">Der Anbieter pr&uuml;ft eingereichte Inhalte vor der Ver&ouml;ffentlichung, ist zur Ver&ouml;ffentlichung aber nicht verpflichtet und kann Inhalte jederzeit ablehnen oder entfernen. Rechtswidrige Inhalte k&ouml;nnen per E-Mail an assistcoach2026@gmail.com gemeldet werden.</p>
     </div>
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
       <div class="fsec" style="margin-top:0;">&sect; 5 Vereinszugang und Logonutzung</div>
@@ -1015,21 +1047,28 @@
         <li style="margin-bottom:4px;">Automatisierter Zugriff auf die Plattform (Scraping, Bots)</li>
         <li>Jede Handlung, die den Betrieb der Plattform beeintr&auml;chtigt</li>
       </ul>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:10px 0 0;">Wer in der App Daten von Spieler:innen (Kader) speichert, ist daf&uuml;r verantwortlich, dazu berechtigt zu sein. Bei Minderj&auml;hrigen ist die erforderliche Einwilligung der Erziehungsberechtigten bzw. die Zustimmung des Vereins einzuholen. M&ouml;glichst sollten nur Vornamen oder K&uuml;rzel verwendet werden.</p>
     </div>
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
       <div class="fsec" style="margin-top:0;">&sect; 7 Haftung</div>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Die Haftung des Anbieters ist auf Vorsatz und grobe Fahrl&auml;ssigkeit beschr&auml;nkt, soweit nicht Leben, K&ouml;rper oder Gesundheit betroffen sind oder zwingende gesetzliche Regelungen entgegenstehen.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Der Anbieter haftet unbeschr&auml;nkt bei Vorsatz und grober Fahrl&auml;ssigkeit, bei Verletzung von Leben, K&ouml;rper oder Gesundheit sowie nach dem Produkthaftungsgesetz. Bei leicht fahrl&auml;ssiger Verletzung wesentlicher Vertragspflichten ist die Haftung auf den vorhersehbaren, typischerweise eintretenden Schaden begrenzt. Im &Uuml;brigen ist die Haftung bei leichter Fahrl&auml;ssigkeit ausgeschlossen.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">&Uuml;bungen und Trainingspl&auml;ne werden zu einem gro&szlig;en Teil von Nutzern erstellt. Der Anbieter &uuml;bernimmt keine Gew&auml;hr f&uuml;r Richtigkeit, Vollst&auml;ndigkeit, Altersgerechtigkeit oder Sicherheit dieser Inhalte. Die Auswahl, Anpassung und Durchf&uuml;hrung der &Uuml;bungen, die Aufsicht sowie die Absicherung der Trainingsgruppe liegen allein in der Verantwortung der Trainer:innen.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 0px;">Die App befindet sich in der Beta-Phase. Eine bestimmte Verf&uuml;gbarkeit oder Fehlerfreiheit wird nicht zugesichert.</p>
     </div>
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
       <div class="fsec" style="margin-top:0;">&sect; 8 &Auml;nderungen der AGB</div>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Der Anbieter beh&auml;lt sich vor, diese AGB mit angemessener Vork&uuml;ndigung (mind. 4 Wochen) zu &auml;ndern. Bei Widerspruch steht dem Nutzer ein Sonderk&uuml;ndigungsrecht zu.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Der Anbieter beh&auml;lt sich vor, diese AGB mit angemessener Vorank&uuml;ndigung (mind. 4 Wochen) zu &auml;ndern. Bei Widerspruch steht dem Nutzer ein Sonderk&uuml;ndigungsrecht zu.</p>
     </div>
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
       <div class="fsec" style="margin-top:0;">&sect; 9 Anwendbares Recht und Gerichtsstand</div>
       <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0;">Es gilt das Recht der Bundesrepublik Deutschland. Gerichtsstand f&uuml;r Kaufleute und juristische Personen des &ouml;ffentlichen Rechts ist K&ouml;ln.</p>
     </div>
+    <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
+      <div class="fsec" style="margin-top:0;">&sect; 10 Schlussbestimmungen</div>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 0px;">Sollten einzelne Bestimmungen dieser AGB unwirksam sein, bleibt die Wirksamkeit der &uuml;brigen Bestimmungen unber&uuml;hrt.</p>
+    </div>
     <p style="font-size:11px;color:var(--gd2);text-align:center;margin-top:24px;">Stand: <span id="agbDate"></span></p>
-    <script>document.getElementById('agbDate').textContent=new Date().toLocaleDateString('de-DE',{month:'long',year:'numeric'});</script>
+    <script>document.getElementById('agbDate').textContent='Oktober 2026';</script>
   </div>
 </div>
 <!-- ONBOARDING OVERLAY -->
@@ -1788,6 +1827,7 @@
         <div class="help-step"><span class="help-num">4</span><span><strong>Mein Bereich:</strong> eigene Übungen mit Status (In Prüfung / Freigegeben)</span></div>
         <div class="help-step"><span class="help-num">5</span><span><strong>Mein Bereich:</strong> eingereichte Trainingspläne verwalten &amp; zurückziehen</span></div>
         <div class="help-step"><span class="help-num">6</span><span><em>App-Admins:</em> Im „Mein Account" gibt es den Tab <strong>„Trainer:innen"</strong> – Nutzer:innen per E-Mail suchen, nach Admins / Reviewer / Vereinsadmins / Trainer:innen filtern, Rechte vergeben und die Liste ein- und ausklappen</span></div>
+        <div class="help-step"><span class="help-num">7</span><span><strong>Konto löschen:</strong> Mein Account → Profil → roter Block „Konto löschen". Entfernt Login, Kader, Pläne und Bewertungen dauerhaft; eingereichte Übungen und Pläne bleiben anonym erhalten. Vereinsadmins müssen vorher die Admin-Rolle übergeben oder den Verein löschen</span></div>
       </div>
     </div>
 
