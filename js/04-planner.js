@@ -53,34 +53,34 @@ function piHTML(item,ex,si,col){
   const hasPlayerOvr = item.players!=null;
   const hasDurOvr = item.duration!=null;
   const dc=difficulty==='Leicht'?'dl':difficulty==='Mittel'?'dm':'ds';
-  return`<div class="pi" data-id="${ex.id}" draggable="true">
+  return`<div class="pi" data-id="${esc(ex.id)}" draggable="true">
     <div class="pi-dh">⠿</div>
     <div class="pi-body">
-      <div class="pi-name">${ex.name}</div>
+      <div class="pi-name">${esc(ex.name)}</div>
       <div class="pi-meta">
         ${players?`<span class="mbadge p pi-ovr-wrap" title="Klicken zum Anpassen">
-          👥 <input class="pi-ovr-in" value="${players}" style="width:${Math.max(30,players.length*8)}px"
-            onchange="setPlanOverride('${ex.id}',${si},'players',this.value)"
+          👥 <input class="pi-ovr-in" value="${esc(players)}" style="width:${Math.max(30,players.length*8)}px"
+            onchange="setPlanOverride('${escJs(ex.id)}',${si},'players',this.value)"
             onclick="event.stopPropagation()" title="Leer lassen für Standardwert">
-          ${hasPlayerOvr?`<button class="pi-ovr-rst" onclick="resetPlanOverride('${ex.id}',${si},'players');event.stopPropagation()" title="Zurücksetzen">↺</button>`:''}
+          ${hasPlayerOvr?`<button class="pi-ovr-rst" onclick="resetPlanOverride('${escJs(ex.id)}',${si},'players');event.stopPropagation()" title="Zurücksetzen">↺</button>`:''}
         </span>`:''}
-        ${difficulty?`<span class="mbadge ${dc}">${difficulty}</span>`:''}
+        ${difficulty?`<span class="mbadge ${dc}">${esc(difficulty)}</span>`:''}
         ${duration?`<span class="mbadge pi-ovr-wrap" style="background:#e8f0fe;color:#1a56c4;" title="Klicken zum Anpassen">
           ⏱
-          <button class="pi-dur-step" onclick="stepPlanDur('${ex.id}',${si},-1);event.stopPropagation()" title="−1 min">−</button>
-          <input class="pi-ovr-in pi-dur-in" value="${duration}" style="width:${Math.max(24,(String(duration).length)*9)}px;color:#1a56c4;"
+          <button class="pi-dur-step" onclick="stepPlanDur('${escJs(ex.id)}',${si},-1);event.stopPropagation()" title="−1 min">−</button>
+          <input class="pi-ovr-in pi-dur-in" value="${esc(duration)}" style="width:${Math.max(24,(String(duration).length)*9)}px;color:#1a56c4;"
             type="number" min="1" max="120"
-            onchange="setPlanOverride('${ex.id}',${si},'duration',parseInt(this.value)||null)"
+            onchange="setPlanOverride('${escJs(ex.id)}',${si},'duration',parseInt(this.value)||null)"
             onclick="event.stopPropagation()" title="Leer lassen für Standardwert">
-          <button class="pi-dur-step" onclick="stepPlanDur('${ex.id}',${si},1);event.stopPropagation()" title="+1 min">+</button>
+          <button class="pi-dur-step" onclick="stepPlanDur('${escJs(ex.id)}',${si},1);event.stopPropagation()" title="+1 min">+</button>
           min
-          ${hasDurOvr?`<button class="pi-ovr-rst" onclick="resetPlanOverride('${ex.id}',${si},'duration');event.stopPropagation()" title="Zurücksetzen">↺</button>`:''}
+          ${hasDurOvr?`<button class="pi-ovr-rst" onclick="resetPlanOverride('${escJs(ex.id)}',${si},'duration');event.stopPropagation()" title="Zurücksetzen">↺</button>`:''}
         </span>`:''}
       </div>
     </div>
-    <button class="pi-rm" onclick="removePlanLane('${ex.id}',${si})">✕</button>
+    <button class="pi-rm" onclick="removePlanLane('${escJs(ex.id)}',${si})">✕</button>
     ${squadForPlan().length>0?`<div class="pi-squad-wrap" style="position:relative;">
-      <button class="pi-squad-btn" onclick="toggleExcludeDrop('${ex.id}',${si},this);event.stopPropagation()" title="Spieler ausschließen" style="background:none;border:none;cursor:pointer;padding:2px 5px;color:${(item.excludedIds||[]).length>0?'#e53935':'var(--gd2)'};font-size:11px;font-weight:700;border-radius:5px;" onmouseenter="this.style.background='var(--off)'" onmouseleave="this.style.background='none'">
+      <button class="pi-squad-btn" onclick="toggleExcludeDrop('${escJs(ex.id)}',${si},this);event.stopPropagation()" title="Spieler ausschließen" style="background:none;border:none;cursor:pointer;padding:2px 5px;color:${(item.excludedIds||[]).length>0?'#e53935':'var(--gd2)'};font-size:11px;font-weight:700;border-radius:5px;" onmouseenter="this.style.background='var(--off)'" onmouseleave="this.style.background='none'">
         👥${(item.excludedIds||[]).length>0?` −${item.excludedIds.length}`:''}
       </button>
     </div>`:''}
@@ -170,17 +170,17 @@ function renderLanePickerList(q){
   el.innerHTML=filtered.map(e=>{
     const inPlan=(currentPlan.lanes[si]||[]).some(raw=>_laneItem(raw).id===e.id);
     return`<div class="lp-item ${inPlan?'lp-inplan':''}">
-      <div class="lp-img">${e.image?`<img src="${e.image}" style="width:100%;height:100%;object-fit:cover;">`:'⚽'}</div>
+      <div class="lp-img">${e.image?`<img src="${esc(e.image)}" style="width:100%;height:100%;object-fit:cover;">`:'⚽'}</div>
       <div class="lp-info">
-        <div class="lp-name">${e.name}</div>
+        <div class="lp-name">${esc(e.name)}</div>
         <div class="lp-meta">
-          ${e.players?`<span class="mbadge p">👥 ${e.players}</span>`:''}
-          ${e.difficulty?`<span class="mbadge">${e.difficulty}</span>`:''}
-          ${e.duration?`<span class="mbadge">⏱ ${e.duration} min</span>`:''}
+          ${e.players?`<span class="mbadge p">👥 ${esc(e.players)}</span>`:''}
+          ${e.difficulty?`<span class="mbadge">${esc(e.difficulty)}</span>`:''}
+          ${e.duration?`<span class="mbadge">⏱ ${esc(e.duration)} min</span>`:''}
         </div>
-        ${(e.tags||[]).slice(0,3).map(t=>`<span class="ctag" style="${tagStyle(t)};font-size:9px;">${t}</span>`).join('')}
+        ${(e.tags||[]).slice(0,3).map(t=>`<span class="ctag" style="${tagStyle(t)};font-size:9px;">${esc(t)}</span>`).join('')}
       </div>
-      <button onclick="${inPlan?`removePlanLane('${e.id}',${si})`:`addToPlan('${e.id}',${si})`};renderLanePickerList(document.getElementById('lanePickerSearch').value)"
+      <button onclick="${inPlan?`removePlanLane('${escJs(e.id)}',${si})`:`addToPlan('${escJs(e.id)}',${si})`};renderLanePickerList(document.getElementById('lanePickerSearch').value)"
         style="flex-shrink:0;padding:7px 14px;border:none;border-radius:8px;font-weight:800;font-size:11px;cursor:pointer;
         background:${inPlan?'#fce4ec':'var(--accent)'};color:${inPlan?'#880e4f':'#fff'};">
         ${inPlan?'✕ Entfernen':'+ Plan'}
@@ -294,23 +294,23 @@ function printPlan(){
     const col=secColor(si);
     return`<div class="ex-card">
       <div class="ex-num" style="background:${col}">${idx+1}</div>
-      <div class="ex-img">${ex.image?`<img src="${ex.image}" alt="${ex.name}">`:'<div class="ex-img-empty"></div>'}</div>
+      <div class="ex-img">${ex.image?`<img src="${esc(ex.image)}" alt="${esc(ex.name)}">`:'<div class="ex-img-empty"></div>'}</div>
       <div class="ex-info">
         <div class="ex-sec" style="color:${col}">${secName(si)}</div>
-        <div class="ex-name">${ex.name}</div>
+        <div class="ex-name">${esc(ex.name)}</div>
         <div class="ex-meta">
-          ${players?`<span>👥 ${players}</span>`:''}
-          ${duration?`<span>⏱ ${duration} min</span>`:''}
-          ${difficulty?`<span>◉ ${difficulty}</span>`:''}
+          ${players?`<span>👥 ${esc(players)}</span>`:''}
+          ${duration?`<span>⏱ ${esc(duration)} min</span>`:''}
+          ${difficulty?`<span>◉ ${esc(difficulty)}</span>`:''}
         </div>
-        ${ex.desc?`<div class="ex-desc">${ex.desc}</div>`:''}
+        ${ex.desc?`<div class="ex-desc">${esc(ex.desc)}</div>`:''}
       </div>
     </div>`;
   }).join('');
 
   const matHTML=materials.length?`<div class="mat-box">
     <div class="mat-box-title">Material</div>
-    <div class="mat-box-items">${materials.map(m=>`<span class="mat-pill">${m}</span>`).join('')}</div>
+    <div class="mat-box-items">${materials.map(m=>`<span class="mat-pill">${esc(m)}</span>`).join('')}</div>
   </div>`:'';
 
   const diffRows=[
@@ -330,7 +330,7 @@ function printPlan(){
   </div>`:'';
 
   const html=`<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8">
-<title>${planName}</title>
+<title>${esc(planName)}</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Helvetica Neue',Arial,sans-serif;color:#111;background:#fff;padding:14mm 16mm;}
@@ -389,10 +389,10 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;color:#111;background:#fff;pa
       <div class="brand-sub">Trainingsplanung</div>
     </div>
   </div>
-  ${typeof clubLogoUrl!=='undefined'&&clubLogoUrl?`<img class="club-logo" src="${clubLogoUrl}" alt="Vereinslogo">`:''}
+  ${typeof clubLogoUrl!=='undefined'&&clubLogoUrl?`<img class="club-logo" src="${esc(clubLogoUrl)}" alt="Vereinslogo">`:''}
 </div>
 <div class="print-header">
-  <div class="print-title">${planName}</div>
+  <div class="print-title">${esc(planName)}</div>
   ${printDate?`<div class="print-date">${printDate}</div>`:''}
 </div>
 ${matHTML}

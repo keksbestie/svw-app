@@ -45,10 +45,10 @@ function _ratingHTML(exId, inModal=false){
   const userR = r.userRating;
   const size = inModal ? '20px' : '14px';
   const stars = [1,2,3,4,5].map(i=>`
-    <span class="star-btn" data-star="${i}" onclick="rateExercise('${exId}',${i},event)"
+    <span class="star-btn" data-star="${i}" onclick="rateExercise('${escJs(exId)}',${i},event)"
       style="font-size:${size};cursor:pointer;color:${i<=(userR||Math.round(avg||0))?'#f59e0b':'var(--text-3)'};"
       onmouseenter="this.parentElement.querySelectorAll('.star-btn').forEach((s,j)=>s.style.color=j<${i}?'#fbbf24':'var(--text-3)')"
-      onmouseleave="_resetStars('${exId}',this.parentElement)">★</span>`).join('');
+      onmouseleave="_resetStars('${escJs(exId)}',this.parentElement)">★</span>`).join('');
   const countLabel = r.count>=5
     ? `<span style="font-size:10px;color:var(--text-3);margin-left:4px;">${avg.toFixed(1)} (${r.count})</span>`
     : r.count>0
@@ -153,7 +153,7 @@ function renderPlanCart(){
     const pct = totalMin>0 ? Math.round(min/totalMin*100) : 0;
     return`<div style="margin-bottom:6px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
-        <span style="font-size:10px;font-weight:700;color:var(--text-2);">${label}</span>
+        <span style="font-size:10px;font-weight:700;color:var(--text-2);">${esc(label)}</span>
         <span style="font-size:10px;color:var(--text-3);">${min} min · ${pct}%</span>
       </div>
       <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden;">
@@ -172,10 +172,10 @@ function renderPlanCart(){
       ${s.exs.map(e=>{
         const isPar=_cartParallel.has(e.id);
         return`<div style="display:flex;align-items:center;gap:5px;padding:4px 6px;border-radius:6px;background:var(--surface-2);margin-bottom:3px;${isPar?'border-left:3px solid #555;':'border-left:3px solid transparent;'}">
-          <span style="font-size:10px;color:${isPar?'var(--text-3)':'var(--text-1)'};flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.name}</span>
-          ${e.duration?`<span style="font-size:9px;color:var(--text-3);white-space:nowrap;">${isPar?'(∥) ':'' }${e.duration}min</span>`:''}
-          <button onclick="toggleCartParallel('${e.id}')" title="${isPar?'Parallel aufheben':'Als parallel markieren (zählt nicht zur Gesamtzeit)'}" style="background:${isPar?'rgba(100,100,100,.2)':'none'};border:none;cursor:pointer;color:${isPar?'#aaa':'var(--text-3)'};font-size:9px;padding:1px 3px;border-radius:3px;flex-shrink:0;font-weight:900;line-height:1;">∥</button>
-          <button onclick="removePlanItem('${e.id}')" style="background:none;border:none;cursor:pointer;color:var(--text-3);font-size:10px;padding:0;flex-shrink:0;">✕</button>
+          <span style="font-size:10px;color:${isPar?'var(--text-3)':'var(--text-1)'};flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(e.name)}</span>
+          ${e.duration?`<span style="font-size:9px;color:var(--text-3);white-space:nowrap;">${isPar?'(∥) ':'' }${esc(e.duration)}min</span>`:''}
+          <button onclick="toggleCartParallel('${escJs(e.id)}')" title="${isPar?'Parallel aufheben':'Als parallel markieren (zählt nicht zur Gesamtzeit)'}" style="background:${isPar?'rgba(100,100,100,.2)':'none'};border:none;cursor:pointer;color:${isPar?'#aaa':'var(--text-3)'};font-size:9px;padding:1px 3px;border-radius:3px;flex-shrink:0;font-weight:900;line-height:1;">∥</button>
+          <button onclick="removePlanItem('${escJs(e.id)}')" style="background:none;border:none;cursor:pointer;color:var(--text-3);font-size:10px;padding:0;flex-shrink:0;">✕</button>
         </div>`;
       }).join('')}
     </div>`).join('');
@@ -231,25 +231,25 @@ function openExDetail(id){
   const s=SECS[e.section]||SECS[0];
   const dc=e.difficulty==='Leicht'?'#1a7f4b':e.difficulty==='Mittel'?'#e65100':'#880e4f';
   const diffLbl=e.difficulty==='Schwer'?'Hoch':e.difficulty;
-  const tags=(e.tags||[]).map(t=>`<span style="font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px;${tagStyle(t)};display:inline-block;margin:2px;">${t}</span>`).join('');
-  const matPills=(e.material||'').split(',').filter(Boolean).map(m=>`<span style="font-size:11px;padding:3px 10px;border-radius:6px;background:var(--surface-2);border:1px solid var(--border);display:inline-block;margin:2px;">${m.trim()}</span>`).join('');
+  const tags=(e.tags||[]).map(t=>`<span style="font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px;${tagStyle(t)};display:inline-block;margin:2px;">${esc(t)}</span>`).join('');
+  const matPills=(e.material||'').split(',').filter(Boolean).map(m=>`<span style="font-size:11px;padding:3px 10px;border-radius:6px;background:var(--surface-2);border:1px solid var(--border);display:inline-block;margin:2px;">${esc(m.trim())}</span>`).join('');
 
   document.getElementById('exDetailBody').innerHTML=`
     <div style="background:linear-gradient(135deg,${s.color}e0,${s.color});padding:16px 20px;margin:-20px -20px 20px;border-radius:8px 8px 0 0;">
       <div style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:4px;">${s.name}</div>
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;color:#fff;letter-spacing:.5px;">${e.name}</div>
-      ${e.author?`<div style="font-size:10px;color:rgba(255,255,255,.6);margin-top:4px;font-style:italic;">erstellt von ${e.author}</div>`:''}
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;color:#fff;letter-spacing:.5px;">${esc(e.name)}</div>
+      ${e.author?`<div style="font-size:10px;color:rgba(255,255,255,.6);margin-top:4px;font-style:italic;">erstellt von ${esc(e.author)}</div>`:''}
     </div>
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
-      ${e.players?`<span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px;background:#e8f5e9;color:#1a7f4b;">👥 ${e.players} Spieler:innen</span>`:''}
-      ${e.duration?`<span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px;background:#e8f0fe;color:#1a56c4;">⏱ ${e.duration} min</span>`:''}
-      ${e.ageGroups&&e.ageGroups.length?`<span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px;background:#e6f4ea;color:#1b6b3a;">${ageLabel(e.ageGroups)}</span>`:''}
-      ${e.difficulty?`<span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px;background:${dc}20;color:${dc};">◉ ${diffLbl}</span>`:''}
+      ${e.players?`<span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px;background:#e8f5e9;color:#1a7f4b;">👥 ${esc(e.players)} Spieler:innen</span>`:''}
+      ${e.duration?`<span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px;background:#e8f0fe;color:#1a56c4;">⏱ ${esc(e.duration)} min</span>`:''}
+      ${e.ageGroups&&e.ageGroups.length?`<span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px;background:#e6f4ea;color:#1b6b3a;">${esc(ageLabel(e.ageGroups))}</span>`:''}
+      ${e.difficulty?`<span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px;background:${dc}20;color:${dc};">◉ ${esc(diffLbl)}</span>`:''}
     </div>
-    ${e.image?`<div style="margin-bottom:16px;border-radius:10px;overflow:hidden;border:1px solid var(--border);cursor:zoom-in;" onclick="openImgLightbox('${e.image}')"><img src="${e.image}" style="width:100%;display:block;max-height:320px;object-fit:cover;"></div>`:''}
+    ${e.image?`<div style="margin-bottom:16px;border-radius:10px;overflow:hidden;border:1px solid var(--border);cursor:zoom-in;" onclick="openImgLightbox('${escJs(e.image)}')"><img src="${esc(e.image)}" style="width:100%;display:block;max-height:320px;object-fit:cover;"></div>`:''}
     ${e.desc?`<div style="margin-bottom:16px;">
       <div style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:6px;">Beschreibung</div>
-      <div style="font-size:13px;color:var(--text-1);line-height:1.7;white-space:pre-wrap;">${e.desc}</div>
+      <div style="font-size:13px;color:var(--text-1);line-height:1.7;white-space:pre-wrap;">${esc(e.desc)}</div>
     </div>`:''}
     ${e.material?`<div style="margin-bottom:16px;">
       <div style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:6px;">Material</div>
@@ -259,10 +259,10 @@ function openExDetail(id){
       <div style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:6px;">Tags</div>
       <div>${tags}</div>
     </div>`:''}
-    <div id="detail-rating-${e.id}" style="margin-bottom:16px;">${_ratingHTML(e.id,true)}</div>
+    <div id="detail-rating-${esc(e.id)}" style="margin-bottom:16px;">${_ratingHTML(e.id,true)}</div>
     <div style="display:flex;gap:8px;padding-top:12px;border-top:1px solid var(--border);">
-      <button onclick="addToPlanOrPick('${e.id}',${e.section},true)" style="flex:1;padding:12px;background:${s.color};color:#fff;border:none;border-radius:9px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;">+ Zum Plan hinzufügen</button>
-      ${IS_ADMIN?`<button onclick="closeMod('exDetailMod');openCatalogFieldEdit('${e.id}')" title="Felddiagramm bearbeiten" style="padding:12px 14px;border:1px solid var(--border);background:none;border-radius:9px;font-size:15px;cursor:pointer;color:var(--text-2);">🎨</button><button onclick="closeMod('exDetailMod');editEx('${e.id}')" title="Übung bearbeiten" style="padding:12px 14px;border:1px solid var(--border);background:none;border-radius:9px;font-size:13px;cursor:pointer;color:var(--text-2);">✏️</button>`:''}
+      <button onclick="addToPlanOrPick('${escJs(e.id)}',${e.section},true)" style="flex:1;padding:12px;background:${s.color};color:#fff;border:none;border-radius:9px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;">+ Zum Plan hinzufügen</button>
+      ${IS_ADMIN?`<button onclick="closeMod('exDetailMod');openCatalogFieldEdit('${escJs(e.id)}')" title="Felddiagramm bearbeiten" style="padding:12px 14px;border:1px solid var(--border);background:none;border-radius:9px;font-size:15px;cursor:pointer;color:var(--text-2);">🎨</button><button onclick="closeMod('exDetailMod');editEx('${escJs(e.id)}')" title="Übung bearbeiten" style="padding:12px 14px;border:1px solid var(--border);background:none;border-radius:9px;font-size:13px;cursor:pointer;color:var(--text-2);">✏️</button>`:''}
     </div>`;
   openMod('exDetailMod');
 }
@@ -312,8 +312,8 @@ function renderSection(){
   const clusterLegend=Object.entries(clusterCounts).filter(([,c])=>c>0).map(([name])=>{
     const cl=(SECTION_CLUSTERS[activeSec]||SECTION_CLUSTERS[0])[name]||(SECTION_CLUSTERS[activeSec]||SECTION_CLUSTERS[0])['SONSTIGE'];
     const isAct=activeCluster===name;
-    return`<span class="cpill ${isAct?'act':''}" style="background:${cl.bg};color:${cl.color};" onclick="toggleCluster('${name}')">
-      <span class="cd"></span>${name}<span class="cnt">(${clusterCounts[name]})</span>
+    return`<span class="cpill ${isAct?'act':''}" style="background:${cl.bg};color:${cl.color};" onclick="toggleCluster('${escJs(name)}')">
+      <span class="cd"></span>${esc(name)}<span class="cnt">(${clusterCounts[name]})</span>
     </span>`;
   }).join('');
 
@@ -328,7 +328,7 @@ function renderSection(){
         <div class="hero-body">
           <div class="hero-lbl">Abschnitt ${activeSec+1}</div>
           <div class="hero-title">${s.name}</div>
-          <div class="hero-desc" id="heroDesc">${desc||'<em style="opacity:.45">Noch kein Text. Admins können diesen über „Bearbeiten" hinzufügen.</em>'}</div>
+          <div class="hero-desc" id="heroDesc">${desc?esc(desc):'<em style="opacity:.45">Noch kein Text. Admins können diesen über „Bearbeiten" hinzufügen.</em>'}</div>
           <button class="hero-tog" id="heroTog" onclick="toggleDesc()" style="display:none;">▼ Mehr</button>
         </div>
         <button class="hero-edit-btn" onclick="openDescMod(${activeSec})">✏️ Bearbeiten</button>
@@ -345,7 +345,7 @@ function renderSection(){
         <div>
           <div class="fbar">
             <div class="ftop">
-              <input class="fin" id="ss${activeSec}" type="text" placeholder="In ${s.name} suchen…" value="${q}" oninput="renderSection()">
+              <input class="fin" id="ss${activeSec}" type="text" placeholder="In ${s.name} suchen…" value="${esc(q)}" oninput="renderSection()">
               <button class="gbtn" onclick="selectedTags=[];activeCluster=null;clusterFilterTags=[];ageFilter=null;renderSection()">✕ Reset</button>
               <div class="view-toggle">
                 <button class="view-toggle-btn ${_catalogView==='expanded'?'active':''}" onclick="setCatalogView('expanded')" title="Ausgeklappt">☰☰</button>
@@ -361,7 +361,7 @@ function renderSection(){
           <div class="tag-bar">
             <span class="tlbl">Tags:</span>
             ${allTags.map(t=>{const sel=selectedTags.map(x=>x.toUpperCase()).includes(t.toUpperCase());
-              return`<span class="tchip ${sel?'sel':''}" style="${tagStyle(t,sel)}" onclick="toggleTag('${t}')">${t}</span>`;
+              return`<span class="tchip ${sel?'sel':''}" style="${tagStyle(t,sel)}" onclick="toggleTag('${escJs(t)}')">${esc(t)}</span>`;
             }).join('')}
             ${!allTags.length?'<span style="font-size:10px;color:var(--gm);">Noch keine Tags</span>':''}
           </div>
@@ -455,43 +455,43 @@ function filterByTag(tag){if(!selectedTags.map(t=>t.toUpperCase()).includes(tag.
 function cardHTML(e,col){
   const dc=e.difficulty==='Leicht'?'dl':e.difficulty==='Mittel'?'dm':e.difficulty==='Schwer'?'ds':'';
   const diffLabel=e.difficulty==='Schwer'?'Hoch':e.difficulty;
-  const mats=e.material?e.material.split(',').map(m=>`<span class="matpill">${m.trim()}</span>`).join(''):'';
-  const tags=(e.tags||[]).map(t=>`<span class="ctag" style="${tagStyle(t)}" onclick="event.stopPropagation();filterByTag('${t}')">${t}</span>`).join('');
-  const authorLine = e.author ? `<div class="card-author">erstellt von ${e.author}</div>` : '';
+  const mats=e.material?e.material.split(',').map(m=>`<span class="matpill">${esc(m.trim())}</span>`).join(''):'';
+  const tags=(e.tags||[]).map(t=>`<span class="ctag" style="${tagStyle(t)}" onclick="event.stopPropagation();filterByTag('${escJs(t)}')">${esc(t)}</span>`).join('');
+  const authorLine = e.author ? `<div class="card-author">erstellt von ${esc(e.author)}</div>` : '';
   const imgHtml = e.image
-    ? `<img src="${e.image}" alt="${e.name}">`
+    ? `<img src="${esc(e.image)}" alt="${esc(e.name)}">`
     : `<div class="cimg-field"><div class="cimg-field-lines"></div><div class="cimg-ico">⚽</div></div>`;
 
   if(_catalogView==='collapsed'){
-    return`<div class="card card-collapsed" data-id="${e.id}" onclick="openExDetail('${e.id}')">
+    return`<div class="card card-collapsed" data-id="${esc(e.id)}" onclick="openExDetail('${escJs(e.id)}')">
       <div class="cbody">
-        <div class="cname">${e.name}</div>
+        <div class="cname">${esc(e.name)}</div>
         ${_ratingHTML(e.id)}
       </div>
-      <button class="card-collapsed-add" onclick="event.stopPropagation();addToPlanOrPick('${e.id}',${e.section},false)">+ Plan</button>
-      ${IS_ADMIN?`<button onclick="event.stopPropagation();editEx('${e.id}')" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--text-3);">✏️</button>`:''}
+      <button class="card-collapsed-add" onclick="event.stopPropagation();addToPlanOrPick('${escJs(e.id)}',${e.section},false)">+ Plan</button>
+      ${IS_ADMIN?`<button onclick="event.stopPropagation();editEx('${escJs(e.id)}')" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--text-3);">✏️</button>`:''}
     </div>`;
   }
 
-  return`<div class="card" data-id="${e.id}" onclick="openExDetail('${e.id}')">
+  return`<div class="card" data-id="${esc(e.id)}" onclick="openExDetail('${escJs(e.id)}')">
     <div class="dh" onclick="event.stopPropagation()">⠿</div>
     <div class="cimg">${imgHtml}</div>
     <div class="cbody">
       ${authorLine}
-      <div class="cname">${e.name}</div>
+      <div class="cname">${esc(e.name)}</div>
       ${_ratingHTML(e.id)}
       <div class="cmeta">
-        ${e.players?`<span class="mbadge p">👥 ${e.players}</span>`:''}
-        ${e.difficulty?`<span class="mbadge ${dc}">${diffLabel}</span>`:''}
-        ${e.duration?`<span class="mbadge" style="background:#e8f0fe;color:#1a56c4;">⏱ ${e.duration} min</span>`:''}
-        ${e.ageGroups&&e.ageGroups.length?`<span class="mbadge" style="background:#e6f4ea;color:#1b6b3a;">${ageLabel(e.ageGroups)}</span>`:''}
+        ${e.players?`<span class="mbadge p">👥 ${esc(e.players)}</span>`:''}
+        ${e.difficulty?`<span class="mbadge ${dc}">${esc(diffLabel)}</span>`:''}
+        ${e.duration?`<span class="mbadge" style="background:#e8f0fe;color:#1a56c4;">⏱ ${esc(e.duration)} min</span>`:''}
+        ${e.ageGroups&&e.ageGroups.length?`<span class="mbadge" style="background:#e6f4ea;color:#1b6b3a;">${esc(ageLabel(e.ageGroups))}</span>`:''}
       </div>
       ${mats?`<div class="matlist">${mats}</div>`:''}
-      ${e.desc?`<div class="cdesc">${e.desc.length>110?e.desc.slice(0,110)+'…':e.desc}</div>`:''}
+      ${e.desc?`<div class="cdesc">${esc(e.desc.length>110?e.desc.slice(0,110)+'…':e.desc)}</div>`:''}
       <div class="ctags">${tags}</div>
       <div class="cfoot" onclick="event.stopPropagation()">
-        <button class="bcrd ap" style="background:${col}" onclick="addToPlanOrPick('${e.id}',${e.section},false)">+ Plan</button>
-        ${IS_ADMIN?`<button class="bcrd" onclick="editEx('${e.id}')">✏️</button><button class="bcrd rd" onclick="delEx('${e.id}')">🗑</button>`:''}
+        <button class="bcrd ap" style="background:${col}" onclick="addToPlanOrPick('${escJs(e.id)}',${e.section},false)">+ Plan</button>
+        ${IS_ADMIN?`<button class="bcrd" onclick="editEx('${escJs(e.id)}')">✏️</button><button class="bcrd rd" onclick="delEx('${escJs(e.id)}')">🗑</button>`:''}
       </div>
     </div>
   </div>`;
@@ -521,13 +521,13 @@ function loadMatIntoBuilder(matStr){
     // match "Nx Name" or "N× Name" pattern (x or × separator)
     const m=p.match(/^(\d+)\s*[x×]\s+(.+)$/i);
     if(m){const num=m[1];const name=m[2].trim();
-      const sel=document.querySelector(`.mat-sel[data-mat="${name}"]`);
+      const sel=document.querySelector(`.mat-sel[data-mat="${CSS.escape(name)}"]`);
       // Only set if not already set — first occurrence wins, duplicates ignored
       if(sel){if(sel.value==='0')sel.value=num;return;}
     }
     // check if it's a counted mat without number
     const found=COUNTED_MATS.find(cm=>p.toLowerCase().includes(cm.toLowerCase()));
-    if(found){const s=document.querySelector(`.mat-sel[data-mat="${found}"]`);if(s&&s.value==='0')s.value='1';return;}
+    if(found){const s=document.querySelector(`.mat-sel[data-mat="${CSS.escape(found)}"]`);if(s&&s.value==='0')s.value='1';return;}
     freeItems.push(p);
   });
   if(document.getElementById('mMatFree'))document.getElementById('mMatFree').value=freeItems.join(', ');
@@ -654,24 +654,24 @@ function renderTrash(){
   if(!trashItems.length){el.innerHTML='<div style="font-size:13px;color:var(--text-3);padding:16px 0;text-align:center;">Papierkorb ist leer.</div>';return;}
   el.innerHTML=trashItems.map(e=>`
     <div class="trash-item">
-      <div class="trash-thumb">${e.image?`<img src="${e.image}" style="width:100%;height:100%;object-fit:cover;">`:'⚽'}</div>
+      <div class="trash-thumb">${e.image?`<img src="${esc(e.image)}" style="width:100%;height:100%;object-fit:cover;">`:'⚽'}</div>
       <div class="trash-info">
-        <div class="trash-name">${e.name}</div>
-        <div class="trash-meta">${SECS[e.section]?.name||''} · ${e.players||''} · ${e.difficulty||''}</div>
+        <div class="trash-name">${esc(e.name)}</div>
+        <div class="trash-meta">${SECS[e.section]?.name||''} · ${esc(e.players||'')} · ${esc(e.difficulty||'')}</div>
       </div>
       <div class="trash-actions">
-        <button class="trash-btn restore" onclick="restoreEx('${e.id}')">↩ Wiederherstellen</button>
-        <button class="trash-btn perm" onclick="permDeleteEx('${e.id}')">🗑 Endgültig löschen</button>
+        <button class="trash-btn restore" onclick="restoreEx('${escJs(e.id)}')">↩ Wiederherstellen</button>
+        <button class="trash-btn perm" onclick="permDeleteEx('${escJs(e.id)}')">🗑 Endgültig löschen</button>
       </div>
     </div>`).join('');
 }
 function addMTag(){const v=document.getElementById('mTagIn').value.trim().toUpperCase();if(v&&!formTags.includes(v)){formTags.push(v);renderMTags();}document.getElementById('mTagIn').value='';}
 function removeMTag(t){formTags=formTags.filter(x=>x!==t);renderMTags();}
 function renderMTags(){
-  document.getElementById('mAtags').innerHTML=formTags.map(t=>`<span class="atag" style="${tagStyle(t)}">${t}<button onclick="removeMTag('${t}')" style="color:inherit;">×</button></span>`).join('');
+  document.getElementById('mAtags').innerHTML=formTags.map(t=>`<span class="atag" style="${tagStyle(t)}">${esc(t)}<button onclick="removeMTag('${escJs(t)}')" style="color:inherit;">×</button></span>`).join('');
   const si=parseInt(document.getElementById('mSec').value||activeSec);
   const sug=getSecTags(si).filter(t=>!formTags.includes(t));
-  document.getElementById('mStags').innerHTML=sug.length?'<span style="font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--gm);margin-right:3px;">Vorhandene:</span>'+sug.map(t=>`<span class="ctag" style="${tagStyle(t)};cursor:pointer" onclick="addSugTag('${t}')">${t}</span>`).join(''):'';
+  document.getElementById('mStags').innerHTML=sug.length?'<span style="font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--gm);margin-right:3px;">Vorhandene:</span>'+sug.map(t=>`<span class="ctag" style="${tagStyle(t)};cursor:pointer" onclick="addSugTag('${escJs(t)}')">${esc(t)}</span>`).join(''):'';
 }
 function addSugTag(t){if(!formTags.includes(t)){formTags.push(t);renderMTags();}}
 function handleImg(){} // removed

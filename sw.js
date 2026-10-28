@@ -1,4 +1,4 @@
-const CACHE = 'assistcoach-v187';
+const CACHE = 'assistcoach-v190';
 const ASSETS = [
   '/',
   '/index.html',
@@ -46,20 +46,34 @@ self.addEventListener('activate', e => {
   );
 });
 
-self.addEventListener('fetch', e => {
-  // Supabase API-Calls immer live holen
-  if (e.request.url.includes('supabase.co')) return;
+// Immer die neueste Version zeigen: zuerst das Netz fragen (und beim Server neu validieren),
+// der Zwischenspeicher dient nur offline bzw. bei sehr langsamer Verbindung.
+const NETWORK_TIMEOUT = 3500;
 
-  e.respondWith(
-    caches.match(e.request).then(cached => {
-      if (cached) return cached;
-      return fetch(e.request).then(res => {
-        if (res && res.status === 200 && res.type === 'basic') {
-          const clone = res.clone();
-          caches.open(CACHE).then(c => c.put(e.request, clone));
-        }
-        return res;
-      }).catch(() => caches.match('/index.html'));
-    })
-  );
+self.addEventListener('fetch', e => {
+  const req = e.request;
+  if (req.method !== 'GET') return;
+  // Supabase, CDN und fremde Bilder direkt vom Netz (nicht abfangen)
+  if (new URL(req.url).origin !== self.location.origin) return;
+  e.respondWith(networkFirst(req));
 });
+
+async function networkFirst(req) {
+  const cache = await caches.open(CACHE);
+  const fromNetwork = fetch(req, { cache: 'no-cache' }).then(res => {
+    if (res && res.status === 200 && res.type === 'basic') cache.put(req, res.clone());
+    return res;
+  });
+  fromNetwork.catch(() => {}); // verhindert „unhandled rejection“, falls der Zwischenspeicher gewinnt
+  try {
+    return await Promise.race([
+      fromNetwork,
+      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), NETWORK_TIMEOUT))
+    ]);
+  } catch (err) {
+    const cached = (await cache.match(req, { ignoreSearch: true }))
+      || (req.mode === 'navigate' ? await cache.match('/index.html') : undefined);
+    if (cached) return cached;
+    return fromNetwork; // keine Kopie vorhanden: auf das Netz warten
+  }
+}

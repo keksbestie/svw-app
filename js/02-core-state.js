@@ -50,7 +50,7 @@ const _agePickState={};
 function ageLabel(arr){
   if(!arr||!arr.length) return '';
   const idx=arr.map(a=>AGE_GROUPS.indexOf(a)).filter(i=>i>=0).sort((a,b)=>a-b);
-  if(!idx.length) return arr.join(', ');
+  if(!idx.length) return ''; // nur bekannte Altersstufen anzeigen, nie Rohtext aus der Datenbank
   const contiguous=idx.every((v,i)=>i===0||v===idx[i-1]+1);
   if(contiguous){const a=AGE_GROUPS[idx[0]],b=AGE_GROUPS[idx[idx.length-1]];return a===b?a:a+'–'+b;}
   return idx.map(i=>AGE_GROUPS[i]).join(', ');
@@ -324,6 +324,16 @@ function updateApiBar(){
 }
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5);}
 
+// ── Maskierung fremder Eingaben (Schutz vor eingeschleustem Code, „XSS“) ──
+// esc():   für Text und für Werte in HTML-Attributen:  <div title="${esc(x)}">${esc(x)}</div>
+// escJs(): für Werte in JavaScript-Zeichenketten innerhalb von HTML-Attributen:  onclick="foo('${escJs(x)}')"
+function esc(s){
+  return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function escJs(s){
+  return esc(String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\r?\n/g,' '));
+}
+
 // Öffentlich sichtbarer Autorenname: nur der Benutzername UND nur mit Einwilligung (Mein Account → „Name öffentlich anzeigen“).
 // Nie die E-Mail-Adresse.
 function _publicAuthorName(fallback){
@@ -432,21 +442,21 @@ function onGS(){
   const ql=q.toLowerCase();
   const res=sportExercises().filter(e=>[e.name,e.desc||'',...(e.tags||[]),SECS[e.section]?.name||''].join(' ').toLowerCase().includes(ql));
   const el=document.getElementById('gsRes');
-  if(!res.length){el.innerHTML=`<div class="gs-empty">Keine Treffer für „${q}"</div>`;el.classList.add('open');return;}
+  if(!res.length){el.innerHTML=`<div class="gs-empty">Keine Treffer für „${esc(q)}"</div>`;el.classList.add('open');return;}
   const byS={};res.forEach(e=>{if(!byS[e.section])byS[e.section]=[];byS[e.section].push(e);});
   let html='';
   Object.keys(byS).sort().forEach(si=>{
     const s=SECS[si];
     html+=`<div class="grl"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${s.color};margin-right:5px;vertical-align:middle;"></span>${s.name}</div>`;
-    byS[si].forEach(e=>{html+=`<div class="gri" onclick="jumpTo(${e.section},'${e.id}')">
-      <div class="gri-th">${e.image?`<img src="${e.image}" alt="">`:'⚽'}</div>
-      <div><div class="gri-n">${e.name}</div><div class="gri-m">${e.players?'👥 '+e.players:''}</div></div>
+    byS[si].forEach(e=>{html+=`<div class="gri" onclick="jumpTo(${+e.section},'${escJs(e.id)}')">
+      <div class="gri-th">${e.image?`<img src="${esc(e.image)}" alt="">`:'⚽'}</div>
+      <div><div class="gri-n">${esc(e.name)}</div><div class="gri-m">${e.players?'👥 '+esc(e.players):''}</div></div>
     </div>`;});
   });
   el.innerHTML=html;el.classList.add('open');
 }
 function closeGS(){document.getElementById('gsRes').classList.remove('open');}
 function clearGS(){document.getElementById('gsIn').value='';document.getElementById('gsX').style.display='none';closeGS();}
-function jumpTo(si,id){clearGS();activeSec=si;selectedTags=[];activeCluster=null;clusterFilterTags=[];goPage('handbook');renderStbar();renderSection();setTimeout(()=>{const c=document.querySelector(`.card[data-id="${id}"]`);if(c){c.scrollIntoView({behavior:'smooth',block:'center'});c.classList.add('hi');setTimeout(()=>c.classList.remove('hi'),2000);}},150);}
+function jumpTo(si,id){clearGS();activeSec=si;selectedTags=[];activeCluster=null;clusterFilterTags=[];goPage('handbook');renderStbar();renderSection();setTimeout(()=>{const c=document.querySelector(`.card[data-id="${CSS.escape(String(id))}"]`);if(c){c.scrollIntoView({behavior:'smooth',block:'center'});c.classList.add('hi');setTimeout(()=>c.classList.remove('hi'),2000);}},150);}
 
 // ══════════════════════════════════════════════════════
