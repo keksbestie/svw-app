@@ -324,6 +324,16 @@ function updateApiBar(){
 }
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5);}
 
+// ── Maskierung fremder Eingaben (Schutz vor eingeschleustem Code, „XSS“) ──
+// esc():   für Text und für Werte in HTML-Attributen:  <div title="${esc(x)}">${esc(x)}</div>
+// escJs(): für Werte in JavaScript-Zeichenketten innerhalb von HTML-Attributen:  onclick="foo('${escJs(x)}')"
+function esc(s){
+  return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function escJs(s){
+  return esc(String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\r?\n/g,' '));
+}
+
 // Öffentlich sichtbarer Autorenname: nur der Benutzername UND nur mit Einwilligung (Mein Account → „Name öffentlich anzeigen“).
 // Nie die E-Mail-Adresse.
 function _publicAuthorName(fallback){
