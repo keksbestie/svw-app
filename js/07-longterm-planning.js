@@ -143,7 +143,7 @@ function _renderLtpPlanRows(plans){
     return`<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="openLtpPlanPreview(${i})">
       <div style="flex:1;min-width:0;">
         <div style="font-weight:700;font-size:15px;">${p.name||'Plan'}</div>
-        <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${p.author_name||''} · ${p.date||''} ${total?'· '+total:''}</div>
+        <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${_safeAuthor(p.author_name,'')} · ${p.date||''} ${total?'· '+total:''}</div>
         ${_planRatingHTML(p.id)}
       </div>
       <button onclick="event.stopPropagation();openLtpPlanPreview(${i})" style="padding:7px 14px;background:var(--surface-2);color:var(--text-1);border:1px solid var(--border);border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;">👁 Vorschau</button>
@@ -201,7 +201,7 @@ async function openLtpPlanPreview(idx){
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;">${p.name}</div>
         <button onclick="document.getElementById('ltpPlanPreviewModal').remove()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-3);">✕</button>
       </div>
-      <div style="font-size:11px;color:var(--text-3);margin-bottom:6px;">von ${p.author_name||'Unbekannt'} · ${p.date||''}</div>
+      <div style="font-size:11px;color:var(--text-3);margin-bottom:6px;">von ${_safeAuthor(p.author_name,'Unbekannt')} · ${p.date||''}</div>
       ${_planRatingHTML(p.id,true)}
       ${totalMin?`<div style="font-size:12px;font-weight:700;color:var(--accent);margin-top:8px;margin-bottom:16px;">⏱ ca. ${totalMin} min Gesamtbelastung</div>`:'<div style="margin-bottom:16px;"></div>'}
       <div>${secHtml||'<div style="color:var(--text-3);font-size:13px;">Keine Übungen.</div>'}</div>

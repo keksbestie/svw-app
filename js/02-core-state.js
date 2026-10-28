@@ -324,6 +324,18 @@ function updateApiBar(){
 }
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5);}
 
+// Öffentlich sichtbarer Autorenname: nur der Benutzername UND nur mit Einwilligung (Mein Account → „Name öffentlich anzeigen“).
+// Nie die E-Mail-Adresse.
+function _publicAuthorName(fallback){
+  const m=(currentUser&&currentUser.user_metadata)||{};
+  return (m.publicName===true&&m.username&&!String(m.username).includes('@'))?m.username:fallback;
+}
+// Zeigt niemals eine E-Mail-Adresse an (auch nicht bei Altdaten, die noch eine enthalten)
+function _safeAuthor(n,fallback){
+  if(!n) return fallback||'';
+  return String(n).includes('@')?'Trainer:in':n;
+}
+
 async function uploadImageToStorage(dataUrl){
   if(!_supabase||!dataUrl||!dataUrl.startsWith('data:'))return null;
   try{

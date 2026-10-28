@@ -436,7 +436,7 @@ async function submitExercise(){
     image:imageUrl,
     canvas_objects:canvasObjects.length?canvasObjects:null,
     created_by:currentUser.id,
-    author_name:submitUser.name||null,
+    author_name:_publicAuthorName(null),
     sport:window.currentSport?.id||'',
     age_groups:getAgeSel('sAgePick'),
     status:'pending'
