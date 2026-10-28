@@ -134,6 +134,7 @@ async function loadAPI(){
       savedPlans=merged.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
       const {data:ltpData}=await _supabase.from('ltp_blocks').select('*').eq('owner_id',user.id);
       ltpBlocks=(ltpData||[]).map(b=>b.weeks);
+      if(typeof syncBlockLibrary==='function') await syncBlockLibrary();
     }
     if(typeof loadRatings==='function') await loadRatings();
     apiOnline=true; setStat('ok'); cacheLocal(); return true;
