@@ -689,12 +689,13 @@ function commitSaveBlockLib(){
   const blk=ltpBlocks.find(b=>b.id===editingBlockLibId); if(!blk)return;
   const libEntry=JSON.parse(JSON.stringify(blk));
   libEntry.id=uid();
+  delete libEntry._dbId; // nie die Datenbank-Kennung eines anderen Eintrags mitnehmen
   libEntry.name=name;
   libEntry.notes=document.getElementById('sbl-desc').value||'';
   libEntry.savedAt=new Date().toLocaleDateString('de-DE');
   if(!blockLibrary) blockLibrary=[];
   blockLibrary.unshift(libEntry);
-  save(); closeMod('saveBlockLibMod');
+  save(); _persistLibEntry(libEntry); closeMod('saveBlockLibMod');
   showToast('Block in Bibliothek gespeichert');
   if(activeLtpTab===1) renderLibrary();
 }
@@ -723,6 +724,7 @@ function renderLibrary(){
 
 function loadBlockFromLib(idx){
   const blk=JSON.parse(JSON.stringify(blockLibrary[idx]));
+  delete blk._dbId;
   blk.id=uid(); blk.createdAt=new Date().toLocaleDateString('de-DE');
   if(!ltpBlocks) ltpBlocks=[];
   ltpBlocks.unshift(blk);
@@ -730,9 +732,49 @@ function loadBlockFromLib(idx){
   showToast('Block geladen');
 }
 
-function deleteBlockLib(idx){
+async function deleteBlockLib(idx){
   if(!confirm('Aus Bibliothek löschen?'))return;
+  const blk=blockLibrary[idx];
+  if(blk&&blk._dbId&&_supabase&&currentUser){
+    const {error}=await _supabase.from('block_library').delete().eq('id',blk._dbId).eq('owner_id',currentUser.id);
+    if(error){showToast('Löschen fehlgeschlagen – bitte erneut versuchen','err');return;}
+  }
   blockLibrary.splice(idx,1); save(); renderLibrary();
+}
+
+// ── Block-Bibliothek in Supabase (Tabelle block_library) ──
+function _libData(b){const c=Object.assign({},b);delete c._dbId;return c;}
+
+async function _persistLibEntry(entry){
+  if(!_supabase||!currentUser||!apiOnline) return;
+  const {data,error}=await _supabase.from('block_library').insert({owner_id:currentUser.id,data:_libData(entry)}).select('id').single();
+  if(error||!data){showToast('Bibliothek: nur lokal gespeichert (Datenbank nicht erreichbar)','err');return;}
+  entry._dbId=data.id; cacheLocal();
+}
+
+// Lädt die Bibliothek des Kontos. Lokale Einträge ohne Datenbank-Kennung werden einmalig hochgeladen, nie verworfen.
+async function syncBlockLibrary(){
+  if(!_supabase||!currentUser) return;
+  try{
+    const {data,error}=await _supabase.from('block_library').select('id,data,created_at').eq('owner_id',currentUser.id).order('created_at',{ascending:false});
+    if(error) return; // Tabelle fehlt oder Fehler: lokale Bibliothek unverändert lassen
+    const remote=(data||[]).map(r=>Object.assign({},r.data,{_dbId:r.id}));
+    const known=new Set(remote.map(b=>b.id));
+    let owner=null; try{owner=localStorage.getItem('ac_lib_owner');}catch(e){}
+    // Einträge eines anderen Kontos auf demselben Gerät nie in dieses Konto übernehmen
+    const mayMigrate=!owner||owner===currentUser.id;
+    const local=(blockLibrary||[]).filter(b=>!b._dbId&&!known.has(b.id));
+    const kept=[];
+    if(mayMigrate){
+      for(const b of local){
+        const {data:ins,error:e2}=await _supabase.from('block_library').insert({owner_id:currentUser.id,data:_libData(b)}).select('id').single();
+        if(!e2&&ins) b._dbId=ins.id;
+        kept.push(b); // bleibt in jedem Fall erhalten
+      }
+    }
+    try{localStorage.setItem('ac_lib_owner',currentUser.id);}catch(e){}
+    blockLibrary=[...kept,...remote];
+  }catch(e){}
 }
 
 function saveLibrary(){save();}

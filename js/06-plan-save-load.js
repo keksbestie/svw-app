@@ -36,7 +36,7 @@ function dupPlanRename(){
 
 function commitSavePlan(name){
   const plan={
-    id:uid(), name,
+    id:newUuid(), name,
     date:new Date().toLocaleDateString('de-DE'),
     lanes:currentPlan.lanes.map(l=>[...l]),
     totals:SECS.map((s,i)=>({name:s.name,count:(currentPlan.lanes[i]||[]).length}))
@@ -124,7 +124,7 @@ async function withdrawSubmittedPlan(id){
   if(!confirm('Einreichung zurückziehen?'))return;
   await _supabase.from('submitted_plans').delete().eq('id',id).eq('owner_id',currentUser.id);
   const plan=savedPlans.find(p=>p.id===id);
-  if(plan){plan.status='private';save();renderSavedPlans();}
+  if(plan){plan.status='private';delete plan._src;save();renderSavedPlans();} // wird dadurch wieder ein normaler, zu sichernder Plan
   loadMySubmittedPlans();
   showToast('Einreichung zurückgezogen.');
 }
