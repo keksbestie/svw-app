@@ -47,7 +47,7 @@ async function initClubLogoBg(sportId) {
     }
     const py = (Math.random() * Math.max(0, H - size)) | 0;
     const op = (0.55 + Math.random() * 0.25).toFixed(2);
-    return `<img src="${c.logo_url}" alt="${c.name}" loading="lazy"
+    return `<img src="${esc(c.logo_url)}" alt="${esc(c.name)}" loading="lazy"
       style="position:absolute;left:0;top:0;
         width:${size}px;height:${size}px;object-fit:contain;
         opacity:${op};
@@ -82,7 +82,7 @@ function _renderClubBtn() {
   if (!btn) return;
   if (currentClub) {
     const logoHtml = clubLogoUrl
-      ? `<img src="${clubLogoUrl}" alt="" style="height:20px;max-width:48px;object-fit:contain;border-radius:3px;vertical-align:middle;margin-right:5px;">`
+      ? `<img src="${esc(clubLogoUrl)}" alt="" style="height:20px;max-width:48px;object-fit:contain;border-radius:3px;vertical-align:middle;margin-right:5px;">`
       : '';
     btn.innerHTML = `${logoHtml}Mein Verein`;
     btn.style.display = 'inline-flex';
@@ -250,9 +250,9 @@ async function searchClubs() {
 
   res.innerHTML = clubs.map(c => `
     <div class="club-slot-row" style="margin-bottom:6px;">
-      ${c.logo_url ? `<img src="${c.logo_url}" style="height:24px;max-width:40px;object-fit:contain;border-radius:3px;">` : '<span style="width:40px;display:inline-block;"></span>'}
-      <span style="flex:1;font-size:13px;font-weight:600;">${c.name}</span>
-      <button class="slot-btn slot-btn-copy" onclick="requestJoinClub('${c.id}','${c.name.replace(/'/g,"\\'")}')">Anfragen</button>
+      ${c.logo_url ? `<img src="${esc(c.logo_url)}" style="height:24px;max-width:40px;object-fit:contain;border-radius:3px;">` : '<span style="width:40px;display:inline-block;"></span>'}
+      <span style="flex:1;font-size:13px;font-weight:600;">${esc(c.name)}</span>
+      <button class="slot-btn slot-btn-copy" onclick="requestJoinClub('${escJs(c.id)}','${escJs(c.name)}')">Anfragen</button>
     </div>`).join('');
 }
 
@@ -300,19 +300,19 @@ async function _renderAdminView(wrap) {
       const swappedMonth = s.last_swapped_at ? (() => { const d = new Date(s.last_swapped_at); return `${d.getFullYear()}-${d.getMonth()}`; })() : null;
       const canSwap = swappedMonth !== thisMonth;
       const email = s.profiles?.email || null;
-      const inviteUrl = `${window.location.origin}${window.location.pathname}?token=${s.token}`;
+      const inviteUrl = `${window.location.origin}${window.location.pathname}?token=${encodeURIComponent(s.token)}`;
       return `<div class="club-slot-row">
-        <span class="slot-idx">Slot ${s.slot_index}</span>
+        <span class="slot-idx">Slot ${esc(s.slot_index)}</span>
         ${email
-          ? `<span class="slot-email">${email}</span>
-             ${canSwap ? `<button class="slot-btn slot-btn-remove" onclick="removeTrainerFromSlot('${s.id}')">Entfernen</button>` : `<span class="slot-locked">🔒 bis nächsten Monat</span>`}`
-          : `<span class="slot-free">frei</span><button class="slot-btn slot-btn-copy" onclick="copyInviteLink('${inviteUrl}')">Link kopieren</button>`}
+          ? `<span class="slot-email">${esc(email)}</span>
+             ${canSwap ? `<button class="slot-btn slot-btn-remove" onclick="removeTrainerFromSlot('${escJs(s.id)}')">Entfernen</button>` : `<span class="slot-locked">🔒 bis nächsten Monat</span>`}`
+          : `<span class="slot-free">frei</span><button class="slot-btn slot-btn-copy" onclick="copyInviteLink('${escJs(inviteUrl)}')">Link kopieren</button>`}
       </div>`;
     }).join('');
     return `<div style="margin-bottom:14px;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-        <div style="font-size:12px;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;">${sportObj.label} (${spSlots.filter(s=>s.user_id).length}/${spSlots.length} belegt)</div>
-        <button class="slot-btn slot-btn-copy" onclick="addSlotForSport('${sp}')">+ Slot</button>
+        <div style="font-size:12px;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;">${esc(sportObj.label)} (${spSlots.filter(s=>s.user_id).length}/${spSlots.length} belegt)</div>
+        <button class="slot-btn slot-btn-copy" onclick="addSlotForSport('${escJs(sp)}')">+ Slot</button>
       </div>
       <div class="club-slots-list">${rows || '<div class="slot-free">Noch keine Slots – klicke auf "+ Slot".</div>'}</div>
     </div>`;
@@ -320,31 +320,31 @@ async function _renderAdminView(wrap) {
 
   const requestRows = requests.length ? requests.map(r => `
     <div class="club-slot-row">
-      <span class="slot-email" style="flex:1;">${r.profiles?.email || '–'}</span>
-      <button class="slot-btn slot-btn-copy" onclick="approveJoinRequest('${r.id}','${r.user_id}')">Annehmen</button>
-      <button class="slot-btn slot-btn-remove" onclick="rejectJoinRequest('${r.id}')">Ablehnen</button>
+      <span class="slot-email" style="flex:1;">${esc(r.profiles?.email || '–')}</span>
+      <button class="slot-btn slot-btn-copy" onclick="approveJoinRequest('${escJs(r.id)}','${escJs(r.user_id)}')">Annehmen</button>
+      <button class="slot-btn slot-btn-remove" onclick="rejectJoinRequest('${escJs(r.id)}')">Ablehnen</button>
     </div>`).join('') : '<div class="slot-free">Keine offenen Anfragen.</div>';
 
   const consentChecked = currentClub?.logo_public_consent ? 'checked' : '';
   const { data: members } = await _supabase.from('profiles').select('id, email').eq('club_id', currentClub.id).eq('club_role', 'club_trainer');
-  const memberOpts = (members || []).map(m => `<option value="${m.id}">${m.email}</option>`).join('');
+  const memberOpts = (members || []).map(m => `<option value="${esc(m.id)}">${esc(m.email)}</option>`).join('');
 
   // Sportarten die noch nicht aktiv sind (zum Hinzufügen)
   const addableSports = availSports.filter(s => !clubSports.includes(s.id));
   const addSportHtml = addableSports.length ? `
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
-      ${addableSports.map(s => `<button class="slot-btn slot-btn-copy" onclick="addSportToClub('${s.id}')">+ ${s.label}</button>`).join('')}
+      ${addableSports.map(s => `<button class="slot-btn slot-btn-copy" onclick="addSportToClub('${escJs(s.id)}')">+ ${esc(s.label)}</button>`).join('')}
     </div>` : '';
 
   wrap.innerHTML = `
     <div style="background:var(--surface);border-radius:12px;padding:20px;box-shadow:var(--sh);margin-bottom:14px;">
       <div class="club-admin-header">
-        <span class="club-admin-title">${currentClub.name}</span>
+        <span class="club-admin-title">${esc(currentClub.name)}</span>
         <span style="font-size:11px;color:var(--gd2);font-weight:600;">Club-Admin</span>
       </div>
       <div class="club-logo-section">
         <label class="club-section-label">Vereinslogo</label>
-        ${clubLogoUrl ? `<img src="${clubLogoUrl}" class="club-logo-preview" alt="Logo">` : '<span class="slot-free">Kein Logo</span>'}
+        ${clubLogoUrl ? `<img src="${esc(clubLogoUrl)}" class="club-logo-preview" alt="Logo">` : '<span class="slot-free">Kein Logo</span>'}
         <input type="file" id="clubLogoInput" accept="image/*" style="display:none" onchange="uploadClubLogo(this)">
         <button class="slot-btn" onclick="document.getElementById('clubLogoInput').click()">Logo hochladen</button>
       </div>
@@ -359,8 +359,8 @@ async function _renderAdminView(wrap) {
       <div class="club-section-label">Aktive Sportarten</div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px;">
         ${clubSports.map(sp=>`<span style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:var(--accent);color:#fff;border-radius:20px;font-size:11px;font-weight:800;">
-          ${_sportLabel(sp)}
-          <button onclick="removeSportFromClub('${sp}')" style="background:none;border:none;color:#fff;cursor:pointer;font-size:13px;line-height:1;padding:0;opacity:.8;" title="${_sportLabel(sp)} entfernen">×</button>
+          ${esc(_sportLabel(sp))}
+          <button onclick="removeSportFromClub('${escJs(sp)}')" style="background:none;border:none;color:#fff;cursor:pointer;font-size:13px;line-height:1;padding:0;opacity:.8;" title="${esc(_sportLabel(sp))} entfernen">×</button>
         </span>`).join('') || '<span style="font-size:12px;color:var(--gd2);">Noch keine Sportart aktiv.</span>'}
       </div>
       ${addSportHtml}
@@ -442,11 +442,11 @@ async function _renderTrainerView(wrap) {
   wrap.innerHTML = `
     <div style="background:var(--surface);border-radius:12px;padding:20px;box-shadow:var(--sh);">
       <div class="club-admin-header">
-        ${clubLogoUrl ? `<img src="${clubLogoUrl}" style="height:36px;max-width:80px;object-fit:contain;border-radius:4px;">` : ''}
-        <span class="club-admin-title">${currentClub.name}</span>
+        ${clubLogoUrl ? `<img src="${esc(clubLogoUrl)}" style="height:36px;max-width:80px;object-fit:contain;border-radius:4px;">` : ''}
+        <span class="club-admin-title">${esc(currentClub.name)}</span>
       </div>
       <div style="font-size:13px;color:var(--gd2);margin-bottom:8px;">Du bist Trainer:in in diesem Verein.</div>
-      ${mySport ? `<div style="display:inline-block;padding:4px 12px;background:var(--accent);color:#fff;border-radius:20px;font-size:12px;font-weight:800;margin-bottom:14px;">Sportart: ${_sportLabel(mySport)}</div>` : ''}
+      ${mySport ? `<div style="display:inline-block;padding:4px 12px;background:var(--accent);color:#fff;border-radius:20px;font-size:12px;font-weight:800;margin-bottom:14px;">Sportart: ${esc(_sportLabel(mySport))}</div>` : ''}
       <button class="slot-btn slot-btn-remove" style="margin-top:8px;" onclick="leaveClub()">Verein verlassen</button>
     </div>`;
 }
@@ -460,7 +460,7 @@ function approveJoinRequest(requestId, userId) {
     return;
   }
   // Sportart wählen
-  const opts = clubSports.map(sp => `<option value="${sp}">${_sportLabel(sp)}</option>`).join('');
+  const opts = clubSports.map(sp => `<option value="${esc(sp)}">${esc(_sportLabel(sp))}</option>`).join('');
   const modal = document.createElement('div');
   modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
   modal.innerHTML = `<div style="background:var(--bg);border-radius:14px;padding:24px;max-width:340px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.5);">
@@ -468,7 +468,7 @@ function approveJoinRequest(requestId, userId) {
     <select id="_approveSpSel" class="fc" style="margin-bottom:16px;">${opts}</select>
     <div style="display:flex;gap:8px;">
       <button onclick="this.closest('div[style]').remove()" class="slot-btn" style="flex:1;">Abbrechen</button>
-      <button onclick="_doApproveJoinRequest('${requestId}','${userId}',document.getElementById('_approveSpSel').value);this.closest('[style*=fixed]').remove();" class="slot-btn slot-btn-copy" style="flex:1;">Annehmen</button>
+      <button onclick="_doApproveJoinRequest('${escJs(requestId)}','${escJs(userId)}',document.getElementById('_approveSpSel').value);this.closest('[style*=fixed]').remove();" class="slot-btn slot-btn-copy" style="flex:1;">Annehmen</button>
     </div>
   </div>`;
   document.body.appendChild(modal);
@@ -545,7 +545,7 @@ function _showDeleteClubModal(clubId, clubName, isAdmin) {
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#e53935;">Verein löschen – bitte lies das sorgfältig</div>
       </div>
       <div style="background:rgba(229,57,53,.08);border:1px solid rgba(229,57,53,.3);border-radius:10px;padding:16px;margin-bottom:20px;font-size:13px;line-height:1.7;color:var(--text-1);">
-        <div>Du bist dabei, <strong>${clubName}</strong> dauerhaft zu löschen. Diese Aktion <strong>kann nicht rückgängig gemacht werden</strong> – auch nicht durch den Support.</div>
+        <div>Du bist dabei, <strong>${esc(clubName)}</strong> dauerhaft zu löschen. Diese Aktion <strong>kann nicht rückgängig gemacht werden</strong> – auch nicht durch den Support.</div>
         <div style="margin-top:12px;font-weight:700;font-size:12px;color:#e53935;text-transform:uppercase;letter-spacing:.5px;">Folgendes wird unwiderruflich gelöscht:</div>
         <ul style="margin:6px 0 0 16px;padding:0;">
           <li>Alle Vereinsinformationen (Name, Logo, Einstellungen)</li>
@@ -569,7 +569,7 @@ function _showDeleteClubModal(clubId, clubName, isAdmin) {
       </label>
       <div style="display:flex;gap:10px;margin-top:18px;align-items:center;">
         <button onclick="document.getElementById('deleteClubModal').remove()" style="flex:1;padding:11px;background:var(--surface-2);color:var(--text-1);border:1px solid var(--border);border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;cursor:pointer;">Abbrechen</button>
-        <button id="deleteClubConfirmBtn" onclick="_executeDeleteClub('${clubId}','${clubName.replace(/'/g,"\\'")}')" style="display:none;flex:1;padding:11px;background:#c62828;color:#fff;-webkit-text-fill-color:#fff;border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;cursor:pointer;letter-spacing:.3px;text-shadow:none;filter:none;">🗑 Verein final löschen</button>
+        <button id="deleteClubConfirmBtn" onclick="_executeDeleteClub('${escJs(clubId)}','${escJs(clubName)}')" style="display:none;flex:1;padding:11px;background:#c62828;color:#fff;-webkit-text-fill-color:#fff;border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;cursor:pointer;letter-spacing:.3px;text-shadow:none;filter:none;">🗑 Verein final löschen</button>
       </div>
     </div>`;
   document.body.appendChild(modal);
@@ -639,10 +639,10 @@ async function renderClubAdminPanel() {
     <div class="club-slots-list">
       ${(clubs||[]).map(c => `
         <div class="club-slot-row">
-          ${c.logo_url ? `<img src="${c.logo_url}" style="height:24px;max-width:40px;object-fit:contain;border-radius:3px;">` : '<span style="width:40px;display:inline-block;"></span>'}
-          <span style="flex:1;font-size:13px;font-weight:600;">${c.name}</span>
-          <span class="slot-idx">${c.slot_count} Slots</span>
-          <button class="slot-btn slot-btn-remove" onclick="adminDeleteClub('${c.id}','${c.name.replace(/'/g,"\\'")}')">Löschen</button>
+          ${c.logo_url ? `<img src="${esc(c.logo_url)}" style="height:24px;max-width:40px;object-fit:contain;border-radius:3px;">` : '<span style="width:40px;display:inline-block;"></span>'}
+          <span style="flex:1;font-size:13px;font-weight:600;">${esc(c.name)}</span>
+          <span class="slot-idx">${esc(c.slot_count)} Slots</span>
+          <button class="slot-btn slot-btn-remove" onclick="adminDeleteClub('${escJs(c.id)}','${escJs(c.name)}')">Löschen</button>
         </div>`).join('') || '<div class="slot-free">Noch keine Vereine.</div>'}
     </div>`;
 }

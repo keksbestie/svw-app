@@ -97,16 +97,16 @@ function _planRatingHTML(planId,inModal=false){
   const avg=r.count>=3?(r.sum/r.count):null;
   const userR=r.userRating;
   const size=inModal?'20px':'13px';
-  const stars=[1,2,3,4,5].map(i=>`<span class="plan-star-btn" data-star="${i}" onclick="ratePlan('${planId}',${i},event)"
+  const stars=[1,2,3,4,5].map(i=>`<span class="plan-star-btn" data-star="${i}" onclick="ratePlan('${escJs(planId)}',${i},event)"
     style="font-size:${size};cursor:pointer;color:${i<=(userR||Math.round(avg||0))?'#f59e0b':'var(--text-3)'};"
     onmouseenter="this.parentElement.querySelectorAll('.plan-star-btn').forEach((s,j)=>s.style.color=j<${i}?'#fbbf24':'var(--text-3)')"
-    onmouseleave="_resetPlanStars('${planId}',this.parentElement)">★</span>`).join('');
+    onmouseleave="_resetPlanStars('${escJs(planId)}',this.parentElement)">★</span>`).join('');
   const countLabel=avg!=null
     ?`<span style="font-size:10px;color:var(--text-3);margin-left:4px;">${avg.toFixed(1)} (${r.count})</span>`
     :r.count>0
       ?`<span style="font-size:10px;color:var(--text-3);margin-left:4px;">(${r.count}/3 Bewertungen)</span>`
       :'';
-  return`<div id="plan-rating-${planId}" class="rating-row" onclick="event.stopPropagation()" style="display:flex;align-items:center;gap:2px;margin-top:3px;">${stars}${countLabel}</div>`;
+  return`<div id="plan-rating-${esc(planId)}" class="rating-row" onclick="event.stopPropagation()" style="display:flex;align-items:center;gap:2px;margin-top:3px;">${stars}${countLabel}</div>`;
 }
 
 function _resetPlanStars(planId,container){
@@ -142,8 +142,8 @@ function _renderLtpPlanRows(plans){
     const total=(p.totals||[]).filter(t=>t.count>0).map(t=>t.count+' '+t.name).join(', ');
     return`<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="openLtpPlanPreview(${i})">
       <div style="flex:1;min-width:0;">
-        <div style="font-weight:700;font-size:15px;">${p.name||'Plan'}</div>
-        <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${_safeAuthor(p.author_name,'')} · ${p.date||''} ${total?'· '+total:''}</div>
+        <div style="font-weight:700;font-size:15px;">${esc(p.name||'Plan')}</div>
+        <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${esc(_safeAuthor(p.author_name,''))} · ${esc(p.date||'')} ${total?'· '+esc(total):''}</div>
         ${_planRatingHTML(p.id)}
       </div>
       <button onclick="event.stopPropagation();openLtpPlanPreview(${i})" style="padding:7px 14px;background:var(--surface-2);color:var(--text-1);border:1px solid var(--border);border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;">👁 Vorschau</button>
@@ -176,10 +176,10 @@ async function openLtpPlanPreview(idx){
       const pl=item.players!=null?item.players:(ex.players||'');
       if(dur&&!isNaN(parseInt(dur))) totalMin+=parseInt(dur);
       return`<div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);">
-        ${ex.image?`<img src="${ex.image}" style="width:52px;height:40px;object-fit:cover;border-radius:6px;flex-shrink:0;">`:`<div style="width:52px;height:40px;background:var(--border);border-radius:6px;flex-shrink:0;"></div>`}
+        ${ex.image?`<img src="${esc(ex.image)}" style="width:52px;height:40px;object-fit:cover;border-radius:6px;flex-shrink:0;">`:`<div style="width:52px;height:40px;background:var(--border);border-radius:6px;flex-shrink:0;"></div>`}
         <div style="flex:1;min-width:0;">
-          <div style="font-size:13px;font-weight:700;">${ex.name}</div>
-          <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${dur?'⏱ '+dur+' min ':''} ${pl?'· 👥 '+pl:''}</div>
+          <div style="font-size:13px;font-weight:700;">${esc(ex.name)}</div>
+          <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${dur?'⏱ '+esc(dur)+' min ':''} ${pl?'· 👥 '+esc(pl):''}</div>
         </div>
       </div>`;
     }).join('');
@@ -198,14 +198,14 @@ async function openLtpPlanPreview(idx){
   modal.innerHTML=`
     <div style="background:var(--bg);border-radius:16px;max-width:560px;width:100%;max-height:88vh;overflow-y:auto;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.5);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;">${p.name}</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;">${esc(p.name)}</div>
         <button onclick="document.getElementById('ltpPlanPreviewModal').remove()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-3);">✕</button>
       </div>
-      <div style="font-size:11px;color:var(--text-3);margin-bottom:6px;">von ${_safeAuthor(p.author_name,'Unbekannt')} · ${p.date||''}</div>
+      <div style="font-size:11px;color:var(--text-3);margin-bottom:6px;">von ${esc(_safeAuthor(p.author_name,'Unbekannt'))} · ${esc(p.date||'')}</div>
       ${_planRatingHTML(p.id,true)}
       ${totalMin?`<div style="font-size:12px;font-weight:700;color:var(--accent);margin-top:8px;margin-bottom:16px;">⏱ ca. ${totalMin} min Gesamtbelastung</div>`:'<div style="margin-bottom:16px;"></div>'}
       <div>${secHtml||'<div style="color:var(--text-3);font-size:13px;">Keine Übungen.</div>'}</div>
-      <button onclick="loadLtpPlanIntoPlanner(_ltpPublicPlans.find(x=>x.name===\`${p.name.replace(/`/g,"'")}\`))" style="width:100%;margin-top:20px;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;cursor:pointer;">→ In Trainingsplan laden</button>
+      <button onclick="loadLtpPlanIntoPlanner(_ltpPublicPlans.find(x=>x.id==='${escJs(p.id)}'))" style="width:100%;margin-top:20px;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;cursor:pointer;">→ In Trainingsplan laden</button>
     </div>`;
 }
 
@@ -254,21 +254,21 @@ function renderLtp(){
 function renderBlockCard(blk,bi){
   const totalDays = blk.weeks.reduce((a,w)=>a+w.days.length,0);
   const totalEntries = blk.weeks.reduce((a,w)=>a+w.days.reduce((b,d)=>b+(d.entries||[]).length,0),0);
-  return `<div class="ltp-block-card" id="blkcard-${blk.id}">
+  return `<div class="ltp-block-card" id="blkcard-${esc(blk.id)}">
     <div class="ltp-block-hdr">
       <div class="ltp-block-hdr-left">
-        <div class="ltp-block-title">${blk.name}</div>
+        <div class="ltp-block-title">${esc(blk.name)}</div>
         <div class="ltp-block-meta">${blk.weeks.length} Wochen · ${totalDays} Tage · ${totalEntries} Einheiten${blk.startDate?' · ab '+new Date(blk.startDate).toLocaleDateString('de-DE'):''}</div>
-        ${blk.notes?`<div class="ltp-block-notes">${blk.notes}</div>`:''}
+        ${blk.notes?`<div class="ltp-block-notes">${esc(blk.notes)}</div>`:''}
       </div>
       <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">
-        <button onclick="openSaveBlockLib('${blk.id}')" style="padding:5px 10px;font-size:10px;font-weight:800;border:1px solid var(--border);background:var(--surface-2);border-radius:6px;cursor:pointer;color:var(--text-2);">💾 Bibliothek</button>
-        <button onclick="deleteActiveBlock('${blk.id}')" style="padding:5px 8px;font-size:10px;border:1px solid var(--border);background:none;border-radius:6px;cursor:pointer;color:#880e4f;">✕</button>
+        <button onclick="openSaveBlockLib('${escJs(blk.id)}')" style="padding:5px 10px;font-size:10px;font-weight:800;border:1px solid var(--border);background:var(--surface-2);border-radius:6px;cursor:pointer;color:var(--text-2);">💾 Bibliothek</button>
+        <button onclick="deleteActiveBlock('${escJs(blk.id)}')" style="padding:5px 8px;font-size:10px;border:1px solid var(--border);background:none;border-radius:6px;cursor:pointer;color:#880e4f;">✕</button>
       </div>
     </div>
     <div class="ltp-weeks-wrap">
       ${blk.weeks.map((w,wi)=>renderWeekRow(blk.id,w,wi)).join('')}
-      <button onclick="addWeekToBlock('${blk.id}')" class="ltp-add-week-btn">+ Woche hinzufügen</button>
+      <button onclick="addWeekToBlock('${escJs(blk.id)}')" class="ltp-add-week-btn">+ Woche hinzufügen</button>
     </div>
   </div>`;
 }
@@ -279,14 +279,14 @@ function renderWeekRow(blockId, week, wi){
     <div class="ltp-week-row-hdr">
       <div class="ltp-week-badge">${wi+1}</div>
       <div class="ltp-week-row-info">
-        <span class="ltp-week-row-label">${week.label||'Woche '+(wi+1)}</span>
-        ${week.focus?`<span class="ltp-week-row-focus">${week.focus}</span>`:''}
+        <span class="ltp-week-row-label">${esc(week.label||'Woche '+(wi+1))}</span>
+        ${week.focus?`<span class="ltp-week-row-focus">${esc(week.focus)}</span>`:''}
       </div>
       <div style="margin-left:auto;display:flex;gap:5px;">
-        <button onclick="openWeekEdit('${blockId}',${wi})" style="padding:4px 8px;font-size:10px;font-weight:700;border:1px solid var(--border);background:var(--surface-2);border-radius:5px;cursor:pointer;color:var(--text-2);">✏️ Woche</button>
-        <button onclick="printLtpWeek('${blockId}',${wi})" style="padding:4px 8px;font-size:10px;font-weight:700;border:none;background:#1565c0;color:#fff;border-radius:5px;cursor:pointer;">Woche drucken</button>
-        <button onclick="addDayToWeek('${blockId}',${wi})" style="padding:4px 8px;font-size:10px;font-weight:800;border:none;background:var(--accent);color:#fff;border-radius:5px;cursor:pointer;">+ Tag</button>
-        <button onclick="deleteWeek('${blockId}',${wi})" style="padding:4px 6px;font-size:10px;border:1px solid var(--border);background:none;border-radius:5px;cursor:pointer;color:var(--text-3);">✕</button>
+        <button onclick="openWeekEdit('${escJs(blockId)}',${wi})" style="padding:4px 8px;font-size:10px;font-weight:700;border:1px solid var(--border);background:var(--surface-2);border-radius:5px;cursor:pointer;color:var(--text-2);">✏️ Woche</button>
+        <button onclick="printLtpWeek('${escJs(blockId)}',${wi})" style="padding:4px 8px;font-size:10px;font-weight:700;border:none;background:#1565c0;color:#fff;border-radius:5px;cursor:pointer;">Woche drucken</button>
+        <button onclick="addDayToWeek('${escJs(blockId)}',${wi})" style="padding:4px 8px;font-size:10px;font-weight:800;border:none;background:var(--accent);color:#fff;border-radius:5px;cursor:pointer;">+ Tag</button>
+        <button onclick="deleteWeek('${escJs(blockId)}',${wi})" style="padding:4px 6px;font-size:10px;border:1px solid var(--border);background:none;border-radius:5px;cursor:pointer;color:var(--text-3);">✕</button>
       </div>
     </div>
     <div class="ltp-days-row">
@@ -300,19 +300,19 @@ function renderDayCard(blockId,wi,day,di){
   const entries = day.entries||[];
   const entryColors = {training:'#1a7f4b',free:'#1565c0',game:'#e65100'};
   const entryIcos = {training:'⚽',free:'☕',game:'🏆'};
-  return `<div class="ltp-day-card" onclick="openDayEditor('${blockId}',${wi},${di})">
+  return `<div class="ltp-day-card" onclick="openDayEditor('${escJs(blockId)}',${wi},${di})">
     <div class="ltp-day-card-hdr">
-      <span class="ltp-day-card-label">${day.label||'Tag '+(di+1)}</span>
+      <span class="ltp-day-card-label">${esc(day.label||'Tag '+(di+1))}</span>
       <div style="display:flex;gap:3px;">
-        <button onclick="event.stopPropagation();printLtpDay('${blockId}',${wi},${di})" style="background:#1565c0;border:none;cursor:pointer;color:#fff;font-size:9px;padding:2px 6px;border-radius:4px;font-weight:800;">Drucken</button>
-        <button onclick="event.stopPropagation();deleteDay('${blockId}',${wi},${di})" style="background:none;border:none;cursor:pointer;color:var(--text-3);font-size:11px;padding:0 2px;">✕</button>
+        <button onclick="event.stopPropagation();printLtpDay('${escJs(blockId)}',${wi},${di})" style="background:#1565c0;border:none;cursor:pointer;color:#fff;font-size:9px;padding:2px 6px;border-radius:4px;font-weight:800;">Drucken</button>
+        <button onclick="event.stopPropagation();deleteDay('${escJs(blockId)}',${wi},${di})" style="background:none;border:none;cursor:pointer;color:var(--text-3);font-size:11px;padding:0 2px;">✕</button>
       </div>
     </div>
     ${entries.length
       ? entries.slice(0,3).map(e=>`<div class="ltp-entry-pill" style="background:${entryColors[e.type]||'#666'}20;border-left:3px solid ${entryColors[e.type]||'#666'};">
           <span style="font-size:9px;">${entryIcos[e.type]||'•'}</span>
-          <span class="ltp-entry-pill-title">${e.title||e.type}</span>
-          ${e.startTime?`<span class="ltp-entry-pill-time">${e.startTime}</span>`:''}
+          <span class="ltp-entry-pill-title">${esc(e.title||e.type)}</span>
+          ${e.startTime?`<span class="ltp-entry-pill-time">${esc(e.startTime)}</span>`:''}
         </div>`).join('')
       : `<div style="font-size:10px;color:var(--text-3);padding:6px 0;font-style:italic;">Tippen zum Füllen</div>`
     }
@@ -383,7 +383,7 @@ function openWeekEdit(blockId, wi){
   document.getElementById('ltpWFocus').value=week.focus||'';
   document.getElementById('ltpWNotes').value=week.notes||'';
   // Copy from another week
-  const otherWeeks=blk.weeks.map((w,i)=>i!==wi?`<option value="${i}">Woche ${i+1}: ${w.label||''}</option>`:'').filter(Boolean).join('');
+  const otherWeeks=blk.weeks.map((w,i)=>i!==wi?`<option value="${i}">Woche ${i+1}: ${esc(w.label||'')}</option>`:'').filter(Boolean).join('');
   document.getElementById('ltpWeekCopyWrap').innerHTML=otherWeeks?`
     <div style="display:flex;gap:8px;align-items:center;margin-top:8px;">
       <select class="fc" id="copyWeekSrc" style="flex:1;font-size:12px;">${otherWeeks}</select>
@@ -441,7 +441,7 @@ function addDayToWeek(blockId,wi){
   picker.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,.3);min-width:260px;';
   picker.innerHTML=`<div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;margin-bottom:12px;color:var(--text-1);">Tag auswählen</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px;">
-      ${dayNames.map(d=>`<button onclick="pickDay('${blockId}',${wi},'${d}',this.closest('[id]'))" style="padding:9px;border-radius:7px;border:1px solid var(--border);background:${existing.includes(d)?'var(--surface-2)':'var(--surface)'};color:${existing.includes(d)?'var(--text-3)':'var(--text-1)'};font-weight:700;font-size:12px;cursor:pointer;">${d}</button>`).join('')}
+      ${dayNames.map(d=>`<button onclick="pickDay('${escJs(blockId)}',${wi},'${d}',this.closest('[id]'))" style="padding:9px;border-radius:7px;border:1px solid var(--border);background:${existing.includes(d)?'var(--surface-2)':'var(--surface)'};color:${existing.includes(d)?'var(--text-3)':'var(--text-1)'};font-weight:700;font-size:12px;cursor:pointer;">${d}</button>`).join('')}
     </div>
     <button onclick="this.parentElement.remove()" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:7px;background:none;cursor:pointer;font-size:12px;color:var(--text-2);">Abbrechen</button>`;
   // Add backdrop
@@ -523,11 +523,11 @@ function renderEntryList(el){
     return`<div style="display:flex;gap:10px;padding:10px 12px;border-radius:10px;border:1.5px solid ${typeColors[e.type]||'#666'}30;background:${typeColors[e.type]||'#666'}10;margin-bottom:8px;align-items:flex-start;">
       <div style="font-size:20px;flex-shrink:0;">${typeIcos[e.type]||'•'}</div>
       <div style="flex:1;min-width:0;">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;color:var(--text-1);">${e.title||typeLabels[e.type]}</div>
-        ${e.startTime||e.endTime?`<div style="font-size:11px;color:var(--text-3);margin-top:2px;">⏱ ${e.startTime||'?'}${e.endTime?' – '+e.endTime:''}</div>`:''}
-        ${plan?`<div style="font-size:11px;color:var(--accent);margin-top:2px;">📋 ${plan.name}</div>`:''}
-        ${e.notes?`<div style="font-size:11px;color:var(--text-2);margin-top:3px;font-style:italic;">${e.notes}</div>`:''}
-        ${(e.tags||[]).length?`<div style="margin-top:4px;">${e.tags.map(t=>`<span style="font-size:9px;font-weight:800;padding:2px 6px;border-radius:5px;${tagStyle(t)};display:inline-block;margin:1px;">${t}</span>`).join('')}</div>`:''}
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;color:var(--text-1);">${esc(e.title||typeLabels[e.type])}</div>
+        ${e.startTime||e.endTime?`<div style="font-size:11px;color:var(--text-3);margin-top:2px;">⏱ ${esc(e.startTime||'?')}${e.endTime?' – '+esc(e.endTime):''}</div>`:''}
+        ${plan?`<div style="font-size:11px;color:var(--accent);margin-top:2px;">📋 ${esc(plan.name)}</div>`:''}
+        ${e.notes?`<div style="font-size:11px;color:var(--text-2);margin-top:3px;font-style:italic;">${esc(e.notes)}</div>`:''}
+        ${(e.tags||[]).length?`<div style="margin-top:4px;">${e.tags.map(t=>`<span style="font-size:9px;font-weight:800;padding:2px 6px;border-radius:5px;${tagStyle(t)};display:inline-block;margin:1px;">${esc(t)}</span>`).join('')}</div>`:''}
       </div>
       <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
         <button onclick="editEntry(${realIdx})" style="padding:4px 8px;font-size:10px;border:1px solid var(--border);background:var(--surface);border-radius:5px;cursor:pointer;">✏️</button>
@@ -564,8 +564,8 @@ function renderTimeGrid(el){
     const heightPx=dur*(hourH/60);
     const realIdx=dayEditorEntries.indexOf(e);
     html+=`<div onclick="editEntry(${realIdx})" style="position:absolute;top:${topPx}px;height:${heightPx}px;left:4px;right:4px;background:${typeColors[e.type]||'#666'};border-radius:6px;padding:4px 7px;cursor:pointer;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.2);">
-      <div style="font-size:10px;font-weight:900;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${typeIcos[e.type]||''} ${e.title||e.type}</div>
-      <div style="font-size:9px;color:rgba(255,255,255,.8);">${e.startTime}${e.endTime?' – '+e.endTime:''}</div>
+      <div style="font-size:10px;font-weight:900;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${typeIcos[e.type]||''} ${esc(e.title||e.type)}</div>
+      <div style="font-size:9px;color:rgba(255,255,255,.8);">${esc(e.startTime)}${e.endTime?' – '+esc(e.endTime):''}</div>
     </div>`;
   });
   html+='</div>';
@@ -582,50 +582,50 @@ function openEntryEdit(type, editIdx){
   document.getElementById('entryEditIco').textContent=type==='training'?'⚽':type==='game'?'🏆':'☕';
   document.getElementById('entryEditTitle').textContent=(isEdit?'Bearbeiten: ':'')+typeLabels[type||e.type];
 
-  const planOpts='<option value="">– Kein Plan –</option>'+savedPlans.map(p=>`<option value="${p.id}" ${e.planId===p.id?'selected':''}>${p.name}</option>`).join('');
+  const planOpts='<option value="">– Kein Plan –</option>'+savedPlans.map(p=>`<option value="${esc(p.id)}" ${e.planId===p.id?'selected':''}>${esc(p.name)}</option>`).join('');
   const freeColors=['#1565c0','#6d28d9','#b71c1c','#e65100','#1a7f4b','#37474f'];
 
   let bodyHtml='';
   const t=e.type||type;
   if(t==='training'){
     bodyHtml=`
-      <div class="fg"><label>Titel</label><input class="fc" id="ee-title" value="${e.title||''}" placeholder="z.B. Haupttraining"></div>
+      <div class="fg"><label>Titel</label><input class="fc" id="ee-title" value="${esc(e.title||'')}" placeholder="z.B. Haupttraining"></div>
       <div class="fr">
-        <div class="fg"><label>Von</label><input class="fc" id="ee-start" type="time" value="${e.startTime||''}"></div>
-        <div class="fg"><label>Bis</label><input class="fc" id="ee-end" type="time" value="${e.endTime||''}"></div>
+        <div class="fg"><label>Von</label><input class="fc" id="ee-start" type="time" value="${esc(e.startTime||'')}"></div>
+        <div class="fg"><label>Bis</label><input class="fc" id="ee-end" type="time" value="${esc(e.endTime||'')}"></div>
       </div>
       <div class="fg"><label>Trainingsplan verknüpfen</label><select class="fc" id="ee-plan">${planOpts}</select></div>
       <div style="margin-bottom:12px;">
         <button onclick="openNewPlanFromBlock()" style="padding:7px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;color:var(--text-2);">+ Neue Trainingseinheit erstellen</button>
       </div>
-      <div class="fg"><label>Tags (kommagetrennt)</label><input class="fc" id="ee-tags" value="${(e.tags||[]).join(', ')}" placeholder="z.B. PRESSING, PASSSPIEL"></div>
-      <div class="fg"><label>Notizen</label><textarea class="fc dta" id="ee-notes" rows="2" style="resize:vertical;">${e.notes||''}</textarea></div>`;
+      <div class="fg"><label>Tags (kommagetrennt)</label><input class="fc" id="ee-tags" value="${esc((e.tags||[]).join(', '))}" placeholder="z.B. PRESSING, PASSSPIEL"></div>
+      <div class="fg"><label>Notizen</label><textarea class="fc dta" id="ee-notes" rows="2" style="resize:vertical;">${esc(e.notes||'')}</textarea></div>`;
   } else if(t==='free'){
     bodyHtml=`
-      <div class="fg"><label>Titel *</label><input class="fc" id="ee-title" value="${e.title||''}" placeholder="z.B. Frühstück, Freizeit, Schlafen…"></div>
+      <div class="fg"><label>Titel *</label><input class="fc" id="ee-title" value="${esc(e.title||'')}" placeholder="z.B. Frühstück, Freizeit, Schlafen…"></div>
       <div class="fr">
-        <div class="fg"><label>Von</label><input class="fc" id="ee-start" type="time" value="${e.startTime||''}"></div>
-        <div class="fg"><label>Bis</label><input class="fc" id="ee-end" type="time" value="${e.endTime||''}"></div>
+        <div class="fg"><label>Von</label><input class="fc" id="ee-start" type="time" value="${esc(e.startTime||'')}"></div>
+        <div class="fg"><label>Bis</label><input class="fc" id="ee-end" type="time" value="${esc(e.endTime||'')}"></div>
       </div>
       <div class="fg"><label>Farbe</label>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;" id="ee-colors">
           ${freeColors.map(c=>`<div onclick="document.querySelectorAll('.color-dot').forEach(d=>d.classList.remove('sel'));this.classList.add('sel')" class="color-dot ${(e.color||'#1565c0')===c?'sel':''}" data-color="${c}" style="width:26px;height:26px;border-radius:50%;background:${c};cursor:pointer;border:3px solid ${(e.color||'#1565c0')===c?'#fff':'transparent'};transition:border .15s;"></div>`).join('')}
         </div>
       </div>
-      <div class="fg"><label>Notizen</label><textarea class="fc dta" id="ee-notes" rows="2" style="resize:vertical;">${e.notes||''}</textarea></div>`;
+      <div class="fg"><label>Notizen</label><textarea class="fc dta" id="ee-notes" rows="2" style="resize:vertical;">${esc(e.notes||'')}</textarea></div>`;
   } else if(t==='game'){
     bodyHtml=`
-      <div class="fg"><label>Titel / Gegner</label><input class="fc" id="ee-title" value="${e.title||''}" placeholder="z.B. Funino vs. Bremen West"></div>
+      <div class="fg"><label>Titel / Gegner</label><input class="fc" id="ee-title" value="${esc(e.title||'')}" placeholder="z.B. Funino vs. Bremen West"></div>
       <div class="fr">
-        <div class="fg"><label>Von</label><input class="fc" id="ee-start" type="time" value="${e.startTime||''}"></div>
-        <div class="fg"><label>Bis</label><input class="fc" id="ee-end" type="time" value="${e.endTime||''}"></div>
+        <div class="fg"><label>Von</label><input class="fc" id="ee-start" type="time" value="${esc(e.startTime||'')}"></div>
+        <div class="fg"><label>Bis</label><input class="fc" id="ee-end" type="time" value="${esc(e.endTime||'')}"></div>
       </div>
-      <div class="fg"><label>Spielformat</label><input class="fc" id="ee-format" value="${e.gameFormat||''}" placeholder="z.B. Funino, 4vs4, 7vs7"></div>
-      <div class="fg"><label>Notizen</label><textarea class="fc dta" id="ee-notes" rows="2" style="resize:vertical;">${e.notes||''}</textarea></div>`;
+      <div class="fg"><label>Spielformat</label><input class="fc" id="ee-format" value="${esc(e.gameFormat||'')}" placeholder="z.B. Funino, 4vs4, 7vs7"></div>
+      <div class="fg"><label>Notizen</label><textarea class="fc dta" id="ee-notes" rows="2" style="resize:vertical;">${esc(e.notes||'')}</textarea></div>`;
   }
 
   bodyHtml+=`<div class="macts">
-    <button class="bpr" onclick="saveEntry('${t}')">Speichern</button>
+    <button class="bpr" onclick="saveEntry('${escJs(t)}')">Speichern</button>
     <button class="bsc" onclick="closeMod('entryEditMod')">Abbrechen</button>
     ${isEdit?`<button onclick="deleteEntry(${editIdx});closeMod('entryEditMod')" style="padding:9px 14px;border:1px solid #880e4f;color:#880e4f;background:none;border-radius:8px;font-weight:800;cursor:pointer;font-size:12px;">Löschen</button>`:''}
   </div>`;
@@ -711,9 +711,9 @@ function renderLibrary(){
   el.innerHTML=blockLibrary.map((blk,i)=>`
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px;">
       <div style="flex:1;min-width:0;">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;color:var(--text-1);">${blk.name}</div>
-        ${blk.notes?`<div style="font-size:11px;color:var(--text-2);margin-top:2px;">${blk.notes}</div>`:''}
-        <div style="font-size:10px;color:var(--text-3);margin-top:4px;">${blk.weeks?.length||0} Wochen · Gespeichert ${blk.savedAt||blk.createdAt||''}</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;color:var(--text-1);">${esc(blk.name)}</div>
+        ${blk.notes?`<div style="font-size:11px;color:var(--text-2);margin-top:2px;">${esc(blk.notes)}</div>`:''}
+        <div style="font-size:10px;color:var(--text-3);margin-top:4px;">${blk.weeks?.length||0} Wochen · Gespeichert ${esc(blk.savedAt||blk.createdAt||'')}</div>
       </div>
       <div style="display:flex;gap:6px;">
         <button onclick="loadBlockFromLib(${i})" style="padding:7px 12px;background:var(--accent);color:#fff;border:none;border-radius:7px;font-size:11px;font-weight:800;cursor:pointer;">Laden</button>
@@ -840,12 +840,12 @@ function _ltpPlanHTML(plan){
   const byDiff={Leicht:0,Mittel:0,Schwer:0,'':0};
   items.forEach(({item,ex})=>{const d=parseInt(item.duration??ex.duration??0)||0;const diff=item.difficulty??ex.difficulty??'';byDiff[diff in byDiff?diff:'']+=d;});
   const totalMin=Object.values(byDiff).reduce((a,b)=>a+b,0);
-  const matHTML=[...matSet].length?`<div class="mat-box"><div class="mat-box-title">Material</div><div style="display:flex;flex-wrap:wrap;gap:5px;">${[...matSet].map(m=>`<span class="mat-pill">${m}</span>`).join('')}</div></div>`:'';
+  const matHTML=[...matSet].length?`<div class="mat-box"><div class="mat-box-title">Material</div><div style="display:flex;flex-wrap:wrap;gap:5px;">${[...matSet].map(m=>`<span class="mat-pill">${esc(m)}</span>`).join('')}</div></div>`:'';
   const diffRows=[{label:'Leicht',color:'#1a7f4b',min:byDiff['Leicht']},{label:'Mittel',color:'#e65100',min:byDiff['Mittel']},{label:'Hoch',color:'#880e4f',min:byDiff['Schwer']}].filter(r=>r.min>0);
   const totalHTML=totalMin?`<div class="total-box"><div><div class="total-label">Gesamtbelastung</div><div class="total-breakdown">${diffRows.map(r=>`<span class="diff-pill" style="background:${r.color}18;color:${r.color};border:1px solid ${r.color}40;">${r.label}: ${r.min} min</span>`).join('')}${byDiff['']>0?`<span class="diff-pill" style="background:#f5f5f5;color:#555;border:1px solid #ccc;">Ohne Angabe: ${byDiff['']} min</span>`:''}</div></div><span class="total-val">${totalMin} min</span></div>`:'';
   const cardsHTML=items.map(({item,ex,si},idx)=>{
     const players=item.players??ex.players??'';const duration=item.duration??ex.duration??'';const difficulty=item.difficulty??ex.difficulty??'';const col=secColor(si);
-    return`<div class="ex-card"><div class="ex-num" style="background:${col}">${idx+1}</div><div class="ex-img">${ex.image?`<img src="${ex.image}" alt="${ex.name}">`:'<div style="width:200px;height:140px;background:#f0f4f0;border-radius:5px;"></div>'}</div><div style="flex:1;min-width:0;"><div class="ex-sec" style="color:${col}">${secName(si)}</div><div class="ex-name">${ex.name}</div><div class="ex-meta">${players?`<span>👥 ${players}</span>`:''}${duration?`<span>⏱ ${duration} min</span>`:''}${difficulty?`<span>◉ ${difficulty}</span>`:''}</div>${ex.desc?`<div class="ex-desc">${ex.desc}</div>`:''}</div></div>`;
+    return`<div class="ex-card"><div class="ex-num" style="background:${col}">${idx+1}</div><div class="ex-img">${ex.image?`<img src="${esc(ex.image)}" alt="${esc(ex.name)}">`:'<div style="width:200px;height:140px;background:#f0f4f0;border-radius:5px;"></div>'}</div><div style="flex:1;min-width:0;"><div class="ex-sec" style="color:${col}">${secName(si)}</div><div class="ex-name">${esc(ex.name)}</div><div class="ex-meta">${players?`<span>👥 ${esc(players)}</span>`:''}${duration?`<span>⏱ ${esc(duration)} min</span>`:''}${difficulty?`<span>◉ ${esc(difficulty)}</span>`:''}</div>${ex.desc?`<div class="ex-desc">${esc(ex.desc)}</div>`:''}</div></div>`;
   }).join('');
   return matHTML+cardsHTML+totalHTML;
 }
@@ -855,19 +855,19 @@ function _ltpDayHTML(blk, week, day){
   const typeLabels={training:'Trainingseinheit',free:'Freier Block',game:'Spieltag'};
   const typeIcos={training:'⚽',free:'☕',game:'🏆'};
   const entries=day.entries||[];
-  let html=`<div class="day-hdr">${day.label||'Tag'}</div>`;
+  let html=`<div class="day-hdr">${esc(day.label||'Tag')}</div>`;
   if(!entries.length){html+=`<div style="color:#999;font-size:9pt;font-style:italic;">Keine Einträge</div>`;return html;}
   entries.forEach(e=>{
     const col=typeColors[e.type]||'#666';
-    html+=`<div class="entry-block ${e.type}">
-      <div class="entry-title">${typeIcos[e.type]||'•'} ${e.title||typeLabels[e.type]||e.type}</div>
-      <div class="entry-meta">${e.startTime||e.endTime?`⏱ ${e.startTime||'?'}${e.endTime?' – '+e.endTime:''} &nbsp;`:''}${e.gameFormat?`📋 ${e.gameFormat} &nbsp;`:''}</div>
-      ${e.notes?`<div class="entry-notes">${e.notes}</div>`:''}
+    html+=`<div class="entry-block ${esc(e.type)}">
+      <div class="entry-title">${typeIcos[e.type]||'•'} ${esc(e.title||typeLabels[e.type]||e.type)}</div>
+      <div class="entry-meta">${e.startTime||e.endTime?`⏱ ${esc(e.startTime||'?')}${e.endTime?' – '+esc(e.endTime):''} &nbsp;`:''}${e.gameFormat?`📋 ${esc(e.gameFormat)} &nbsp;`:''}</div>
+      ${e.notes?`<div class="entry-notes">${esc(e.notes)}</div>`:''}
     </div>`;
     if(e.type==='training'&&e.planId){
       const plan=savedPlans.find(p=>p.id===e.planId);
       if(plan){
-        html+=`<div class="plan-label">📋 ${plan.name}</div>`;
+        html+=`<div class="plan-label">📋 ${esc(plan.name)}</div>`;
         html+=_ltpPlanHTML(plan);
       }
     }
@@ -879,12 +879,12 @@ function printLtpDay(blockId,wi,di){
   const blk=ltpBlocks.find(b=>b.id===blockId); if(!blk)return;
   const week=blk.weeks[wi]; const day=week.days[di];
   const today=new Date().toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
-  const html=`<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><title>${day.label}</title>
+  const html=`<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><title>${esc(day.label)}</title>
 <style>${_ltpPrintCSS()}</style></head><body>
 <div class="brand"><div class="brand-name">AssistCoach</div><div class="brand-sub">Trainingsplanung</div></div>
 <div class="doc-header">
-  <div class="doc-title">${blk.name}</div>
-  <div class="doc-sub">${week.label||'Woche '+(wi+1)}<br>${today}</div>
+  <div class="doc-title">${esc(blk.name)}</div>
+  <div class="doc-sub">${esc(week.label||'Woche '+(wi+1))}<br>${today}</div>
 </div>
 <div class="day-section">${_ltpDayHTML(blk,week,day)}</div>
 <script>window.onload=function(){window.print();}<\/script>
@@ -898,12 +898,12 @@ function printLtpWeek(blockId,wi){
   if(!week.days.length){showToast('Woche hat keine Tage','err');return;}
   const today=new Date().toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
   const daysHTML=week.days.map(day=>`<div class="day-section">${_ltpDayHTML(blk,week,day)}</div>`).join('');
-  const html=`<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><title>${week.label||'Woche '+(wi+1)}</title>
+  const html=`<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><title>${esc(week.label||'Woche '+(wi+1))}</title>
 <style>${_ltpPrintCSS()}</style></head><body>
 <div class="brand"><div class="brand-name">AssistCoach</div><div class="brand-sub">Trainingsplanung</div></div>
 <div class="doc-header">
-  <div class="doc-title">${blk.name} – ${week.label||'Woche '+(wi+1)}</div>
-  <div class="doc-sub">${week.focus?week.focus+'<br>':''}${today}</div>
+  <div class="doc-title">${esc(blk.name)} – ${esc(week.label||'Woche '+(wi+1))}</div>
+  <div class="doc-sub">${week.focus?esc(week.focus)+'<br>':''}${today}</div>
 </div>
 ${daysHTML}
 <script>window.onload=function(){window.print();}<\/script>

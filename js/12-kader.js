@@ -23,9 +23,9 @@ function renderSquadDrop() {
   const list = document.getElementById('squadPlayerList');
   if (!list) return;
   list.innerHTML = squad.map(p => `
-    <label style="display:flex;align-items:center;gap:10px;padding:6px 14px;cursor:pointer;font-size:13px;" onclick="toggleSquadPlayer(event,'${p.id}')">
-      <input type="checkbox" data-pid="${p.id}" ${planSquadAbsent.has(p.id)?'':'checked'} style="accent-color:var(--accent);width:15px;height:15px;">
-      <span>${escH(p.name)}${p.ageGroup?` <span style="font-size:10px;color:var(--gd2);">${p.ageGroup}</span>`:''}</span>
+    <label style="display:flex;align-items:center;gap:10px;padding:6px 14px;cursor:pointer;font-size:13px;" onclick="toggleSquadPlayer(event,'${escJs(p.id)}')">
+      <input type="checkbox" data-pid="${esc(p.id)}" ${planSquadAbsent.has(p.id)?'':'checked'} style="accent-color:var(--accent);width:15px;height:15px;">
+      <span>${escH(p.name)}${p.ageGroup?` <span style="font-size:10px;color:var(--gd2);">${esc(p.ageGroup)}</span>`:''}</span>
     </label>
   `).join('');
   updateSquadLabel();
@@ -117,8 +117,8 @@ function toggleExcludeDrop(exId, si, btn) {
   drop.innerHTML = `<div style="padding:5px 12px 4px;font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gd2);">Nicht dabei bei dieser Übung</div>` +
     present.map(p => `
       <label style="display:flex;align-items:center;gap:9px;padding:6px 12px;cursor:pointer;font-size:12px;" onclick="event.stopPropagation()">
-        <input type="checkbox" data-pid="${p.id}" ${excluded.has(p.id)?'checked':''} style="accent-color:#e53935;width:14px;height:14px;"
-          onchange="setExclude('${exId}',${si},'${p.id}',this.checked)">
+        <input type="checkbox" data-pid="${esc(p.id)}" ${excluded.has(p.id)?'checked':''} style="accent-color:#e53935;width:14px;height:14px;"
+          onchange="setExclude('${escJs(exId)}',${Number(si)||0},'${escJs(p.id)}',this.checked)">
         ${escH(p.name)}
       </label>
     `).join('');
@@ -224,12 +224,12 @@ function renderKaderPage() {
 
   list.innerHTML = sortedGroups.map(g => `
     <div style="margin-bottom:24px;">
-      <div class="fsec" style="margin-top:0;">${g} &mdash; ${groups[g].length} Spieler</div>
+      <div class="fsec" style="margin-top:0;">${esc(g)} &mdash; ${groups[g].length} Spieler</div>
       <div style="display:grid;gap:8px;">
         ${groups[g].map(p => `
-          <div style="background:var(--surface);border-radius:10px;padding:12px 16px;box-shadow:var(--sh);display:flex;align-items:center;gap:14px;cursor:pointer;" onclick="openPlayerModal('${p.id}')">
+          <div style="background:var(--surface);border-radius:10px;padding:12px 16px;box-shadow:var(--sh);display:flex;align-items:center;gap:14px;cursor:pointer;" onclick="openPlayerModal('${escJs(p.id)}')">
             <div style="width:36px;height:36px;border-radius:50%;background:var(--accent-l);color:var(--accent);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;flex-shrink:0;">
-              ${p.number || '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'}
+              ${p.number ? esc(p.number) : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'}
             </div>
             <div style="flex:1;min-width:0;">
               <div style="font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escH(p.name)}</div>
@@ -244,7 +244,7 @@ function renderKaderPage() {
 }
 
 function escH(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return esc(s);
 }
 
 // ── Modal ─────────────────────────────────────────────────────────

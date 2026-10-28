@@ -36,7 +36,9 @@ function isSportAvailable(id) {
 function getSavedSport() {
   try {
     const s = JSON.parse(localStorage.getItem(SPORT_KEY));
-    return (s && isSportAvailable(s.id)) ? s : null;
+    // Beschriftung/Symbol immer aus der Konstante nehmen, nie aus dem lokalen Speicher
+    const known = s && SPORTS.find(x => x.id === s.id);
+    return (known && isSportAvailable(known.id)) ? known : null;
   } catch { return null; }
 }
 
@@ -108,7 +110,7 @@ function renderHomeSportState() {
     cards.style.display = '';
     if (badge) {
       badge.style.display = 'flex';
-      badge.innerHTML = `<img src="${sport.icon}" style="width:20px;height:20px;object-fit:contain;opacity:.7;"><span>${sport.label}</span><button onclick="changeSport()" style="background:none;border:none;font-size:11px;cursor:pointer;padding:0;margin-left:4px;">ändern</button>`;
+      badge.innerHTML = `<img src="${esc(sport.icon)}" style="width:20px;height:20px;object-fit:contain;opacity:.7;"><span>${esc(sport.label)}</span><button onclick="changeSport()" style="background:none;border:none;font-size:11px;cursor:pointer;padding:0;margin-left:4px;">ändern</button>`;
     }
     if (sub) sub.textContent = 'Was möchtest du tun?';
     if (heroBtns) heroBtns.style.display = 'flex';

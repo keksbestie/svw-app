@@ -59,15 +59,15 @@ function renderSavedPlans(){
   }
   const statusBadge=s=>s==='pending'?'<span style="font-size:9px;font-weight:800;padding:1px 6px;border-radius:10px;background:#fff8e1;color:#f57f17;border:1px solid #ffe082;">In Prüfung</span>':s==='approved'?'<span style="font-size:9px;font-weight:800;padding:1px 6px;border-radius:10px;background:#e8f5e9;color:#1a7f4b;border:1px solid #a5d6a7;">Veröffentlicht</span>':'';
   el.innerHTML=savedPlans.map(p=>`
-    <div class="tpl-item" style="flex-direction:column;align-items:flex-start;gap:4px;" onclick='loadPlan(${JSON.stringify(p).replace(/'/g,"&#39;")})'>
+    <div class="tpl-item" style="flex-direction:column;align-items:flex-start;gap:4px;" onclick="loadPlan(${esc(JSON.stringify(p))})">
       <div style="display:flex;align-items:center;gap:8px;width:100%;">
         <div class="tpl-ico">📄</div>
         <div style="flex:1;min-width:0;">
-          <div class="tpl-name" style="display:flex;align-items:center;gap:6px;">${p.name} ${statusBadge(p.status||'private')}</div>
-          <div class="tpl-desc">${p.date} · ${(p.totals||[]).filter(t=>t.count>0).map(t=>t.count+' '+t.name).join(', ')}</div>
+          <div class="tpl-name" style="display:flex;align-items:center;gap:6px;">${esc(p.name)} ${statusBadge(p.status||'private')}</div>
+          <div class="tpl-desc">${esc(p.date)} · ${esc((p.totals||[]).filter(t=>t.count>0).map(t=>t.count+' '+t.name).join(', '))}</div>
         </div>
-        ${(!p.status||p.status==='private')?`<button onclick="event.stopPropagation();submitPlanForReview('${p.id}')" style="background:none;border:1px solid var(--accent);color:var(--accent);border-radius:5px;cursor:pointer;font-size:9px;font-weight:800;padding:2px 6px;white-space:nowrap;flex-shrink:0;" title="Plan zur Veröffentlichung einreichen">↑ Veröffentlichen</button>`:''}
-        <button onclick="event.stopPropagation();delPlan('${p.id}')" style="background:none;border:none;cursor:pointer;color:var(--text-3);font-size:13px;padding:2px 4px;border-radius:4px;flex-shrink:0;" title="Löschen">🗑</button>
+        ${(!p.status||p.status==='private')?`<button onclick="event.stopPropagation();submitPlanForReview('${escJs(p.id)}')" style="background:none;border:1px solid var(--accent);color:var(--accent);border-radius:5px;cursor:pointer;font-size:9px;font-weight:800;padding:2px 6px;white-space:nowrap;flex-shrink:0;" title="Plan zur Veröffentlichung einreichen">↑ Veröffentlichen</button>`:''}
+        <button onclick="event.stopPropagation();delPlan('${escJs(p.id)}')" style="background:none;border:none;cursor:pointer;color:var(--text-3);font-size:13px;padding:2px 4px;border-radius:4px;flex-shrink:0;" title="Löschen">🗑</button>
       </div>
     </div>`).join('');
 }
@@ -111,11 +111,11 @@ function renderMyPlans(plans){
   const statusColor={pending:'#f57f17',approved:'#1a7f4b',rejected:'#c62828'};
   el.innerHTML=plans.map(p=>`
     <div class="sub-item">
-      <div class="sub-item-name">📋 ${p.name}</div>
+      <div class="sub-item-name">📋 ${esc(p.name)}</div>
       <div class="sub-item-meta">
-        <span class="sub-status" style="background:${statusColor[p.status]||'#888'}20;color:${statusColor[p.status]||'#888'};border:1px solid ${statusColor[p.status]||'#888'}40;">${statusLabel[p.status]||p.status}</span>
-        <span class="sub-date">${p.date||''}</span>
-        ${p.status==='pending'?`<button class="sub-action-btn sub-withdraw-btn" onclick="withdrawSubmittedPlan('${p.id}')">Zurückziehen</button>`:''}
+        <span class="sub-status" style="background:${statusColor[p.status]||'#888'}20;color:${statusColor[p.status]||'#888'};border:1px solid ${statusColor[p.status]||'#888'}40;">${esc(statusLabel[p.status]||p.status)}</span>
+        <span class="sub-date">${esc(p.date||'')}</span>
+        ${p.status==='pending'?`<button class="sub-action-btn sub-withdraw-btn" onclick="withdrawSubmittedPlan('${escJs(p.id)}')">Zurückziehen</button>`:''}
       </div>
     </div>`).join('');
 }
@@ -141,11 +141,11 @@ function renderAdminPlanQueue(plans){
   if(!plans.length){el.innerHTML='<div style="font-size:12px;color:var(--text-3);padding:8px 0;">Keine Pläne in der Warteschlange.</div>';return;}
   el.innerHTML=plans.map(p=>`
     <div class="sub-item">
-      <div class="sub-item-name">📋 ${p.name} <span style="font-size:10px;color:var(--text-3);font-weight:400;">von ${_safeAuthor(p.author_name,'Unbekannt')} · ${p.date||''}</span></div>
+      <div class="sub-item-name">📋 ${esc(p.name)} <span style="font-size:10px;color:var(--text-3);font-weight:400;">von ${esc(_safeAuthor(p.author_name,'Unbekannt'))} · ${esc(p.date||'')}</span></div>
       <div class="sub-item-meta" style="gap:6px;">
-        <button onclick="previewSubmittedPlan('${p.id}')" style="padding:4px 10px;background:var(--surface-2,#2a2a2a);color:var(--text-1);border:1px solid var(--border);border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;">👁 Anzeigen</button>
-        <button onclick="approvePlan('${p.id}')" style="padding:4px 10px;background:#1a7f4b;color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;">✓ Freigeben</button>
-        <button onclick="rejectPlan('${p.id}')" style="padding:4px 10px;background:#c62828;color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;">✕ Ablehnen</button>
+        <button onclick="previewSubmittedPlan('${escJs(p.id)}')" style="padding:4px 10px;background:var(--surface-2,#2a2a2a);color:var(--text-1);border:1px solid var(--border);border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;">👁 Anzeigen</button>
+        <button onclick="approvePlan('${escJs(p.id)}')" style="padding:4px 10px;background:#1a7f4b;color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;">✓ Freigeben</button>
+        <button onclick="rejectPlan('${escJs(p.id)}')" style="padding:4px 10px;background:#c62828;color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;">✕ Ablehnen</button>
       </div>
     </div>`).join('');
 }
@@ -185,12 +185,12 @@ async function previewSubmittedPlan(id){
       const players=item.players!=null?item.players:(ex.players||'');
       const duration=item.duration!=null?item.duration:(ex.duration||'');
       return`<div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);">
-        ${ex.image?`<img src="${ex.image}" style="width:56px;height:42px;object-fit:cover;border-radius:6px;flex-shrink:0;">`:`<div style="width:56px;height:42px;background:var(--border);border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;">📋</div>`}
+        ${ex.image?`<img src="${esc(ex.image)}" style="width:56px;height:42px;object-fit:cover;border-radius:6px;flex-shrink:0;">`:`<div style="width:56px;height:42px;background:var(--border);border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;">📋</div>`}
         <div style="flex:1;min-width:0;">
-          <div style="font-size:13px;font-weight:700;line-height:1.3;">${ex.name}</div>
+          <div style="font-size:13px;font-weight:700;line-height:1.3;">${esc(ex.name)}</div>
           <div style="font-size:11px;color:var(--text-3);margin-top:2px;">
-            ${duration?`<span style="margin-right:8px;">⏱ ${duration}</span>`:''}
-            ${players?`<span>👥 ${players}</span>`:''}
+            ${duration?`<span style="margin-right:8px;">⏱ ${esc(duration)}</span>`:''}
+            ${players?`<span>👥 ${esc(players)}</span>`:''}
           </div>
         </div>
       </div>`;
@@ -200,7 +200,7 @@ async function previewSubmittedPlan(id){
     return`<div style="margin-bottom:12px;">
       <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;background:${sec.color}18;margin-bottom:4px;">
         <div style="width:10px;height:10px;border-radius:50%;background:${sec.color};flex-shrink:0;"></div>
-        <div style="font-size:11px;font-weight:800;color:${sec.color};letter-spacing:.5px;text-transform:uppercase;">${sec.name}</div>
+        <div style="font-size:11px;font-weight:800;color:${sec.color};letter-spacing:.5px;text-transform:uppercase;">${esc(sec.name)}</div>
         <div style="font-size:10px;color:var(--text-3);margin-left:auto;">${(section||[]).length} Übung${(section||[]).length!==1?'en':''}</div>
       </div>
       ${items}
@@ -219,14 +219,14 @@ async function previewSubmittedPlan(id){
   modal.innerHTML=`
     <div style="background:var(--bg);border-radius:16px;max-width:560px;width:100%;max-height:85vh;overflow-y:auto;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.5);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;">${plan.name}</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;">${esc(plan.name)}</div>
         <button onclick="document.getElementById('adminPlanPreviewModal').remove()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-3);">✕</button>
       </div>
-      <div style="font-size:11px;color:var(--text-3);margin-bottom:16px;">von ${_safeAuthor(plan.author_name,'Unbekannt')} · ${plan.date||''} · ${totalCount} Übung${totalCount!==1?'en':''}</div>
+      <div style="font-size:11px;color:var(--text-3);margin-bottom:16px;">von ${esc(_safeAuthor(plan.author_name,'Unbekannt'))} · ${esc(plan.date||'')} · ${totalCount} Übung${totalCount!==1?'en':''}</div>
       <div>${secHtml||'<div style="color:var(--text-3);font-size:13px;">Keine Übungen im Plan.</div>'}</div>
       <div style="display:flex;gap:8px;margin-top:20px;">
-        <button onclick="approvePlan('${plan.id}');document.getElementById('adminPlanPreviewModal').remove()" style="flex:1;padding:10px;background:#1a7f4b;color:#fff;border:none;border-radius:8px;font-weight:800;cursor:pointer;">✓ Freigeben</button>
-        <button onclick="rejectPlan('${plan.id}');document.getElementById('adminPlanPreviewModal').remove()" style="flex:1;padding:10px;background:#c62828;color:#fff;border:none;border-radius:8px;font-weight:800;cursor:pointer;">✕ Ablehnen</button>
+        <button onclick="approvePlan('${escJs(plan.id)}');document.getElementById('adminPlanPreviewModal').remove()" style="flex:1;padding:10px;background:#1a7f4b;color:#fff;border:none;border-radius:8px;font-weight:800;cursor:pointer;">✓ Freigeben</button>
+        <button onclick="rejectPlan('${escJs(plan.id)}');document.getElementById('adminPlanPreviewModal').remove()" style="flex:1;padding:10px;background:#c62828;color:#fff;border:none;border-radius:8px;font-weight:800;cursor:pointer;">✕ Ablehnen</button>
       </div>
     </div>`;
 }

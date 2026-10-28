@@ -2142,7 +2142,7 @@ function updateFormationSelect(){
   if(!sel) return;
   const forms = _getFormations();
   const prev = sel.value;
-  sel.innerHTML = Object.entries(forms).map(([k,f])=>`<option value="${k}">${f.name}</option>`).join('');
+  sel.innerHTML = Object.entries(forms).map(([k,f])=>`<option value="${esc(k)}">${esc(f.name)}</option>`).join('');
   if(forms[prev]) sel.value = prev;
 }
 

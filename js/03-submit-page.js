@@ -384,7 +384,7 @@ function addSTag(val){
 function removeSTag(t){ submitTags = submitTags.filter(x=>x!==t); renderSTagDisplay(); updateSubmitChecklist(); renderSTagSuggestions(); }
 function renderSTagDisplay(){
   const el = document.getElementById('sAtags'); if(!el) return;
-  el.innerHTML = submitTags.map(t=>`<span class="atag" style="${tagStyle(t)}">${t}<button onclick="removeSTag('${t}')" style="color:inherit;background:none;border:none;cursor:pointer;margin-left:3px;font-size:11px;">×</button></span>`).join('');
+  el.innerHTML = submitTags.map(t=>`<span class="atag" style="${tagStyle(t)}">${esc(t)}<button onclick="removeSTag('${escJs(t)}')" style="color:inherit;background:none;border:none;cursor:pointer;margin-left:3px;font-size:11px;">×</button></span>`).join('');
 }
 
 function renderSTagSuggestions(){
@@ -409,7 +409,7 @@ function renderSTagSuggestions(){
   if(!suggestions.length){ el.innerHTML=''; return; }
 
   el.innerHTML = `<div style="font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--text-3);margin-bottom:5px;">Vorschläge</div>`
-    + suggestions.map(t=>`<button class="tag-suggest-chip" onclick="addSTag('${t}')" style="${tagStyle(t)}">${t}</button>`).join('');
+    + suggestions.map(t=>`<button class="tag-suggest-chip" onclick="addSTag('${escJs(t)}')" style="${tagStyle(t)}">${esc(t)}</button>`).join('');
 }
 
 // ── Submit exercise ──────────────────────────────────
@@ -465,13 +465,13 @@ function _renderMySubmissionsFromCache(){
   const statusLabel = {pending:'Ausstehend', review:'In Review', approved:'Freigegeben', rejected:'Abgelehnt'};
   el.innerHTML = mine.map(s=>`
     <div class="sub-item">
-      <div class="sub-item-name">${s.name}</div>
+      <div class="sub-item-name">${esc(s.name)}</div>
       <div class="sub-item-meta">
-        <span class="sub-status ${s.status}">${statusLabel[s.status]||s.status}</span>
-        <span class="sub-date">${s.submittedAt}</span>
+        <span class="sub-status ${esc(s.status)}">${esc(statusLabel[s.status]||s.status)}</span>
+        <span class="sub-date">${esc(s.submittedAt)}</span>
         ${s.status==='pending'?`
-          <button class="sub-action-btn sub-edit-btn" onclick="editSubmission('${s.id}')">Bearbeiten</button>
-          <button class="sub-action-btn sub-withdraw-btn" onclick="withdrawSubmission('${s.id}')">Zurückziehen</button>
+          <button class="sub-action-btn sub-edit-btn" onclick="editSubmission('${escJs(s.id)}')">Bearbeiten</button>
+          <button class="sub-action-btn sub-withdraw-btn" onclick="withdrawSubmission('${escJs(s.id)}')">Zurückziehen</button>
         `:''}
       </div>
     </div>`).join('');
@@ -542,13 +542,13 @@ async function openQueueSection(secIdx){
     el.innerHTML='<div style="font-size:13px;color:var(--text-3);padding:12px;">Keine offenen Einreichungen für diesen Abschnitt.</div>';
   } else {
     el.innerHTML = subs.map(s=>`
-      <div class="sub-list-item" onclick="openReviewMod('${s.id}')">
-        <div class="sub-list-thumb">${s.diagram?`<img src="${s.diagram}" style="width:100%;height:100%;object-fit:cover;">`:'⚽'}</div>
+      <div class="sub-list-item" onclick="openReviewMod('${escJs(s.id)}')">
+        <div class="sub-list-thumb">${s.diagram?`<img src="${esc(s.diagram)}" style="width:100%;height:100%;object-fit:cover;">`:'⚽'}</div>
         <div class="sub-list-info">
-          <div class="sub-list-name">${s.name}</div>
-          <div class="sub-list-meta">👤 ${s.author} · ${SECS[s.section].name}${s.sport?' · '+s.sport:''} · ${s.tags.slice(0,3).join(', ')}</div>
+          <div class="sub-list-name">${esc(s.name)}</div>
+          <div class="sub-list-meta">👤 ${esc(s.author)} · ${SECS[s.section].name}${s.sport?' · '+esc(s.sport):''} · ${esc(s.tags.slice(0,3).join(', '))}</div>
         </div>
-        <div class="sub-list-date">${s.submittedAt}</div>
+        <div class="sub-list-date">${esc(s.submittedAt)}</div>
       </div>`).join('');
   }
   openMod('subListMod');
@@ -571,7 +571,7 @@ function openReviewMod(id){
   renderAgePicker('rvAgePick', s.ageGroups||[]);
   // Show diagram
   const cw = document.getElementById('rv-canvas-wrap');
-  if(s.diagram){ cw.innerHTML=`<img src="${s.diagram}" style="width:100%;display:block;border-radius:6px;">`; }
+  if(s.diagram){ cw.innerHTML=`<img src="${esc(s.diagram)}" style="width:100%;display:block;border-radius:6px;">`; }
   else { cw.innerHTML='<div style="padding:20px;text-align:center;color:var(--text-3);">Kein Diagramm</div>'; }
   closeMod('subListMod');
   openMod('reviewMod');
@@ -591,21 +591,21 @@ function _roleLabel(u){
 function _userActions(u){
   if(u.id===currentUser?.id) return '<span style="font-size:11px;color:var(--text-3);">Du</span>';
   const btnStyle='padding:5px 10px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;border:none;';
-  if(u.role==='admin') return `<button onclick="setUserRole('${u.id}','coach')" style="${btnStyle}background:var(--surface-2);border:1px solid var(--border);color:var(--text-1);">Admin entziehen</button>`;
+  if(u.role==='admin') return `<button onclick="setUserRole('${escJs(u.id)}','coach')" style="${btnStyle}background:var(--surface-2);border:1px solid var(--border);color:var(--text-1);">Admin entziehen</button>`;
 
   const sportChecks=_ALL_SPORTS.map(s=>{
     const checked=(u.reviewer_sports||[]).includes(s.id)?'checked':'';
-    return `<label style="display:flex;align-items:center;gap:4px;font-size:11px;cursor:pointer;"><input type="checkbox" data-uid="${u.id}" data-sport="${s.id}" ${checked} onchange="_toggleReviewerSport(this)" style="cursor:pointer;">${s.label}</label>`;
+    return `<label style="display:flex;align-items:center;gap:4px;font-size:11px;cursor:pointer;"><input type="checkbox" data-uid="${esc(u.id)}" data-sport="${esc(s.id)}" ${checked} onchange="_toggleReviewerSport(this)" style="cursor:pointer;">${esc(s.label)}</label>`;
   }).join('');
 
   const reviewerActive=u.role==='reviewer';
   return `<div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
     <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">${sportChecks}</div>
     <div style="display:flex;gap:6px;">
-      <button onclick="setUserRole('${u.id}','${reviewerActive?'coach':'reviewer'}')" style="${btnStyle}background:${reviewerActive?'var(--surface-2)':'#1565c0'};${reviewerActive?'border:1px solid var(--border);color:var(--text-1);':'color:#fff;'}">
+      <button onclick="setUserRole('${escJs(u.id)}','${reviewerActive?'coach':'reviewer'}')" style="${btnStyle}background:${reviewerActive?'var(--surface-2)':'#1565c0'};${reviewerActive?'border:1px solid var(--border);color:var(--text-1);':'color:#fff;'}">
         ${reviewerActive?'Reviewer entziehen':'Reviewer machen'}
       </button>
-      <button onclick="setUserRole('${u.id}','admin')" style="${btnStyle}background:var(--accent);color:#fff;">Admin machen</button>
+      <button onclick="setUserRole('${escJs(u.id)}','admin')" style="${btnStyle}background:var(--accent);color:#fff;">Admin machen</button>
     </div>
   </div>`;
 }
@@ -662,7 +662,7 @@ function renderUserListView(){
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:12px 14px;background:var(--surface-2);border-radius:9px;border:1px solid var(--border);">
       <div style="min-width:0;">
         <div style="font-size:13px;font-weight:700;color:var(--text-1);word-break:break-all;">${_escUser(u.email||u.id)}</div>
-        <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${_roleLabel(u)}${_clubLabel(u)}</div>
+        <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${esc(_roleLabel(u))}${_clubLabel(u)}</div>
       </div>
       <div>${_userActions(u)}</div>
     </div>`).join('');
@@ -828,13 +828,13 @@ function renderMyAccPlans(){
   list.innerHTML=savedPlans.map((p,i)=>`
     <div style="background:var(--surface);border-radius:10px;padding:14px 18px;box-shadow:var(--sh);display:flex;align-items:center;gap:12px;">
       <div style="flex:1;min-width:0;">
-        <div style="font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">${p.name||'Plan '+(i+1)} ${statusBadge(p.status)}</div>
-        <div style="font-size:11px;color:var(--gd2);margin-top:2px;">${p.date||''}</div>
+        <div style="font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">${esc(p.name||'Plan '+(i+1))} ${statusBadge(p.status)}</div>
+        <div style="font-size:11px;color:var(--gd2);margin-top:2px;">${esc(p.date||'')}</div>
       </div>
       <div style="display:flex;gap:6px;flex-shrink:0;">
         <button onclick="loadPlan(savedPlans[${i}]);goPage('planner')" style="padding:7px 12px;background:var(--accent);color:#fff;border:none;border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;">Öffnen</button>
-        ${p.status==='pending'?`<button onclick="withdrawSubmittedPlan('${p.id}').then(()=>renderMyAccPlans())" style="padding:7px 10px;background:none;border:1px solid #c62828;color:#c62828;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;">Zurückziehen</button>`:''}
-        ${(!p.status||p.status==='private'||p.status==='rejected')?`<button onclick="if(confirm('Plan löschen?')){delPlan('${p.id}');renderMyAccPlans()}" style="padding:7px 10px;background:none;border:1px solid var(--border);color:var(--gd2);border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;">Löschen</button>`:''}
+        ${p.status==='pending'?`<button onclick="withdrawSubmittedPlan('${escJs(p.id)}').then(()=>renderMyAccPlans())" style="padding:7px 10px;background:none;border:1px solid #c62828;color:#c62828;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;">Zurückziehen</button>`:''}
+        ${(!p.status||p.status==='private'||p.status==='rejected')?`<button onclick="if(confirm('Plan löschen?')){delPlan('${escJs(p.id)}');renderMyAccPlans()}" style="padding:7px 10px;background:none;border:1px solid var(--border);color:var(--gd2);border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;">Löschen</button>`:''}
       </div>
     </div>
   `).join('');
