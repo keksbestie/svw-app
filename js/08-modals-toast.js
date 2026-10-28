@@ -42,7 +42,7 @@ function closeMoreSheet(){document.getElementById('moreSheet')?.remove();}
 function openMoreSheet(){
   closeMoreSheet();
   const loggedIn=!!(typeof currentUser!=='undefined'&&currentUser);
-  const items=[];
+  const items=[['✏️','Übung einreichen',"goPage('submit')"]];
   if(loggedIn){
     items.push(['👤','Mein Account',"goPage('account')"]);
     items.push(['👥','Mein Kader',"goPage('kader')"]);
