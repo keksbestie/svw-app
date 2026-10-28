@@ -2489,10 +2489,25 @@ function filterHelpCards(q){
 <script src="js/12-kader.js?v=20261008"></script>
 <script src="js/13-sport.js?v=20261014"></script>
 <script src="js/14-clubs.js?v=20261018"></script>
+<!-- Hinweis, wenn während der Nutzung eine neue Version aktiv wird -->
+<div id="updateBanner" role="status" style="display:none;position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:9100;max-width:calc(100% - 24px);align-items:center;gap:10px;padding:9px 12px;background:#1a2b1c;color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.35);font-size:13px;">
+  <span>Neue Version verfügbar</span>
+  <button type="button" onclick="location.reload()" style="padding:6px 12px;background:#22a05f;color:#fff;border:none;border-radius:8px;font-weight:800;cursor:pointer;font-size:12px;">Jetzt aktualisieren</button>
+  <button type="button" onclick="document.getElementById('updateBanner').style.display='none'" aria-label="Später" style="background:none;border:none;color:rgba(255,255,255,.7);font-size:16px;cursor:pointer;padding:0 2px;">✕</button>
+</div>
 <script>
 if('serviceWorker' in navigator){
+  const hadController = !!navigator.serviceWorker.controller;
+  let bannerShown = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (hadController && !bannerShown) { bannerShown = true; document.getElementById('updateBanner').style.display = 'flex'; }
+  });
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(e => console.warn('SW:', e));
+    navigator.serviceWorker.register('/sw.js').then(reg => {
+      const check = () => reg.update().catch(() => {});
+      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') check(); });
+      setInterval(check, 30 * 60 * 1000);
+    }).catch(e => console.warn('SW:', e));
   });
 }
 </script>
