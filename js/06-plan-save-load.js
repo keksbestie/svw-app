@@ -82,7 +82,7 @@ async function submitPlanForReview(id){
   const {error}=await _supabase.from('submitted_plans').upsert({
     id:plan.id,
     owner_id:currentUser.id,
-    author_name:currentUser.user_metadata?.name||currentUser.email||'',
+    author_name:_publicAuthorName('Trainer:in'),
     name:plan.name,
     date:plan.date,
     lanes:plan.lanes,
@@ -141,7 +141,7 @@ function renderAdminPlanQueue(plans){
   if(!plans.length){el.innerHTML='<div style="font-size:12px;color:var(--text-3);padding:8px 0;">Keine Pläne in der Warteschlange.</div>';return;}
   el.innerHTML=plans.map(p=>`
     <div class="sub-item">
-      <div class="sub-item-name">📋 ${p.name} <span style="font-size:10px;color:var(--text-3);font-weight:400;">von ${p.author_name||'Unbekannt'} · ${p.date||''}</span></div>
+      <div class="sub-item-name">📋 ${p.name} <span style="font-size:10px;color:var(--text-3);font-weight:400;">von ${_safeAuthor(p.author_name,'Unbekannt')} · ${p.date||''}</span></div>
       <div class="sub-item-meta" style="gap:6px;">
         <button onclick="previewSubmittedPlan('${p.id}')" style="padding:4px 10px;background:var(--surface-2,#2a2a2a);color:var(--text-1);border:1px solid var(--border);border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;">👁 Anzeigen</button>
         <button onclick="approvePlan('${p.id}')" style="padding:4px 10px;background:#1a7f4b;color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;">✓ Freigeben</button>
@@ -222,7 +222,7 @@ async function previewSubmittedPlan(id){
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;">${plan.name}</div>
         <button onclick="document.getElementById('adminPlanPreviewModal').remove()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-3);">✕</button>
       </div>
-      <div style="font-size:11px;color:var(--text-3);margin-bottom:16px;">von ${plan.author_name||'Unbekannt'} · ${plan.date||''} · ${totalCount} Übung${totalCount!==1?'en':''}</div>
+      <div style="font-size:11px;color:var(--text-3);margin-bottom:16px;">von ${_safeAuthor(plan.author_name,'Unbekannt')} · ${plan.date||''} · ${totalCount} Übung${totalCount!==1?'en':''}</div>
       <div>${secHtml||'<div style="color:var(--text-3);font-size:13px;">Keine Übungen im Plan.</div>'}</div>
       <div style="display:flex;gap:8px;margin-top:20px;">
         <button onclick="approvePlan('${plan.id}');document.getElementById('adminPlanPreviewModal').remove()" style="flex:1;padding:10px;background:#1a7f4b;color:#fff;border:none;border-radius:8px;font-weight:800;cursor:pointer;">✓ Freigeben</button>
