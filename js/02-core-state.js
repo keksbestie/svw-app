@@ -100,6 +100,97 @@ function ageFilterHTML(){
   return _ageChip('Alle',!ageFilter,"setAgeFilter(ageFilter)",true)
     +AGE_GROUPS.map(a=>_ageChip(a,ageFilter===a,"setAgeFilter('"+a+"')",true)).join('');
 }
+// ══════════════════════════════════════════════════════
+// PLÄNE & LANGZEITBLÖCKE – sichere Synchronisation mit Supabase
+// Grundregeln: nie löschen, was dieses Gerät nicht sicher kennt; Fehler nie ignorieren;
+// lokale, noch nicht gesicherte Einträge bleiben erhalten und werden erneut versucht.
+// ══════════════════════════════════════════════════════
+const _UUID_RE=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+function newUuid(){
+  if(window.crypto&&crypto.randomUUID) return crypto.randomUUID();
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return (c==='x'?r:(r&3|8)).toString(16);});
+}
+let _planIdsInDb=null, _ltpIdsInDb=null; // null = Zustand der Datenbank unbekannt → nichts löschen/überschreiben
+const _syncSnap={plans:new Map(),ltp:new Map()};
+let _syncRunning=false, _syncAgain=false, _syncWarned=false;
+function _planPayload(p){return {name:p.name||'Plan',date:p.date||'',lanes:p.lanes,totals:p.totals||[]};}
+function _ltpPayload(b){const c=Object.assign({},b);delete c._dbId;return {name:b.name||'Block',weeks:c};}
+
+// Lädt Pläne + Blöcke des Kontos. Bei JEDEM Fehler bleibt der lokale Zustand unverändert.
+async function _loadOwnedData(userId){
+  if(_syncRunning) return;
+  const [rp,rb,rs]=await Promise.all([
+    _supabase.from('plans').select('*').eq('owner_id',userId),
+    _supabase.from('ltp_blocks').select('*').eq('owner_id',userId),
+    _supabase.from('submitted_plans').select('*').eq('owner_id',userId)
+  ]);
+  if(rp.error||rb.error||rs.error){console.warn('Pläne laden fehlgeschlagen',rp.error||rb.error||rs.error);return;}
+  if(_syncRunning) return;
+  let owner=null; try{owner=localStorage.getItem('ac_sync_owner');}catch(e){}
+  const mayKeep=!owner||owner===userId; // lokale Einträge eines anderen Kontos nie übernehmen
+  const subById=new Map((rs.data||[]).map(p=>[p.id,p]));
+  const remotePlans=(rp.data||[]).map(p=>{
+    const o={id:p.id,_dbId:p.id,name:p.name||'Plan',date:p.date||'',lanes:p.lanes,totals:p.totals||[]};
+    const sub=subById.get(p.id); if(sub) o.status=sub.status;
+    return o;
+  });
+  const remoteIds=new Set(remotePlans.map(p=>p._dbId));
+  const submittedOnly=(rs.data||[]).filter(p=>!remoteIds.has(p.id)).map(p=>({id:p.id,name:p.name||'Plan',date:p.date||'',lanes:p.lanes,totals:p.totals||[],status:p.status,_src:'submitted'}));
+  const localUnsynced=mayKeep?savedPlans.filter(p=>!p._dbId&&p._src!=='submitted'&&!remoteIds.has(p.id)&&!subById.has(p.id)):[];
+  savedPlans=[...localUnsynced,...remotePlans,...submittedOnly].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  _planIdsInDb=new Set(remoteIds);
+  _syncSnap.plans=new Map(remotePlans.map(p=>[p._dbId,JSON.stringify(_planPayload(p))]));
+  const remoteBlocks=(rb.data||[]).map(r=>Object.assign({},r.weeks,{_dbId:r.id}));
+  // Lokale Blöcke ohne Kennung, die schon in der Datenbank liegen (Zwischenspeicher aus der Zeit vor der Umstellung), nicht doppelt führen
+  const _bk=b=>b.id||('n:'+(b.name||'')+'|'+(b.createdAt||''));
+  const remoteBlockKeys=new Set(remoteBlocks.map(_bk));
+  const localBlocks=mayKeep?ltpBlocks.filter(b=>!b._dbId&&!remoteBlockKeys.has(_bk(b))):[];
+  ltpBlocks=[...localBlocks,...remoteBlocks];
+  _ltpIdsInDb=new Set(remoteBlocks.map(b=>b._dbId));
+  _syncSnap.ltp=new Map(remoteBlocks.map(b=>[b._dbId,JSON.stringify(_ltpPayload(b))]));
+  try{localStorage.setItem('ac_sync_owner',userId);}catch(e){}
+}
+
+// Gleicht Pläne ('plans') oder Blöcke ('ltp') ab: neue anlegen, geänderte aktualisieren, entfernte löschen.
+async function _syncOwned(kind){
+  const isPlans=kind==='plans';
+  const table=isPlans?'plans':'ltp_blocks';
+  const known=isPlans?_planIdsInDb:_ltpIdsInDb;
+  if(known===null) return true; // Laden war nicht erfolgreich → nichts anfassen
+  const list=isPlans?savedPlans.filter(p=>p._src!=='submitted'):ltpBlocks;
+  const snap=_syncSnap[kind];
+  const payloadOf=isPlans?_planPayload:_ltpPayload;
+  const nowKnown=new Set(known);
+  let ok=true;
+  for(const item of list){ // 1) neue anlegen
+    if(item._dbId) continue;
+    const payload=Object.assign({owner_id:currentUser.id},payloadOf(item));
+    if(isPlans&&_UUID_RE.test(item.id)) payload.id=item.id;
+    const {data,error}=await _supabase.from(table).insert(payload).select('id').single();
+    if(error||!data){ok=false;console.warn('Anlegen fehlgeschlagen ('+table+')',error);continue;}
+    item._dbId=data.id; nowKnown.add(data.id); snap.set(data.id,JSON.stringify(payloadOf(item)));
+  }
+  for(const item of list){ // 2) geänderte aktualisieren
+    if(!item._dbId) continue;
+    const json=JSON.stringify(payloadOf(item));
+    if(snap.get(item._dbId)===json) continue;
+    const {error}=await _supabase.from(table).update(payloadOf(item)).eq('id',item._dbId).eq('owner_id',currentUser.id);
+    if(error){ok=false;console.warn('Aktualisieren fehlgeschlagen ('+table+')',error);continue;}
+    snap.set(item._dbId,json);
+  }
+  const present=new Set(list.map(i=>i._dbId).filter(Boolean)); // 3) entfernte löschen – nur IDs, die dieses Gerät kannte
+  const toDelete=[...known].filter(id=>!present.has(id));
+  if(toDelete.length>=2&&toDelete.length===known.size&&list.length===0){
+    console.warn('Verdacht auf Massenlöschung ('+table+') – übersprungen');
+  } else if(toDelete.length){
+    const {error}=await _supabase.from(table).delete().in('id',toDelete).eq('owner_id',currentUser.id);
+    if(error){ok=false;console.warn('Löschen fehlgeschlagen ('+table+')',error);}
+    else toDelete.forEach(id=>{nowKnown.delete(id);snap.delete(id);});
+  }
+  if(isPlans) _planIdsInDb=nowKnown; else _ltpIdsInDb=nowKnown;
+  return ok;
+}
+
 async function loadAPI(){
   if(!_supabase)return false;
   try{
@@ -124,16 +215,7 @@ async function loadAPI(){
       descData.forEach(r=>{if(r.section_idx>=0&&r.section_idx<6)sectionDescs[r.section_idx]=r.description||'';});
     }
     if(user){
-      const {data:plansData}=await _supabase.from('plans').select('*').eq('owner_id',user.id);
-      const localPlans=(plansData||[]).map(p=>({id:p.id||uid(),name:p.name||'Plan',date:p.date||'',lanes:p.lanes,totals:p.totals||[]}));
-      const {data:subPlans}=await _supabase.from('submitted_plans').select('*').eq('owner_id',user.id);
-      const submittedMapped=(subPlans||[]).map(p=>({id:p.id,name:p.name||'Plan',date:p.date||'',lanes:p.lanes,totals:p.totals||[],status:p.status}));
-      // Merge: submitted plans that aren't already in local plans
-      const localIds=new Set(localPlans.map(p=>p.id));
-      const merged=[...localPlans,...submittedMapped.filter(p=>!localIds.has(p.id))];
-      savedPlans=merged.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
-      const {data:ltpData}=await _supabase.from('ltp_blocks').select('*').eq('owner_id',user.id);
-      ltpBlocks=(ltpData||[]).map(b=>b.weeks);
+      await _loadOwnedData(user.id);
       if(typeof syncBlockLibrary==='function') await syncBlockLibrary();
     }
     if(typeof loadRatings==='function') await loadRatings();
@@ -150,10 +232,7 @@ async function silentSync(){
       descData.forEach(r=>{if(r.section_idx>=0&&r.section_idx<6)sectionDescs[r.section_idx]=r.description||'';});
     }
     if(currentUser){
-      const {data:plansData}=await _supabase.from('plans').select('*').eq('owner_id',currentUser.id);
-      savedPlans=(plansData||[]).map(p=>({id:p.id||uid(),name:p.name||'Plan',date:p.date||'',lanes:p.lanes,totals:p.totals||[]}));
-      const {data:ltpData}=await _supabase.from('ltp_blocks').select('*').eq('owner_id',currentUser.id);
-      ltpBlocks=(ltpData||[]).map(b=>b.weeks);
+      await _loadOwnedData(currentUser.id);
     }
     if(typeof loadRatings==='function') await loadRatings();
     apiOnline=true; setStat('ok'); updateCnt(); renderSection(); cacheLocal();
@@ -162,20 +241,23 @@ async function silentSync(){
 }
 async function saveAPI(){
   if(!_supabase||!currentUser||!apiOnline)return;
-  setStat('sync');
+  if(_syncRunning){_syncAgain=true;return;}
+  _syncRunning=true; setStat('sync');
   try{
-    await _supabase.from('plans').delete().eq('owner_id',currentUser.id);
-    if(savedPlans.length>0)
-      await _supabase.from('plans').insert(savedPlans.map(p=>({owner_id:currentUser.id,name:p.name||'Plan',date:p.date||'',lanes:p.lanes,totals:p.totals||[]})));
-    await _supabase.from('ltp_blocks').delete().eq('owner_id',currentUser.id);
-    if(ltpBlocks.length>0)
-      await _supabase.from('ltp_blocks').insert(ltpBlocks.map(b=>({owner_id:currentUser.id,name:b.name||'Block',weeks:b})));
+    let allOk=await _syncOwned('plans');
+    allOk=(await _syncOwned('ltp'))&&allOk;
     if(IS_ADMIN){
       const rows=sectionDescs.map((description,section_idx)=>({section_idx,description:description||''}));
-      await _supabase.from('section_descs').upsert(rows,{onConflict:'section_idx'});
+      const {error}=await _supabase.from('section_descs').upsert(rows,{onConflict:'section_idx'});
+      if(error){allOk=false;console.warn('Abschnittsbeschreibungen speichern fehlgeschlagen',error);}
     }
-    apiOnline=true; setStat('ok'); cacheLocal();
-  }catch{apiOnline=false; setStat('err'); showToast('Speichern fehlgeschlagen','warn');}
+    if(allOk){apiOnline=true; setStat('ok'); cacheLocal();}
+    else{
+      setStat('err'); cacheLocal();
+      if(!_syncWarned){_syncWarned=true; showToast('Pläne konnten nicht in der Cloud gespeichert werden – sie bleiben lokal erhalten','warn');}
+    }
+  }catch(e){apiOnline=false; setStat('err'); showToast('Speichern fehlgeschlagen','warn');}
+  finally{_syncRunning=false; if(_syncAgain){_syncAgain=false; setTimeout(saveAPI,300);}}
 }
 async function retryConn(){const ok=await loadAPI();if(ok){showToast('Verbunden');renderSection();renderSavedPlans();renderLtp();}else showToast('Verbindung fehlgeschlagen','err');updateApiBar();}
 function applyData(d){
