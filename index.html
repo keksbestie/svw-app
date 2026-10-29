@@ -2672,6 +2672,8 @@ if('serviceWorker' in navigator){
         <button id="drawCurveStraight" onclick="setDrawCurveMode(false)" style="padding:3px 8px;border:none;border-radius:5px;cursor:pointer;font-size:11px;font-weight:700;background:#1a7f4b;color:#fff;">☑ Gerade</button>
         <button id="drawCurveCurved" onclick="setDrawCurveMode(true)" style="padding:3px 8px;border:none;border-radius:5px;cursor:pointer;font-size:11px;font-weight:700;background:#344736;color:#aaa;">☐ Geschwungen</button>
       </div>
+      <!-- Legende der Linien: rechts neben Gerade/Geschwungen -->
+      <div id="lineLegend" aria-label="Legende der Linien"></div>
     </div>
 
     <!-- Auswahl-Kontext -->

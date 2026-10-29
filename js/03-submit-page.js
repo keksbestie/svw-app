@@ -392,9 +392,9 @@ function renderSTagSuggestions(){
   const query = (document.getElementById('sTagIn')?.value||'').trim().toUpperCase();
   const sec = parseInt(document.getElementById('sSec')?.value);
 
-  // Count tag frequency from exercises in the same section (or all if no match)
+  // Vorschläge nur aus den Übungen der AKTUELLEN Sportart und desselben Abschnitts (jede Sportart baut ihre Tags neu auf)
   const freq = {};
-  (exercises||[]).forEach(e=>{
+  sportExercises().forEach(e=>{
     if(!isNaN(sec) && e.section !== sec) return;
     (e.tags||[]).forEach(t=>{ freq[t]=(freq[t]||0)+1; });
   });

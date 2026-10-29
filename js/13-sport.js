@@ -62,9 +62,27 @@ function _syncSportCards() {
   });
 }
 
+// Beim Wechsel der Sportart nichts aus der vorherigen Sportart mitnehmen: Tag-Filter und Tag-Entwürfe zurücksetzen
+function _resetSportScopedState() {
+  try {
+    if (typeof selectedTags !== 'undefined') selectedTags = [];
+    if (typeof activeCluster !== 'undefined') activeCluster = null;
+    if (typeof clusterFilterTags !== 'undefined') clusterFilterTags = [];
+    if (typeof formTags !== 'undefined') formTags = [];
+    if (typeof submitTags !== 'undefined') {
+      submitTags = [];
+      if (typeof renderSTagDisplay === 'function') renderSTagDisplay();
+      if (typeof renderSTagSuggestions === 'function') renderSTagSuggestions();
+      if (typeof updateSubmitChecklist === 'function') updateSubmitChecklist();
+    }
+  } catch (e) {}
+}
+
 function saveSport(sport) {
+  const prevId = window.currentSport && window.currentSport.id;
   try { localStorage.setItem(SPORT_KEY, JSON.stringify(sport)); } catch {}
   window.currentSport = sport;
+  if (prevId !== (sport && sport.id)) _resetSportScopedState();
 }
 
 function selectSport(id) {
