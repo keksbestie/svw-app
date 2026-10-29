@@ -304,7 +304,7 @@ function renderSection(){
   // ── BUILD CLUSTER LEGEND from tags that actually exist on exercises in this section ──
   const allTagsInSec=new Set();
   sEx.forEach(e=>(e.tags||[]).forEach(t=>allTagsInSec.add(t.toUpperCase())));
-  (sectionCustomTags[activeSec]||[]).forEach(t=>allTagsInSec.add(t.toUpperCase()));
+  if(_curSportId()==='fussball') (sectionCustomTags[activeSec]||[]).forEach(t=>allTagsInSec.add(t.toUpperCase())); // alte, nur für Fußball angelegte Zusatz-Tags nicht in andere Sportarten übertragen
 
   const clusterCounts={};
   sEx.forEach(e=>{const seen=new Set();(e.tags||[]).forEach(t=>{const cl=getCluster(t.toUpperCase(),activeSec).name;if(!seen.has(cl)){seen.add(cl);clusterCounts[cl]=(clusterCounts[cl]||0)+1;}});});
@@ -440,7 +440,7 @@ function toggleCluster(name){
 function getSecTags(idx){
   const s=new Set();
   sportExercises().filter(e=>e.section===idx).forEach(e=>(e.tags||[]).forEach(t=>s.add(t.toUpperCase())));
-  (sectionCustomTags[idx]||[]).forEach(t=>s.add(t.toUpperCase()));
+  if(_curSportId()==='fussball') (sectionCustomTags[idx]||[]).forEach(t=>s.add(t.toUpperCase()));
   return[...s].sort();
 }
 function toggleTag(tag){
