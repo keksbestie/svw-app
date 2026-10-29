@@ -145,6 +145,25 @@ function _syncCurveUI(){
   if(h) h.textContent=(_lineCurveMode&&!isDr)?'1. Startpunkt \u2192 2. Kurvenpunkt (zieht die Linie an) \u2192 3. Endpunkt':'1. Startpunkt klicken \u2192 2. Endpunkt klicken';
   const w=document.getElementById('drawCurveWrap');
   if(w) w.style.display=isDr?'none':'flex';
+  _renderLineLegend();
+}
+
+// ── Legende der Linien (je Sportart; die aktive Linie ist hervorgehoben) ──
+const _LEGEND_ICONS={
+  pass:'<svg width="28" height="11" viewBox="0 0 32 12"><line x1="2" y1="6" x2="23" y2="6" stroke="white" stroke-width="2" stroke-linecap="round"/><polygon points="22,2 30,6 22,10" fill="white"/></svg>',
+  run:'<svg width="28" height="11" viewBox="0 0 32 12"><line x1="2" y1="6" x2="23" y2="6" stroke="#ffe082" stroke-width="2" stroke-linecap="round" stroke-dasharray="5,3"/><polygon points="22,2 30,6 22,10" fill="#ffe082"/></svg>',
+  dribble:'<svg width="28" height="11" viewBox="0 0 32 12"><path d="M2,6 Q5,1 8,6 Q11,11 14,6 Q17,1 20,6" stroke="#81c784" stroke-width="2" fill="none" stroke-linecap="round"/><polygon points="19,2 27,6 19,10" fill="#81c784"/></svg>',
+  shot:'<svg width="28" height="11" viewBox="0 0 32 12"><line x1="2" y1="4" x2="22" y2="4" stroke="#ef5350" stroke-width="1.5" stroke-linecap="round"/><line x1="2" y1="8" x2="22" y2="8" stroke="#ef5350" stroke-width="1.5" stroke-linecap="round"/><polygon points="21,1 30,6 21,11" fill="#ef5350"/></svg>'
+};
+function _lineLegendItems(){
+  const sp=(window.currentSport&&window.currentSport.id)||'fussball';
+  if(sp==='tennis') return [['run','Laufweg','Bewegung der Spieler:in'],['shot','Angriff','Schlag / Angriffsball']];
+  if(sp==='volleyball') return [['pass','Pass / Zuspiel','Ball wird gespielt'],['run','Laufweg','Lauf ohne Ball'],['shot','Angriff','Angriffsschlag']];
+  return [['pass','Passweg','Ball wird gespielt'],['run','Laufweg','Lauf ohne Ball'],['dribble','Dribbling','Lauf mit Ball'],['shot','Schuss','Torschuss']];
+}
+function _renderLineLegend(){
+  const el=document.getElementById('lineLegend'); if(!el) return;
+  el.innerHTML=_lineLegendItems().map(([t,name,desc])=>'<span class="ll-item'+(currentTool===t?' ll-on':'')+'">'+_LEGEND_ICONS[t]+'<b>'+name+'</b><i>'+desc+'</i></span>').join('');
 }
 function setSelLineCurve(curved){
   const idx=selectedIndices.length===1?selectedIndices[0]:selectedObjIdx;
