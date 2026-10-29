@@ -163,7 +163,7 @@ function _lineLegendItems(){
 }
 function _renderLineLegend(){
   const el=document.getElementById('lineLegend'); if(!el) return;
-  el.innerHTML=_lineLegendItems().map(([t,name,desc])=>'<span class="ll-item'+(currentTool===t?' ll-on':'')+'">'+_LEGEND_ICONS[t]+'<b>'+name+'</b><i>'+desc+'</i></span>').join('');
+  el.innerHTML=_lineLegendItems().map(([t,name,desc])=>'<span class="ll-item'+(currentTool===t?' ll-on':'')+'" title="'+desc+'">'+_LEGEND_ICONS[t]+'<b>'+name+'</b><i>'+desc+'</i></span>').join('');
 }
 function setSelLineCurve(curved){
   const idx=selectedIndices.length===1?selectedIndices[0]:selectedObjIdx;

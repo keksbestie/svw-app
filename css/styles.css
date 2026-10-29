@@ -1457,11 +1457,9 @@ body:not(.on-home) .home-topbar { display: none; }
   header #authBtn, header #navKaderBtn, header #navClubBtn { padding: 7px 10px !important; }
 }
 
-/* Legende der Linien im Felddiagramm-Editor: Streifen unter der Kontextleiste, verschiebt die Zeichenfläche nicht */
-#cvCtxBar { position: relative; }
-#lineLegend { position: absolute; top: 100%; left: 0; right: 0; z-index: 6; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; padding: 5px 10px; background: rgba(22,32,24,.94); border-bottom: 1px solid rgba(255,255,255,.1); pointer-events: none; font-size: 11px; color: rgba(255,255,255,.7); }
-#lineLegend .ll-item { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: 6px; }
-#lineLegend .ll-item b { color: #fff; font-weight: 800; }
-#lineLegend .ll-item i { font-style: normal; color: rgba(255,255,255,.6); }
+/* Legende der Linien im Felddiagramm-Editor: inline in der Kontextleiste, rechts neben Gerade/Geschwungen */
+#lineLegend { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; padding-left: 8px; border-left: 1px solid rgba(255,255,255,.12); font-size: 11px; color: rgba(255,255,255,.7); }
+#lineLegend .ll-item { display: inline-flex; align-items: center; gap: 5px; padding: 2px 6px; border-radius: 6px; }
+#lineLegend .ll-item b { color: #fff; font-weight: 700; }
+#lineLegend .ll-item i { display: none; }
 #lineLegend .ll-on { background: rgba(255,255,255,.14); outline: 1px solid rgba(255,255,255,.25); }
-@media (max-width: 700px) { #lineLegend .ll-item i { display: none; } }
