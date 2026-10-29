@@ -219,7 +219,10 @@ async function loadAPI(){
       if(typeof syncBlockLibrary==='function') await syncBlockLibrary();
     }
     if(typeof loadRatings==='function') await loadRatings();
-    apiOnline=true; setStat('ok'); cacheLocal(); return true;
+    apiOnline=true; setStat('ok'); cacheLocal();
+    // Rolle (Admin/Reviewer) und Übungen sind jetzt bekannt → Sportkarten sofort neu bewerten
+    if(typeof refreshSportAvailability==='function') refreshSportAvailability();
+    return true;
   }catch(e){apiOnline=false; setStat('err'); return false;}
 }
 async function silentSync(){
