@@ -1254,7 +1254,7 @@
 
 <!-- GUIDED TOUR -->
 <div id="tourHighlight" style="display:none;position:fixed;z-index:9100;pointer-events:none;border-radius:10px;box-shadow:0 0 0 4000px rgba(0,0,0,.6);transition:all .35s ease;"></div>
-<div id="tourBubble" style="display:none;position:fixed;z-index:9200;max-width:300px;width:calc(100vw - 32px);opacity:0;transition:opacity .25s ease;">
+<div id="tourBubble" style="display:none;position:fixed;z-index:9200;max-width:300px;width:calc(100vw - 24px);max-height:calc(100vh - 24px);opacity:0;transition:opacity .25s ease;">
   <div style="background:var(--surface);border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.35);padding:18px 20px 14px;position:relative;">
     <div id="tourArrow" style="position:absolute;width:12px;height:12px;background:var(--surface);transform:rotate(45deg);"></div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
@@ -1280,6 +1280,7 @@
     },
     {
       page:'handbook',target:'[data-page="handbook"]',pos:'top',
+      mob:{target:'.bnav-item[data-page="handbook"]'},
       title:'Übungskatalog',
       text:'Nutze Filter, Tags und die Suche, um schnell die passende Übung zu finden.'
     },
@@ -1287,10 +1288,12 @@
       page:'handbook',target:'[onclick*="addToPlanOrPick"]',pos:'top',
       title:'Übung zum Plan hinzufügen',
       text:'Mit dem <strong>+ Plan</strong>-Button auf jeder Übungskarte fügst du sie direkt deinem Trainingsplan hinzu.',
-      fallbackTarget:'.card-collapsed, .card'
+      fallbackTarget:'.card-collapsed, .card',
+      mob:{text:'Mit dem <strong>+ Plan</strong>-Button auf jeder Übungskarte fügst du sie direkt deinem Trainingsplan hinzu. Tippe auf eine Karte, um die Details zu sehen.'}
     },
     {
       page:'planner',target:'[data-page="planner"]',pos:'top',
+      mob:{target:'.bnav-item[data-page="planner"]',text:'Alle hinzugefügten Übungen erscheinen hier. Reihenfolge per Ziehen ändern, Zeit mit − / + anpassen und eine Zieldauer setzen.'},
       title:'Trainingsplan',
       text:'Alle hinzugefügten Übungen erscheinen hier. Reihenfolge per Drag & Drop ändern, Zeit mit − / + anpassen und eine Zieldauer setzen.'
     },
@@ -1298,39 +1301,47 @@
       page:'planner',target:'#planSaveBtn, .plan-save, [onclick*="savePlan"]',pos:'bottom',
       title:'Plan speichern & drucken',
       text:'Gespeicherte Pläne bleiben in deinem Konto. Das Drucksymbol exportiert den fertigen Plan als PDF – inklusive Materialliste.',
-      fallbackTarget:'.plan-toolbar, #plannerToolbar, .planner-header'
+      fallbackTarget:'.plan-toolbar, #plannerToolbar, .planner-header',
+      mob:{target:'#page-planner .bpl.gr, #page-planner .bpl'}
     },
     {
       page:'handbook',target:'#navKaderBtn',pos:'bottom',
       title:'Mein Kader',
       text:'Über den <strong>Mein Kader</strong>-Button oben legst du Spieler:innen an und wählst vor dem Training aus, wer heute dabei ist.',
-      fallbackTarget:'#cfgBtn, .topbar .cfg-row'
+      fallbackTarget:'#cfgBtn, .topbar .cfg-row',
+      mob:{target:'#bnavMore',pos:'top',text:'Unter <strong>Mehr</strong> findest du <strong>Mein Kader</strong>: Dort legst du Spieler:innen und dein Trainerteam an und wählst vor dem Training aus, wer heute dabei ist.'}
     },
     {
       page:'handbook',target:'button[onclick*="toggleHelpPanel"], .cfg-btn[title*="Hilfe"]',pos:'bottom',
       title:'Hilfe jederzeit abrufbar',
       text:'Das <strong>?</strong>-Symbol öffnet das Hilfe-Center mit Detailanleitung zu allen Funktionen – jederzeit erreichbar.',
-      fallbackTarget:'.cfg-row'
+      fallbackTarget:'.cfg-row',
+      mob:{target:'#bnavMore',pos:'top',text:'Unter <strong>Mehr</strong> öffnet <strong>Hilfe</strong> das Hilfe-Center mit Detailanleitungen zu allen Funktionen – jederzeit erreichbar.'}
     }
   ];
 
+  function _mobile(){return window.innerWidth<768;}
+  // Nur sichtbare Elemente zählen (versteckte Desktop-Elemente würden sonst oben links hervorgehoben)
+  function _visible(el){
+    if(!el||!el.getClientRects().length)return false;
+    const r=el.getBoundingClientRect(), cs=getComputedStyle(el);
+    return r.width>0&&r.height>0&&cs.visibility!=='hidden';
+  }
+  function _eff(s){return (_mobile()&&s.mob)?Object.assign({},s,s.mob):s;}
+
   let _step=0;
 
-  function _getTarget(s){
-    if(!s.target)return null;
-    const selectors=s.target.split(',');
-    for(const sel of selectors){
-      const el=document.querySelector(sel.trim());
-      if(el)return el;
-    }
-    if(s.fallbackTarget){
-      const fb=s.fallbackTarget.split(',');
-      for(const sel of fb){
-        const el=document.querySelector(sel.trim());
-        if(el)return el;
-      }
+  function _firstVisible(list){
+    for(const sel of list.split(',')){
+      const els=document.querySelectorAll(sel.trim());
+      for(const el of els) if(_visible(el)) return el;
     }
     return null;
+  }
+  function _getTarget(s){
+    s=_eff(s);
+    if(!s.target)return null;
+    return _firstVisible(s.target)||(s.fallbackTarget?_firstVisible(s.fallbackTarget):null);
   }
 
   function _positionBubble(target, onDone){
@@ -1346,7 +1357,7 @@
       if(onDone)onDone();
       return;
     }
-    target.scrollIntoView({behavior:'smooth',block:'nearest'});
+    target.scrollIntoView({behavior:'auto',block:'center'});
     setTimeout(function(){
       const r=target.getBoundingClientRect();
       const vw=window.innerWidth, vh=window.innerHeight;
@@ -1355,10 +1366,10 @@
       hl.style.left=(r.left-pad)+'px'; hl.style.top=(r.top-pad)+'px';
       hl.style.width=(r.width+pad*2)+'px'; hl.style.height=(r.height+pad*2)+'px';
       bubble.style.transform='none';
-      const bw=Math.min(300,vw-32);
+      const bw=Math.min(300,vw-24);
       const spaceBelow=vh-r.bottom, spaceAbove=r.top;
-      let left=Math.max(16,Math.min(r.left,vw-bw-16));
-      if(spaceBelow>200||spaceBelow>spaceAbove){
+      let left=Math.max(12,Math.min(r.left,vw-bw-12));
+      if(spaceBelow>250||spaceBelow>spaceAbove){
         bubble.style.top=(r.bottom+14)+'px'; bubble.style.bottom='auto'; bubble.style.left=left+'px';
         if(arrow){arrow.style.display='block';arrow.style.top='-6px';arrow.style.left=(r.left+r.width/2-left-6)+'px';arrow.style.bottom='auto';}
       } else {
@@ -1372,8 +1383,9 @@
   function _updateContent(){
     const s=STEPS[_step];
     document.getElementById('tourStepLabel').textContent='Schritt '+(_step+1)+' / '+STEPS.length;
-    document.getElementById('tourTitle').textContent=s.title;
-    document.getElementById('tourText').innerHTML=s.text;
+    const es=_eff(s);
+    document.getElementById('tourTitle').textContent=es.title;
+    document.getElementById('tourText').innerHTML=es.text;
     const dc=document.getElementById('tourDots');
     if(dc)dc.innerHTML=STEPS.map(function(_,i){return '<span style="width:'+(i===_step?'16':'7')+'px;height:7px;border-radius:4px;background:'+(i===_step?'var(--accent)':'var(--border)')+';display:inline-block;transition:all .2s;"></span>';}).join('');
     const prev=document.getElementById('tourPrevBtn');
@@ -1416,6 +1428,10 @@
     _step=next;
     _renderStep();
   };
+  window.addEventListener('resize',function(){
+    const b=document.getElementById('tourBubble');
+    if(b&&b.style.display==='block') _positionBubble(_getTarget(STEPS[_step]),function(){});
+  });
   window.endTour=function(){
     document.body.style.overflow='';
     document.getElementById('tourBubble').style.display='none';
