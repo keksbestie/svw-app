@@ -307,6 +307,7 @@ function printPlan(){
           ${players?`<span>👥 ${esc(players)}</span>`:''}
           ${duration?`<span>⏱ ${esc(duration)} min</span>`:''}
           ${difficulty?`<span>◉ ${esc(difficulty)}</span>`:''}
+          ${(typeof coachNames==='function'&&coachNames(item.coachIds).length)?`<span>🧑‍🏫 ${coachNames(item.coachIds).map(n=>esc(n)).join(', ')}</span>`:''}
         </div>
         ${ex.desc?`<div class="ex-desc">${esc(ex.desc)}</div>`:''}
       </div>
