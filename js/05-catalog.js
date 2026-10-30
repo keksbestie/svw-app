@@ -340,7 +340,6 @@ function renderSection(){
         <span class="cleg-t">Kategorien:</span>
         ${clusterLegend}
         ${activeCluster?`<span onclick="toggleCluster(null)" style="font-size:10px;font-weight:700;color:var(--gm);cursor:pointer;margin-left:2px;">✕ Alle</span>`:''}
-        ${IS_ADMIN?`<button class="cpill-edit" onclick="openTagMod(${activeSec})">+ Verwalten</button>`:''}
       </div>`:''}
       <div id="catalogLayout" class="catalog-layout">
         <div>
@@ -352,7 +351,7 @@ function renderSection(){
                 <button class="view-toggle-btn ${_catalogView==='expanded'?'active':''}" onclick="setCatalogView('expanded')" title="Ausgeklappt">☰☰</button>
                 <button class="view-toggle-btn ${_catalogView==='collapsed'?'active':''}" onclick="setCatalogView('collapsed')" title="Eingeklappt">≡</button>
               </div>
-              ${IS_ADMIN?`<button class="gbtn" onclick="openNewEx(${activeSec})">+ Übung</button><button class="gbtn" onclick="openTagMod(${activeSec})">Tags</button>`:''}
+              ${IS_ADMIN?`<button class="gbtn" onclick="openNewEx(${activeSec})">+ Übung</button>`:''}
             </div>
           </div>
           <div class="tag-bar" style="margin-bottom:6px;">
