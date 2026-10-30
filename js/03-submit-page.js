@@ -12,6 +12,8 @@
 let submitUser = null; // {name, isDemo}
 let submitTags = [];
 let submitCanvasData = null; // base64 from canvas
+// Kopie einer Katalog-Übung zum Erweitern: Einreichen erst, wenn Felddiagramm, Titel und Beschreibung vom Original abweichen
+let submitCopyOf = null;
 let submissions = []; // array of submission objects
 let reviewingId = null;
 
@@ -306,7 +308,7 @@ async function doLogout(){
   currentUser=null; IS_ADMIN=false; IS_REVIEWER=false; REVIEWER_SPORTS=[];
   document.body.classList.remove('admin');
   if(typeof refreshSportAvailability==='function') refreshSportAvailability();
-  submitUser=null; submitTags=[]; submitCanvasData=null;
+  submitUser=null; submitTags=[]; submitCanvasData=null; submitCopyOf=null;
   renderSubmitPage();
   updateSignInBtn();
 }
@@ -335,8 +337,44 @@ function renderSubmitChecklist_init(){
   document.getElementById('sMat').value='';
   document.getElementById('sDescCount').textContent='0 Zeichen';
   renderAgePicker('sAgePick',[],{required:true,onChange:updateSubmitChecklist});
+  const pv=document.getElementById('sPreviewWrap'); if(pv) pv.style.display='none';
+  submitCanvasData=null;
+  if(submitCopyOf) _applySubmitCopy();
+  _syncSubmitCopyUI();
   updateSubmitChecklist();
 }
+
+// ── Übung aus dem Katalog kopieren und erweitern ─────
+function copyExToSubmit(id){
+  const e=exercises.find(x=>x.id===id); if(!e) return;
+  if(typeof closeMod==='function') closeMod('exDetailMod');
+  submitCopyOf={id:e.id,name:e.name||'',desc:e.desc||'',objs:JSON.parse(JSON.stringify(e.canvasObjects||[])),
+    fieldType:e.fieldType||'small',curObjs:null,players:e.players||'',duration:e.duration||'',
+    difficulty:e.difficulty||'',section:e.section,tags:[...(e.tags||[])],ageGroups:[...(e.ageGroups||[])],material:e.material||''};
+  submitCanvasData=null;
+  goPage('submit');
+  showToast('Kopie angelegt – Felddiagramm, Titel und Beschreibung anpassen.');
+}
+function _applySubmitCopy(){
+  const c=submitCopyOf; if(!c) return;
+  const set=(i,v)=>{const el=document.getElementById(i); if(el) el.value=v;};
+  set('sName',c.name); set('sDesc',c.desc); set('sPlayers',c.players); set('sDuration',c.duration||'');
+  set('sIntensity',c.difficulty); set('sSec',c.section??''); set('sMatFree',c.material);
+  if(typeof updateSMatField==='function') updateSMatField();
+  submitTags=[...c.tags]; renderSTagDisplay(); renderSTagSuggestions();
+  renderAgePicker('sAgePick',c.ageGroups,{required:true,onChange:updateSubmitChecklist});
+}
+function discardSubmitCopy(){
+  submitCopyOf=null; submitCanvasData=null;
+  renderSubmitChecklist_init();
+}
+function _syncSubmitCopyUI(){
+  const b=document.getElementById('submitCopyBanner');
+  if(b) b.style.display=submitCopyOf?'flex':'none';
+  const n=document.getElementById('submitCopyName'); if(n&&submitCopyOf) n.textContent=submitCopyOf.name;
+  ['chk-cp-canvas','chk-cp-name','chk-cp-desc'].forEach(i=>{const el=document.getElementById(i); if(el) el.style.display=submitCopyOf?'':'none';});
+}
+const _normTxt=s=>(s||'').replace(/s+/g,' ').trim().toLowerCase();
 
 function updateSubmitChecklist(){
   const name = (document.getElementById('sName')||{value:''}).value.trim();
@@ -359,6 +397,11 @@ function updateSubmitChecklist(){
     'chk-tags': submitTags.length >= 3,
     'chk-canvas': !!submitCanvasData,
   };
+  if(submitCopyOf){
+    checks['chk-cp-canvas'] = !!submitCanvasData && JSON.stringify(canvasObjects)!==JSON.stringify(submitCopyOf.objs);
+    checks['chk-cp-name'] = _normTxt(name)!==_normTxt(submitCopyOf.name);
+    checks['chk-cp-desc'] = _normTxt(desc)!==_normTxt(submitCopyOf.desc);
+  }
 
   let allOk = true;
   Object.entries(checks).forEach(([id,ok])=>{
@@ -443,6 +486,7 @@ async function submitExercise(){
   });
   if(error){showToast(/age_groups/.test(error.message||'')?'Fehler: Datenbank-Spalte age_groups fehlt (Admin informieren)':'Fehler beim Einreichen','err');return;}
   showToast('✓ Übung eingereicht! Das Admin-Team prüft sie.');
+  submitCopyOf=null;
   renderSubmitChecklist_init();
   submitCanvasData=null;
   const sPreview=document.getElementById('sPreviewWrap');

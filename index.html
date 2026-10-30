@@ -411,6 +411,10 @@
       <div>
         <div class="submit-form-wrap">
           <div class="submit-form-title"><div class="stf-ico" id="stfIco">⚽</div>Neue Übung erstellen</div>
+          <div id="submitCopyBanner" style="display:none;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;padding:10px 12px;border-radius:10px;background:#e8f5e9;border:1px solid #1a7f4b55;font-size:12px;color:#1a5c38;">
+            <span style="flex:1;min-width:180px;">📋 <b>Kopie von „<span id="submitCopyName"></span>"</b> – ändere Felddiagramm, Titel und Beschreibung, damit du sie einreichen kannst.</span>
+            <button type="button" onclick="discardSubmitCopy()" style="padding:5px 10px;border:1px solid #1a7f4b88;background:none;border-radius:7px;font-size:11px;font-weight:700;color:#1a5c38;cursor:pointer;">Kopie verwerfen</button>
+          </div>
           <div class="fsec">Grunddaten</div>
           <div class="fg"><label>Name der Übung *</label><input class="fc" id="sName" type="text" placeholder="Übungsname…" oninput="updateSubmitChecklist()"></div>
           <div class="fg"><label>Beschreibung (min. 20 Zeichen) *</label><textarea class="fc dta" id="sDesc" rows="4" placeholder="Wie funktioniert die Übung? Was ist das Ziel?" oninput="updateSubmitChecklist()" style="resize:vertical;"></textarea>
@@ -521,6 +525,9 @@
             <div class="chk-item" id="chk-age"><div class="chk-dot"></div><div class="chk-label">Altersstufe(n) gewählt</div></div>
             <div class="chk-item" id="chk-tags"><div class="chk-dot"></div><div class="chk-label">Min. 3 Tags hinzugefügt</div></div>
             <div class="chk-item" id="chk-canvas"><div class="chk-dot"></div><div class="chk-label">Felddiagramm gezeichnet</div></div>
+            <div class="chk-item" id="chk-cp-canvas" style="display:none"><div class="chk-dot"></div><div class="chk-label">Felddiagramm gegenüber dem Original verändert</div></div>
+            <div class="chk-item" id="chk-cp-name" style="display:none"><div class="chk-dot"></div><div class="chk-label">Titel gegenüber dem Original angepasst</div></div>
+            <div class="chk-item" id="chk-cp-desc" style="display:none"><div class="chk-dot"></div><div class="chk-label">Beschreibung gegenüber dem Original angepasst</div></div>
           </div>
           <div class="submit-btn-wrap">
             <button class="submit-btn-main" id="submitBtn" onclick="submitExercise()" disabled>Übung einreichen</button>
