@@ -79,6 +79,11 @@ function piHTML(item,ex,si,col){
       </div>
     </div>
     <button class="pi-rm" onclick="removePlanLane('${escJs(ex.id)}',${si})">✕</button>
+    ${(typeof coaches!=='undefined'&&coaches.length>0)?`<div class="pi-squad-wrap" style="position:relative;">
+      <button class="pi-coach-btn" onclick="toggleCoachDrop('${escJs(ex.id)}',${si},this);event.stopPropagation()" title="Trainer:in einplanen" style="background:none;border:none;cursor:pointer;padding:2px 5px;color:${(item.coachIds||[]).length>0?'#1a56c4':'var(--gd2)'};font-size:11px;font-weight:700;">
+        🧑‍🏫${(item.coachIds||[]).length>0?` ${coachNames(item.coachIds).map(n=>esc(n)).join(', ')}`:''}
+      </button>
+    </div>`:''}
     ${squadForPlan().length>0?`<div class="pi-squad-wrap" style="position:relative;">
       <button class="pi-squad-btn" onclick="toggleExcludeDrop('${escJs(ex.id)}',${si},this);event.stopPropagation()" title="Spieler ausschließen" style="background:none;border:none;cursor:pointer;padding:2px 5px;color:${(item.excludedIds||[]).length>0?'#e53935':'var(--gd2)'};font-size:11px;font-weight:700;border-radius:5px;" onmouseenter="this.style.background='var(--off)'" onmouseleave="this.style.background='none'">
         👥${(item.excludedIds||[]).length>0?` −${item.excludedIds.length}`:''}

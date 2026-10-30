@@ -302,8 +302,9 @@ async function _executeDeleteAccount(){
 
 async function doLogout(){
   await _supabase.auth.signOut();
-  try{ localStorage.removeItem('ac_squad'); }catch(e){}
+  try{ localStorage.removeItem('ac_squad'); localStorage.removeItem('ac_coaches'); }catch(e){}
   if(typeof squad!=='undefined') squad=[];
+  if(typeof coaches!=='undefined') coaches=[];
   if(typeof blockLibrary!=='undefined') blockLibrary=blockLibrary.filter(b=>!b._dbId); // nur lokal noch nicht gesicherte Einträge behalten
   currentUser=null; IS_ADMIN=false; IS_REVIEWER=false; REVIEWER_SPORTS=[];
   document.body.classList.remove('admin');
