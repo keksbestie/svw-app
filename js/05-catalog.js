@@ -262,6 +262,7 @@ function openExDetail(id){
     <div id="detail-rating-${esc(e.id)}" style="margin-bottom:16px;">${_ratingHTML(e.id,true)}</div>
     <div style="display:flex;gap:8px;padding-top:12px;border-top:1px solid var(--border);">
       <button onclick="addToPlanOrPick('${escJs(e.id)}',${e.section},true)" style="flex:1;padding:12px;background:${s.color};color:#fff;border:none;border-radius:9px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;">+ Zum Plan hinzufügen</button>
+      <button onclick="copyExToSubmit('${escJs(e.id)}')" title="Kopieren und erweitern" style="padding:12px 14px;border:1px solid var(--border);background:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;color:var(--text-2);">📋 Kopieren</button>
       ${IS_ADMIN?`<button onclick="closeMod('exDetailMod');openCatalogFieldEdit('${escJs(e.id)}')" title="Felddiagramm bearbeiten" style="padding:12px 14px;border:1px solid var(--border);background:none;border-radius:9px;font-size:15px;cursor:pointer;color:var(--text-2);">🎨</button><button onclick="closeMod('exDetailMod');editEx('${escJs(e.id)}')" title="Übung bearbeiten" style="padding:12px 14px;border:1px solid var(--border);background:none;border-radius:9px;font-size:13px;cursor:pointer;color:var(--text-2);">✏️</button>`:''}
     </div>`;
   openMod('exDetailMod');
@@ -491,6 +492,7 @@ function cardHTML(e,col){
       <div class="ctags">${tags}</div>
       <div class="cfoot" onclick="event.stopPropagation()">
         <button class="bcrd ap" style="background:${col}" onclick="addToPlanOrPick('${escJs(e.id)}',${e.section},false)">+ Plan</button>
+        <button class="bcrd" onclick="copyExToSubmit('${escJs(e.id)}')" title="Kopieren und erweitern" aria-label="Übung kopieren und erweitern">📋</button>
         ${IS_ADMIN?`<button class="bcrd" onclick="editEx('${escJs(e.id)}')">✏️</button><button class="bcrd rd" onclick="delEx('${escJs(e.id)}')">🗑</button>`:''}
       </div>
     </div>

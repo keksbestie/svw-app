@@ -463,10 +463,13 @@ function openFieldOverlay(mode){
   if(mode==='submit'){
     canvasObjects=[]; playerCounters={}; undoStack=[]; linePhase=0; lineStart=null;
     selectedObjIdx=null; selectedIndices=[];
+    // Kopie einer Katalog-Übung: Diagramm der Vorlage (bzw. zuletzt übernommene Fassung) zum Weiterzeichnen laden
+    if(typeof submitCopyOf!=='undefined' && submitCopyOf) canvasObjects=JSON.parse(JSON.stringify(submitCopyOf.curObjs||submitCopyOf.objs));
   }
   const ov=document.getElementById('fieldOverlay');
   if(ov) ov.style.display='flex';
   _updateFieldTypeOptions();
+  if(mode==='submit' && typeof submitCopyOf!=='undefined' && submitCopyOf){const ft=document.getElementById('fieldType'); if(ft) ft.value=submitCopyOf.fieldType;}
   _cvInited=false;
   setTimeout(()=>initCanvas(false),80);
 }
@@ -1958,6 +1961,7 @@ function exportCanvas(){
   _openCropDialog(fullDataUrl, autoBounds, (croppedUrl)=>{
     if(_cvMode==='submit'){
       submitCanvasData=croppedUrl;
+      if(typeof submitCopyOf!=='undefined' && submitCopyOf) submitCopyOf.curObjs=JSON.parse(JSON.stringify(canvasObjects));
       const wrap=document.getElementById('sPreviewWrap');
       const img=document.getElementById('sPreviewImg');
       if(wrap&&img){img.src=croppedUrl;wrap.style.display='block';}
