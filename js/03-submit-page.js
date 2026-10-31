@@ -12,6 +12,9 @@
 let submitUser = null; // {name, isDemo}
 let submitTags = [];
 let submitCanvasData = null; // base64 from canvas
+let submitFieldType = null;  // Feldtyp zum übernommenen Bild
+let submitReplacesId = null; // beim Bearbeiten einer Einreichung: alte Version erst nach erfolgreichem Neu-Einreichen löschen
+let submitCanvasObjs = null; // Zeichenobjekte zum übernommenen Bild (Stand beim Übernehmen; unabhängig vom Editor, der beim Öffnen leert)
 // Kopie einer Katalog-Übung zum Erweitern: Einreichen erst, wenn Felddiagramm, Titel und Beschreibung vom Original abweichen
 let submitCopyOf = null;
 let submissions = []; // array of submission objects
@@ -42,6 +45,7 @@ if(error){console.error('loadSubmissions error:',error);submissions=[];return;}
     id:e.id,name:e.name,desc:e.description,players:e.players,
     duration:e.duration,material:e.material,section:e.section,
     intensity:e.difficulty,tags:e.tags||[],diagram:e.image,
+    canvasObjects:e.canvas_objects||[],fieldType:e.field_type||'small',material:e.material||'',
     author:e.author_name||e.created_by,status:e.status,sport:e.sport||'',ageGroups:e.age_groups||[],
     submittedAt:new Date(e.created_at).toLocaleDateString('de-DE'),
     submittedTs:new Date(e.created_at).getTime()
@@ -309,7 +313,7 @@ async function doLogout(){
   currentUser=null; IS_ADMIN=false; IS_REVIEWER=false; REVIEWER_SPORTS=[];
   document.body.classList.remove('admin');
   if(typeof refreshSportAvailability==='function') refreshSportAvailability();
-  submitUser=null; submitTags=[]; submitCanvasData=null; submitCopyOf=null;
+  submitUser=null; submitTags=[]; submitCanvasData=null; submitCanvasObjs=null; submitCopyOf=null;
   renderSubmitPage();
   updateSignInBtn();
 }
@@ -339,7 +343,7 @@ function renderSubmitChecklist_init(){
   document.getElementById('sDescCount').textContent='0 Zeichen';
   renderAgePicker('sAgePick',[],{required:true,onChange:updateSubmitChecklist});
   const pv=document.getElementById('sPreviewWrap'); if(pv) pv.style.display='none';
-  submitCanvasData=null;
+  submitCanvasData=null; submitCanvasObjs=null; submitFieldType=null; submitReplacesId=null;
   if(submitCopyOf) _applySubmitCopy();
   _syncSubmitCopyUI();
   updateSubmitChecklist();
@@ -366,7 +370,7 @@ function _applySubmitCopy(){
   renderAgePicker('sAgePick',c.ageGroups,{required:true,onChange:updateSubmitChecklist});
 }
 function discardSubmitCopy(){
-  submitCopyOf=null; submitCanvasData=null;
+  submitCopyOf=null; submitCanvasData=null; submitCanvasObjs=null;
   renderSubmitChecklist_init();
 }
 function _syncSubmitCopyUI(){
@@ -396,10 +400,10 @@ function updateSubmitChecklist(){
     'chk-section': sec !== '',
     'chk-age': getAgeSel('sAgePick').length > 0,
     'chk-tags': submitTags.length >= 3,
-    'chk-canvas': !!submitCanvasData,
+    'chk-canvas': !!submitCanvasData && !!(submitCanvasObjs&&submitCanvasObjs.length),
   };
   if(submitCopyOf){
-    checks['chk-cp-canvas'] = !!submitCanvasData && JSON.stringify(canvasObjects)!==JSON.stringify(submitCopyOf.objs);
+    checks['chk-cp-canvas'] = !!submitCanvasData && JSON.stringify(submitCanvasObjs||[])!==JSON.stringify(submitCopyOf.objs);
     checks['chk-cp-name'] = _normTxt(name)!==_normTxt(submitCopyOf.name);
     checks['chk-cp-desc'] = _normTxt(desc)!==_normTxt(submitCopyOf.desc);
   }
@@ -468,7 +472,7 @@ async function submitExercise(){
     const uploaded=await uploadImageToStorage(submitCanvasData);
     if(uploaded)imageUrl=uploaded;
   }
-  const {error}=await _supabase.from('exercises').insert({
+  const {data:_ins,error}=await _supabase.from('exercises').insert({
     name:document.getElementById('sName').value.trim(),
     description:document.getElementById('sDesc').value.trim(),
     players:document.getElementById('sPlayers').value.trim(),
@@ -478,18 +482,25 @@ async function submitExercise(){
     duration:parseInt(document.getElementById('sDuration')?.value)||null,
     tags:submitTags,
     image:imageUrl,
-    canvas_objects:canvasObjects.length?canvasObjects:null,
+    canvas_objects:(submitCanvasObjs&&submitCanvasObjs.length)?submitCanvasObjs:null,
     created_by:currentUser.id,
     author_name:_publicAuthorName(null),
     sport:window.currentSport?.id||'',
+    field_type:submitFieldType||'small',
     age_groups:getAgeSel('sAgePick'),
     status:'pending'
-  });
+  }).select('id,canvas_objects').single();
+  // Sicherheitsnetz: die Zeichnung muss wirklich in der Datenbank angekommen sein, sonst ist die Übung später nicht bearbeitbar
+  if(!error && _ins && (submitCanvasObjs||[]).length && (_ins.canvas_objects||[]).length!==submitCanvasObjs.length){
+    await _supabase.from('exercises').delete().eq('id',_ins.id).eq('created_by',currentUser.id);
+    showToast('Die Zeichnung konnte nicht gesichert werden – bitte erneut einreichen','err');return;
+  }
   if(error){showToast(/age_groups/.test(error.message||'')?'Fehler: Datenbank-Spalte age_groups fehlt (Admin informieren)':'Fehler beim Einreichen','err');return;}
+  if(submitReplacesId){ await _supabase.from('exercises').delete().eq('id',submitReplacesId).eq('created_by',currentUser.id); submitReplacesId=null; }
   showToast('✓ Übung eingereicht! Das Admin-Team prüft sie.');
   submitCopyOf=null;
   renderSubmitChecklist_init();
-  submitCanvasData=null;
+  submitCanvasData=null; submitCanvasObjs=null;
   const sPreview=document.getElementById('sPreviewWrap');
   if(sPreview) sPreview.style.display='none';
   canvasObjects=[];playerCounters={};undoStack=[];selectedObjIdx=null;linePhase=0;lineStart=null;
@@ -532,10 +543,8 @@ async function withdrawSubmission(id){
 }
 async function editSubmission(id){
   const s=submissions.find(x=>x.id===id); if(!s) return;
-  // Zurückziehen und Formular vorausfüllen
-  const {error}=await _supabase.from('exercises').delete().eq('id',id).eq('created_by',currentUser.id);
-  if(error){showToast('Fehler','err');return;}
-  // Formular befüllen
+  // Formular vorausfüllen; die alte Version wird erst nach erfolgreichem Neu-Einreichen ersetzt (nichts geht verloren)
+  document.getElementById('sPreviewWrap')&&(document.getElementById('sPreviewWrap').style.display='none');
   document.getElementById('sName').value=s.name||'';
   document.getElementById('sDesc').value=s.desc||'';
   document.getElementById('sPlayers').value=s.players||'';
@@ -544,12 +553,14 @@ async function editSubmission(id){
   document.getElementById('sSec').value=s.section??'';
   submitTags=s.tags||[];
   renderSTagDisplay();
+  { const mf=document.getElementById('sMatFree'); if(mf) mf.value=s.material||''; if(typeof updateSMatField==='function') updateSMatField(); }
+  renderAgePicker('sAgePick',s.ageGroups||[],{required:true,onChange:updateSubmitChecklist});
+  submitReplacesId=id; submitFieldType=s.fieldType||'small';
+  submitCanvasObjs=(s.canvasObjects&&s.canvasObjects.length)?JSON.parse(JSON.stringify(s.canvasObjects)):null;
   if(s.diagram){submitCanvasData=s.diagram;const p=document.getElementById('sPreviewWrap');const img=document.getElementById('sPreviewImg');if(p&&img){img.src=s.diagram;p.style.display='block';}}
   updateSubmitChecklist();
-  await loadSubmissions();
-  _renderMySubmissionsFromCache();
   document.querySelector('.submit-form-wrap')?.scrollIntoView({behavior:'smooth',block:'start'});
-  showToast('Übung zum Bearbeiten geladen – nach Änderung erneut einreichen.');
+  showToast(submitCanvasObjs?'Übung zum Bearbeiten geladen – nach Änderung erneut einreichen.':'Übung geladen – die Zeichnung ist nicht gespeichert, bitte das Felddiagramm neu zeichnen.');
 }
 async function renderMySubmissions(){
   await loadSubmissions();

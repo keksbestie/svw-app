@@ -464,7 +464,10 @@ function openFieldOverlay(mode){
     canvasObjects=[]; playerCounters={}; undoStack=[]; linePhase=0; lineStart=null;
     selectedObjIdx=null; selectedIndices=[];
     // Kopie einer Katalog-Übung: Diagramm der Vorlage (bzw. zuletzt übernommene Fassung) zum Weiterzeichnen laden
-    if(typeof submitCopyOf!=='undefined' && submitCopyOf) canvasObjects=JSON.parse(JSON.stringify(submitCopyOf.curObjs||submitCopyOf.objs));
+    // Bereits übernommene Zeichnung (oder Vorlage einer Kopie) wieder laden, damit nichts verloren geht
+    if(typeof submitFieldType!=='undefined'&&submitFieldType&&!(typeof submitCopyOf!=='undefined'&&submitCopyOf)){setTimeout(()=>{const ft=document.getElementById('fieldType');if(ft)ft.value=submitFieldType;},0);}
+    const _keep=(typeof submitCopyOf!=='undefined'&&submitCopyOf)?(submitCopyOf.curObjs||submitCopyOf.objs):(typeof submitCanvasObjs!=='undefined'?submitCanvasObjs:null);
+    if(_keep&&_keep.length) canvasObjects=JSON.parse(JSON.stringify(_keep));
   }
   const ov=document.getElementById('fieldOverlay');
   if(ov) ov.style.display='flex';
@@ -1961,6 +1964,8 @@ function exportCanvas(){
   _openCropDialog(fullDataUrl, autoBounds, (croppedUrl)=>{
     if(_cvMode==='submit'){
       submitCanvasData=croppedUrl;
+      submitCanvasObjs=JSON.parse(JSON.stringify(canvasObjects));
+      submitFieldType=document.getElementById('fieldType')?.value||'small';
       if(typeof submitCopyOf!=='undefined' && submitCopyOf) submitCopyOf.curObjs=JSON.parse(JSON.stringify(canvasObjects));
       const wrap=document.getElementById('sPreviewWrap');
       const img=document.getElementById('sPreviewImg');
@@ -1980,7 +1985,7 @@ function exportCanvas(){
           uploadImageToStorage(croppedUrl).then(url=>{
             const imgUrl=url||croppedUrl;
             e.image=imgUrl;
-            _supabase.from('exercises').update({image:imgUrl,canvas_objects:canvasObjects,field_type:document.getElementById('fieldType')?.value||'small'}).eq('id',_catalogEditExId);
+            _supabase.from('exercises').update({image:imgUrl,canvas_objects:canvasObjects,field_type:document.getElementById('fieldType')?.value||'small'}).eq('id',_catalogEditExId).then(({error})=>{ if(error) showToast('Felddiagramm konnte nicht gespeichert werden – bitte erneut versuchen','err'); });
             renderSection();
           });
         }
