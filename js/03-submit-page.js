@@ -12,6 +12,7 @@
 let submitUser = null; // {name, isDemo}
 let submitTags = [];
 let submitCanvasData = null; // base64 from canvas
+let submitCanvasObjs = null; // Zeichenobjekte zum übernommenen Bild (Stand beim Übernehmen; unabhängig vom Editor, der beim Öffnen leert)
 // Kopie einer Katalog-Übung zum Erweitern: Einreichen erst, wenn Felddiagramm, Titel und Beschreibung vom Original abweichen
 let submitCopyOf = null;
 let submissions = []; // array of submission objects
@@ -309,7 +310,7 @@ async function doLogout(){
   currentUser=null; IS_ADMIN=false; IS_REVIEWER=false; REVIEWER_SPORTS=[];
   document.body.classList.remove('admin');
   if(typeof refreshSportAvailability==='function') refreshSportAvailability();
-  submitUser=null; submitTags=[]; submitCanvasData=null; submitCopyOf=null;
+  submitUser=null; submitTags=[]; submitCanvasData=null; submitCanvasObjs=null; submitCopyOf=null;
   renderSubmitPage();
   updateSignInBtn();
 }
@@ -339,7 +340,7 @@ function renderSubmitChecklist_init(){
   document.getElementById('sDescCount').textContent='0 Zeichen';
   renderAgePicker('sAgePick',[],{required:true,onChange:updateSubmitChecklist});
   const pv=document.getElementById('sPreviewWrap'); if(pv) pv.style.display='none';
-  submitCanvasData=null;
+  submitCanvasData=null; submitCanvasObjs=null;
   if(submitCopyOf) _applySubmitCopy();
   _syncSubmitCopyUI();
   updateSubmitChecklist();
@@ -366,7 +367,7 @@ function _applySubmitCopy(){
   renderAgePicker('sAgePick',c.ageGroups,{required:true,onChange:updateSubmitChecklist});
 }
 function discardSubmitCopy(){
-  submitCopyOf=null; submitCanvasData=null;
+  submitCopyOf=null; submitCanvasData=null; submitCanvasObjs=null;
   renderSubmitChecklist_init();
 }
 function _syncSubmitCopyUI(){
@@ -399,7 +400,7 @@ function updateSubmitChecklist(){
     'chk-canvas': !!submitCanvasData,
   };
   if(submitCopyOf){
-    checks['chk-cp-canvas'] = !!submitCanvasData && JSON.stringify(canvasObjects)!==JSON.stringify(submitCopyOf.objs);
+    checks['chk-cp-canvas'] = !!submitCanvasData && JSON.stringify(submitCanvasObjs||[])!==JSON.stringify(submitCopyOf.objs);
     checks['chk-cp-name'] = _normTxt(name)!==_normTxt(submitCopyOf.name);
     checks['chk-cp-desc'] = _normTxt(desc)!==_normTxt(submitCopyOf.desc);
   }
@@ -478,7 +479,7 @@ async function submitExercise(){
     duration:parseInt(document.getElementById('sDuration')?.value)||null,
     tags:submitTags,
     image:imageUrl,
-    canvas_objects:canvasObjects.length?canvasObjects:null,
+    canvas_objects:(submitCanvasObjs&&submitCanvasObjs.length)?submitCanvasObjs:null,
     created_by:currentUser.id,
     author_name:_publicAuthorName(null),
     sport:window.currentSport?.id||'',
@@ -489,7 +490,7 @@ async function submitExercise(){
   showToast('✓ Übung eingereicht! Das Admin-Team prüft sie.');
   submitCopyOf=null;
   renderSubmitChecklist_init();
-  submitCanvasData=null;
+  submitCanvasData=null; submitCanvasObjs=null;
   const sPreview=document.getElementById('sPreviewWrap');
   if(sPreview) sPreview.style.display='none';
   canvasObjects=[];playerCounters={};undoStack=[];selectedObjIdx=null;linePhase=0;lineStart=null;
@@ -544,6 +545,7 @@ async function editSubmission(id){
   document.getElementById('sSec').value=s.section??'';
   submitTags=s.tags||[];
   renderSTagDisplay();
+  submitCanvasObjs=null;
   if(s.diagram){submitCanvasData=s.diagram;const p=document.getElementById('sPreviewWrap');const img=document.getElementById('sPreviewImg');if(p&&img){img.src=s.diagram;p.style.display='block';}}
   updateSubmitChecklist();
   await loadSubmissions();
