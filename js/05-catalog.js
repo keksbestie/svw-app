@@ -564,6 +564,12 @@ async function _persistNewExercise(ex){
     ...((ex.ageGroups&&ex.ageGroups.length)?{age_groups:ex.ageGroups}:{})
   }).select().single();
   if(error){console.warn('Übung speichern fehlgeschlagen:',error);return null;}
+  // Sicherheitsnetz: Zeichnung muss angekommen sein, sonst ist die Übung später nicht bearbeitbar
+  const want=(ex.canvasObjects||[]).length;
+  if(want&&(data.canvas_objects||[]).length!==want){
+    await _supabase.from('exercises').delete().eq('id',data.id).eq('created_by',currentUser.id);
+    console.warn('Zeichnung nicht gespeichert, Übung zurückgenommen');return null;
+  }
   return {id:data.id,image:img};
 }
 let _savingEx=false;
@@ -713,6 +719,7 @@ function confirmSectionPick(targetSec) {
 function openCatalogFieldEdit(id){
   if(!IS_ADMIN) return;
   const e=exercises.find(x=>x.id===id); if(!e) return;
+  if(!(e.canvasObjects&&e.canvasObjects.length)&&e.image) showToast('Für diese Übung ist keine Zeichnung gespeichert – bitte das Felddiagramm neu zeichnen.','err');
   _catalogEditExId=id;
   if(e.canvasObjects&&e.canvasObjects.length){
     canvasObjects=JSON.parse(JSON.stringify(e.canvasObjects));
