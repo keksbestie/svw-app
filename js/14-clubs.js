@@ -153,6 +153,22 @@ async function renderClubTab() {
   }
 }
 
+// ── Angebote-Seite: Buttons je nach Anmeldestatus ─────────────────
+function renderAngebote() {
+  const b = document.getElementById('offerTrainerBtn');
+  if (b) b.textContent = currentUser ? 'Du bist angemeldet' : 'Kostenlos registrieren';
+}
+function offerTrainerAction() {
+  if (currentUser) { goPage('submit'); return; }
+  openLoginMod();
+  if (typeof toggleLoginModMode === 'function') toggleLoginModMode();
+}
+function offerClubAction() {
+  if (!currentUser) { showToast('Bitte zuerst registrieren oder anmelden', ''); openLoginMod(); return; }
+  goPage('account');
+  setTimeout(() => { if (typeof switchAccTab === 'function') switchAccTab('club'); }, 50);
+}
+
 // ── Sportarten-Helper ─────────────────────────────────────────────
 function _availableSports() {
   return (typeof SPORTS !== 'undefined' ? SPORTS : []).filter(s =>

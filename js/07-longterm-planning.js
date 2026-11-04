@@ -23,6 +23,15 @@ let ltpEditBlockId = null;
 
 function defaultLtp(){ return []; }
 
+// Sportart eines Blocks: gespeicherter Wert, sonst aus den verplanten Trainingsplänen abgeleitet (ältere Blöcke), sonst Fußball
+function _blockSport(b){
+  if(b&&b.sport) return b.sport;
+  const cnt={};
+  JSON.stringify((b&&b.weeks)||[],(k,v)=>{ if(k==='planId'&&v){const p=savedPlans.find(x=>x.id===v); if(p){const s=_planSport(p);cnt[s]=(cnt[s]||0)+1;}} return v; });
+  const best=Object.entries(cnt).sort((a,c)=>c[1]-a[1])[0];
+  return best?best[0]:'fussball';
+}
+
 function makeFreshBlock(name, numWeeks, notes, startDate){
   const weeks = [];
   for(let i=0;i<numWeeks;i++){
@@ -35,7 +44,7 @@ function makeFreshBlock(name, numWeeks, notes, startDate){
     }
     weeks.push({id:uid(), label, focus:'', notes:'', days:[]});
   }
-  return {id:uid(), name, notes, startDate, weeks, createdAt:new Date().toLocaleDateString('de-DE')};
+  return {id:uid(), name, notes, startDate, weeks, sport:_curSportId(), createdAt:new Date().toLocaleDateString('de-DE')};
 }
 
 function getISOWeek(d){
@@ -117,13 +126,23 @@ function _resetPlanStars(planId,container){
 }
 
 let _ltpPublicPlans=[];
+let _ltpListIsGuest=false; // Gäste bekommen nur die Liste ohne Übungsdaten
 async function renderLtpPlanLibrary(){
   const el=document.getElementById('ltpPlanList');if(!el)return;
   el.innerHTML='<div style="font-size:13px;color:var(--text-3);padding:20px 0;text-align:center;">Lädt …</div>';
   const sport=window.currentSport?.id||'fussball';
   // Always reload when sport may have changed
   {
-    const {data}=await _supabase.from('submitted_plans').select('id,name,date,author_name,lanes,totals,sport').eq('status','approved').eq('sport',sport).order('submitted_at',{ascending:false});
+    _ltpListIsGuest=!currentUser;
+    let data=null;
+    if(currentUser){
+      ({data}=await _supabase.from('submitted_plans').select('id,name,date,author_name,lanes,totals,sport').eq('status','approved').eq('sport',sport).order('submitted_at',{ascending:false}));
+    } else {
+      // Gäste: nur Name, Autor:in, Datum, Zusammenfassung (Datenbankfunktion ohne Übungsdaten)
+      const r=await _supabase.rpc('public_plan_list',{p_sport:sport});
+      if(r.error) console.warn('public_plan_list nicht verfügbar:',r.error.message);
+      data=r.data;
+    }
     _ltpPublicPlans=data||[];
   }
   await loadPlanRatings();
@@ -146,12 +165,14 @@ function _renderLtpPlanRows(plans){
         <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${esc(_safeAuthor(p.author_name,''))} · ${esc(p.date||'')} ${total?'· '+esc(total):''}</div>
         ${_planRatingHTML(p.id)}
       </div>
-      <button onclick="event.stopPropagation();openLtpPlanPreview(${i})" style="padding:7px 14px;background:var(--surface-2);color:var(--text-1);border:1px solid var(--border);border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;">👁 Vorschau</button>
+      <button onclick="event.stopPropagation();openLtpPlanPreview(${i})" style="padding:7px 14px;background:var(--surface-2);color:var(--text-1);border:1px solid var(--border);border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;">${currentUser?'👁 Vorschau':'🔒 Anmelden'}</button>
     </div>`;
   }).join('');
 }
 
 async function openLtpPlanPreview(idx){
+  if(!currentUser){showLoginRequired('Trainingspläne aus der Bibliothek');return;}
+  if(_ltpListIsGuest){await renderLtpPlanLibrary();showToast('Liste aktualisiert – bitte den Plan erneut öffnen');return;} // Liste stammt noch aus der Gast-Ansicht (ohne Übungen)
   const plans=document.getElementById('ltpPlanSearch')?.value
     ?_ltpPublicPlans.filter(p=>(p.name||'').toLowerCase().includes(document.getElementById('ltpPlanSearch').value.toLowerCase()))
     :_ltpPublicPlans;
@@ -210,7 +231,7 @@ async function openLtpPlanPreview(idx){
 }
 
 function loadLtpPlanIntoPlanner(p){
-  if(!p)return;
+  if(!p||!p.lanes)return;
   currentPlan={name:p.name,lanes:(p.lanes||[]).map(l=>[...l])};
   const inp=document.getElementById('planName');if(inp)inp.value=p.name;
   if(typeof renderPlanner==='function') renderPlanner();
@@ -234,13 +255,25 @@ function renderLtp(){
   activeLtpTab=0;
 
   const el=document.getElementById('ltpBlockList'); if(!el)return;
+  if(!currentUser){
+    // Ohne Anmeldung keine (zwischengespeicherten) Blöcke anzeigen – sie erscheinen nach der Anmeldung wieder
+    el.innerHTML=`<div style="text-align:center;padding:60px 20px;color:var(--text-3);">
+      <div style="font-size:40px;margin-bottom:10px;">🔒</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;margin-bottom:8px;">Trainingsblöcke gibt es mit Konto</div>
+      <div style="font-size:13px;margin-bottom:16px;">Melde dich kostenlos an, um Blöcke anzulegen. Sie werden wie deine Trainingspläne in deinem Konto gespeichert.</div>
+      <button class="bpr" onclick="openLoginMod()">Anmelden oder registrieren</button>
+    </div>`;
+    return;
+  }
 
   // Filter out old-format blocks (without .weeks array)
   if(ltpBlocks && ltpBlocks.length){
     ltpBlocks = ltpBlocks.filter(b=>b.weeks && Array.isArray(b.weeks));
   }
 
-  if(!ltpBlocks||!ltpBlocks.length){
+  // Nur Blöcke der aktuell gewählten Sportart (Index im Gesamtbestand bleibt erhalten)
+  const _shownBlocks=(ltpBlocks||[]).map((b,i)=>[b,i]).filter(([b])=>_blockSport(b)===_curSportId());
+  if(!_shownBlocks.length){
     el.innerHTML=`<div style="text-align:center;padding:60px 20px;color:var(--text-3);">
       <div style="font-size:48px;margin-bottom:12px;">📅</div>
       <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;margin-bottom:8px;">Noch kein Block erstellt</div>
@@ -248,7 +281,7 @@ function renderLtp(){
     </div>`;
     return;
   }
-  el.innerHTML = ltpBlocks.map((blk,bi)=>renderBlockCard(blk,bi)).join('');
+  el.innerHTML = _shownBlocks.map(([blk,bi])=>renderBlockCard(blk,bi)).join('');
 }
 
 function renderBlockCard(blk,bi){
@@ -322,6 +355,7 @@ function renderDayCard(blockId,wi,day,di){
 
 // ── NEW BLOCK WIZARD ──
 function openNewBlockWizard(){
+  if(!currentUser){showLoginRequired('Trainingsblöcke');return;}
   document.getElementById('nb-name').value='';
   document.getElementById('nb-notes').value='';
   document.getElementById('nb-weeks').value=4;
@@ -582,7 +616,7 @@ function openEntryEdit(type, editIdx){
   document.getElementById('entryEditIco').textContent=type==='training'?'⚽':type==='game'?'🏆':'☕';
   document.getElementById('entryEditTitle').textContent=(isEdit?'Bearbeiten: ':'')+typeLabels[type||e.type];
 
-  const planOpts='<option value="">– Kein Plan –</option>'+savedPlans.map(p=>`<option value="${esc(p.id)}" ${e.planId===p.id?'selected':''}>${esc(p.name)}</option>`).join('');
+  const planOpts='<option value="">– Kein Plan –</option>'+savedPlans.filter(p=>!p._dup&&_planSport(p)===_curSportId()).map(p=>`<option value="${esc(p.id)}" ${e.planId===p.id?'selected':''}>${esc(p.name)}</option>`).join('');
   const freeColors=['#1565c0','#6d28d9','#b71c1c','#e65100','#1a7f4b','#37474f'];
 
   let bodyHtml='';
@@ -676,6 +710,7 @@ function openNewPlanFromBlock(){
 
 // ── BLOCK LIBRARY ──
 function openSaveBlockLib(blockId){
+  if(!currentUser){showLoginRequired('Die Block-Bibliothek');return;}
   const blk=ltpBlocks.find(b=>b.id===blockId); if(!blk)return;
   editingBlockLibId=blockId;
   document.getElementById('sbl-name').value=blk.name;
@@ -689,6 +724,7 @@ function commitSaveBlockLib(){
   const blk=ltpBlocks.find(b=>b.id===editingBlockLibId); if(!blk)return;
   const libEntry=JSON.parse(JSON.stringify(blk));
   libEntry.id=uid();
+  libEntry.sport=_blockSport(blk);
   delete libEntry._dbId; // nie die Datenbank-Kennung eines anderen Eintrags mitnehmen
   libEntry.name=name;
   libEntry.notes=document.getElementById('sbl-desc').value||'';
@@ -702,13 +738,21 @@ function commitSaveBlockLib(){
 
 function renderLibrary(){
   const el=document.getElementById('ltpLibGrid'); if(!el)return;
-  if(!blockLibrary||!blockLibrary.length){
+  if(!currentUser){
+    el.innerHTML=`<div style="text-align:center;padding:40px 20px;color:var(--text-3);">
+      <div style="font-size:36px;margin-bottom:8px;">🔒</div>
+      <div style="font-size:13px;margin-bottom:14px;">Die Block-Bibliothek gibt es mit Konto.</div>
+      <button class="bpr" onclick="openLoginMod()">Anmelden oder registrieren</button>
+    </div>`; return;
+  }
+  const _shownLib=(blockLibrary||[]).map((b,i)=>[b,i]).filter(([b])=>_blockSport(b)===_curSportId());
+  if(!_shownLib.length){
     el.innerHTML=`<div style="text-align:center;padding:40px 20px;color:var(--text-3);">
       <div style="font-size:36px;margin-bottom:8px;">📚</div>
       <div style="font-size:13px;">Noch keine Blöcke in der Bibliothek.<br>Speichere einen aktiven Block mit "💾 Bibliothek".</div>
     </div>`; return;
   }
-  el.innerHTML=blockLibrary.map((blk,i)=>`
+  el.innerHTML=_shownLib.map(([blk,i])=>`
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px;">
       <div style="flex:1;min-width:0;">
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;color:var(--text-1);">${esc(blk.name)}</div>
@@ -723,8 +767,10 @@ function renderLibrary(){
 }
 
 function loadBlockFromLib(idx){
+  if(!currentUser){showLoginRequired('Die Block-Bibliothek');return;}
   const blk=JSON.parse(JSON.stringify(blockLibrary[idx]));
   delete blk._dbId;
+  blk.sport=_blockSport(blockLibrary[idx]);
   blk.id=uid(); blk.createdAt=new Date().toLocaleDateString('de-DE');
   if(!ltpBlocks) ltpBlocks=[];
   ltpBlocks.unshift(blk);

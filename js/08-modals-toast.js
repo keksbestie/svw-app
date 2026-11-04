@@ -38,6 +38,25 @@ async function sendFeedback(){
 }
 
 // ── Mobiles „Mehr“-Menü (Header-Menüs sind auf dem Handy ausgeblendet) ──
+// Hinweis für Gäste: Funktion erst nach Anmeldung nutzbar, mit Verweis auf die Angebote
+function showLoginRequired(what){
+  document.getElementById('loginRequiredModal')?.remove();
+  const m=document.createElement('div');
+  m.id='loginRequiredModal';
+  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
+  m.onclick=e=>{if(e.target===m)m.remove();};
+  m.innerHTML='<div style="background:var(--surface);border-radius:16px;max-width:380px;width:100%;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.4);text-align:center;">'
+    +'<div style="font-size:34px;margin-bottom:8px;">🔒</div>'
+    +'<div style="font-family:Barlow Condensed,sans-serif;font-size:21px;font-weight:900;margin-bottom:8px;">Bitte zuerst anmelden</div>'
+    +'<div style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:18px;">'+esc(what||'Diese Funktion')+' kannst du nach der kostenlosen Anmeldung nutzen. Was dich sonst noch erwartet, findest du bei den Angeboten.</div>'
+    +'<div style="display:flex;flex-direction:column;gap:8px;">'
+    +'<button class="bpr" data-act="login">Anmelden oder registrieren</button>'
+    +'<button class="bsc" data-act="offers">Zu den Angeboten</button>'
+    +'</div></div>';
+  m.querySelector('[data-act=login]').onclick=()=>{m.remove();openLoginMod();};
+  m.querySelector('[data-act=offers]').onclick=()=>{m.remove();goPage('angebote');};
+  document.body.appendChild(m);
+}
 function closeMoreSheet(){document.getElementById('moreSheet')?.remove();}
 function openMoreSheet(){
   closeMoreSheet();
@@ -48,6 +67,7 @@ function openMoreSheet(){
     items.push(['👥','Mein Kader',"goPage('kader')"]);
     if(typeof currentClub!=='undefined'&&currentClub) items.push(['🏟️','Mein Verein',"goPage('account');setTimeout(()=>switchAccTab('club'),50)"]);
   } else items.push(['🔑','Anmelden',"openLoginMod()"]);
+  items.push(['🏷️','Angebote',"goPage('angebote')"]);
   items.push(['❓','Hilfe',"toggleHelpPanel()"]);
   items.push(['💬','Feedback senden',"openMod('feedbackMod')"]);
   const sheet=document.createElement('div');

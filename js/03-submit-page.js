@@ -311,6 +311,9 @@ async function doLogout(){
   if(typeof coaches!=='undefined') coaches=[];
   if(typeof blockLibrary!=='undefined') blockLibrary=blockLibrary.filter(b=>!b._dbId); // nur lokal noch nicht gesicherte Einträge behalten
   currentUser=null; IS_ADMIN=false; IS_REVIEWER=false; REVIEWER_SPORTS=[];
+  if(typeof renderSavedPlans==='function') renderSavedPlans();
+  if(typeof renderLtp==='function') renderLtp();
+  if(typeof renderLibrary==='function'&&typeof activeLtpTab!=='undefined'&&activeLtpTab===1) renderLibrary();
   document.body.classList.remove('admin');
   if(typeof refreshSportAvailability==='function') refreshSportAvailability();
   submitUser=null; submitTags=[]; submitCanvasData=null; submitCanvasObjs=null; submitCopyOf=null;
@@ -871,7 +874,7 @@ async function saveAccountVisibility(){
 function renderMyAccPlans(){
   const list=document.getElementById('accPlansList');
   if(!list) return;
-  if(!savedPlans||!savedPlans.length){
+  if(!savedPlans||!savedPlans.filter(p=>!p._dup).length){
     list.innerHTML='<div style="text-align:center;color:var(--gd2);font-size:14px;padding:40px 0;">Keine gespeicherten Pläne vorhanden.</div>';
     return;
   }
@@ -881,7 +884,7 @@ function renderMyAccPlans(){
     if(s==='rejected') return '<span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;background:#ffebee;color:#c62828;border:1px solid #ef9a9a;">Abgelehnt</span>';
     return '';
   };
-  list.innerHTML=savedPlans.map((p,i)=>`
+  list.innerHTML=savedPlans.map((p,i)=>p._dup?'':`
     <div style="background:var(--surface);border-radius:10px;padding:14px 18px;box-shadow:var(--sh);display:flex;align-items:center;gap:12px;">
       <div style="flex:1;min-width:0;">
         <div style="font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">${esc(p.name||'Plan '+(i+1))} ${statusBadge(p.status)}</div>
@@ -933,7 +936,8 @@ function openLoginMod(){
   document.getElementById('loginModUsername').value='';
   document.getElementById('loginModUsernameWrap').style.display='none';
   document.getElementById('loginModBtn').textContent='Anmelden';
-  document.getElementById('loginModBtn').onclick=doLoginMod;
+  window._loginModAct=doLoginMod;
+  document.getElementById('loginModPass').autocomplete='current-password';
   document.getElementById('loginModToggle').textContent='Neu registrieren';
   document.getElementById('loginModTitle').textContent='Anmelden';
   document.getElementById('loginModErr').style.display='none';
@@ -980,10 +984,10 @@ function toggleLoginModMode(){
   const title=document.getElementById('loginModTitle');
   const isReg=wrap.style.display!=='none';
   if(isReg){
-    wrap.style.display='none';btn.textContent='Anmelden';btn.onclick=doLoginMod;
+    wrap.style.display='none';btn.textContent='Anmelden';window._loginModAct=doLoginMod;document.getElementById('loginModPass').autocomplete='current-password';
     toggle.textContent='Neu registrieren';title.textContent='Anmelden';
   } else {
-    wrap.style.display='block';btn.textContent='Registrieren';btn.onclick=doRegisterMod;
+    wrap.style.display='block';btn.textContent='Registrieren';window._loginModAct=doRegisterMod;document.getElementById('loginModPass').autocomplete='new-password';
     toggle.textContent='Zurück zum Login';title.textContent='Registrieren';
   }
   document.getElementById('loginModErr').style.display='none';

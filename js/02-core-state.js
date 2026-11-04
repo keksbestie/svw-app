@@ -113,30 +113,46 @@ function newUuid(){
 let _planIdsInDb=null, _ltpIdsInDb=null; // null = Zustand der Datenbank unbekannt → nichts löschen/überschreiben
 const _syncSnap={plans:new Map(),ltp:new Map()};
 let _syncRunning=false, _syncAgain=false, _syncWarned=false;
-function _planPayload(p){return {name:p.name||'Plan',date:p.date||'',lanes:p.lanes,totals:p.totals||[]};}
+// Sportart eines Plans: gespeicherter Wert, sonst aus den enthaltenen Übungen abgeleitet (ältere Pläne), sonst Fußball
+function _planSport(p){
+  if(p&&p.sport) return p.sport;
+  const cnt={};
+  ((p&&p.lanes)||[]).forEach(l=>(l||[]).forEach(raw=>{const id=typeof raw==='string'?raw:(raw&&raw.id);const e=exercises.find(x=>x.id===id);if(e){const s=e.sport||'fussball';cnt[s]=(cnt[s]||0)+1;}}));
+  const best=Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0];
+  return best?best[0]:'fussball';
+}
+let _plansHaveSport=false; // erst true, wenn die Spalte plans.sport in der Datenbank existiert
+function _planPayload(p){const o={name:p.name||'Plan',date:p.date||'',lanes:p.lanes,totals:p.totals||[]};if(_plansHaveSport)o.sport=_planSport(p);return o;}
 function _ltpPayload(b){const c=Object.assign({},b);delete c._dbId;return {name:b.name||'Block',weeks:c};}
 
 // Lädt Pläne + Blöcke des Kontos. Bei JEDEM Fehler bleibt der lokale Zustand unverändert.
 async function _loadOwnedData(userId){
   if(_syncRunning) return;
-  const [rp,rb,rs]=await Promise.all([
+  const [rp,rb,rs,rsp]=await Promise.all([
     _supabase.from('plans').select('*').eq('owner_id',userId),
     _supabase.from('ltp_blocks').select('*').eq('owner_id',userId),
-    _supabase.from('submitted_plans').select('*').eq('owner_id',userId)
+    _supabase.from('submitted_plans').select('*').eq('owner_id',userId),
+    _supabase.from('plans').select('sport').limit(1)
   ]);
+  _plansHaveSport=!rsp.error;
   if(rp.error||rb.error||rs.error){console.warn('Pläne laden fehlgeschlagen',rp.error||rb.error||rs.error);return;}
   if(_syncRunning) return;
   let owner=null; try{owner=localStorage.getItem('ac_sync_owner');}catch(e){}
   const mayKeep=!owner||owner===userId; // lokale Einträge eines anderen Kontos nie übernehmen
   const subById=new Map((rs.data||[]).map(p=>[p.id,p]));
   const remotePlans=(rp.data||[]).map(p=>{
-    const o={id:p.id,_dbId:p.id,name:p.name||'Plan',date:p.date||'',lanes:p.lanes,totals:p.totals||[]};
+    const o={id:p.id,_dbId:p.id,name:p.name||'Plan',date:p.date||'',lanes:p.lanes,totals:p.totals||[],sport:p.sport||undefined};
     const sub=subById.get(p.id); if(sub) o.status=sub.status;
     return o;
   });
   const remoteIds=new Set(remotePlans.map(p=>p._dbId));
-  const submittedOnly=(rs.data||[]).filter(p=>!remoteIds.has(p.id)).map(p=>({id:p.id,name:p.name||'Plan',date:p.date||'',lanes:p.lanes,totals:p.totals||[],status:p.status,_src:'submitted'}));
-  const localUnsynced=mayKeep?savedPlans.filter(p=>!p._dbId&&p._src!=='submitted'&&!remoteIds.has(p.id)&&!subById.has(p.id)):[];
+  const submittedOnly=(rs.data||[]).filter(p=>!remoteIds.has(p.id)).map(p=>({id:p.id,name:p.name||'Plan',date:p.date||'',lanes:p.lanes,totals:p.totals||[],status:p.status,sport:p.sport||undefined,_src:'submitted'}));
+  // Doppelte vermeiden: Ein privater Plan mit gleichem Namen und gleichen Übungen wie eine eingereichte/veröffentlichte Version wird nicht mehr angezeigt – es zählt die veröffentlichte Version.
+  // Datenbank-Einträge bleiben dabei unangetastet (nur ausgeblendet, damit der Abgleich nichts löscht); lokale, nie gesicherte Kopien werden verworfen.
+  const _pk=p=>(p.name||'')+'|'+JSON.stringify(p.lanes||[]);
+  const pubKeys=new Set(submittedOnly.filter(s=>s.status==='approved'||s.status==='pending').map(_pk));
+  remotePlans.forEach(p=>{ if(!p.status&&pubKeys.has(_pk(p))) p._dup=true; });
+  const localUnsynced=mayKeep?savedPlans.filter(p=>!p._dbId&&p._src!=='submitted'&&!remoteIds.has(p.id)&&!subById.has(p.id)&&!pubKeys.has(_pk(p))):[];
   savedPlans=[...localUnsynced,...remotePlans,...submittedOnly].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
   _planIdsInDb=new Set(remoteIds);
   _syncSnap.plans=new Map(remotePlans.map(p=>[p._dbId,JSON.stringify(_planPayload(p))]));
@@ -239,6 +255,8 @@ async function silentSync(){
     }
     if(typeof loadRatings==='function') await loadRatings();
     apiOnline=true; setStat('ok'); updateCnt(); renderSection(); cacheLocal();
+    if(typeof renderSavedPlans==='function') renderSavedPlans();
+    if(typeof renderLtp==='function'&&typeof activeLtpTab!=='undefined'&&activeLtpTab===0) renderLtp();
     if(typeof refreshSportAvailability==='function') refreshSportAvailability();
   }catch{apiOnline=false; setStat('err');}
 }
@@ -391,7 +409,7 @@ function goPage(name,btn){
   if(name==='home'){
     document.body.classList.add('on-home');
     homeEl.classList.remove('hidden','fading-out');
-    document.querySelectorAll('.home-card').forEach(c=>c.classList.remove('flying'));
+    document.querySelectorAll('#homeCards .home-card').forEach(c=>c.classList.remove('flying'));
     document.querySelector('.home-hero')?.classList.remove('flying');
     document.querySelectorAll('.mb,.bnav-item').forEach(b=>b.classList.remove('active'));
     const hb=btn||document.querySelector('.mb[data-page="home"]');if(hb)hb.classList.add('active');
@@ -417,6 +435,7 @@ function goPage(name,btn){
   if(name==='longterm')renderLtp();
   if(name==='submit')renderSubmitPage();
   if(name==='account')renderAccountPage();
+  if(name==='angebote'&&typeof renderAngebote==='function')renderAngebote();
   if(name==='kader'&&typeof renderKaderPage==='function')renderKaderPage();
 
   // 3. Scroll to top
@@ -424,7 +443,7 @@ function goPage(name,btn){
 
   // 4. Animate home overlay out (purely visual — state already updated above)
   if(fromHome){
-    document.querySelectorAll('.home-card').forEach(c=>c.classList.add('flying'));
+    document.querySelectorAll('#homeCards .home-card').forEach(c=>c.classList.add('flying'));
     document.querySelector('.home-hero')?.classList.add('flying');
     setTimeout(()=>homeEl.classList.add('fading-out'),200);
     setTimeout(()=>{homeEl.classList.add('hidden');homeEl.classList.remove('fading-out');},950);

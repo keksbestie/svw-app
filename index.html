@@ -137,6 +137,10 @@
           <button class="cfg-fs-rst" onclick="adjustFontSize(0)" title="Zurücksetzen">↺</button>
         </div>
         <div class="cfg-sep"></div>
+        <button class="cfg-item" onclick="closeCfgDrop();goPage('angebote')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          Angebote
+        </button>
         <button class="cfg-item" onclick="closeCfgDrop();goPage('about')">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
           &Uuml;ber AssistCoach
@@ -241,6 +245,7 @@
     <div id="homeHeroBtns" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;justify-content:center;">
       <button onclick="goPage('about')" class="home-hero-btn" style="padding:8px 20px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:background .2s;">Vision &amp; Ziele ↗</button>
       <button onclick="window._showOnboarding()" class="home-hero-btn" style="padding:8px 16px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:background .2s;" id="onboardingBtn">&#127973; Einführung</button>
+      <button onclick="goPage('angebote')" class="home-hero-btn" style="padding:8px 16px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:background .2s;" id="offersBtn">&#127991;&#65039; Angebote</button>
     </div>
   </div>
 
@@ -353,8 +358,8 @@
         <div class="submit-login-title">Übung einreichen</div>
         <div class="submit-login-sub">Melde dich an, um eigene Übungen zu erstellen und für den Katalog vorzuschlagen.</div>
         <div class="submit-login-form" id="loginForm">
-          <input class="fc" id="loginEmail" type="email" placeholder="E-Mail-Adresse" autocomplete="email">
-          <input class="fc" id="loginPass" type="password" placeholder="Passwort" onkeydown="if(event.key==='Enter')doLogin()" style="margin-top:8px;">
+          <input class="fc" id="loginEmail" name="email" type="email" placeholder="E-Mail-Adresse" autocomplete="username" autocapitalize="none" spellcheck="false">
+          <input class="fc" id="loginPass" name="password" type="password" autocomplete="current-password" placeholder="Passwort" onkeydown="if(event.key==='Enter')doLogin()" style="margin-top:8px;">
           <input class="fc" id="loginUsername" type="text" placeholder="Anzeigename (z.B. Max Müller)" autocomplete="off" style="display:none;margin-top:8px;">
           <label id="agbWrap" style="display:none;align-items:flex-start;gap:8px;margin-top:12px;font-size:12px;color:var(--gd2);line-height:1.5;cursor:pointer;">
             <input type="checkbox" id="agbCheck" style="margin-top:2px;flex-shrink:0;accent-color:var(--accent);">
@@ -873,6 +878,57 @@
 </div>
 
 
+<!-- ANGEBOTE PAGE -->
+<div id="page-angebote" class="page">
+  <div class="inner" style="max-width:1100px;padding-bottom:70px;">
+    <button onclick="goPage('home')" style="display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--gd2);font-size:13px;cursor:pointer;margin-bottom:18px;padding:0;font-family:'Barlow',sans-serif;">&larr; Zur&uuml;ck</button>
+    <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;margin:0 0 6px;">Angebote</h1>
+    <p style="font-size:14px;color:var(--gd2);margin:0 0 26px;max-width:640px;line-height:1.6;">Das bekommst du bei AssistCoach &ndash; <strong>aktuell ist alles kostenlos</strong>.</p>
+    <div class="offer-grid">
+      <div class="home-card home-card--catalog offer-card">
+        <div class="home-card-num">GAST</div>
+        <div class="home-card-title">Gäste</div>
+        <div class="offer-sub">Ohne Konto sofort loslegen</div>
+        <ul class="offer-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Übungskatalog durchsuchen und filtern</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Trainingsplan erstellen und drucken</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Langzeitplanung</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Felddiagramme ansehen</span></li>
+          <li class="off"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Speichern und bewerten</span></li>
+          <li class="off"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Übungen einreichen</span></li>
+        </ul>
+        <button class="offer-btn" onclick="goPage('handbook')">Jetzt starten</button>
+      </div>
+      <div class="home-card home-card--plan offer-card offer-card--feat">
+        <div class="home-card-num">KOSTENLOSES KONTO</div>
+        <div class="home-card-title">Trainer:innen</div>
+        <div class="offer-sub">Alles von Gästen, zusätzlich</div>
+        <ul class="offer-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Pläne und Blöcke dauerhaft speichern</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Übungen und Pläne bewerten</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Eigene Übungen einreichen</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Übungen kopieren und erweitern</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Kader und Trainerteam verwalten</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Verein beitreten</span></li>
+        </ul>
+        <button class="offer-btn" id="offerTrainerBtn" onclick="offerTrainerAction()">Kostenlos registrieren</button>
+      </div>
+      <div class="home-card home-card--blocks offer-card">
+        <div class="home-card-num">VEREIN</div>
+        <div class="home-card-title">Vereinsadmin</div>
+        <div class="offer-sub">Alles von Trainer:innen, zusätzlich</div>
+        <ul class="offer-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Verein anlegen</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Plätze je Sportart an Trainer:innen vergeben</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Vereinslogo hinterlegen</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Adminrolle weitergeben</span></li>
+        </ul>
+        <button class="offer-btn" onclick="offerClubAction()">Verein anlegen</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ABOUT PAGE -->
 <div id="page-about" class="page">
   <div style="max-width:760px;margin:0 auto;padding-bottom:60px;">
@@ -1307,9 +1363,16 @@
     {
       page:'handbook',target:'#navKaderBtn',pos:'bottom',
       title:'Mein Kader',
-      text:'Über den <strong>Mein Kader</strong>-Button oben legst du Spieler:innen an und wählst vor dem Training aus, wer heute dabei ist.',
+      text:'Mit Konto findest du <strong>Mein Kader</strong> oben bzw. im Einstellungsmenü: Dort legst du Spieler:innen und dein Trainerteam an und wählst vor dem Training aus, wer heute dabei ist.',
       fallbackTarget:'#cfgBtn, .topbar .cfg-row',
       mob:{target:'#bnavMore',pos:'top',text:'Unter <strong>Mehr</strong> findest du <strong>Mein Kader</strong>: Dort legst du Spieler:innen und dein Trainerteam an und wählst vor dem Training aus, wer heute dabei ist.'}
+    },
+    {
+      page:'home',target:'#offersBtn',pos:'bottom',
+      title:'Angebote',
+      text:'Hier findest du die <strong>Angebote</strong> (auch über das Zahnrad oben rechts): Was Gäste, Trainer:innen und Vereinsadmins nutzen können – aktuell alles kostenlos.',
+      fallbackTarget:'#cfgBtn',
+      mob:{target:'#offersBtn',fallbackTarget:'#bnavMore',text:'Hier findest du die <strong>Angebote</strong> (auch unter <strong>Mehr</strong>): Was Gäste, Trainer:innen und Vereinsadmins nutzen können – aktuell alles kostenlos.'}
     },
     {
       page:'handbook',target:'button[onclick*="toggleHelpPanel"], .cfg-btn[title*="Hilfe"]',pos:'bottom',
@@ -1357,7 +1420,10 @@
       if(onDone)onDone();
       return;
     }
-    target.scrollIntoView({behavior:'auto',block:'center'});
+    // Hohe Ziele (z. B. Angebotskarten am Handy) oben ausrichten, damit die Sprechblase darunter Platz hat
+    const _tall=target.getBoundingClientRect().height>window.innerHeight*0.4;
+    target.scrollIntoView({behavior:'auto',block:_tall?'start':'center'});
+    if(_tall) window.scrollBy(0,-(_mobile()?72:110));
     setTimeout(function(){
       const r=target.getBoundingClientRect();
       const vw=window.innerWidth, vh=window.innerHeight;
@@ -1375,6 +1441,13 @@
       } else {
         bubble.style.left=left+'px'; bubble.style.bottom=(vh-r.top+14)+'px'; bubble.style.top='auto';
         if(arrow){arrow.style.display='block';arrow.style.bottom='-6px';arrow.style.top='auto';arrow.style.left=(r.left+r.width/2-left-6)+'px';}
+      }
+      // Passt die Sprechblase nicht neben das Ziel (z. B. sehr hohes Ziel), sitzt sie am unteren Bildschirmrand
+      const br=bubble.getBoundingClientRect();
+      if(br.bottom>vh-8||br.top<8){
+        bubble.style.left=Math.max(12,(vw-bw)/2)+'px'; bubble.style.top='auto';
+        bubble.style.bottom=((_mobile()?76:16))+'px';
+        if(arrow)arrow.style.display='none';
       }
       if(onDone)onDone();
     },300);
@@ -1541,7 +1614,7 @@
       <div class="hq-icon" style="background:#37474f;">👤</div>
       <div class="hq-body">
         <div class="hq-title">Konto &amp; Mein Bereich</div>
-        <div class="hq-text">Für Katalog und Planung kein Konto nötig. Zum Einreichen anmelden. Im „Mein Bereich" eigene Übungen und eingereichte Pläne verwalten.</div>
+        <div class="hq-text">Katalog und Planung ohne Konto. Speichern, Bewerten, Einreichen und Kader brauchen ein kostenloses Konto. Im „Mein Bereich" eigene Übungen und eingereichte Pläne verwalten.</div>
       </div>
       <div class="hq-arrow">›</div>
     </div>
@@ -1608,7 +1681,7 @@
         <div class="help-step"><span class="help-num">2</span><span>Im Trainingsplan: Reihenfolge per <strong>Drag &amp; Drop</strong> (☰-Griff) anpassen</span></div>
         <div class="help-step"><span class="help-num">3</span><span>Belastungszeit pro Übung mit <strong>− / +</strong> ändern</span></div>
         <div class="help-step"><span class="help-num">4</span><span>„Speichern" (oben) → Plan mit Name sichern, bleibt nach Schließen erhalten</span></div>
-        <div class="help-step"><span class="help-num">5</span><span>Drucksymbol → Plan als PDF mit Materialliste exportieren</span></div>
+        <div class="help-step"><span class="help-num">5</span><span>Drucksymbol → Plan als PDF mit Materialliste exportieren (zugewiesene Trainer:innen stehen bei jeder Übung)</span></div>
         <div class="help-step"><span class="help-num">6</span><span>„Leeren" → alle Übungen aus dem aktuellen Plan entfernen</span></div>
       </div>
     </div>
@@ -1632,7 +1705,7 @@
         <div class="help-card-title">Pläne speichern &amp; veröffentlichen</div>
         <p class="help-card-text">Gespeicherte Pläne bleiben in deinem Konto und können eingereicht werden.</p>
         <div class="help-step"><span class="help-num">1</span><span>Plan benennen und auf „Speichern" klicken</span></div>
-        <div class="help-step"><span class="help-num">2</span><span>Gespeicherte Pläne erscheinen in der Liste darunter – anklicken zum Laden</span></div>
+        <div class="help-step"><span class="help-num">2</span><span>Gespeicherte Pläne erscheinen in der Liste rechts – anklicken zum Laden. Speichern und die Liste sind nur mit Konto verfügbar</span></div>
         <div class="help-step"><span class="help-num">3</span><span>„↑ Veröffentlichen" → Plan zur Admin-Prüfung einreichen</span></div>
         <div class="help-step"><span class="help-num">4</span><span>Status: <em>In Prüfung</em> → <em>Veröffentlicht</em> oder <em>Abgelehnt</em></span></div>
         <div class="help-step"><span class="help-num">5</span><span>Im „Mein Bereich" alle eingereichten Pläne und deren Status sehen</span></div>
@@ -1845,6 +1918,7 @@
         <div class="help-step"><span class="help-num">5</span><span><strong>Altersstufen</strong> wählen (Pflicht) – zwei Jahrgänge antippen markiert alles dazwischen (z. B. U9 und U13 ergibt U9–U13); „Alle auswählen" wählt jede Altersstufe</span></div>
         <div class="help-step"><span class="help-num">6</span><span>Felddiagramm im Editor zeichnen (Pflicht, steht in der Checkliste)</span></div>
         <div class="help-step"><span class="help-num">7</span><span>„Einreichen" → wird geprüft und freigeschaltet</span></div>
+        <div class="help-step"><span class="help-num">8</span><span>Solange eine Einreichung aussteht, kannst du sie unter „Meine Einreichungen" <strong>bearbeiten</strong> (Zeichnung, Altersstufen und Material bleiben erhalten) oder <strong>zurückziehen</strong></span></div>
       </div>
     </div>
 
@@ -1863,11 +1937,24 @@
     </div>
 
     <!-- Konto -->
+    <div class="help-card" data-area="konto" data-tags="angebote gäste gast trainerinnen vereinsadmin kostenlos konto registrieren funktionen überblick">
+      <div class="help-card-icon" style="background:#1d4ed8;">🏷️</div>
+      <div>
+        <div class="help-card-title">Angebote – was bekomme ich?</div>
+        <p class="help-card-text">Die Angebote-Seite zeigt, was Gäste, Trainer:innen und Vereinsadmins nutzen können. Aktuell ist alles kostenlos.</p>
+        <div class="help-step"><span class="help-num">1</span><span>Öffnen: Startseite → Button <strong>Angebote</strong> (neben „Einführung“), am Handy auch unter <strong>Mehr</strong>, am Desktop im Zahnrad-Menü</span></div>
+        <div class="help-step"><span class="help-num">2</span><span><strong>Gäste</strong> (ohne Konto): Katalog, Trainingsplan, Langzeitplanung</span></div>
+        <div class="help-step"><span class="help-num">3</span><span><strong>Trainer:innen</strong> (kostenloses Konto): zusätzlich Pläne speichern, bewerten, Übungen einreichen und kopieren, Kader, Trainerteam, Plan-Bibliothek, Verein beitreten</span></div>
+        <div class="help-step"><span class="help-num">4</span><span><strong>Vereinsadmin</strong>: zusätzlich Verein anlegen, Plätze je Sportart vergeben, Vereinslogo, Adminrolle weitergeben</span></div>
+        <div class="help-step"><span class="help-num">5</span><span>Funktionen, die ein Konto brauchen, zeigen ohne Anmeldung einen Hinweis mit Link zu den Angeboten</span></div>
+      </div>
+    </div>
+
     <div class="help-card" data-area="konto" data-tags="konto anmelden abmelden registrieren login passwort profil mein bereich admin einreichungen pläne status">
       <div class="help-card-icon" style="background:#37474f;">👤</div>
       <div>
         <div class="help-card-title">Konto &amp; Mein Bereich</div>
-        <p class="help-card-text">Konto ist <strong>nicht</strong> für Katalog und Planung nötig – nur zum Einreichen.</p>
+        <p class="help-card-text">Katalog, Trainingsplan und Langzeitplanung nutzt du ohne Konto. Pläne speichern, bewerten, Übungen einreichen, Kader und Trainerteam sowie die Plan-Bibliothek öffnen brauchen ein <strong>kostenloses Konto</strong> (siehe „Angebote“).</p>
         <div class="help-step"><span class="help-num">1</span><span>Oben rechts „Anmelden" → E-Mail + Passwort oder neues Konto</span></div>
         <div class="help-step"><span class="help-num">2</span><span>Nach Anmeldung: Name erscheint oben rechts</span></div>
         <div class="help-step"><span class="help-num">3</span><span>Klick auf Name → „Mein Bereich" oder „Abmelden"</span></div>
@@ -1950,7 +2037,7 @@
         <p class="help-card-text">Neben dem Kader gibt es eine Liste deines Trainerteams. Im Trainingsplan weist du jeder Übung eine oder mehrere Trainer:innen zu.</p>
         <div class="help-step"><span class="help-num">1</span><span>„Mein Kader" öffnen → unten im Bereich <strong>Trainerteam</strong> „Trainer:in hinzufügen" (Name, optional Rolle wie Co-Trainer:in oder Torwarttrainer:in)</span></div>
         <div class="help-step"><span class="help-num">2</span><span>Im Trainingsplan erscheint bei jeder Übung ein <strong>🧑‍🏫</strong>-Button – antippen und die zuständigen Trainer:innen ankreuzen</span></div>
-        <div class="help-step"><span class="help-num">3</span><span>Die Namen stehen danach direkt an der Übung. Eintrag antippen zum Bearbeiten oder Löschen (beim Löschen wird die Person auch aus dem aktuellen Plan entfernt)</span></div>
+        <div class="help-step"><span class="help-num">3</span><span>Die Namen stehen danach direkt an der Übung und im Ausdruck des Plans. Eintrag antippen zum Bearbeiten oder Löschen (beim Löschen wird die Person auch aus dem aktuellen Plan entfernt)</span></div>
       </div>
     </div>
 
@@ -2000,6 +2087,7 @@
         <div class="help-step"><span class="help-num">4</span><span><strong>„In Trainingsplan laden"</strong> übernimmt den Plan in deinen Planer</span></div>
         <div class="help-step"><span class="help-num">5</span><span>Pläne mit Sternen bewerten (in der Liste und in der Vorschau); der Durchschnitt wird ab 3 Bewertungen angezeigt</span></div>
         <div class="help-step"><span class="help-num">6</span><span>Eigene Pläne erscheinen hier, sobald sie über „↑ Veröffentlichen" eingereicht und freigegeben wurden</span></div>
+        <div class="help-step"><span class="help-num">7</span><span><strong>Ohne Anmeldung</strong> siehst du die Liste der Pläne (🔒), öffnen und laden geht erst nach der kostenlosen Anmeldung</span></div>
       </div>
     </div>
 
@@ -2061,23 +2149,23 @@ function filterHelpCards(q){
       <div class="mhdr-t" id="loginModTitle">Anmelden</div>
       <button class="mcl" onclick="closeMod('loginMod')">✕</button>
     </div>
-    <div class="mbd">
+    <form class="mbd" id="loginModForm" method="post" action="#" autocomplete="on" onsubmit="event.preventDefault();(window._loginModAct||doLoginMod)();">
       <div id="loginModUsernameWrap" style="display:none;margin-bottom:10px;">
-        <label class="flbl">Benutzername</label>
-        <input class="fin" id="loginModUsername" type="text" placeholder="Dein Anzeigename">
+        <label class="flbl" for="loginModUsername">Benutzername</label>
+        <input class="fin" id="loginModUsername" name="nickname" type="text" autocomplete="nickname" placeholder="Dein Anzeigename">
       </div>
       <div style="margin-bottom:10px;">
-        <label class="flbl">E-Mail</label>
-        <input class="fin" id="loginModEmail" type="email" placeholder="deine@email.de">
+        <label class="flbl" for="loginModEmail">E-Mail</label>
+        <input class="fin" id="loginModEmail" name="email" type="email" autocomplete="username" inputmode="email" autocapitalize="none" spellcheck="false" placeholder="deine@email.de">
       </div>
       <div style="margin-bottom:18px;">
-        <label class="flbl">Passwort</label>
-        <input class="fin" id="loginModPass" type="password" placeholder="Passwort" onkeydown="if(event.key==='Enter')doLoginMod()">
+        <label class="flbl" for="loginModPass">Passwort</label>
+        <input class="fin" id="loginModPass" name="password" type="password" autocomplete="current-password" placeholder="Passwort">
       </div>
-      <button class="sbtn" id="loginModBtn" onclick="doLoginMod()" style="width:100%;margin-bottom:10px;">Anmelden</button>
-      <button class="gbtn" id="loginModToggle" onclick="toggleLoginModMode()" style="width:100%;">Neu registrieren</button>
+      <button class="sbtn" id="loginModBtn" type="submit" style="width:100%;margin-bottom:10px;">Anmelden</button>
+      <button class="gbtn" id="loginModToggle" type="button" onclick="toggleLoginModMode()" style="width:100%;">Neu registrieren</button>
       <div id="loginModErr" style="color:#ef9a9a;font-size:12px;margin-top:10px;display:none;"></div>
-    </div>
+    </form>
   </div>
 </div>
 
