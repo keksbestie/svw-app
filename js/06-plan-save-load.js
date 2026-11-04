@@ -37,7 +37,7 @@ function dupPlanRename(){
 
 function commitSavePlan(name){
   const plan={
-    id:newUuid(), name,
+    id:newUuid(), name, sport:_curSportId(),
     date:new Date().toLocaleDateString('de-DE'),
     lanes:currentPlan.lanes.map(l=>[...l]),
     totals:SECS.map((s,i)=>({name:s.name,count:(currentPlan.lanes[i]||[]).length}))
@@ -59,7 +59,8 @@ function renderSavedPlans(){
     el.innerHTML='<div style="font-size:11px;color:var(--text-3);padding:6px 2px;line-height:1.5;">Melde dich an, um deine gespeicherten Pläne zu sehen.</div>';
     return;
   }
-  const shownPlans=savedPlans.filter(p=>!p._dup);
+  // Nur Pläne der aktuell gewählten Sportart
+  const shownPlans=savedPlans.filter(p=>!p._dup&&_planSport(p)===_curSportId());
   if(!shownPlans.length){
     el.innerHTML='<div style="font-size:11px;color:var(--text-3);padding:6px 2px;">Noch keine gespeicherten Pläne.</div>';
     return;
@@ -94,7 +95,7 @@ async function submitPlanForReview(id){
     date:plan.date,
     lanes:plan.lanes,
     totals:plan.totals,
-    sport:window.currentSport?.id||'fussball',
+    sport:_planSport(plan),
     status:'pending',
     submitted_at:new Date().toISOString()
   },{onConflict:'id'});

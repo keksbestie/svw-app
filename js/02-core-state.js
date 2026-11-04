@@ -113,29 +113,40 @@ function newUuid(){
 let _planIdsInDb=null, _ltpIdsInDb=null; // null = Zustand der Datenbank unbekannt → nichts löschen/überschreiben
 const _syncSnap={plans:new Map(),ltp:new Map()};
 let _syncRunning=false, _syncAgain=false, _syncWarned=false;
-function _planPayload(p){return {name:p.name||'Plan',date:p.date||'',lanes:p.lanes,totals:p.totals||[]};}
+// Sportart eines Plans: gespeicherter Wert, sonst aus den enthaltenen Übungen abgeleitet (ältere Pläne), sonst Fußball
+function _planSport(p){
+  if(p&&p.sport) return p.sport;
+  const cnt={};
+  ((p&&p.lanes)||[]).forEach(l=>(l||[]).forEach(raw=>{const id=typeof raw==='string'?raw:(raw&&raw.id);const e=exercises.find(x=>x.id===id);if(e){const s=e.sport||'fussball';cnt[s]=(cnt[s]||0)+1;}}));
+  const best=Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0];
+  return best?best[0]:'fussball';
+}
+let _plansHaveSport=false; // erst true, wenn die Spalte plans.sport in der Datenbank existiert
+function _planPayload(p){const o={name:p.name||'Plan',date:p.date||'',lanes:p.lanes,totals:p.totals||[]};if(_plansHaveSport)o.sport=_planSport(p);return o;}
 function _ltpPayload(b){const c=Object.assign({},b);delete c._dbId;return {name:b.name||'Block',weeks:c};}
 
 // Lädt Pläne + Blöcke des Kontos. Bei JEDEM Fehler bleibt der lokale Zustand unverändert.
 async function _loadOwnedData(userId){
   if(_syncRunning) return;
-  const [rp,rb,rs]=await Promise.all([
+  const [rp,rb,rs,rsp]=await Promise.all([
     _supabase.from('plans').select('*').eq('owner_id',userId),
     _supabase.from('ltp_blocks').select('*').eq('owner_id',userId),
-    _supabase.from('submitted_plans').select('*').eq('owner_id',userId)
+    _supabase.from('submitted_plans').select('*').eq('owner_id',userId),
+    _supabase.from('plans').select('sport').limit(1)
   ]);
+  _plansHaveSport=!rsp.error;
   if(rp.error||rb.error||rs.error){console.warn('Pläne laden fehlgeschlagen',rp.error||rb.error||rs.error);return;}
   if(_syncRunning) return;
   let owner=null; try{owner=localStorage.getItem('ac_sync_owner');}catch(e){}
   const mayKeep=!owner||owner===userId; // lokale Einträge eines anderen Kontos nie übernehmen
   const subById=new Map((rs.data||[]).map(p=>[p.id,p]));
   const remotePlans=(rp.data||[]).map(p=>{
-    const o={id:p.id,_dbId:p.id,name:p.name||'Plan',date:p.date||'',lanes:p.lanes,totals:p.totals||[]};
+    const o={id:p.id,_dbId:p.id,name:p.name||'Plan',date:p.date||'',lanes:p.lanes,totals:p.totals||[],sport:p.sport||undefined};
     const sub=subById.get(p.id); if(sub) o.status=sub.status;
     return o;
   });
   const remoteIds=new Set(remotePlans.map(p=>p._dbId));
-  const submittedOnly=(rs.data||[]).filter(p=>!remoteIds.has(p.id)).map(p=>({id:p.id,name:p.name||'Plan',date:p.date||'',lanes:p.lanes,totals:p.totals||[],status:p.status,_src:'submitted'}));
+  const submittedOnly=(rs.data||[]).filter(p=>!remoteIds.has(p.id)).map(p=>({id:p.id,name:p.name||'Plan',date:p.date||'',lanes:p.lanes,totals:p.totals||[],status:p.status,sport:p.sport||undefined,_src:'submitted'}));
   // Doppelte vermeiden: Ein privater Plan mit gleichem Namen und gleichen Übungen wie eine eingereichte/veröffentlichte Version wird nicht mehr angezeigt – es zählt die veröffentlichte Version.
   // Datenbank-Einträge bleiben dabei unangetastet (nur ausgeblendet, damit der Abgleich nichts löscht); lokale, nie gesicherte Kopien werden verworfen.
   const _pk=p=>(p.name||'')+'|'+JSON.stringify(p.lanes||[]);

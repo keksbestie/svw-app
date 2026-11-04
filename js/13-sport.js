@@ -82,7 +82,7 @@ function saveSport(sport) {
   const prevId = window.currentSport && window.currentSport.id;
   try { localStorage.setItem(SPORT_KEY, JSON.stringify(sport)); } catch {}
   window.currentSport = sport;
-  if (prevId !== (sport && sport.id)) _resetSportScopedState();
+  if (prevId !== (sport && sport.id)) { _resetSportScopedState(); if (typeof renderSavedPlans === 'function') renderSavedPlans(); }
 }
 
 function selectSport(id) {

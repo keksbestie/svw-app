@@ -605,7 +605,7 @@ function openEntryEdit(type, editIdx){
   document.getElementById('entryEditIco').textContent=type==='training'?'⚽':type==='game'?'🏆':'☕';
   document.getElementById('entryEditTitle').textContent=(isEdit?'Bearbeiten: ':'')+typeLabels[type||e.type];
 
-  const planOpts='<option value="">– Kein Plan –</option>'+savedPlans.filter(p=>!p._dup).map(p=>`<option value="${esc(p.id)}" ${e.planId===p.id?'selected':''}>${esc(p.name)}</option>`).join('');
+  const planOpts='<option value="">– Kein Plan –</option>'+savedPlans.filter(p=>!p._dup&&_planSport(p)===_curSportId()).map(p=>`<option value="${esc(p.id)}" ${e.planId===p.id?'selected':''}>${esc(p.name)}</option>`).join('');
   const freeColors=['#1565c0','#6d28d9','#b71c1c','#e65100','#1a7f4b','#37474f'];
 
   let bodyHtml='';
