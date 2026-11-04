@@ -535,6 +535,21 @@ body.on-home { overflow: hidden; }
   transform: translateY(0) perspective(600px) rotateX(0deg);
 }
 
+/* Angebote-Seite: Karten im Stil der Startseiten-Karten */
+.offer-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; align-items: stretch; }
+.offer-card { cursor: default; padding: 34px 28px 28px; }
+.offer-card .home-card-num { margin-bottom: 14px; }
+.offer-card--feat { border-width: 2px; border-color: rgba(29,78,216,.45); }
+.offer-sub { font-size: 12px; color: var(--text-3); margin: 2px 0 16px; }
+.offer-list { list-style: none; margin: 0 0 22px; padding: 0; flex: 1; font-size: 14px; line-height: 1.45; }
+.offer-list li { display: flex; gap: 9px; align-items: flex-start; padding: 5px 0; color: var(--text-1); }
+.offer-list li svg { flex: none; margin-top: 2px; color: #1a7f4b; }
+.offer-list li.off { color: var(--text-3); }
+.offer-list li.off svg { color: var(--text-3); }
+.offer-btn { padding: 11px 16px; border: none; border-radius: 10px; background: var(--accent); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; cursor: pointer; }
+.offer-card:hover { transform: none; }
+@media (max-width: 900px) { .offer-grid { grid-template-columns: 1fr; gap: 16px; } .offer-card { padding: 26px 22px 22px; } }
+
 /* Home → Page transition animations */
 @keyframes cardFlyUp {
   0%   { opacity: 1;  transform: translateY(0)     scale(1);    filter: blur(0);   }

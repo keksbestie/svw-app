@@ -391,7 +391,7 @@ function goPage(name,btn){
   if(name==='home'){
     document.body.classList.add('on-home');
     homeEl.classList.remove('hidden','fading-out');
-    document.querySelectorAll('.home-card').forEach(c=>c.classList.remove('flying'));
+    document.querySelectorAll('#homeCards .home-card').forEach(c=>c.classList.remove('flying'));
     document.querySelector('.home-hero')?.classList.remove('flying');
     document.querySelectorAll('.mb,.bnav-item').forEach(b=>b.classList.remove('active'));
     const hb=btn||document.querySelector('.mb[data-page="home"]');if(hb)hb.classList.add('active');
@@ -417,6 +417,7 @@ function goPage(name,btn){
   if(name==='longterm')renderLtp();
   if(name==='submit')renderSubmitPage();
   if(name==='account')renderAccountPage();
+  if(name==='angebote'&&typeof renderAngebote==='function')renderAngebote();
   if(name==='kader'&&typeof renderKaderPage==='function')renderKaderPage();
 
   // 3. Scroll to top
@@ -424,7 +425,7 @@ function goPage(name,btn){
 
   // 4. Animate home overlay out (purely visual — state already updated above)
   if(fromHome){
-    document.querySelectorAll('.home-card').forEach(c=>c.classList.add('flying'));
+    document.querySelectorAll('#homeCards .home-card').forEach(c=>c.classList.add('flying'));
     document.querySelector('.home-hero')?.classList.add('flying');
     setTimeout(()=>homeEl.classList.add('fading-out'),200);
     setTimeout(()=>{homeEl.classList.add('hidden');homeEl.classList.remove('fading-out');},950);

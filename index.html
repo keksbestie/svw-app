@@ -137,6 +137,10 @@
           <button class="cfg-fs-rst" onclick="adjustFontSize(0)" title="Zurücksetzen">↺</button>
         </div>
         <div class="cfg-sep"></div>
+        <button class="cfg-item" onclick="closeCfgDrop();goPage('angebote')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          Angebote
+        </button>
         <button class="cfg-item" onclick="closeCfgDrop();goPage('about')">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
           &Uuml;ber AssistCoach
@@ -241,6 +245,7 @@
     <div id="homeHeroBtns" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;justify-content:center;">
       <button onclick="goPage('about')" class="home-hero-btn" style="padding:8px 20px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:background .2s;">Vision &amp; Ziele ↗</button>
       <button onclick="window._showOnboarding()" class="home-hero-btn" style="padding:8px 16px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:background .2s;" id="onboardingBtn">&#127973; Einführung</button>
+      <button onclick="goPage('angebote')" class="home-hero-btn" style="padding:8px 16px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:background .2s;" id="offersBtn">&#127991;&#65039; Angebote</button>
     </div>
   </div>
 
@@ -872,6 +877,57 @@
   </div>
 </div>
 
+
+<!-- ANGEBOTE PAGE -->
+<div id="page-angebote" class="page">
+  <div class="inner" style="max-width:1100px;padding-bottom:70px;">
+    <button onclick="goPage('home')" style="display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--gd2);font-size:13px;cursor:pointer;margin-bottom:18px;padding:0;font-family:'Barlow',sans-serif;">&larr; Zur&uuml;ck</button>
+    <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;margin:0 0 6px;">Angebote</h1>
+    <p style="font-size:14px;color:var(--gd2);margin:0 0 26px;max-width:640px;line-height:1.6;">Das bekommst du bei AssistCoach &ndash; <strong>aktuell ist alles kostenlos</strong>. Volleyball und Tennis schalten sich f&uuml;r alle frei, sobald jeder Bereich genug &Uuml;bungen enth&auml;lt.</p>
+    <div class="offer-grid">
+      <div class="home-card home-card--catalog offer-card">
+        <div class="home-card-num">GAST</div>
+        <div class="home-card-title">Gäste</div>
+        <div class="offer-sub">Ohne Konto sofort loslegen</div>
+        <ul class="offer-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Übungskatalog durchsuchen und filtern</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Trainingsplan erstellen und drucken</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Langzeitplanung</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Felddiagramme ansehen</span></li>
+          <li class="off"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Speichern und bewerten</span></li>
+          <li class="off"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Übungen einreichen</span></li>
+        </ul>
+        <button class="offer-btn" onclick="goPage('handbook')">Jetzt starten</button>
+      </div>
+      <div class="home-card home-card--plan offer-card offer-card--feat">
+        <div class="home-card-num">KOSTENLOSES KONTO</div>
+        <div class="home-card-title">Trainer:innen</div>
+        <div class="offer-sub">Alles von Gästen, zusätzlich</div>
+        <ul class="offer-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Pläne und Blöcke dauerhaft speichern</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Übungen und Pläne bewerten</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Eigene Übungen einreichen</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Übungen kopieren und erweitern</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Kader und Trainerteam verwalten</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Verein beitreten</span></li>
+        </ul>
+        <button class="offer-btn" id="offerTrainerBtn" onclick="offerTrainerAction()">Kostenlos registrieren</button>
+      </div>
+      <div class="home-card home-card--blocks offer-card">
+        <div class="home-card-num">VEREIN</div>
+        <div class="home-card-title">Vereinsadmin</div>
+        <div class="offer-sub">Alles von Trainer:innen, zusätzlich</div>
+        <ul class="offer-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Verein anlegen</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Plätze je Sportart an Trainer:innen vergeben</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Vereinslogo hinterlegen</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Adminrolle weitergeben</span></li>
+        </ul>
+        <button class="offer-btn" onclick="offerClubAction()">Verein anlegen</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ABOUT PAGE -->
 <div id="page-about" class="page">
