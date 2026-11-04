@@ -1363,9 +1363,27 @@
     {
       page:'handbook',target:'#navKaderBtn',pos:'bottom',
       title:'Mein Kader',
-      text:'Über den <strong>Mein Kader</strong>-Button oben legst du Spieler:innen an und wählst vor dem Training aus, wer heute dabei ist.',
+      text:'Mit Konto findest du <strong>Mein Kader</strong> oben bzw. im Einstellungsmenü: Dort legst du Spieler:innen und dein Trainerteam an und wählst vor dem Training aus, wer heute dabei ist.',
       fallbackTarget:'#cfgBtn, .topbar .cfg-row',
       mob:{target:'#bnavMore',pos:'top',text:'Unter <strong>Mehr</strong> findest du <strong>Mein Kader</strong>: Dort legst du Spieler:innen und dein Trainerteam an und wählst vor dem Training aus, wer heute dabei ist.'}
+    },
+    {
+      page:'home',target:'#offersBtn',pos:'bottom',
+      title:'Angebote',
+      text:'Die <strong>Angebote</strong> erreichst du über die Startseite (Button neben „Einführung“) und über das Zahnrad oben rechts.',
+      fallbackTarget:'#cfgBtn',
+      mob:{target:'#offersBtn',fallbackTarget:'#bnavMore',text:'Die <strong>Angebote</strong> erreichst du über die Startseite (Button neben „Einführung“) und unter <strong>Mehr</strong>.'}
+    },
+    {
+      page:'angebote',target:'.offer-grid',pos:'top',
+      title:'Gäste, Trainer:innen, Vereinsadmin',
+      text:'Drei Stufen – aktuell alles kostenlos. <strong>Gäste</strong> nutzen Katalog, Trainingsplan und Langzeitplanung ohne Konto.',
+      mob:{target:'#page-angebote .offer-card'}
+    },
+    {
+      page:'angebote',target:'.offer-card--feat',pos:'top',
+      title:'Mit kostenlosem Konto',
+      text:'Mit Konto speicherst du Pläne, reichst Übungen ein, verwaltest Kader und Trainerteam und öffnest Pläne aus der Bibliothek. <strong>Vereinsadmins</strong> legen zusätzlich einen Verein an.'
     },
     {
       page:'handbook',target:'button[onclick*="toggleHelpPanel"], .cfg-btn[title*="Hilfe"]',pos:'bottom',
@@ -1413,7 +1431,10 @@
       if(onDone)onDone();
       return;
     }
-    target.scrollIntoView({behavior:'auto',block:'center'});
+    // Hohe Ziele (z. B. Angebotskarten am Handy) oben ausrichten, damit die Sprechblase darunter Platz hat
+    const _tall=target.getBoundingClientRect().height>window.innerHeight*0.4;
+    target.scrollIntoView({behavior:'auto',block:_tall?'start':'center'});
+    if(_tall) window.scrollBy(0,-(_mobile()?72:110));
     setTimeout(function(){
       const r=target.getBoundingClientRect();
       const vw=window.innerWidth, vh=window.innerHeight;
@@ -1431,6 +1452,13 @@
       } else {
         bubble.style.left=left+'px'; bubble.style.bottom=(vh-r.top+14)+'px'; bubble.style.top='auto';
         if(arrow){arrow.style.display='block';arrow.style.bottom='-6px';arrow.style.top='auto';arrow.style.left=(r.left+r.width/2-left-6)+'px';}
+      }
+      // Passt die Sprechblase nicht neben das Ziel (z. B. sehr hohes Ziel), sitzt sie am unteren Bildschirmrand
+      const br=bubble.getBoundingClientRect();
+      if(br.bottom>vh-8||br.top<8){
+        bubble.style.left=Math.max(12,(vw-bw)/2)+'px'; bubble.style.top='auto';
+        bubble.style.bottom=((_mobile()?76:16))+'px';
+        if(arrow)arrow.style.display='none';
       }
       if(onDone)onDone();
     },300);
@@ -1597,7 +1625,7 @@
       <div class="hq-icon" style="background:#37474f;">👤</div>
       <div class="hq-body">
         <div class="hq-title">Konto &amp; Mein Bereich</div>
-        <div class="hq-text">Für Katalog und Planung kein Konto nötig. Zum Einreichen anmelden. Im „Mein Bereich" eigene Übungen und eingereichte Pläne verwalten.</div>
+        <div class="hq-text">Katalog und Planung ohne Konto. Speichern, Bewerten, Einreichen und Kader brauchen ein kostenloses Konto. Im „Mein Bereich" eigene Übungen und eingereichte Pläne verwalten.</div>
       </div>
       <div class="hq-arrow">›</div>
     </div>
@@ -1688,7 +1716,7 @@
         <div class="help-card-title">Pläne speichern &amp; veröffentlichen</div>
         <p class="help-card-text">Gespeicherte Pläne bleiben in deinem Konto und können eingereicht werden.</p>
         <div class="help-step"><span class="help-num">1</span><span>Plan benennen und auf „Speichern" klicken</span></div>
-        <div class="help-step"><span class="help-num">2</span><span>Gespeicherte Pläne erscheinen in der Liste darunter – anklicken zum Laden</span></div>
+        <div class="help-step"><span class="help-num">2</span><span>Gespeicherte Pläne erscheinen in der Liste rechts – anklicken zum Laden. Speichern und die Liste sind nur mit Konto verfügbar</span></div>
         <div class="help-step"><span class="help-num">3</span><span>„↑ Veröffentlichen" → Plan zur Admin-Prüfung einreichen</span></div>
         <div class="help-step"><span class="help-num">4</span><span>Status: <em>In Prüfung</em> → <em>Veröffentlicht</em> oder <em>Abgelehnt</em></span></div>
         <div class="help-step"><span class="help-num">5</span><span>Im „Mein Bereich" alle eingereichten Pläne und deren Status sehen</span></div>
@@ -1920,11 +1948,24 @@
     </div>
 
     <!-- Konto -->
+    <div class="help-card" data-area="konto" data-tags="angebote gäste gast trainerinnen vereinsadmin kostenlos konto registrieren funktionen überblick">
+      <div class="help-card-icon" style="background:#1d4ed8;">🏷️</div>
+      <div>
+        <div class="help-card-title">Angebote – was bekomme ich?</div>
+        <p class="help-card-text">Die Angebote-Seite zeigt, was Gäste, Trainer:innen und Vereinsadmins nutzen können. Aktuell ist alles kostenlos.</p>
+        <div class="help-step"><span class="help-num">1</span><span>Öffnen: Startseite → Button <strong>Angebote</strong> (neben „Einführung“), am Handy auch unter <strong>Mehr</strong>, am Desktop im Zahnrad-Menü</span></div>
+        <div class="help-step"><span class="help-num">2</span><span><strong>Gäste</strong> (ohne Konto): Katalog, Trainingsplan, Langzeitplanung</span></div>
+        <div class="help-step"><span class="help-num">3</span><span><strong>Trainer:innen</strong> (kostenloses Konto): zusätzlich Pläne speichern, bewerten, Übungen einreichen und kopieren, Kader, Trainerteam, Plan-Bibliothek, Verein beitreten</span></div>
+        <div class="help-step"><span class="help-num">4</span><span><strong>Vereinsadmin</strong>: zusätzlich Verein anlegen, Plätze je Sportart vergeben, Vereinslogo, Adminrolle weitergeben</span></div>
+        <div class="help-step"><span class="help-num">5</span><span>Funktionen, die ein Konto brauchen, zeigen ohne Anmeldung einen Hinweis mit Link zu den Angeboten</span></div>
+      </div>
+    </div>
+
     <div class="help-card" data-area="konto" data-tags="konto anmelden abmelden registrieren login passwort profil mein bereich admin einreichungen pläne status">
       <div class="help-card-icon" style="background:#37474f;">👤</div>
       <div>
         <div class="help-card-title">Konto &amp; Mein Bereich</div>
-        <p class="help-card-text">Konto ist <strong>nicht</strong> für Katalog und Planung nötig – nur zum Einreichen.</p>
+        <p class="help-card-text">Katalog, Trainingsplan und Langzeitplanung nutzt du ohne Konto. Pläne speichern, bewerten, Übungen einreichen, Kader und Trainerteam sowie die Plan-Bibliothek öffnen brauchen ein <strong>kostenloses Konto</strong> (siehe „Angebote“).</p>
         <div class="help-step"><span class="help-num">1</span><span>Oben rechts „Anmelden" → E-Mail + Passwort oder neues Konto</span></div>
         <div class="help-step"><span class="help-num">2</span><span>Nach Anmeldung: Name erscheint oben rechts</span></div>
         <div class="help-step"><span class="help-num">3</span><span>Klick auf Name → „Mein Bereich" oder „Abmelden"</span></div>
@@ -2057,6 +2098,7 @@
         <div class="help-step"><span class="help-num">4</span><span><strong>„In Trainingsplan laden"</strong> übernimmt den Plan in deinen Planer</span></div>
         <div class="help-step"><span class="help-num">5</span><span>Pläne mit Sternen bewerten (in der Liste und in der Vorschau); der Durchschnitt wird ab 3 Bewertungen angezeigt</span></div>
         <div class="help-step"><span class="help-num">6</span><span>Eigene Pläne erscheinen hier, sobald sie über „↑ Veröffentlichen" eingereicht und freigegeben wurden</span></div>
+        <div class="help-step"><span class="help-num">7</span><span><strong>Ohne Anmeldung</strong> siehst du die Liste der Pläne (🔒), öffnen und laden geht erst nach der kostenlosen Anmeldung</span></div>
       </div>
     </div>
 

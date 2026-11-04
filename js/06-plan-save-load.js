@@ -5,6 +5,7 @@
 // Umbenennen-Konflikt-Dialog).
 // ══════════════════════════════════════════════════════════════════
 function savePlan(){
+  if(!currentUser){showLoginRequired('Pläne speichern');return;}
   const name=document.getElementById('planName').value.trim()||'Unbenannter Plan';
   const tot=currentPlan.lanes.reduce((a,l)=>a+l.length,0);
   if(!tot){showToast('Plan ist leer','err');return;}
