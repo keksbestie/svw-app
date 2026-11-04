@@ -146,12 +146,13 @@ function _renderLtpPlanRows(plans){
         <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${esc(_safeAuthor(p.author_name,''))} · ${esc(p.date||'')} ${total?'· '+esc(total):''}</div>
         ${_planRatingHTML(p.id)}
       </div>
-      <button onclick="event.stopPropagation();openLtpPlanPreview(${i})" style="padding:7px 14px;background:var(--surface-2);color:var(--text-1);border:1px solid var(--border);border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;">👁 Vorschau</button>
+      <button onclick="event.stopPropagation();openLtpPlanPreview(${i})" style="padding:7px 14px;background:var(--surface-2);color:var(--text-1);border:1px solid var(--border);border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;">${currentUser?'👁 Vorschau':'🔒 Anmelden'}</button>
     </div>`;
   }).join('');
 }
 
 async function openLtpPlanPreview(idx){
+  if(!currentUser){showLoginRequired('Trainingspläne aus der Bibliothek');return;}
   const plans=document.getElementById('ltpPlanSearch')?.value
     ?_ltpPublicPlans.filter(p=>(p.name||'').toLowerCase().includes(document.getElementById('ltpPlanSearch').value.toLowerCase()))
     :_ltpPublicPlans;
