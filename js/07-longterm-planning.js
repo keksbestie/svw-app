@@ -23,6 +23,15 @@ let ltpEditBlockId = null;
 
 function defaultLtp(){ return []; }
 
+// Sportart eines Blocks: gespeicherter Wert, sonst aus den verplanten Trainingsplänen abgeleitet (ältere Blöcke), sonst Fußball
+function _blockSport(b){
+  if(b&&b.sport) return b.sport;
+  const cnt={};
+  JSON.stringify((b&&b.weeks)||[],(k,v)=>{ if(k==='planId'&&v){const p=savedPlans.find(x=>x.id===v); if(p){const s=_planSport(p);cnt[s]=(cnt[s]||0)+1;}} return v; });
+  const best=Object.entries(cnt).sort((a,c)=>c[1]-a[1])[0];
+  return best?best[0]:'fussball';
+}
+
 function makeFreshBlock(name, numWeeks, notes, startDate){
   const weeks = [];
   for(let i=0;i<numWeeks;i++){
@@ -35,7 +44,7 @@ function makeFreshBlock(name, numWeeks, notes, startDate){
     }
     weeks.push({id:uid(), label, focus:'', notes:'', days:[]});
   }
-  return {id:uid(), name, notes, startDate, weeks, createdAt:new Date().toLocaleDateString('de-DE')};
+  return {id:uid(), name, notes, startDate, weeks, sport:_curSportId(), createdAt:new Date().toLocaleDateString('de-DE')};
 }
 
 function getISOWeek(d){
@@ -262,7 +271,9 @@ function renderLtp(){
     ltpBlocks = ltpBlocks.filter(b=>b.weeks && Array.isArray(b.weeks));
   }
 
-  if(!ltpBlocks||!ltpBlocks.length){
+  // Nur Blöcke der aktuell gewählten Sportart (Index im Gesamtbestand bleibt erhalten)
+  const _shownBlocks=(ltpBlocks||[]).map((b,i)=>[b,i]).filter(([b])=>_blockSport(b)===_curSportId());
+  if(!_shownBlocks.length){
     el.innerHTML=`<div style="text-align:center;padding:60px 20px;color:var(--text-3);">
       <div style="font-size:48px;margin-bottom:12px;">📅</div>
       <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;margin-bottom:8px;">Noch kein Block erstellt</div>
@@ -270,7 +281,7 @@ function renderLtp(){
     </div>`;
     return;
   }
-  el.innerHTML = ltpBlocks.map((blk,bi)=>renderBlockCard(blk,bi)).join('');
+  el.innerHTML = _shownBlocks.map(([blk,bi])=>renderBlockCard(blk,bi)).join('');
 }
 
 function renderBlockCard(blk,bi){
@@ -713,6 +724,7 @@ function commitSaveBlockLib(){
   const blk=ltpBlocks.find(b=>b.id===editingBlockLibId); if(!blk)return;
   const libEntry=JSON.parse(JSON.stringify(blk));
   libEntry.id=uid();
+  libEntry.sport=_blockSport(blk);
   delete libEntry._dbId; // nie die Datenbank-Kennung eines anderen Eintrags mitnehmen
   libEntry.name=name;
   libEntry.notes=document.getElementById('sbl-desc').value||'';
@@ -733,13 +745,14 @@ function renderLibrary(){
       <button class="bpr" onclick="openLoginMod()">Anmelden oder registrieren</button>
     </div>`; return;
   }
-  if(!blockLibrary||!blockLibrary.length){
+  const _shownLib=(blockLibrary||[]).map((b,i)=>[b,i]).filter(([b])=>_blockSport(b)===_curSportId());
+  if(!_shownLib.length){
     el.innerHTML=`<div style="text-align:center;padding:40px 20px;color:var(--text-3);">
       <div style="font-size:36px;margin-bottom:8px;">📚</div>
       <div style="font-size:13px;">Noch keine Blöcke in der Bibliothek.<br>Speichere einen aktiven Block mit "💾 Bibliothek".</div>
     </div>`; return;
   }
-  el.innerHTML=blockLibrary.map((blk,i)=>`
+  el.innerHTML=_shownLib.map(([blk,i])=>`
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px;">
       <div style="flex:1;min-width:0;">
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;color:var(--text-1);">${esc(blk.name)}</div>
@@ -757,6 +770,7 @@ function loadBlockFromLib(idx){
   if(!currentUser){showLoginRequired('Die Block-Bibliothek');return;}
   const blk=JSON.parse(JSON.stringify(blockLibrary[idx]));
   delete blk._dbId;
+  blk.sport=_blockSport(blockLibrary[idx]);
   blk.id=uid(); blk.createdAt=new Date().toLocaleDateString('de-DE');
   if(!ltpBlocks) ltpBlocks=[];
   ltpBlocks.unshift(blk);
