@@ -934,7 +934,8 @@ function openLoginMod(){
   document.getElementById('loginModUsername').value='';
   document.getElementById('loginModUsernameWrap').style.display='none';
   document.getElementById('loginModBtn').textContent='Anmelden';
-  document.getElementById('loginModBtn').onclick=doLoginMod;
+  window._loginModAct=doLoginMod;
+  document.getElementById('loginModPass').autocomplete='current-password';
   document.getElementById('loginModToggle').textContent='Neu registrieren';
   document.getElementById('loginModTitle').textContent='Anmelden';
   document.getElementById('loginModErr').style.display='none';
@@ -981,10 +982,10 @@ function toggleLoginModMode(){
   const title=document.getElementById('loginModTitle');
   const isReg=wrap.style.display!=='none';
   if(isReg){
-    wrap.style.display='none';btn.textContent='Anmelden';btn.onclick=doLoginMod;
+    wrap.style.display='none';btn.textContent='Anmelden';window._loginModAct=doLoginMod;document.getElementById('loginModPass').autocomplete='current-password';
     toggle.textContent='Neu registrieren';title.textContent='Anmelden';
   } else {
-    wrap.style.display='block';btn.textContent='Registrieren';btn.onclick=doRegisterMod;
+    wrap.style.display='block';btn.textContent='Registrieren';window._loginModAct=doRegisterMod;document.getElementById('loginModPass').autocomplete='new-password';
     toggle.textContent='Zurück zum Login';title.textContent='Registrieren';
   }
   document.getElementById('loginModErr').style.display='none';
