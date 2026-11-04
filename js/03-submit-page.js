@@ -311,6 +311,7 @@ async function doLogout(){
   if(typeof coaches!=='undefined') coaches=[];
   if(typeof blockLibrary!=='undefined') blockLibrary=blockLibrary.filter(b=>!b._dbId); // nur lokal noch nicht gesicherte Einträge behalten
   currentUser=null; IS_ADMIN=false; IS_REVIEWER=false; REVIEWER_SPORTS=[];
+  if(typeof renderSavedPlans==='function') renderSavedPlans();
   document.body.classList.remove('admin');
   if(typeof refreshSportAvailability==='function') refreshSportAvailability();
   submitUser=null; submitTags=[]; submitCanvasData=null; submitCanvasObjs=null; submitCopyOf=null;

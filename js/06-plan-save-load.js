@@ -49,8 +49,8 @@ function commitSavePlan(name){
   renderLtpDayPlanSelect();
   save();
 }
-function loadPlan(p){currentPlan={name:p.name,lanes:p.lanes.map(l=>[...l])};document.getElementById('planName').value=p.name;renderPlanner();showToast('Plan geladen');}
-function delPlan(id){if(!confirm('Plan löschen?'))return;savedPlans=savedPlans.filter(p=>p.id!==id);save();renderSavedPlans();}
+function loadPlan(p){if(!currentUser){showLoginRequired('Gespeicherte Pläne');return;}currentPlan={name:p.name,lanes:p.lanes.map(l=>[...l])};document.getElementById('planName').value=p.name;renderPlanner();showToast('Plan geladen');}
+function delPlan(id){if(!currentUser){showLoginRequired('Gespeicherte Pläne');return;}if(!confirm('Plan löschen?'))return;savedPlans=savedPlans.filter(p=>p.id!==id);save();renderSavedPlans();}
 function renderSavedPlans(){
   const el=document.getElementById('splist');if(!el)return;
   if(!savedPlans.length){
@@ -59,9 +59,9 @@ function renderSavedPlans(){
   }
   const statusBadge=s=>s==='pending'?'<span style="font-size:9px;font-weight:800;padding:1px 6px;border-radius:10px;background:#fff8e1;color:#f57f17;border:1px solid #ffe082;">In Prüfung</span>':s==='approved'?'<span style="font-size:9px;font-weight:800;padding:1px 6px;border-radius:10px;background:#e8f5e9;color:#1a7f4b;border:1px solid #a5d6a7;">Veröffentlicht</span>':'';
   el.innerHTML=savedPlans.map(p=>`
-    <div class="tpl-item" style="flex-direction:column;align-items:flex-start;gap:4px;" onclick="loadPlan(${esc(JSON.stringify(p))})">
+    <div class="tpl-item" style="flex-direction:column;align-items:flex-start;gap:4px;${currentUser?'':'opacity:.55;'}" onclick="loadPlan(${esc(JSON.stringify(p))})">
       <div style="display:flex;align-items:center;gap:8px;width:100%;">
-        <div class="tpl-ico">📄</div>
+        <div class="tpl-ico">${currentUser?'📄':'🔒'}</div>
         <div style="flex:1;min-width:0;">
           <div class="tpl-name" style="display:flex;align-items:center;gap:6px;">${esc(p.name)} ${statusBadge(p.status||'private')}</div>
           <div class="tpl-desc">${esc(p.date)} · ${esc((p.totals||[]).filter(t=>t.count>0).map(t=>t.count+' '+t.name).join(', '))}</div>
@@ -73,7 +73,7 @@ function renderSavedPlans(){
 }
 
 async function submitPlanForReview(id){
-  if(!currentUser){showToast('Bitte zuerst anmelden','err');return;}
+  if(!currentUser){showLoginRequired('Pläne veröffentlichen');return;}
   const plan=savedPlans.find(p=>p.id===id);
   if(!plan){showToast('Plan nicht gefunden','err');return;}
   if(plan.status==='pending'){showToast('Plan befindet sich bereits in der Prüfung');return;}
