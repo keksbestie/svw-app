@@ -117,13 +117,23 @@ function _resetPlanStars(planId,container){
 }
 
 let _ltpPublicPlans=[];
+let _ltpListIsGuest=false; // Gäste bekommen nur die Liste ohne Übungsdaten
 async function renderLtpPlanLibrary(){
   const el=document.getElementById('ltpPlanList');if(!el)return;
   el.innerHTML='<div style="font-size:13px;color:var(--text-3);padding:20px 0;text-align:center;">Lädt …</div>';
   const sport=window.currentSport?.id||'fussball';
   // Always reload when sport may have changed
   {
-    const {data}=await _supabase.from('submitted_plans').select('id,name,date,author_name,lanes,totals,sport').eq('status','approved').eq('sport',sport).order('submitted_at',{ascending:false});
+    _ltpListIsGuest=!currentUser;
+    let data=null;
+    if(currentUser){
+      ({data}=await _supabase.from('submitted_plans').select('id,name,date,author_name,lanes,totals,sport').eq('status','approved').eq('sport',sport).order('submitted_at',{ascending:false}));
+    } else {
+      // Gäste: nur Name, Autor:in, Datum, Zusammenfassung (Datenbankfunktion ohne Übungsdaten)
+      const r=await _supabase.rpc('public_plan_list',{p_sport:sport});
+      if(r.error) console.warn('public_plan_list nicht verfügbar:',r.error.message);
+      data=r.data;
+    }
     _ltpPublicPlans=data||[];
   }
   await loadPlanRatings();
@@ -153,6 +163,7 @@ function _renderLtpPlanRows(plans){
 
 async function openLtpPlanPreview(idx){
   if(!currentUser){showLoginRequired('Trainingspläne aus der Bibliothek');return;}
+  if(_ltpListIsGuest){await renderLtpPlanLibrary();showToast('Liste aktualisiert – bitte den Plan erneut öffnen');return;} // Liste stammt noch aus der Gast-Ansicht (ohne Übungen)
   const plans=document.getElementById('ltpPlanSearch')?.value
     ?_ltpPublicPlans.filter(p=>(p.name||'').toLowerCase().includes(document.getElementById('ltpPlanSearch').value.toLowerCase()))
     :_ltpPublicPlans;
@@ -211,7 +222,7 @@ async function openLtpPlanPreview(idx){
 }
 
 function loadLtpPlanIntoPlanner(p){
-  if(!p)return;
+  if(!p||!p.lanes)return;
   currentPlan={name:p.name,lanes:(p.lanes||[]).map(l=>[...l])};
   const inp=document.getElementById('planName');if(inp)inp.value=p.name;
   if(typeof renderPlanner==='function') renderPlanner();

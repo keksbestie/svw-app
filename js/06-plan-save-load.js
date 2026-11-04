@@ -53,6 +53,11 @@ function loadPlan(p){if(!currentUser){showLoginRequired('Gespeicherte Pläne');r
 function delPlan(id){if(!currentUser){showLoginRequired('Gespeicherte Pläne');return;}if(!confirm('Plan löschen?'))return;savedPlans=savedPlans.filter(p=>p.id!==id);save();renderSavedPlans();}
 function renderSavedPlans(){
   const el=document.getElementById('splist');if(!el)return;
+  if(!currentUser){
+    // Ohne Anmeldung keine (zwischengespeicherten) Pläne anzeigen – sie erscheinen nach der Anmeldung wieder
+    el.innerHTML='<div style="font-size:11px;color:var(--text-3);padding:6px 2px;line-height:1.5;">Melde dich an, um deine gespeicherten Pläne zu sehen.</div>';
+    return;
+  }
   if(!savedPlans.length){
     el.innerHTML='<div style="font-size:11px;color:var(--text-3);padding:6px 2px;">Noch keine gespeicherten Pläne.</div>';
     return;
