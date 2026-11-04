@@ -59,12 +59,13 @@ function renderSavedPlans(){
     el.innerHTML='<div style="font-size:11px;color:var(--text-3);padding:6px 2px;line-height:1.5;">Melde dich an, um deine gespeicherten Pläne zu sehen.</div>';
     return;
   }
-  if(!savedPlans.length){
+  const shownPlans=savedPlans.filter(p=>!p._dup);
+  if(!shownPlans.length){
     el.innerHTML='<div style="font-size:11px;color:var(--text-3);padding:6px 2px;">Noch keine gespeicherten Pläne.</div>';
     return;
   }
   const statusBadge=s=>s==='pending'?'<span style="font-size:9px;font-weight:800;padding:1px 6px;border-radius:10px;background:#fff8e1;color:#f57f17;border:1px solid #ffe082;">In Prüfung</span>':s==='approved'?'<span style="font-size:9px;font-weight:800;padding:1px 6px;border-radius:10px;background:#e8f5e9;color:#1a7f4b;border:1px solid #a5d6a7;">Veröffentlicht</span>':'';
-  el.innerHTML=savedPlans.map(p=>`
+  el.innerHTML=shownPlans.map(p=>`
     <div class="tpl-item" style="flex-direction:column;align-items:flex-start;gap:4px;${currentUser?'':'opacity:.55;'}" onclick="loadPlan(${esc(JSON.stringify(p))})">
       <div style="display:flex;align-items:center;gap:8px;width:100%;">
         <div class="tpl-ico">${currentUser?'📄':'🔒'}</div>

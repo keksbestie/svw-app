@@ -246,6 +246,16 @@ function renderLtp(){
   activeLtpTab=0;
 
   const el=document.getElementById('ltpBlockList'); if(!el)return;
+  if(!currentUser){
+    // Ohne Anmeldung keine (zwischengespeicherten) Blöcke anzeigen – sie erscheinen nach der Anmeldung wieder
+    el.innerHTML=`<div style="text-align:center;padding:60px 20px;color:var(--text-3);">
+      <div style="font-size:40px;margin-bottom:10px;">🔒</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;margin-bottom:8px;">Trainingsblöcke gibt es mit Konto</div>
+      <div style="font-size:13px;margin-bottom:16px;">Melde dich kostenlos an, um Blöcke anzulegen. Sie werden wie deine Trainingspläne in deinem Konto gespeichert.</div>
+      <button class="bpr" onclick="openLoginMod()">Anmelden oder registrieren</button>
+    </div>`;
+    return;
+  }
 
   // Filter out old-format blocks (without .weeks array)
   if(ltpBlocks && ltpBlocks.length){
@@ -334,6 +344,7 @@ function renderDayCard(blockId,wi,day,di){
 
 // ── NEW BLOCK WIZARD ──
 function openNewBlockWizard(){
+  if(!currentUser){showLoginRequired('Trainingsblöcke');return;}
   document.getElementById('nb-name').value='';
   document.getElementById('nb-notes').value='';
   document.getElementById('nb-weeks').value=4;
@@ -594,7 +605,7 @@ function openEntryEdit(type, editIdx){
   document.getElementById('entryEditIco').textContent=type==='training'?'⚽':type==='game'?'🏆':'☕';
   document.getElementById('entryEditTitle').textContent=(isEdit?'Bearbeiten: ':'')+typeLabels[type||e.type];
 
-  const planOpts='<option value="">– Kein Plan –</option>'+savedPlans.map(p=>`<option value="${esc(p.id)}" ${e.planId===p.id?'selected':''}>${esc(p.name)}</option>`).join('');
+  const planOpts='<option value="">– Kein Plan –</option>'+savedPlans.filter(p=>!p._dup).map(p=>`<option value="${esc(p.id)}" ${e.planId===p.id?'selected':''}>${esc(p.name)}</option>`).join('');
   const freeColors=['#1565c0','#6d28d9','#b71c1c','#e65100','#1a7f4b','#37474f'];
 
   let bodyHtml='';
@@ -688,6 +699,7 @@ function openNewPlanFromBlock(){
 
 // ── BLOCK LIBRARY ──
 function openSaveBlockLib(blockId){
+  if(!currentUser){showLoginRequired('Die Block-Bibliothek');return;}
   const blk=ltpBlocks.find(b=>b.id===blockId); if(!blk)return;
   editingBlockLibId=blockId;
   document.getElementById('sbl-name').value=blk.name;
@@ -714,6 +726,13 @@ function commitSaveBlockLib(){
 
 function renderLibrary(){
   const el=document.getElementById('ltpLibGrid'); if(!el)return;
+  if(!currentUser){
+    el.innerHTML=`<div style="text-align:center;padding:40px 20px;color:var(--text-3);">
+      <div style="font-size:36px;margin-bottom:8px;">🔒</div>
+      <div style="font-size:13px;margin-bottom:14px;">Die Block-Bibliothek gibt es mit Konto.</div>
+      <button class="bpr" onclick="openLoginMod()">Anmelden oder registrieren</button>
+    </div>`; return;
+  }
   if(!blockLibrary||!blockLibrary.length){
     el.innerHTML=`<div style="text-align:center;padding:40px 20px;color:var(--text-3);">
       <div style="font-size:36px;margin-bottom:8px;">📚</div>
@@ -735,6 +754,7 @@ function renderLibrary(){
 }
 
 function loadBlockFromLib(idx){
+  if(!currentUser){showLoginRequired('Die Block-Bibliothek');return;}
   const blk=JSON.parse(JSON.stringify(blockLibrary[idx]));
   delete blk._dbId;
   blk.id=uid(); blk.createdAt=new Date().toLocaleDateString('de-DE');

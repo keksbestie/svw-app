@@ -136,7 +136,12 @@ async function _loadOwnedData(userId){
   });
   const remoteIds=new Set(remotePlans.map(p=>p._dbId));
   const submittedOnly=(rs.data||[]).filter(p=>!remoteIds.has(p.id)).map(p=>({id:p.id,name:p.name||'Plan',date:p.date||'',lanes:p.lanes,totals:p.totals||[],status:p.status,_src:'submitted'}));
-  const localUnsynced=mayKeep?savedPlans.filter(p=>!p._dbId&&p._src!=='submitted'&&!remoteIds.has(p.id)&&!subById.has(p.id)):[];
+  // Doppelte vermeiden: Ein privater Plan mit gleichem Namen und gleichen Übungen wie eine eingereichte/veröffentlichte Version wird nicht mehr angezeigt – es zählt die veröffentlichte Version.
+  // Datenbank-Einträge bleiben dabei unangetastet (nur ausgeblendet, damit der Abgleich nichts löscht); lokale, nie gesicherte Kopien werden verworfen.
+  const _pk=p=>(p.name||'')+'|'+JSON.stringify(p.lanes||[]);
+  const pubKeys=new Set(submittedOnly.filter(s=>s.status==='approved'||s.status==='pending').map(_pk));
+  remotePlans.forEach(p=>{ if(!p.status&&pubKeys.has(_pk(p))) p._dup=true; });
+  const localUnsynced=mayKeep?savedPlans.filter(p=>!p._dbId&&p._src!=='submitted'&&!remoteIds.has(p.id)&&!subById.has(p.id)&&!pubKeys.has(_pk(p))):[];
   savedPlans=[...localUnsynced,...remotePlans,...submittedOnly].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
   _planIdsInDb=new Set(remoteIds);
   _syncSnap.plans=new Map(remotePlans.map(p=>[p._dbId,JSON.stringify(_planPayload(p))]));
@@ -240,6 +245,7 @@ async function silentSync(){
     if(typeof loadRatings==='function') await loadRatings();
     apiOnline=true; setStat('ok'); updateCnt(); renderSection(); cacheLocal();
     if(typeof renderSavedPlans==='function') renderSavedPlans();
+    if(typeof renderLtp==='function'&&typeof activeLtpTab!=='undefined'&&activeLtpTab===0) renderLtp();
     if(typeof refreshSportAvailability==='function') refreshSportAvailability();
   }catch{apiOnline=false; setStat('err');}
 }
