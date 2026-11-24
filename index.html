@@ -179,6 +179,7 @@
   <button class="mb active" data-page="handbook" onclick="goPage('handbook',this)">Katalog</button>
   <button class="mb" data-page="planner" onclick="goPage('planner',this)">Trainingsplan</button>
   <button class="mb" data-page="longterm" onclick="goPage('longterm',this)">Langzeitplanung</button>
+  <button class="mb" data-page="calendar" onclick="goPage('calendar',this)">📅 Kalender</button>
   <button class="mb" data-page="submit" onclick="goPage('submit',this)">✏️ Einreichen</button>
   <button class="mb admin-only" data-page="settings" onclick="goPage('settings',this)" style="display:none">Einstellungen</button>
 </div>
@@ -877,6 +878,15 @@
   </div>
 </div>
 
+
+<!-- KALENDER PAGE -->
+<div id="page-calendar" class="page">
+  <div class="inner" style="max-width:900px;padding-bottom:80px;">
+    <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;margin:0 0 6px;">Kalender</h1>
+    <p style="font-size:14px;color:var(--gd2);margin:0 0 20px;max-width:640px;line-height:1.6;">Hier siehst du, an welchem Tag du welche Trainingseinheit durchgeführt hast. Beim Speichern eines Trainingsplans kannst du ihn im Kalender ablegen.</p>
+    <div id="calendarRoot"></div>
+  </div>
+</div>
 
 <!-- ANGEBOTE PAGE -->
 <div id="page-angebote" class="page">
@@ -2625,6 +2635,7 @@ function filterHelpCards(q){
 <script src="js/12-kader.js?v=20261008"></script>
 <script src="js/13-sport.js?v=20261014"></script>
 <script src="js/14-clubs.js?v=20261018"></script>
+<script src="js/15-calendar.js?v=20261124"></script>
 <!-- Hinweis, wenn während der Nutzung eine neue Version aktiv wird -->
 <div id="updateBanner" role="status" style="display:none;position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:9100;max-width:calc(100% - 24px);align-items:center;gap:10px;padding:9px 12px;background:#1a2b1c;color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.35);font-size:13px;">
   <span>Neue Version verfügbar</span>

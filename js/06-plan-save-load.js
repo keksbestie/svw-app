@@ -46,6 +46,7 @@ function commitSavePlan(name){
   if(savedPlans.length>30) savedPlans.pop();
   cacheLocal();
   showToast('✓ Plan gespeichert');
+  if(typeof askSaveToCalendar==='function') askSaveToCalendar(plan);
   renderSavedPlans();
   renderLtpDayPlanSelect();
   save();

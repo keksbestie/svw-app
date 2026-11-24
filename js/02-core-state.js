@@ -442,6 +442,7 @@ function goPage(name,btn){
   if(name==='submit')renderSubmitPage();
   if(name==='account')renderAccountPage();
   if(name==='angebote'&&typeof renderAngebote==='function')renderAngebote();
+  if(name==='calendar'&&typeof renderCalendar==='function')renderCalendar();
   if(name==='kader'&&typeof renderKaderPage==='function')renderKaderPage();
 
   // 3. Scroll to top

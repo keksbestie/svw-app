@@ -310,6 +310,7 @@ async function doLogout(){
   if(typeof squad!=='undefined') squad=[];
   if(typeof coaches!=='undefined') coaches=[];
   if(typeof playerNotes!=='undefined') playerNotes=[];
+  if(typeof calEntries!=='undefined') calEntries=[];
   if(typeof blockLibrary!=='undefined') blockLibrary=blockLibrary.filter(b=>!b._dbId); // nur lokal noch nicht gesicherte Einträge behalten
   currentUser=null; IS_ADMIN=false; IS_REVIEWER=false; REVIEWER_SPORTS=[];
   if(typeof renderSavedPlans==='function') renderSavedPlans();
