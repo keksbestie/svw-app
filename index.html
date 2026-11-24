@@ -893,45 +893,87 @@
   <div class="inner" style="max-width:1100px;padding-bottom:70px;">
     <button onclick="goPage('home')" style="display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--gd2);font-size:13px;cursor:pointer;margin-bottom:18px;padding:0;font-family:'Barlow',sans-serif;">&larr; Zur&uuml;ck</button>
     <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;margin:0 0 6px;">Angebote</h1>
-    <p style="font-size:14px;color:var(--gd2);margin:0 0 26px;max-width:640px;line-height:1.6;">Das bekommst du bei AssistCoach &ndash; <strong>aktuell ist alles kostenlos</strong>.</p>
+    <p style="font-size:14px;color:var(--gd2);margin:0 0 26px;max-width:640px;line-height:1.6;">Das bekommst du bei AssistCoach. <strong>Gäste und Basic sind immer kostenlos.</strong> Alle weiteren Stufen sind <strong>bis 30.06.2027 kostenlos nutzbar</strong>, danach folgen Preise. Die Stufen und Übungsgrenzen gelten ab dem 1. Januar 2027.</p>
     <div class="offer-grid">
       <div class="home-card home-card--catalog offer-card">
         <div class="home-card-num">GAST</div>
         <div class="home-card-title">Gäste</div>
         <div class="offer-sub">Ohne Konto sofort loslegen</div>
+        <div class="offer-badge offer-badge--free">Immer kostenlos</div>
         <ul class="offer-list">
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Übungskatalog durchsuchen und filtern</span></li>
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Trainingsplan erstellen und drucken</span></li>
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Langzeitplanung</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Übungskatalog durchsuchen und filtern – <strong>3 Übungen pro Kategorie</strong></span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Trainingsplan zusammenstellen und drucken</span></li>
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Felddiagramme ansehen</span></li>
           <li class="off"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Speichern und bewerten</span></li>
           <li class="off"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Übungen einreichen</span></li>
         </ul>
         <button class="offer-btn" onclick="goPage('handbook')">Jetzt starten</button>
       </div>
-      <div class="home-card home-card--plan offer-card offer-card--feat">
-        <div class="home-card-num">KOSTENLOSES KONTO</div>
-        <div class="home-card-title">Trainer:innen</div>
-        <div class="offer-sub">Alles von Gästen, zusätzlich</div>
+      <div class="home-card home-card--plan offer-card--feat offer-card">
+        <div class="home-card-num">BASIC</div>
+        <div class="home-card-title">Basic</div>
+        <div class="offer-sub">Kostenloses Konto</div>
+        <div class="offer-badge offer-badge--free">Immer kostenlos</div>
         <ul class="offer-list">
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Pläne und Blöcke dauerhaft speichern</span></li>
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Übungen und Pläne bewerten</span></li>
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Eigene Übungen einreichen</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span><strong>5 Übungen pro Kategorie</strong></span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Eigene Übungen erstellen und einreichen</span></li>
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Übungen kopieren und erweitern</span></li>
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Kader und Trainerteam verwalten</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Übungen bewerten</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Notizen zu Übungen im Plan</span></li>
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Verein beitreten</span></li>
         </ul>
         <button class="offer-btn" id="offerTrainerBtn" onclick="offerTrainerAction()">Kostenlos registrieren</button>
       </div>
       <div class="home-card home-card--blocks offer-card">
-        <div class="home-card-num">VEREIN</div>
-        <div class="home-card-title">Vereinsadmin</div>
-        <div class="offer-sub">Alles von Trainer:innen, zusätzlich</div>
+        <div class="home-card-num">BASIC +</div>
+        <div class="home-card-title">Basic +</div>
+        <div class="offer-sub">Alles von Basic, zusätzlich</div>
+        <div class="offer-badge offer-badge--soon">Bis 30.06.2027 kostenlos nutzbar<br><span>Preis folgt</span></div>
         <ul class="offer-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span><strong>10 Übungen pro Kategorie</strong></span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Pläne selbst erstellen, speichern und einreichen</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Zugriff auf die vollständige Plan-Bibliothek</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Pläne bewerten</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Kader anlegen, mit Notizen je Spieler:in</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Trainerteam anlegen</span></li>
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Verein anlegen</span></li>
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Plätze je Sportart an Trainer:innen vergeben</span></li>
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Vereinslogo hinterlegen</span></li>
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Adminrolle weitergeben</span></li>
+        </ul>
+        
+      </div>
+      <div class="home-card home-card--templates offer-card">
+        <div class="home-card-num">ADVANCED</div>
+        <div class="home-card-title">Advanced</div>
+        <div class="offer-sub">Alles von Basic +, zusätzlich</div>
+        <div class="offer-badge offer-badge--soon">Bis 30.06.2027 kostenlos nutzbar<br><span>Preis folgt</span></div>
+        <ul class="offer-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span><strong>20 Übungen pro Kategorie</strong></span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Kalenderfunktion: Einheiten pro Tag nachschlagen</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Langzeitplanung: Blöcke erstellen</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Zugriff auf die Block-Bibliothek</span></li>
+        </ul>
+        
+      </div>
+      <div class="home-card home-card--submit offer-card">
+        <div class="home-card-num">PRO</div>
+        <div class="home-card-title">Pro</div>
+        <div class="offer-sub">Das volle Paket</div>
+        <div class="offer-badge offer-badge--soon">Bis 30.06.2027 kostenlos nutzbar<br><span>Preis folgt</span></div>
+        <ul class="offer-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Voller Zugriff auf <strong>alle Funktionen</strong></span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Zugriff auf <strong>alle Übungen</strong></span></li>
+        </ul>
+        
+      </div>
+      <div class="home-card home-card--plan offer-card--club offer-card">
+        <div class="home-card-num">VEREIN</div>
+        <div class="home-card-title">Verein</div>
+        <div class="offer-sub">Für Vereine und Trainerteams</div>
+        <div class="offer-badge offer-badge--soon">Bis 30.06.2027 kostenlos nutzbar<br><span>Preis folgt</span></div>
+        <ul class="offer-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Vereinsportal mit Vereinslogo</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Verteilung von Zugangslinks an Trainer:innen</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Der Verein wählt die Stufe (Basic +, Advanced oder Pro) – eingeladene Trainer:innen erhalten diese Stufe, oder ihre eigene, wenn sie höher ist</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Mit Basic + kannst du einen Verein anlegen und bist dann Vereinsadmin – oder benennst eine Vereinsadmin-Person</span></li>
         </ul>
         <button class="offer-btn" onclick="offerClubAction()">Verein anlegen</button>
       </div>
@@ -1058,10 +1100,18 @@
       <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Kader (Spielerdaten)</p>
       <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Angemeldete Trainer:innen k&ouml;nnen Spieler:innen mit Name, R&uuml;ckennummer, Position und Altersgruppe in einem Kader speichern. Der Kader ist nur f&uuml;r das Konto sichtbar, das ihn angelegt hat. Zus&auml;tzlich wird er als Zwischenspeicher im Browser abgelegt. Die Eintr&auml;ge k&ouml;nnen jederzeit in der App ge&auml;ndert oder gel&ouml;scht werden.</p>
       <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">F&uuml;r die Rechtm&auml;&szlig;igkeit dieser Daten &ndash; insbesondere bei Minderj&auml;hrigen &ndash; ist die nutzende Trainerin bzw. der nutzende Trainer verantwortlich (z. B. Information und Einwilligung der Spieler:innen bzw. Erziehungsberechtigten, Vorgaben des Vereins). Wir empfehlen, nur Vornamen oder K&uuml;rzel zu verwenden.</p>
+      <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Kartei und Notizen zu Spieler:innen</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Zu jeder Spielerin und jedem Spieler im Kader können Trainer:innen Notizen mit Datum und Text anlegen. Diese Notizen sind ausschließlich für das Konto sichtbar, das sie angelegt hat; weder andere Nutzer:innen noch Administrator:innen der App sehen sie in der App. Sie werden nur in der Datenbank gespeichert (nicht im Zwischenspeicher des Browsers), können jederzeit gelöscht werden und werden mit dem Spieler-Eintrag bzw. dem Konto gelöscht. Bitte tragen Sie keine Gesundheitsdaten, Diagnosen oder andere besonders sensible Angaben ein. Verantwortlich für die Zulässigkeit der Notizen ist die nutzende Trainerin bzw. der nutzende Trainer.</p>
+      <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Trainerteam</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Trainer:innen können weitere Trainer:innen und Co-Trainer:innen mit Name und Rolle in einer Liste anlegen und diese einzelnen Übungen in ihren Trainingsplänen zuordnen. Die Liste ist nur für das anlegende Konto sichtbar und ein Zwischenspeicher davon liegt im Browser. Verantwortlich für die Zulässigkeit der Angaben ist die nutzende Person.</p>
+      <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Trainingspläne, Notizen zu Übungen und Kalender</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Gespeicherte Trainingspläne, Notizen zu einzelnen Übungen im Plan und Langzeitplanungsblöcke werden Ihrem Konto zugeordnet und sind nur für Sie sichtbar. Wenn Sie einen Plan im Kalender ablegen, wird eine Kopie des Plans (inklusive Ihrer Notizen und der zugeordneten Trainer:innen) mit Datum in der Datenbank gespeichert; auch sie ist nur für Ihr Konto sichtbar. Beim Veröffentlichen eines Plans werden Ihre Notizen nicht mitübertragen. Die Kalendereinträge können Sie jederzeit löschen. Rechtsgrundlage ist die Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO).</p>
+      <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Angebote und Nutzungsstufen</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Die App bietet verschiedene Nutzungsstufen mit unterschiedlichem Funktionsumfang an (Gäste, Basic, Basic +, Advanced, Pro, Verein). Gäste und Basic sind dauerhaft kostenlos, die weiteren Stufen sind bis zum 30.06.2027 kostenlos nutzbar. Zur Bereitstellung der Stufen wird die dem Konto zugeordnete Stufe gespeichert. Aktuell werden keine Zahlungsdaten verarbeitet. Bevor kostenpflichtige Stufen angeboten werden, ergänzen wir diese Datenschutzerklärung um die dann eingesetzten Zahlungsdienstleister und die betroffenen Daten.</p>
       <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Verein und Vereinslogo</p>
       <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Im Vereinsbereich werden Vereinsname, Logo, Sportarten sowie die E-Mail-Adressen der Vereinsmitglieder f&uuml;r den Vereinsadmin sichtbar verarbeitet. Ein Vereinslogo wird auf der Startseite &ouml;ffentlich &ndash; auch ohne Anmeldung &ndash; nur angezeigt, wenn der Vereinsadmin dem ausdr&uuml;cklich zugestimmt hat (Art. 6 Abs. 1 lit. a DSGVO). Die Zustimmung ist jederzeit widerrufbar.</p>
       <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Speicherdauer und L&ouml;schung</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 0px;">Sie k&ouml;nnen Ihr Konto jederzeit selbst unter &bdquo;Mein Account&ldquo; &rarr; &bdquo;Konto l&ouml;schen&ldquo; dauerhaft l&ouml;schen. Dabei werden Ihr Login, Ihr Kader, Ihre privat gespeicherten Trainingspl&auml;ne und Bewertungen entfernt. Von Ihnen eingereichte &Uuml;bungen und Trainingspl&auml;ne bleiben ohne Namensangabe erhalten und werden nur auf manuelle L&ouml;schung entfernt. Alternativ gen&uuml;gt eine E-Mail an assistcoach2026@gmail.com.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 0px;">Sie k&ouml;nnen Ihr Konto jederzeit selbst unter &bdquo;Mein Account&ldquo; &rarr; &bdquo;Konto l&ouml;schen&ldquo; dauerhaft l&ouml;schen. Dabei werden Ihr Login, Ihr Kader samt Notizen zu Spieler:innen, Ihr Trainerteam, Ihr Kalender, Ihre privat gespeicherten Trainingspl&auml;ne, Langzeitplanungsbl&ouml;cke und Bewertungen entfernt. Von Ihnen eingereichte &Uuml;bungen und Trainingspl&auml;ne bleiben ohne Namensangabe erhalten und werden nur auf manuelle L&ouml;schung entfernt. Alternativ gen&uuml;gt eine E-Mail an assistcoach2026@gmail.com.</p>
     </div>
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
       <div class="fsec" style="margin-top:0;">4. Weitere Dienste und lokale Speicherung</div>
@@ -1070,7 +1120,7 @@
       <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Content Delivery Network (jsDelivr)</p>
       <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Zur Bereitstellung der App laden wir Programmbibliotheken (z. B. f&uuml;r Datenbankanbindung und E-Mail-Versand) &uuml;ber das Content Delivery Network jsDelivr. Dabei wird Ihre IP-Adresse an den Betreiber &uuml;bermittelt. Rechtsgrundlage ist unser berechtigtes Interesse an einer sicheren und schnellen Bereitstellung (Art. 6 Abs. 1 lit. f DSGVO).</p>
       <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Lokale Speicherung im Browser</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 0px;">Die App speichert technisch erforderliche Informationen im Browser (localStorage und Service-Worker-Cache), z. B. Spracheinstellung, Farbdesign, Onboarding-Status, Trainingspl&auml;ne und einen Zwischenspeicher des Kaders, damit die App schnell l&auml;dt und auch bei schlechter Verbindung funktioniert. Es werden keine Tracking-Cookies eingesetzt. Rechtsgrundlage ist &sect; 25 Abs. 2 Nr. 2 TDDDG. Sie k&ouml;nnen diese Daten jederzeit in den Browsereinstellungen l&ouml;schen.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 0px;">Die App speichert technisch erforderliche Informationen im Browser (localStorage und Service-Worker-Cache), z. B. Spracheinstellung, Farbdesign, Onboarding-Status, Trainingspl&auml;ne sowie einen Zwischenspeicher von Kader und Trainerteam, damit die App schnell l&auml;dt und auch bei schlechter Verbindung funktioniert. Notizen zu Spieler:innen und Kalendereintr&auml;ge werden nicht im Browser zwischengespeichert. Es werden keine Tracking-Cookies eingesetzt. Rechtsgrundlage ist &sect; 25 Abs. 2 Nr. 2 TDDDG. Sie k&ouml;nnen diese Daten jederzeit in den Browsereinstellungen l&ouml;schen.</p>
     </div>
 
     <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
@@ -1095,7 +1145,7 @@
     </div>
 
     <p style="font-size:11px;color:var(--gd2);text-align:center;margin-top:24px;">Quelle: <a href="https://www.e-recht24.de" target="_blank" rel="noopener noreferrer" style="color:var(--gd2);">e-recht24.de</a> &nbsp;&middot;&nbsp; Stand: <span id="datenschutzDate"></span></p>
-    <script>document.getElementById('datenschutzDate').textContent='Oktober 2026';</script>
+    <script>document.getElementById('datenschutzDate').textContent='November 2026';</script>
   </div>
 </div>
 
@@ -1386,9 +1436,9 @@
     {
       page:'home',target:'#offersBtn',pos:'bottom',
       title:'Angebote',
-      text:'Hier findest du die <strong>Angebote</strong> (auch über das Zahnrad oben rechts): Was Gäste, Trainer:innen und Vereinsadmins nutzen können – aktuell alles kostenlos.',
+      text:'Hier findest du die <strong>Angebote</strong> (auch über das Zahnrad oben rechts): Gäste, Basic, Basic +, Advanced, Pro und Verein. Gäste und Basic sind immer kostenlos, alle weiteren Stufen bis 30.06.2027.',
       fallbackTarget:'#cfgBtn',
-      mob:{target:'#offersBtn',fallbackTarget:'#bnavMore',text:'Hier findest du die <strong>Angebote</strong> (auch unter <strong>Mehr</strong>): Was Gäste, Trainer:innen und Vereinsadmins nutzen können – aktuell alles kostenlos.'}
+      mob:{target:'#offersBtn',fallbackTarget:'#bnavMore',text:'Hier findest du die <strong>Angebote</strong> (auch unter <strong>Mehr</strong>): Gäste, Basic, Basic +, Advanced, Pro und Verein. Gäste und Basic sind immer kostenlos, alle weiteren Stufen bis 30.06.2027.'}
     },
     {
       page:'handbook',target:'button[onclick*="toggleHelpPanel"], .cfg-btn[title*="Hilfe"]',pos:'bottom',
@@ -1988,16 +2038,18 @@
     </div>
 
     <!-- Konto -->
-    <div class="help-card" data-area="konto" data-tags="angebote gäste gast trainerinnen vereinsadmin kostenlos konto registrieren funktionen überblick">
+    <div class="help-card" data-area="konto" data-tags="angebote stufen gäste basic basic+ advanced pro verein kostenlos preis konto funktionen überblick übungen pro kategorie">
       <div class="help-card-icon" style="background:#1d4ed8;">🏷️</div>
       <div>
         <div class="help-card-title">Angebote – was bekomme ich?</div>
-        <p class="help-card-text">Die Angebote-Seite zeigt, was Gäste, Trainer:innen und Vereinsadmins nutzen können. Aktuell ist alles kostenlos.</p>
+        <p class="help-card-text">Die Angebote-Seite zeigt alle Stufen. <strong>Gäste und Basic sind immer kostenlos</strong>, alle weiteren Stufen sind <strong>bis 30.06.2027 kostenlos nutzbar</strong> (Preis folgt). Die Stufen und Übungsgrenzen gelten ab dem 1. Januar 2027.</p>
         <div class="help-step"><span class="help-num">1</span><span>Öffnen: Startseite → Button <strong>Angebote</strong> (neben „Einführung“), am Handy auch unter <strong>Mehr</strong>, am Desktop im Zahnrad-Menü</span></div>
-        <div class="help-step"><span class="help-num">2</span><span><strong>Gäste</strong> (ohne Konto): Katalog, Trainingsplan, Langzeitplanung</span></div>
-        <div class="help-step"><span class="help-num">3</span><span><strong>Trainer:innen</strong> (kostenloses Konto): zusätzlich Pläne speichern, bewerten, Übungen einreichen und kopieren, Kader, Trainerteam, Plan-Bibliothek, Verein beitreten</span></div>
-        <div class="help-step"><span class="help-num">4</span><span><strong>Vereinsadmin</strong>: zusätzlich Verein anlegen, Plätze je Sportart vergeben, Vereinslogo, Adminrolle weitergeben</span></div>
-        <div class="help-step"><span class="help-num">5</span><span>Funktionen, die ein Konto brauchen, zeigen ohne Anmeldung einen Hinweis mit Link zu den Angeboten</span></div>
+        <div class="help-step"><span class="help-num">2</span><span><strong>Gäste</strong> (ohne Konto): Katalog mit 3 Übungen pro Kategorie, Trainingsplan zusammenstellen und drucken</span></div>
+        <div class="help-step"><span class="help-num">3</span><span><strong>Basic</strong> (kostenloses Konto): 5 Übungen pro Kategorie, Übungen erstellen, einreichen und bewerten, Notizen zu Übungen, Verein beitreten</span></div>
+        <div class="help-step"><span class="help-num">4</span><span><strong>Basic +</strong>: 10 Übungen pro Kategorie, Pläne speichern und einreichen, vollständige Plan-Bibliothek, Pläne bewerten, Kader mit Notizen, Trainerteam, Verein anlegen</span></div>
+        <div class="help-step"><span class="help-num">5</span><span><strong>Advanced</strong>: 20 Übungen pro Kategorie, Kalender, Langzeitplanung mit Block-Bibliothek</span></div>
+        <div class="help-step"><span class="help-num">6</span><span><strong>Pro</strong>: voller Zugriff auf alle Funktionen und alle Übungen</span></div>
+        <div class="help-step"><span class="help-num">7</span><span><strong>Verein</strong>: Vereinsportal mit Logo und Zugangslinks. Der Verein wählt eine Stufe, eingeladene Trainer:innen erhalten sie (oder ihre eigene, wenn sie höher ist)</span></div>
       </div>
     </div>
 

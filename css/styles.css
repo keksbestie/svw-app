@@ -546,6 +546,14 @@ body.on-home { overflow: hidden; }
 .offer-list li svg { flex: none; margin-top: 2px; color: #1a7f4b; }
 .offer-list li.off { color: var(--text-3); }
 .offer-list li.off svg { color: var(--text-3); }
+.offer-badge { font-size: 12px; font-weight: 800; padding: 6px 10px; border-radius: 8px; margin: 0 0 14px; line-height: 1.35; align-self: flex-start; }
+.offer-badge span { font-weight: 600; opacity: .85; }
+.offer-badge--free { background: #e6f4ed; color: #14653a; border: 1px solid #a5d6b7; }
+.offer-badge--soon { background: #fff3e0; color: #8a4600; border: 1px solid #ffcc80; }
+[data-theme="dark"] .offer-badge--free { background: rgba(26,127,75,.2); color: #86efac; border-color: rgba(26,127,75,.5); }
+[data-theme="dark"] .offer-badge--soon { background: rgba(217,119,6,.18); color: #fcd34d; border-color: rgba(217,119,6,.5); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .offer-badge--free { background: rgba(26,127,75,.2); color: #86efac; border-color: rgba(26,127,75,.5); } :root:not([data-theme="light"]) .offer-badge--soon { background: rgba(217,119,6,.18); color: #fcd34d; border-color: rgba(217,119,6,.5); } }
+.offer-card--club { border-style: dashed; }
 .offer-btn { padding: 11px 16px; border: none; border-radius: 10px; background: var(--accent); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; cursor: pointer; }
 .offer-card:hover { transform: none; }
 @media (max-width: 900px) { .offer-grid { grid-template-columns: 1fr; gap: 16px; } .offer-card { padding: 26px 22px 22px; } }
