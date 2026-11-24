@@ -65,6 +65,7 @@ function _syncSportCards() {
 // Beim Wechsel der Sportart nichts aus der vorherigen Sportart mitnehmen: Tag-Filter und Tag-Entwürfe zurücksetzen
 function _resetSportScopedState() {
   try {
+    if (typeof ageFilter !== 'undefined') ageFilter = null; // Jahrgänge unterscheiden sich je Sportart
     if (typeof selectedTags !== 'undefined') selectedTags = [];
     if (typeof activeCluster !== 'undefined') activeCluster = null;
     if (typeof clusterFilterTags !== 'undefined') clusterFilterTags = [];

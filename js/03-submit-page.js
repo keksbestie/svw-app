@@ -627,7 +627,7 @@ function openReviewMod(id){
   document.getElementById('rv-sec').value = s.section;
   document.getElementById('rv-intensity').value = s.intensity||'Leicht';
   document.getElementById('rv-tags').value = (s.tags||[]).join(', ');
-  renderAgePicker('rvAgePick', s.ageGroups||[]);
+  renderAgePicker('rvAgePick', s.ageGroups||[], {sport:s.sport||undefined});
   // Show diagram
   const cw = document.getElementById('rv-canvas-wrap');
   if(s.diagram){ cw.innerHTML=`<img src="${esc(s.diagram)}" style="width:100%;display:block;border-radius:6px;">`; }

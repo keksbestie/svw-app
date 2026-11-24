@@ -44,11 +44,16 @@ function _curSportId(){return (window.currentSport&&window.currentSport.id)||'fu
 function sportExercises(){const s=_curSportId();return exercises.filter(e=>(e.sport||'fussball')===s);}
 
 // ── Altersstufen ──
-const AGE_GROUPS=['U7','U9','U11','U13','U15','U17','U19','Erwachsene'];
+// Altersstufen je Sportart: Volleyball hat eigene Jahrgänge (U12/14/16/18/20), Fußball und Tennis die ungeraden
+const AGE_GROUPS_BASE=['U7','U9','U11','U13','U15','U17','U19','Erwachsene'];
+const AGE_GROUPS_VB=['U12','U14','U16','U18','U20','Erwachsene'];
+function _ageList(sport){return (sport||_curSportId())==='volleyball'?AGE_GROUPS_VB:AGE_GROUPS_BASE;}
 let ageFilter=null;
 const _agePickState={};
-function ageLabel(arr){
+function ageLabel(arr,sport){
   if(!arr||!arr.length) return '';
+  // Liste nach den Werten wählen (U12/14/… = Volleyball), sonst nach Sportart
+  const AGE_GROUPS=arr.some(a=>AGE_GROUPS_VB.includes(a)&&!AGE_GROUPS_BASE.includes(a))?AGE_GROUPS_VB:_ageList(sport);
   const idx=arr.map(a=>AGE_GROUPS.indexOf(a)).filter(i=>i>=0).sort((a,b)=>a-b);
   if(!idx.length) return ''; // nur bekannte Altersstufen anzeigen, nie Rohtext aus der Datenbank
   const contiguous=idx.every((v,i)=>i===0||v===idx[i-1]+1);
@@ -61,7 +66,8 @@ function _ageChip(label,on,fn,small){
 }
 function renderAgePicker(id,sel,opts){
   const el=document.getElementById(id);if(!el)return;
-  _agePickState[id]={sel:AGE_GROUPS.filter(a=>(sel||[]).includes(a)),anchor:null,required:!!(opts&&opts.required),onChange:(opts&&opts.onChange)||null};
+  const list=_ageList(opts&&opts.sport);
+  _agePickState[id]={list,sel:list.filter(a=>(sel||[]).includes(a)),anchor:null,required:!!(opts&&opts.required),onChange:(opts&&opts.onChange)||null};
   _paintAgePicker(id);
 }
 function getAgeSel(id){return (_agePickState[id]&&_agePickState[id].sel)||[];}
@@ -72,33 +78,33 @@ function _paintAgePicker(id){
   else if(st.required) hint='Pflichtfeld: Mindestens einen Jahrgang wählen. Zwei Jahrgänge antippen wählt alles dazwischen.';
   else hint='Tipp: Zwei Jahrgänge antippen wählt alles dazwischen. Ohne Auswahl gilt „Alle Altersstufen“.';
   const first=st.required
-    ?_ageChip('Alle auswählen',st.sel.length===AGE_GROUPS.length,"selectAllAges('"+id+"')")
+    ?_ageChip('Alle auswählen',st.sel.length===st.list.length,"selectAllAges('"+id+"')")
     :_ageChip('Alle',!st.sel.length,"clearAgePicker('"+id+"')");
   el.innerHTML='<div style="display:flex;flex-wrap:wrap;gap:6px;">'
     +first
-    +AGE_GROUPS.map(a=>_ageChip(a,st.sel.includes(a),"toggleAgeChip('"+id+"','"+a+"')")).join('')
+    +st.list.map(a=>_ageChip(a,st.sel.includes(a),"toggleAgeChip('"+id+"','"+a+"')")).join('')
     +'</div><div style="font-size:11px;color:var(--text-3);margin-top:6px;">'+hint+'</div>';
 }
 function _ageChanged(id){const st=_agePickState[id];_paintAgePicker(id);if(st&&st.onChange)st.onChange();}
 function clearAgePicker(id){const st=_agePickState[id];if(!st)return;st.sel=[];st.anchor=null;_ageChanged(id);}
-function selectAllAges(id){const st=_agePickState[id];if(!st)return;st.sel=AGE_GROUPS.slice();st.anchor=null;_ageChanged(id);}
+function selectAllAges(id){const st=_agePickState[id];if(!st)return;st.sel=st.list.slice();st.anchor=null;_ageChanged(id);}
 function toggleAgeChip(id,a){
   const st=_agePickState[id];if(!st)return;
   if(st.anchor&&st.anchor!==a){
-    const i1=AGE_GROUPS.indexOf(st.anchor),i2=AGE_GROUPS.indexOf(a);
+    const i1=st.list.indexOf(st.anchor),i2=st.list.indexOf(a);
     const lo=Math.min(i1,i2),hi=Math.max(i1,i2);
-    AGE_GROUPS.slice(lo,hi+1).forEach(x=>{if(!st.sel.includes(x))st.sel.push(x);});
+    st.list.slice(lo,hi+1).forEach(x=>{if(!st.sel.includes(x))st.sel.push(x);});
     st.anchor=null;
   } else if(st.sel.includes(a)){
     st.sel=st.sel.filter(x=>x!==a);st.anchor=null;
   } else {st.sel.push(a);st.anchor=a;}
-  st.sel=AGE_GROUPS.filter(x=>st.sel.includes(x));
+  st.sel=st.list.filter(x=>st.sel.includes(x));
   _ageChanged(id);
 }
 function setAgeFilter(a){ageFilter=(ageFilter===a)?null:a;renderSection();}
 function ageFilterHTML(){
   return _ageChip('Alle',!ageFilter,"setAgeFilter(ageFilter)",true)
-    +AGE_GROUPS.map(a=>_ageChip(a,ageFilter===a,"setAgeFilter('"+a+"')",true)).join('');
+    +_ageList().map(a=>_ageChip(a,ageFilter===a,"setAgeFilter('"+a+"')",true)).join('');
 }
 // ══════════════════════════════════════════════════════
 // PLÄNE & LANGZEITBLÖCKE – sichere Synchronisation mit Supabase
