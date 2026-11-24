@@ -67,6 +67,7 @@ function openMoreSheet(){
     items.push(['👥','Mein Kader',"goPage('kader')"]);
     if(typeof currentClub!=='undefined'&&currentClub) items.push(['🏟️','Mein Verein',"goPage('account');setTimeout(()=>switchAccTab('club'),50)"]);
   } else items.push(['🔑','Anmelden',"openLoginMod()"]);
+  items.push(['📅','Kalender',"goPage('calendar')"]);
   items.push(['🏷️','Angebote',"goPage('angebote')"]);
   items.push(['❓','Hilfe',"toggleHelpPanel()"]);
   items.push(['💬','Feedback senden',"openMod('feedbackMod')"]);

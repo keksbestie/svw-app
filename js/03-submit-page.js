@@ -309,6 +309,8 @@ async function doLogout(){
   try{ localStorage.removeItem('ac_squad'); localStorage.removeItem('ac_coaches'); }catch(e){}
   if(typeof squad!=='undefined') squad=[];
   if(typeof coaches!=='undefined') coaches=[];
+  if(typeof playerNotes!=='undefined') playerNotes=[];
+  if(typeof calEntries!=='undefined') calEntries=[];
   if(typeof blockLibrary!=='undefined') blockLibrary=blockLibrary.filter(b=>!b._dbId); // nur lokal noch nicht gesicherte Einträge behalten
   currentUser=null; IS_ADMIN=false; IS_REVIEWER=false; REVIEWER_SPORTS=[];
   if(typeof renderSavedPlans==='function') renderSavedPlans();
@@ -627,7 +629,7 @@ function openReviewMod(id){
   document.getElementById('rv-sec').value = s.section;
   document.getElementById('rv-intensity').value = s.intensity||'Leicht';
   document.getElementById('rv-tags').value = (s.tags||[]).join(', ');
-  renderAgePicker('rvAgePick', s.ageGroups||[]);
+  renderAgePicker('rvAgePick', s.ageGroups||[], {sport:s.sport||undefined});
   // Show diagram
   const cw = document.getElementById('rv-canvas-wrap');
   if(s.diagram){ cw.innerHTML=`<img src="${esc(s.diagram)}" style="width:100%;display:block;border-radius:6px;">`; }

@@ -76,7 +76,9 @@ function piHTML(item,ex,si,col){
           min
           ${hasDurOvr?`<button class="pi-ovr-rst" onclick="resetPlanOverride('${escJs(ex.id)}',${si},'duration');event.stopPropagation()" title="Zurücksetzen">↺</button>`:''}
         </span>`:''}
+        <button class="mbadge pi-note-btn${item.notes?' has':''}" onclick="openPlanNote('${escJs(ex.id)}',${si});event.stopPropagation()" title="Notiz zu dieser Übung" aria-label="Notiz zu dieser Übung">📝 ${item.notes?'Notiz':'Notiz +'}</button>
       </div>
+      ${item.notes?`<div class="pi-note-prev">${esc(item.notes)}</div>`:''}
     </div>
     <button class="pi-rm" onclick="removePlanLane('${escJs(ex.id)}',${si})">✕</button>
     ${(typeof coaches!=='undefined'&&coaches.length>0)?`<div class="pi-squad-wrap" style="position:relative;">
@@ -90,6 +92,38 @@ function piHTML(item,ex,si,col){
       </button>
     </div>`:''}
   </div>`;
+}
+
+// ── Notiz je Übung im Plan ───────────────────────────
+function openPlanNote(id,si){
+  const lane=currentPlan.lanes[si]||[];
+  const item=lane.map(r=>_laneItem(r)).find(r=>r.id===id); if(!item) return;
+  const ex=exercises.find(e=>e.id===id)||{name:''};
+  document.getElementById('planNoteModal')?.remove();
+  const m=document.createElement('div');
+  m.id='planNoteModal';
+  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
+  m.onclick=e=>{if(e.target===m)m.remove();};
+  m.innerHTML='<div style="background:var(--surface);border-radius:16px;max-width:460px;width:100%;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.4);">'
+    +'<div style="font-family:Barlow Condensed,sans-serif;font-size:20px;font-weight:900;margin-bottom:2px;">📝 Notiz</div>'
+    +'<div id="planNoteSub" style="font-size:12px;color:var(--text-3);margin-bottom:12px;"></div>'
+    +'<textarea id="planNoteText" maxlength="2000" rows="6" placeholder="z. B. Hinweise für diese Einheit, Variationen, Coaching-Punkte …" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface-2);color:var(--text-1);font-family:inherit;font-size:16px;line-height:1.5;resize:vertical;"></textarea>'
+    +'<div style="font-size:11px;color:var(--text-3);margin:6px 0 14px;">Die Notiz steht im Ausdruck/PDF unter der Übung. Beim Veröffentlichen eines Plans wird sie nicht mit veröffentlicht.</div>'
+    +'<div style="display:flex;gap:8px;flex-wrap:wrap;">'
+    +'<button class="bsc" data-act="cancel" style="flex:1;">Abbrechen</button>'
+    +'<button class="bpr" data-act="save" style="flex:2;">Speichern</button>'
+    +'</div>'
+    +'<button data-act="clear" style="width:100%;margin-top:10px;padding:8px;background:none;border:1.5px solid #e53935;color:#e53935;border-radius:8px;cursor:pointer;font-weight:700;display:none;">Notiz löschen</button>'
+    +'</div>';
+  document.body.appendChild(m);
+  m.querySelector('#planNoteSub').textContent=ex.name||'';
+  const ta=m.querySelector('#planNoteText'); ta.value=item.notes||'';
+  if(item.notes) m.querySelector('[data-act=clear]').style.display='';
+  const done=v=>{setPlanOverride(id,si,'notes',v);m.remove();renderLanes();};
+  m.querySelector('[data-act=cancel]').onclick=()=>m.remove();
+  m.querySelector('[data-act=save]').onclick=()=>done((ta.value||'').trim());
+  m.querySelector('[data-act=clear]').onclick=()=>done('');
+  setTimeout(()=>ta.focus(),50);
 }
 
 function setPlanOverride(id,si,field,val){
@@ -229,7 +263,11 @@ function loadTemplate(tpl){
 // ══════════════════════════════════════════════════════
 function clearPlan(){
   if(!confirm('Trainingsplan leeren? Alle Übungen werden entfernt.')) return;
-  currentPlan.lanes=[[],[],[],[],[]];
+  // Komplett neu beginnen: Übungen, Titel, Datum und alle Markierungen zurücksetzen (nichts vom vorher geöffneten Plan bleibt)
+  currentPlan={name:'',lanes:[[],[],[],[],[],[]]};
+  const pn=document.getElementById('planName'); if(pn) pn.value='';
+  const pd=document.getElementById('planDate'); if(pd) pd.value=new Date().toISOString().slice(0,10);
+  if(typeof _cartParallel!=='undefined') _cartParallel.clear();
   if(typeof planSquadAbsent!=='undefined') planSquadAbsent.clear();
   save();
   renderPlanner();
@@ -310,6 +348,7 @@ function printPlan(){
           ${(typeof coachNames==='function'&&coachNames(item.coachIds).length)?`<span>🧑‍🏫 ${coachNames(item.coachIds).map(n=>esc(n)).join(', ')}</span>`:''}
         </div>
         ${ex.desc?`<div class="ex-desc">${esc(ex.desc)}</div>`:''}
+        ${item.notes?`<div class="ex-note"><strong>Notiz:</strong> ${esc(item.notes)}</div>`:''}
       </div>
     </div>`;
   }).join('');
@@ -364,6 +403,7 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;color:#111;background:#fff;pa
 .ex-name{font-size:12pt;font-weight:900;margin-bottom:4px;}
 .ex-meta{display:flex;gap:10px;flex-wrap:wrap;font-size:8pt;color:#444;font-weight:600;margin-bottom:5px;}
 .ex-desc{font-size:8.5pt;color:#333;line-height:1.55;white-space:pre-wrap;}
+.ex-note{font-size:8.5pt;color:#1a1a1a;line-height:1.5;white-space:pre-wrap;margin-top:5px;padding:5px 8px;border-left:3px solid #e65100;background:#fff7ef;}
 .total-box{margin-top:6mm;padding:8px 0;border-top:2px solid #111;display:flex;justify-content:space-between;align-items:center;gap:12px;}
 .total-label{font-size:9pt;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#555;margin-bottom:4px;}
 .total-breakdown{display:flex;flex-wrap:wrap;gap:5px;}

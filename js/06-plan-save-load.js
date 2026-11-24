@@ -46,6 +46,7 @@ function commitSavePlan(name){
   if(savedPlans.length>30) savedPlans.pop();
   cacheLocal();
   showToast('✓ Plan gespeichert');
+  if(typeof askSaveToCalendar==='function') askSaveToCalendar(plan);
   renderSavedPlans();
   renderLtpDayPlanSelect();
   save();
@@ -93,7 +94,7 @@ async function submitPlanForReview(id){
     author_name:_publicAuthorName('Trainer:in'),
     name:plan.name,
     date:plan.date,
-    lanes:plan.lanes,
+    lanes:plan.lanes.map(l=>(l||[]).map(r=>{if(r&&typeof r==='object'){const {notes,...rest}=r;return rest;}return r;})), // private Notizen nicht veröffentlichen
     totals:plan.totals,
     sport:_planSport(plan),
     status:'pending',
