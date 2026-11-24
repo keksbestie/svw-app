@@ -409,6 +409,7 @@ function openPlayerModal(id) {
     document.getElementById('pPosition').value = p.position || '';
     title.textContent = 'Spieler bearbeiten';
     delBtn.style.display = '';
+    loadPlayerNotes(id);
   } else {
     document.getElementById('pName').value = '';
     document.getElementById('pNumber').value = '';
@@ -416,6 +417,7 @@ function openPlayerModal(id) {
     document.getElementById('pPosition').value = '';
     title.textContent = 'Spieler anlegen';
     delBtn.style.display = 'none';
+    { const w = document.getElementById('playerNotesWrap'); if (w) w.style.display = 'none'; }
   }
 
   modal.classList.remove('h');
@@ -425,6 +427,82 @@ function openPlayerModal(id) {
 function closePlayerModal() {
   document.getElementById('playerModal').classList.add('h');
   editPlayerId = null;
+  playerNotes = []; // Notizen nie im Speicher behalten
+}
+
+// ── Kartei: Notizen zur Person ────────────────────────────────────
+// Liegen nur in der Datenbank (Tabelle player_notes, nur für das Konto lesbar/schreibbar), nie im lokalen Speicher.
+let playerNotes = [];
+let _openNoteIds = new Set();
+function _todayISO() { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function _noteDateLabel(iso) { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso || ''); return m ? m[3] + '.' + m[2] + '.' + m[1] : ''; }
+
+async function loadPlayerNotes(playerId) {
+  const wrap = document.getElementById('playerNotesWrap');
+  if (!wrap) return;
+  playerNotes = []; _openNoteIds = new Set();
+  if (!playerId || !_supabase || !currentUser) { wrap.style.display = 'none'; return; }
+  wrap.style.display = '';
+  document.getElementById('pnDate').value = _todayISO();
+  document.getElementById('pnText').value = '';
+  document.getElementById('playerNotesList').innerHTML = '<div style="font-size:12px;color:var(--text-3);">Lädt …</div>';
+  const { data, error } = await _supabase.from('player_notes').select('id,note_date,text,created_at')
+    .eq('player_id', playerId).eq('owner_id', currentUser.id)
+    .order('note_date', { ascending: false }).order('created_at', { ascending: false });
+  if (editPlayerId !== playerId) return; // Fenster wurde inzwischen gewechselt/geschlossen
+  if (error) {
+    document.getElementById('playerNotesList').innerHTML = '<div style="font-size:12px;color:var(--text-3);">Notizen sind noch nicht verfügbar.</div>';
+    console.warn('Notizen laden fehlgeschlagen', error);
+    return;
+  }
+  playerNotes = data || [];
+  renderPlayerNotes();
+}
+
+function renderPlayerNotes() {
+  const el = document.getElementById('playerNotesList'); if (!el) return;
+  if (!playerNotes.length) { el.innerHTML = '<div style="font-size:12px;color:var(--text-3);">Noch keine Notizen.</div>'; return; }
+  el.innerHTML = playerNotes.map(n => {
+    const open = _openNoteIds.has(n.id);
+    return `<div style="background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div style="flex:1;min-width:0;cursor:pointer;" onclick="togglePlayerNote('${escJs(n.id)}')">
+          <div style="font-size:11px;font-weight:800;color:var(--accent);">${esc(_noteDateLabel(n.note_date))}</div>
+          <div style="font-size:13px;color:var(--text-1);line-height:1.5;white-space:pre-wrap;word-break:break-word;${open ? '' : 'display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;'}">${esc(n.text)}</div>
+        </div>
+        <button type="button" onclick="deletePlayerNote('${escJs(n.id)}')" title="Notiz löschen" aria-label="Notiz löschen" style="background:none;border:none;cursor:pointer;color:var(--text-3);font-size:15px;padding:4px 6px;flex-shrink:0;">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function togglePlayerNote(id) { _openNoteIds.has(id) ? _openNoteIds.delete(id) : _openNoteIds.add(id); renderPlayerNotes(); }
+
+async function addPlayerNote() {
+  if (!editPlayerId || !currentUser) return;
+  const text = (document.getElementById('pnText').value || '').trim();
+  const date = document.getElementById('pnDate').value || _todayISO();
+  if (!text) { showToast('Bitte eine Notiz eingeben', 'err'); return; }
+  const btn = document.getElementById('pnAddBtn'); btn.disabled = true;
+  const { data, error } = await _supabase.from('player_notes')
+    .insert({ player_id: editPlayerId, owner_id: currentUser.id, note_date: date, text })
+    .select('id,note_date,text,created_at').single();
+  btn.disabled = false;
+  if (error || !data) { showToast('Notiz konnte nicht gespeichert werden', 'err'); console.warn(error); return; }
+  playerNotes.unshift(data);
+  playerNotes.sort((a, b) => (b.note_date || '').localeCompare(a.note_date || '') || (b.created_at || '').localeCompare(a.created_at || ''));
+  document.getElementById('pnText').value = '';
+  renderPlayerNotes();
+  showToast('Notiz gespeichert');
+}
+
+async function deletePlayerNote(id) {
+  if (!confirm('Notiz wirklich löschen?')) return;
+  const { error } = await _supabase.from('player_notes').delete().eq('id', id).eq('owner_id', currentUser.id);
+  if (error) { showToast('Notiz konnte nicht gelöscht werden', 'err'); return; }
+  playerNotes = playerNotes.filter(n => n.id !== id);
+  _openNoteIds.delete(id);
+  renderPlayerNotes();
 }
 
 async function savePlayer() {

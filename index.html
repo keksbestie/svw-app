@@ -2976,6 +2976,17 @@ if('serviceWorker' in navigator){
           <option>Au&szlig;ensturm</option><option>Mittelst&uuml;rmer</option>
         </select>
       </div>
+      <!-- Kartei: Notizen zur Person (nur für das Konto, das den Kader angelegt hat) -->
+      <div id="playerNotesWrap" style="display:none;margin:4px 0 14px;padding-top:14px;border-top:1px solid var(--border);">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;margin-bottom:2px;">📝 Notizen</div>
+        <div style="font-size:11px;color:var(--text-3);margin-bottom:10px;line-height:1.5;">Nur du siehst diese Notizen. Bitte keine Gesundheitsdaten oder Diagnosen eintragen.</div>
+        <div style="display:flex;gap:8px;margin-bottom:8px;">
+          <input type="date" id="pnDate" class="fc" style="flex:0 0 auto;max-width:170px;">
+        </div>
+        <textarea id="pnText" class="fc" rows="3" maxlength="2000" placeholder="Neue Notiz zu dieser Person …" style="width:100%;box-sizing:border-box;resize:vertical;"></textarea>
+        <button type="button" class="bsc" id="pnAddBtn" onclick="addPlayerNote()" style="width:100%;margin-top:8px;">Notiz hinzufügen</button>
+        <div id="playerNotesList" style="margin-top:12px;display:grid;gap:8px;"></div>
+      </div>
       <div style="display:flex;gap:10px;margin-top:6px;">
         <button class="bsc" onclick="closePlayerModal()" style="flex:1;">Abbrechen</button>
         <button class="bpr" onclick="savePlayer()" style="flex:2;" id="playerSaveBtn">Speichern</button>
