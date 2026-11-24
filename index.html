@@ -893,7 +893,7 @@
   <div class="inner" style="max-width:1100px;padding-bottom:70px;">
     <button onclick="goPage('home')" style="display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--gd2);font-size:13px;cursor:pointer;margin-bottom:18px;padding:0;font-family:'Barlow',sans-serif;">&larr; Zur&uuml;ck</button>
     <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;margin:0 0 6px;">Angebote</h1>
-    <p style="font-size:14px;color:var(--gd2);margin:0 0 26px;max-width:640px;line-height:1.6;">Das bekommst du bei AssistCoach. <strong>Gäste und Basic sind immer kostenlos.</strong> Alle weiteren Stufen sind <strong>bis 30.06.2027 kostenlos nutzbar</strong>, danach folgen Preise. Die Stufen und Übungsgrenzen gelten ab dem 1. Januar 2027.</p>
+    <p style="font-size:14px;color:var(--gd2);margin:0 0 26px;max-width:640px;line-height:1.6;">Das bekommst du bei AssistCoach. <strong>Gäste und Basic sind immer kostenlos.</strong> Basic +, Advanced und Verein sind <strong>bis 30.06.2027 kostenlos nutzbar</strong>, danach folgen Preise. Pro ist noch in Arbeit. Die Stufen und Übungsgrenzen gelten ab dem 1. Januar 2027.</p>
     <div class="offer-grid">
       <div class="home-card home-card--catalog offer-card">
         <div class="home-card-num">GAST</div>
@@ -957,7 +957,7 @@
         <div class="home-card-num">PRO</div>
         <div class="home-card-title">Pro</div>
         <div class="offer-sub">Das volle Paket</div>
-        <div class="offer-badge offer-badge--soon">Bis 30.06.2027 kostenlos nutzbar<br><span>Preis folgt</span></div>
+        <div class="offer-badge offer-badge--wip">Work in progress</div>
         <ul class="offer-list">
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Voller Zugriff auf <strong>alle Funktionen</strong></span></li>
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Zugriff auf <strong>alle Übungen</strong></span></li>
@@ -1107,7 +1107,7 @@
       <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Trainingspläne, Notizen zu Übungen und Kalender</p>
       <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Gespeicherte Trainingspläne, Notizen zu einzelnen Übungen im Plan und Langzeitplanungsblöcke werden Ihrem Konto zugeordnet und sind nur für Sie sichtbar. Wenn Sie einen Plan im Kalender ablegen, wird eine Kopie des Plans (inklusive Ihrer Notizen und der zugeordneten Trainer:innen) mit Datum in der Datenbank gespeichert; auch sie ist nur für Ihr Konto sichtbar. Beim Veröffentlichen eines Plans werden Ihre Notizen nicht mitübertragen. Die Kalendereinträge können Sie jederzeit löschen. Rechtsgrundlage ist die Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO).</p>
       <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Angebote und Nutzungsstufen</p>
-      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Die App bietet verschiedene Nutzungsstufen mit unterschiedlichem Funktionsumfang an (Gäste, Basic, Basic +, Advanced, Pro, Verein). Gäste und Basic sind dauerhaft kostenlos, die weiteren Stufen sind bis zum 30.06.2027 kostenlos nutzbar. Zur Bereitstellung der Stufen wird die dem Konto zugeordnete Stufe gespeichert. Aktuell werden keine Zahlungsdaten verarbeitet. Bevor kostenpflichtige Stufen angeboten werden, ergänzen wir diese Datenschutzerklärung um die dann eingesetzten Zahlungsdienstleister und die betroffenen Daten.</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Die App bietet verschiedene Nutzungsstufen mit unterschiedlichem Funktionsumfang an (Gäste, Basic, Basic +, Advanced, Pro, Verein). Gäste und Basic sind dauerhaft kostenlos, Basic +, Advanced und Verein sind bis zum 30.06.2027 kostenlos nutzbar; die Stufe Pro befindet sich in Entwicklung. Zur Bereitstellung der Stufen wird die dem Konto zugeordnete Stufe gespeichert. Aktuell werden keine Zahlungsdaten verarbeitet. Bevor kostenpflichtige Stufen angeboten werden, ergänzen wir diese Datenschutzerklärung um die dann eingesetzten Zahlungsdienstleister und die betroffenen Daten.</p>
       <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Verein und Vereinslogo</p>
       <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Im Vereinsbereich werden Vereinsname, Logo, Sportarten sowie die E-Mail-Adressen der Vereinsmitglieder f&uuml;r den Vereinsadmin sichtbar verarbeitet. Ein Vereinslogo wird auf der Startseite &ouml;ffentlich &ndash; auch ohne Anmeldung &ndash; nur angezeigt, wenn der Vereinsadmin dem ausdr&uuml;cklich zugestimmt hat (Art. 6 Abs. 1 lit. a DSGVO). Die Zustimmung ist jederzeit widerrufbar.</p>
       <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Speicherdauer und L&ouml;schung</p>
@@ -1436,9 +1436,9 @@
     {
       page:'home',target:'#offersBtn',pos:'bottom',
       title:'Angebote',
-      text:'Hier findest du die <strong>Angebote</strong> (auch über das Zahnrad oben rechts): Gäste, Basic, Basic +, Advanced, Pro und Verein. Gäste und Basic sind immer kostenlos, alle weiteren Stufen bis 30.06.2027.',
+      text:'Hier findest du die <strong>Angebote</strong> (auch über das Zahnrad oben rechts): Gäste, Basic, Basic +, Advanced, Pro und Verein. Gäste und Basic sind immer kostenlos, Basic +, Advanced und Verein bis 30.06.2027.',
       fallbackTarget:'#cfgBtn',
-      mob:{target:'#offersBtn',fallbackTarget:'#bnavMore',text:'Hier findest du die <strong>Angebote</strong> (auch unter <strong>Mehr</strong>): Gäste, Basic, Basic +, Advanced, Pro und Verein. Gäste und Basic sind immer kostenlos, alle weiteren Stufen bis 30.06.2027.'}
+      mob:{target:'#offersBtn',fallbackTarget:'#bnavMore',text:'Hier findest du die <strong>Angebote</strong> (auch unter <strong>Mehr</strong>): Gäste, Basic, Basic +, Advanced, Pro und Verein. Gäste und Basic sind immer kostenlos, Basic +, Advanced und Verein bis 30.06.2027.'}
     },
     {
       page:'handbook',target:'button[onclick*="toggleHelpPanel"], .cfg-btn[title*="Hilfe"]',pos:'bottom',
@@ -2042,13 +2042,13 @@
       <div class="help-card-icon" style="background:#1d4ed8;">🏷️</div>
       <div>
         <div class="help-card-title">Angebote – was bekomme ich?</div>
-        <p class="help-card-text">Die Angebote-Seite zeigt alle Stufen. <strong>Gäste und Basic sind immer kostenlos</strong>, alle weiteren Stufen sind <strong>bis 30.06.2027 kostenlos nutzbar</strong> (Preis folgt). Die Stufen und Übungsgrenzen gelten ab dem 1. Januar 2027.</p>
+        <p class="help-card-text">Die Angebote-Seite zeigt alle Stufen. <strong>Gäste und Basic sind immer kostenlos</strong>, Basic +, Advanced und Verein sind <strong>bis 30.06.2027 kostenlos nutzbar</strong> (Preis folgt). Pro ist noch in Arbeit. Die Stufen und Übungsgrenzen gelten ab dem 1. Januar 2027.</p>
         <div class="help-step"><span class="help-num">1</span><span>Öffnen: Startseite → Button <strong>Angebote</strong> (neben „Einführung“), am Handy auch unter <strong>Mehr</strong>, am Desktop im Zahnrad-Menü</span></div>
         <div class="help-step"><span class="help-num">2</span><span><strong>Gäste</strong> (ohne Konto): Katalog mit 3 Übungen pro Kategorie, Trainingsplan zusammenstellen und drucken</span></div>
         <div class="help-step"><span class="help-num">3</span><span><strong>Basic</strong> (kostenloses Konto): 5 Übungen pro Kategorie, Übungen erstellen, einreichen und bewerten, Notizen zu Übungen, Verein beitreten</span></div>
         <div class="help-step"><span class="help-num">4</span><span><strong>Basic +</strong>: 10 Übungen pro Kategorie, Pläne speichern und einreichen, vollständige Plan-Bibliothek, Pläne bewerten, Kader mit Notizen, Trainerteam, Verein anlegen</span></div>
         <div class="help-step"><span class="help-num">5</span><span><strong>Advanced</strong>: 20 Übungen pro Kategorie, Kalender, Langzeitplanung mit Block-Bibliothek</span></div>
-        <div class="help-step"><span class="help-num">6</span><span><strong>Pro</strong>: voller Zugriff auf alle Funktionen und alle Übungen</span></div>
+        <div class="help-step"><span class="help-num">6</span><span><strong>Pro</strong> (in Arbeit): voller Zugriff auf alle Funktionen und alle Übungen</span></div>
         <div class="help-step"><span class="help-num">7</span><span><strong>Verein</strong>: Vereinsportal mit Logo und Zugangslinks. Der Verein wählt eine Stufe, eingeladene Trainer:innen erhalten sie (oder ihre eigene, wenn sie höher ist)</span></div>
       </div>
     </div>
