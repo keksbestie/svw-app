@@ -66,6 +66,17 @@ function _syncSportCards() {
 function _resetSportScopedState() {
   try {
     if (typeof ageFilter !== 'undefined') ageFilter = null; // Jahrgänge unterscheiden sich je Sportart
+    // Der aktuelle Trainingsplan gehört zur Sportart: beim Wechsel komplett leeren, damit nie Übungen verschiedener Sportarten vermischt werden
+    if (typeof currentPlan !== 'undefined') {
+      const hadItems = (currentPlan.lanes || []).some(l => (l || []).length);
+      currentPlan = { name: '', lanes: [[], [], [], [], [], []] };
+      if (typeof _cartParallel !== 'undefined') _cartParallel.clear();
+      if (typeof planSquadAbsent !== 'undefined') planSquadAbsent.clear();
+      const pn = document.getElementById('planName'); if (pn) pn.value = '';
+      if (typeof renderLanes === 'function') renderLanes();
+      if (typeof updatePlanCart === 'function') updatePlanCart();
+      if (hadItems && typeof showToast === 'function') showToast('Trainingsplan geleert – Sportart gewechselt');
+    }
     if (typeof selectedTags !== 'undefined') selectedTags = [];
     if (typeof activeCluster !== 'undefined') activeCluster = null;
     if (typeof clusterFilterTags !== 'undefined') clusterFilterTags = [];
