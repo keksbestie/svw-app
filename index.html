@@ -1371,11 +1371,17 @@
       mob:{target:'#page-planner .bpl.gr, #page-planner .bpl'}
     },
     {
+      page:'planner',target:'.mb[data-page="calendar"]',pos:'bottom',
+      title:'Kalender',
+      text:'Beim Speichern eines Plans kannst du die Einheit im <strong>Kalender</strong> ablegen. Dort siehst du später, was du an welchem Tag trainiert hast, öffnest den ganzen Plan und kopierst ihn auf einen neuen Tag.',
+      mob:{target:'#bnavMore',pos:'top',text:'Beim Speichern eines Plans kannst du die Einheit im <strong>Kalender</strong> ablegen (unter <strong>Mehr</strong>). Dort siehst du später, was du an welchem Tag trainiert hast, öffnest den ganzen Plan und kopierst ihn auf einen neuen Tag.'}
+    },
+    {
       page:'handbook',target:'#navKaderBtn',pos:'bottom',
       title:'Mein Kader',
-      text:'Mit Konto findest du <strong>Mein Kader</strong> oben bzw. im Einstellungsmenü: Dort legst du Spieler:innen und dein Trainerteam an und wählst vor dem Training aus, wer heute dabei ist.',
+      text:'Mit Konto findest du <strong>Mein Kader</strong> oben bzw. im Einstellungsmenü: Dort legst du Spieler:innen (mit Notizen in einer eigenen Kartei) und dein Trainerteam an und wählst vor dem Training aus, wer heute dabei ist.',
       fallbackTarget:'#cfgBtn, .topbar .cfg-row',
-      mob:{target:'#bnavMore',pos:'top',text:'Unter <strong>Mehr</strong> findest du <strong>Mein Kader</strong>: Dort legst du Spieler:innen und dein Trainerteam an und wählst vor dem Training aus, wer heute dabei ist.'}
+      mob:{target:'#bnavMore',pos:'top',text:'Unter <strong>Mehr</strong> findest du <strong>Mein Kader</strong>: Dort legst du Spieler:innen (mit Notizen in einer eigenen Kartei) und dein Trainerteam an und wählst vor dem Training aus, wer heute dabei ist.'}
     },
     {
       page:'home',target:'#offersBtn',pos:'bottom',
@@ -1579,7 +1585,16 @@
       <div class="hq-icon" style="background:#0d3b6e;">📋</div>
       <div class="hq-body">
         <div class="hq-title">Trainingsplan</div>
-        <div class="hq-text">Übungen per Drag &amp; Drop sortieren, Zeit mit − / + anpassen, Zieldauer setzen (rote Warnung bei Überschreitung), Übungen als parallel (∥) markieren, Plan speichern &amp; als PDF drucken.</div>
+        <div class="hq-text">Übungen per Drag &amp; Drop sortieren, Zeit mit − / + anpassen, Zieldauer setzen (rote Warnung bei Überschreitung), Übungen als parallel (∥) markieren, Notizen je Übung, Plan speichern &amp; als PDF drucken.</div>
+      </div>
+      <div class="hq-arrow">›</div>
+    </div>
+
+    <div class="hq-card" onclick="switchHelpTab('detail');filterHelpArea('plan')">
+      <div class="hq-icon" style="background:#0d3b6e;">📅</div>
+      <div class="hq-body">
+        <div class="hq-title">Kalender</div>
+        <div class="hq-text">Gespeicherte Trainingseinheiten pro Tag nachschlagen, ganz ansehen und als Kopie auf einen neuen Tag legen. Beim Speichern eines Plans fragt die App, ob die Einheit in den Kalender soll.</div>
       </div>
       <div class="hq-arrow">›</div>
     </div>
@@ -1691,8 +1706,34 @@
         <div class="help-step"><span class="help-num">2</span><span>Im Trainingsplan: Reihenfolge per <strong>Drag &amp; Drop</strong> (☰-Griff) anpassen</span></div>
         <div class="help-step"><span class="help-num">3</span><span>Belastungszeit pro Übung mit <strong>− / +</strong> ändern</span></div>
         <div class="help-step"><span class="help-num">4</span><span>„Speichern" (oben) → Plan mit Name sichern, bleibt nach Schließen erhalten</span></div>
-        <div class="help-step"><span class="help-num">5</span><span>Drucksymbol → Plan als PDF mit Materialliste exportieren (zugewiesene Trainer:innen stehen bei jeder Übung)</span></div>
-        <div class="help-step"><span class="help-num">6</span><span>„Leeren" → alle Übungen aus dem aktuellen Plan entfernen</span></div>
+        <div class="help-step"><span class="help-num">5</span><span><strong>📝 Notiz</strong> neben der Zeit → Freitext zu dieser Übung schreiben (z. B. Variationen oder Coaching-Punkte)</span></div>
+        <div class="help-step"><span class="help-num">6</span><span>Drucksymbol → Plan als PDF mit Materialliste exportieren (zugewiesene Trainer:innen und deine Notizen stehen bei jeder Übung)</span></div>
+        <div class="help-step"><span class="help-num">7</span><span>„Leeren" → alle Übungen aus dem aktuellen Plan entfernen</span></div>
+      </div>
+    </div>
+
+    <div class="help-card" data-area="plan" data-tags="notiz notizen übung freitext hinweise variation coaching plan druck pdf privat">
+      <div class="help-card-icon" style="background:#e65100;">📝</div>
+      <div>
+        <div class="help-card-title">Notizen zu Übungen im Plan</div>
+        <p class="help-card-text">Zu jeder Übung in deinem Trainingsplan kannst du eine eigene Notiz schreiben.</p>
+        <div class="help-step"><span class="help-num">1</span><span>Bei der Übung auf <strong>„📝 Notiz +"</strong> neben der Zeitanpassung tippen</span></div>
+        <div class="help-step"><span class="help-num">2</span><span>Text eintragen und <strong>Speichern</strong>; mit „Notiz löschen" entfernst du sie wieder</span></div>
+        <div class="help-step"><span class="help-num">3</span><span>Die Notiz steht im Plan unter der Übung und im Ausdruck/PDF</span></div>
+        <div class="help-step"><span class="help-num">4</span><span>Notizen sind privat: Beim Veröffentlichen eines Plans werden sie nicht mitgeschickt</span></div>
+      </div>
+    </div>
+
+    <div class="help-card" data-area="plan" data-tags="kalender einheit tag datum durchgeführt historie kopie neuer tag trainingseinheit speichern">
+      <div class="help-card-icon" style="background:#0d3b6e;">📅</div>
+      <div>
+        <div class="help-card-title">Kalender</div>
+        <p class="help-card-text">Hier siehst du, an welchem Tag du welche Trainingseinheit durchgeführt hast. Der Kalender gehört zu deinem Konto und ist nach Sportart getrennt.</p>
+        <div class="help-step"><span class="help-num">1</span><span>Beim <strong>Speichern eines Trainingsplans</strong> fragt ein Fenster „Im Kalender speichern?" – bei <strong>Ja</strong> wird die Einheit an dem Datum abgelegt, das auf dem Plan steht</span></div>
+        <div class="help-step"><span class="help-num">2</span><span>Menüpunkt <strong>Kalender</strong> (am Handy unter <strong>Mehr</strong>): Monatsansicht, Tage mit Einheit sind markiert</span></div>
+        <div class="help-step"><span class="help-num">3</span><span>Tag antippen → Einheiten des Tages; Einheit antippen → ganzer Plan mit Übungen, Zeiten, Trainer:innen und Notizen</span></div>
+        <div class="help-step"><span class="help-num">4</span><span><strong>Im Trainingsplan öffnen</strong> lädt die Einheit zum Weiterarbeiten; <strong>Kopie für neuen Tag</strong> legt sie an einem anderen Datum noch einmal ab; <strong>Löschen</strong> entfernt sie</span></div>
+        <div class="help-step"><span class="help-num">5</span><span>Der Kalendereintrag ist eine Kopie vom Zeitpunkt des Speicherns – spätere Änderungen am Plan verändern ihn nicht</span></div>
       </div>
     </div>
 
@@ -1925,7 +1966,7 @@
         <div class="help-step"><span class="help-num">2</span><span>Pflichtfelder ausfüllen: Name, Abschnitt, Spieler:innenzahl, Beschreibung</span></div>
         <div class="help-step"><span class="help-num">3</span><span>Tags eingeben – <strong>Vorschläge</strong> aus ähnlichen Übungen werden automatisch angezeigt</span></div>
         <div class="help-step"><span class="help-num">4</span><span>Belastungsintensität und -dauer angeben</span></div>
-        <div class="help-step"><span class="help-num">5</span><span><strong>Altersstufen</strong> wählen (Pflicht) – zwei Jahrgänge antippen markiert alles dazwischen (z. B. U9 und U13 ergibt U9–U13); „Alle auswählen" wählt jede Altersstufe</span></div>
+        <div class="help-step"><span class="help-num">5</span><span><strong>Altersstufen</strong> wählen (Pflicht) – zwei Jahrgänge antippen markiert alles dazwischen (z. B. U9 und U13 ergibt U9–U13); „Alle auswählen" wählt jede Altersstufe. Die Jahrgänge hängen von der Sportart ab: <em>Fußball und Tennis</em> U7, U9 … U19, <em>Volleyball</em> U12, U14, U16, U18, U20; dazu jeweils Erwachsene</span></div>
         <div class="help-step"><span class="help-num">6</span><span>Felddiagramm im Editor zeichnen (Pflicht, steht in der Checkliste)</span></div>
         <div class="help-step"><span class="help-num">7</span><span>„Einreichen" → wird geprüft und freigeschaltet</span></div>
         <div class="help-step"><span class="help-num">8</span><span>Solange eine Einreichung aussteht, kannst du sie unter „Meine Einreichungen" <strong>bearbeiten</strong> (Zeichnung, Altersstufen und Material bleiben erhalten) oder <strong>zurückziehen</strong></span></div>
@@ -2037,6 +2078,8 @@
         <div class="help-step"><span class="help-num">2</span><span><strong>+ Spieler:in</strong> → Name, Rückennummer, Position und Altersgruppe eintragen</span></div>
         <div class="help-step"><span class="help-num">3</span><span>Spieler:in anklicken → Daten bearbeiten oder löschen</span></div>
         <div class="help-step"><span class="help-num">4</span><span>Kader wird automatisch im Trainingsplan verfügbar (Dropdown oben)</span></div>
+        <div class="help-step"><span class="help-num">5</span><span><strong>Kartei mit Notizen:</strong> In der Karte einer Spielerin oder eines Spielers gibt es den Bereich „📝 Notizen". Datum wählen (Standard heute), Text schreiben, <strong>Notiz hinzufügen</strong>. Notiz antippen zum Auf-/Zuklappen, 🗑 zum Löschen</span></div>
+        <div class="help-step"><span class="help-num">6</span><span>Die Notizen sieht <strong>nur dein Konto</strong>. Bitte keine Gesundheitsdaten oder Diagnosen eintragen</span></div>
       </div>
     </div>
 
