@@ -1021,6 +1021,9 @@ body:not(.on-home) .home-topbar { display: none; }
 .pi-ovr-wrap { display:inline-flex;align-items:center;gap:2px;cursor:default; }
 .pi-ovr-in { border:none;background:transparent;font-size:inherit;font-weight:inherit;color:inherit;font-family:inherit;padding:0;min-width:20px;outline:none;border-bottom:1px dashed currentColor; }
 .pi-ovr-in:focus { border-bottom:1px solid currentColor;background:rgba(0,0,0,.06);border-radius:3px; }
+.pi-note-btn { border:none;cursor:pointer;background:var(--surface-2);color:var(--text-2);font-family:inherit;border:1px dashed var(--border); }
+.pi-note-btn.has { background:#fff3e0;color:#e65100;border:1px solid #ffcc80; }
+.pi-note-prev { font-size:11px;color:var(--text-2);margin-top:5px;padding:4px 8px;border-left:3px solid #e65100;background:rgba(230,81,0,.08);white-space:pre-wrap;word-break:break-word;max-height:3.6em;overflow:hidden; }
 .pi-ovr-rst { background:none;border:none;cursor:pointer;color:inherit;opacity:.5;font-size:11px;padding:0 1px;line-height:1; }
 .pi-ovr-rst:hover { opacity:1; }
 .pi-dur-step { background:rgba(26,86,196,.15);border:none;cursor:pointer;color:#1a56c4;font-size:13px;font-weight:700;line-height:1;padding:1px 5px;border-radius:4px;transition:background .1s; }

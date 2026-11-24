@@ -93,7 +93,7 @@ async function submitPlanForReview(id){
     author_name:_publicAuthorName('Trainer:in'),
     name:plan.name,
     date:plan.date,
-    lanes:plan.lanes,
+    lanes:plan.lanes.map(l=>(l||[]).map(r=>{if(r&&typeof r==='object'){const {notes,...rest}=r;return rest;}return r;})), // private Notizen nicht veröffentlichen
     totals:plan.totals,
     sport:_planSport(plan),
     status:'pending',
