@@ -263,7 +263,11 @@ function loadTemplate(tpl){
 // ══════════════════════════════════════════════════════
 function clearPlan(){
   if(!confirm('Trainingsplan leeren? Alle Übungen werden entfernt.')) return;
-  currentPlan.lanes=[[],[],[],[],[]];
+  // Komplett neu beginnen: Übungen, Titel, Datum und alle Markierungen zurücksetzen (nichts vom vorher geöffneten Plan bleibt)
+  currentPlan={name:'',lanes:[[],[],[],[],[],[]]};
+  const pn=document.getElementById('planName'); if(pn) pn.value='';
+  const pd=document.getElementById('planDate'); if(pd) pd.value=new Date().toISOString().slice(0,10);
+  if(typeof _cartParallel!=='undefined') _cartParallel.clear();
   if(typeof planSquadAbsent!=='undefined') planSquadAbsent.clear();
   save();
   renderPlanner();
