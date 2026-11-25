@@ -564,6 +564,12 @@
       </div>
       <div class="queue-cards" id="queueCards"></div>
     </div>
+    <div id="adminBlockQueueWrap" class="page-section" style="display:none;">
+      <div class="page-section-divider"></div>
+      <div class="queue-title">Admin-Warteschlange – Blöcke</div>
+      <div class="queue-sub">Eingereichte Blöcke (anonymisiert) zur Prüfung und Freigabe.</div>
+      <div id="adminBlockQueue" style="margin-top:16px;display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
     <div id="adminPlanQueueWrap" class="page-section" style="display:none;">
       <div class="page-section-divider"></div>
       <div class="queue-title">Admin-Warteschlange – Trainingspläne</div>
@@ -703,6 +709,7 @@
           <p style="font-size:12px;color:var(--text-3);margin-top:2px;">Gespeicherte Blöcke für spätere Verwendung</p>
         </div>
       </div>
+      <div id="ltpPublicBlocks"></div>
       <div id="ltpLibGrid"></div>
     </div>
   </div>
@@ -1106,6 +1113,8 @@
       <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Trainer:innen können weitere Trainer:innen und Co-Trainer:innen mit Name und Rolle in einer Liste anlegen und diese einzelnen Übungen in ihren Trainingsplänen zuordnen. Die Liste ist nur für das anlegende Konto sichtbar und ein Zwischenspeicher davon liegt im Browser. Verantwortlich für die Zulässigkeit der Angaben ist die nutzende Person.</p>
       <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Trainingspläne, Notizen zu Übungen und Kalender</p>
       <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Gespeicherte Trainingspläne, Notizen zu einzelnen Übungen im Plan und Langzeitplanungsblöcke werden Ihrem Konto zugeordnet und sind nur für Sie sichtbar. Wenn Sie einen Plan im Kalender ablegen, wird eine Kopie des Plans (inklusive Ihrer Notizen und der zugeordneten Trainer:innen) mit Datum in der Datenbank gespeichert; auch sie ist nur für Ihr Konto sichtbar. Beim Veröffentlichen eines Plans werden Ihre Notizen nicht mitübertragen. Die Kalendereinträge können Sie jederzeit löschen. Rechtsgrundlage ist die Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO).</p>
+      <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Blöcke einreichen und Kalender</p>
+      <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Wenn Sie einen Langzeitplanungs-Block einreichen, wird nicht der Block selbst, sondern eine anonymisierte Fassung übertragen: Aufbau aus Wochen, Tagen und Zeitfenstern sowie die verknüpften Trainingspläne. Notizen, Namen, Gegnerbezeichnungen, Zuordnungen von Trainer:innen und Datumsangaben werden vor der Übertragung entfernt; Sie sehen vorab eine Vorschau. Nach Prüfung wird der Block anderen angemeldeten Nutzer:innen in der Block-Bibliothek angezeigt. Ihr Benutzername wird nur angezeigt, wenn Sie dies in „Mein Account“ aktiviert haben. Wenn Sie einen Block im Kalender speichern, werden die Tage (inklusive Ihrer Notizen) mit Datum in der Datenbank gespeichert und sind nur für Ihr Konto sichtbar. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, für die Namensanzeige Art. 6 Abs. 1 lit. a DSGVO.</p>
       <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Angebote und Nutzungsstufen</p>
       <p style="font-size:13px;color:var(--gd2);line-height:1.6;margin:0 0 10px;">Die App bietet verschiedene Nutzungsstufen mit unterschiedlichem Funktionsumfang an (Gäste, Basic, Basic +, Advanced, Pro, Verein). Gäste und Basic sind dauerhaft kostenlos, Basic +, Advanced und Verein sind bis zum 30.06.2027 kostenlos nutzbar; die Stufe Pro befindet sich in Entwicklung. Zur Bereitstellung der Stufen wird die dem Konto zugeordnete Stufe gespeichert. Aktuell werden keine Zahlungsdaten verarbeitet. Bevor kostenpflichtige Stufen angeboten werden, ergänzen wir diese Datenschutzerklärung um die dann eingesetzten Zahlungsdienstleister und die betroffenen Daten.</p>
       <p style="font-size:13px;font-weight:600;margin:0 0 6px;">Verein und Vereinslogo</p>
@@ -2181,6 +2190,9 @@
         <div class="help-step"><span class="help-num">3</span><span>Block anklicken → Wochen und Trainingseinheiten bearbeiten</span></div>
         <div class="help-step"><span class="help-num">4</span><span>Belastungsverlauf (Hoch / Mittel / Niedrig) wird farblich dargestellt</span></div>
         <div class="help-step"><span class="help-num">5</span><span><strong>Tage hinzufügen:</strong> „+ Tag" öffnet eine Auswahl, in der du <strong>mehrere Tage</strong> auf einmal markierst und mit „Tage hinzufügen" bestätigst. In der ersten Woche werden sie direkt angelegt. Ab der zweiten Woche wählst du Schritt für Schritt pro Tag „Leerer Tag“ oder einen Tag aus einer früheren Woche als Vorlage (die gewählte Karte ist grün markiert) und kannst mit „Zurück“ zum vorigen Tag.</span></div>
+        <div class="help-step"><span class="help-num">7</span><span><strong>📅 Kalender:</strong> Am Block „Kalender“ → Startdatum wählen. Alle Tage mit Einträgen werden entsprechend ihrer Wochentage im Kalender abgelegt (ein erneutes Speichern ersetzt die Einträge dieses Blocks). Im Kalender siehst du pro Tag die Zeitfenster und kannst verknüpfte Trainingspläne direkt öffnen.</span></div>
+        <div class="help-step"><span class="help-num">8</span><span><strong>📤 Einreichen:</strong> Am Block „Einreichen“ → die Vorschau zeigt, was andere sehen: nur Aufbau, Zeitfenster und Trainingspläne. <strong>Notizen, Namen, Spieltag-Gegner, Trainer:innen und Daten werden entfernt.</strong> Nach der Prüfung erscheint der Block in der Block-Bibliothek unter „Von anderen Trainer:innen“.</span></div>
+        <div class="help-step"><span class="help-num">9</span><span><strong>Blöcke anderer nutzen:</strong> In der Block-Bibliothek „Kopieren“ legt eine eigene Kopie samt Trainingsplänen an. Wer einen kopierten Block erneut einreichen will, muss den Titel ändern und mindestens einen neuen Trainingsplan einbauen.</span></div>
         <div class="help-step"><span class="help-num">6</span><span><strong>⏰ Feste Termine:</strong> Am Block gibt es den Button „Feste Termine“. Dort legst du wiederkehrende Einträge an (z. B. Frühstück 8:30–9:30, Bettruhe 22:00), wählst die Wochentage und übernimmst sie mit „Auf alle Tage übernehmen“ in alle Tage des Blocks. Neue Tage bekommen sie automatisch. Jeder übernommene Eintrag lässt sich an einzelnen Tagen ändern oder löschen (Markierung „📌 fester Termin“). Beim erneuten Übernehmen werden nur fehlende Einträge ergänzt, es sei denn, du aktivierst „auch bereits übernommene Einträge anpassen“</span></div>
       </div>
     </div>
@@ -2735,6 +2747,7 @@ function filterHelpCards(q){
 <script src="js/13-sport.js?v=20261014"></script>
 <script src="js/14-clubs.js?v=20261018"></script>
 <script src="js/15-calendar.js?v=20261124"></script>
+<script src="js/16-block-share.js?v=20261125"></script>
 <!-- Hinweis, wenn während der Nutzung eine neue Version aktiv wird -->
 <div id="updateBanner" role="status" style="display:none;position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:9100;max-width:calc(100% - 24px);align-items:center;gap:10px;padding:9px 12px;background:#1a2b1c;color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.35);font-size:13px;">
   <span>Neue Version verfügbar</span>

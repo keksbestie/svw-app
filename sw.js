@@ -1,4 +1,4 @@
-const CACHE = 'assistcoach-v243';
+const CACHE = 'assistcoach-v245';
 const ASSETS = [
   '/',
   '/index.html',
@@ -27,6 +27,7 @@ const ASSETS = [
   '/icons/tennis-ball.png',
   '/js/14-clubs.js',
   '/js/15-calendar.js',
+  '/js/16-block-share.js',
   '/js/vendor/qrcode-generator.js',
   '/icons/equip-dumbbell.png',
   '/icons/equip-bike.png',

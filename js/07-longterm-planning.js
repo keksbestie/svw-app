@@ -297,6 +297,8 @@ function renderBlockCard(blk,bi){
       </div>
       <div class="ltp-hbtns">
         <button class="ltp-hbtn ltp-hbtn--accent" onclick="openFixedEntries('${escJs(blk.id)}')" title="Feste Termine für alle Tage">⏰ Feste Termine</button>
+        <button class="ltp-hbtn" onclick="openBlockCalendar('${escJs(blk.id)}')" title="Block im Kalender speichern">📅 Kalender</button>
+        <button class="ltp-hbtn" onclick="openBlockSubmit('${escJs(blk.id)}')" title="Block einreichen (anonymisiert)">📤 Einreichen</button>
         <button class="ltp-hbtn" onclick="openSaveBlockLib('${escJs(blk.id)}')" title="Block in der Bibliothek speichern">💾 Bibliothek</button>
         <button class="ltp-hbtn ltp-hbtn--danger" onclick="deleteActiveBlock('${escJs(blk.id)}')" title="Block löschen" aria-label="Block löschen">✕</button>
       </div>
@@ -922,6 +924,7 @@ function commitSaveBlockLib(){
 
 function renderLibrary(){
   const el=document.getElementById('ltpLibGrid'); if(!el)return;
+  if(typeof renderPublicBlocks==='function') renderPublicBlocks();
   if(!currentUser){
     el.innerHTML=`<div style="text-align:center;padding:40px 20px;color:var(--text-3);">
       <div style="font-size:36px;margin-bottom:8px;">🔒</div>
