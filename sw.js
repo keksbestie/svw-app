@@ -1,9 +1,10 @@
-const CACHE = 'assistcoach-v247';
+const CACHE = 'assistcoach-v248';
 const ASSETS = [
   '/',
   '/index.html',
   '/css/styles.css',
   '/fonts/fonts.css',
+  '/icons/logo.svg',
   '/js/00-supabase.js',
   '/js/01-i18n-theme.js',
   '/js/02-core-state.js',
