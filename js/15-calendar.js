@@ -67,6 +67,13 @@ function paintCalendar() {
     ? dayList.map(e => {
       const p = e.plan || {}; const mins = _calTotalMin(p);
       const cnt = (p.lanes || []).reduce((a, l) => a + (l || []).length, 0);
+      if (p.kind === 'day') {
+        const es = p.entries || [], ts = es.map(x => x.startTime).filter(Boolean).sort();
+        return '<div class="cal-entry" onclick="openCalEntry(\'' + escJs(e.id) + '\')">'
+          + '<div style="flex:1;min-width:0;"><div style="font-weight:700;font-size:14px;">📅 ' + esc(e.name || 'Tag') + '</div>'
+          + '<div style="font-size:11px;color:var(--text-3);margin-top:2px;">' + es.length + ' Eintrag' + (es.length !== 1 ? 'e' : '') + (ts.length ? ' · ' + esc(ts[0]) + (ts.length > 1 ? ' – ' + esc(ts[ts.length - 1]) : '') : '') + '</div></div>'
+          + '<div style="color:var(--text-3);">›</div></div>';
+      }
       return '<div class="cal-entry" onclick="openCalEntry(\'' + escJs(e.id) + '\')">'
         + '<div style="flex:1;min-width:0;"><div style="font-weight:700;font-size:14px;">' + esc(e.name || p.name || 'Trainingseinheit') + '</div>'
         + '<div style="font-size:11px;color:var(--text-3);margin-top:2px;">' + cnt + ' Übung' + (cnt !== 1 ? 'en' : '') + (mins ? ' · ca. ' + mins + ' min' : '') + '</div></div>'
@@ -100,6 +107,7 @@ function _calTotalMin(p) {
 function openCalEntry(id) {
   const e = calEntries.find(x => x.id === id); if (!e) return;
   const p = e.plan || {};
+  if (p.kind === 'day') { openCalDayEntry(e); return; }
   const names = p.exNames || {};
   const sections = (p.lanes || []).map((lane, si) => {
     const items = (lane || []).map(raw => {
@@ -146,6 +154,50 @@ function openCalEntry(id) {
   m.querySelector('[data-act=copy]').onclick = () => { const b = m.querySelector('#calCopyBox'); b.style.display = ''; m.querySelector('#calCopyDate').value = _calISO(new Date()); };
   m.querySelector('[data-act=copysave]').onclick = () => copyCalEntry(id, m.querySelector('#calCopyDate').value, m);
   m.querySelector('[data-act=del]').onclick = () => deleteCalEntry(id, m);
+}
+
+// Tagesplan aus einem Block: Zeitfenster und verknüpfte Trainingspläne
+function openCalDayEntry(e) {
+  const p = e.plan || {};
+  const ico = t => t === 'training' ? _ballIcon() : t === 'game' ? '🏆' : '☕';
+  document.getElementById('calEntryModal')?.remove();
+  const m = document.createElement('div');
+  m.id = 'calEntryModal';
+  m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
+  m.onclick = ev => { if (ev.target === m) m.remove(); };
+  m.innerHTML = '<div style="background:var(--surface);border-radius:16px;max-width:560px;width:100%;max-height:88vh;overflow-y:auto;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.5);">'
+    + '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;"><div>'
+    + '<div id="cdTitle" style="font-family:Barlow Condensed,sans-serif;font-size:22px;font-weight:900;"></div>'
+    + '<div id="cdMeta" style="font-size:12px;color:var(--text-3);margin:2px 0 12px;"></div></div>'
+    + '<button type="button" data-act="close" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-3);">✕</button></div>'
+    + '<div id="cdList"></div>'
+    + '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;">'
+    + '<button type="button" class="bsc" data-act="copy" style="flex:1;">Kopie für neuen Tag</button>'
+    + '<button type="button" data-act="del" style="flex:1;padding:8px;background:none;border:1.5px solid #e53935;color:#e53935;border-radius:8px;cursor:pointer;font-weight:700;">Löschen</button></div>'
+    + '<div id="calCopyBox" style="display:none;margin-top:12px;padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2);">'
+    + '<div style="font-size:12px;color:var(--text-2);margin-bottom:8px;">Neuer Tag für die Kopie:</div>'
+    + '<div style="display:flex;gap:8px;"><input type="date" id="calCopyDate" class="fc" style="flex:1;"><button type="button" class="bpr" data-act="copysave">Kopie speichern</button></div></div></div>';
+  document.body.appendChild(m);
+  m.querySelector('#cdTitle').textContent = e.name || 'Tag';
+  m.querySelector('#cdMeta').textContent = _calDe(e.entry_date) + (p.weekLabel ? ' · ' + p.weekLabel : '');
+  const list = m.querySelector('#cdList');
+  [...(p.entries || [])].sort((a, b) => (a.startTime || '00:00').localeCompare(b.startTime || '00:00')).forEach(en => {
+    const row = document.createElement('div'); row.style.cssText = 'display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);align-items:flex-start;';
+    const t = document.createElement('div'); t.style.cssText = 'width:96px;flex-shrink:0;font-size:12px;color:var(--text-3);'; t.textContent = (en.startTime || '–') + (en.endTime ? ' – ' + en.endTime : ''); row.appendChild(t);
+    const b = document.createElement('div'); b.style.cssText = 'flex:1;min-width:0;';
+    const h = document.createElement('div'); h.style.cssText = 'font-size:13px;font-weight:700;'; h.textContent = ico(en.type) + ' ' + (en.title || ''); b.appendChild(h);
+    if (en.notes) { const n = document.createElement('div'); n.className = 'pi-note-prev'; n.style.maxHeight = 'none'; n.textContent = en.notes; b.appendChild(n); }
+    const snap = en.planId && (p.plans || {})[en.planId];
+    if (snap) { const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'bsc'; btn.style.cssText = 'margin-top:6px;padding:5px 10px;font-size:12px;'; btn.textContent = '📋 ' + snap.name + ' im Trainingsplan öffnen';
+      btn.onclick = () => { m.remove(); if (typeof resetPlanPlayerNames === 'function') resetPlanPlayerNames(); currentPlan = { name: snap.name || '', lanes: _calDeepCopy(snap.lanes || [[], [], [], [], [], []]) }; const n = document.getElementById('planName'); if (n) n.value = currentPlan.name; goPage('planner'); setTimeout(() => { const d = document.getElementById('planDate'); if (d) d.value = e.entry_date; }, 50); showToast('Plan im Trainingsplan geöffnet'); };
+      b.appendChild(btn); }
+    row.appendChild(b); list.appendChild(row);
+  });
+  if (!list.children.length) list.innerHTML = '<div style="color:var(--text-3);font-size:13px;">Keine Einträge.</div>';
+  m.querySelector('[data-act=close]').onclick = () => m.remove();
+  m.querySelector('[data-act=copy]').onclick = () => { m.querySelector('#calCopyBox').style.display = ''; m.querySelector('#calCopyDate').value = _calISO(new Date()); };
+  m.querySelector('[data-act=copysave]').onclick = () => copyCalEntry(e.id, m.querySelector('#calCopyDate').value, m);
+  m.querySelector('[data-act=del]').onclick = () => deleteCalEntry(e.id, m);
 }
 
 function openCalEntryInPlanner(id) {

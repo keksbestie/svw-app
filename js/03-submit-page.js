@@ -105,9 +105,10 @@ async function renderSubmitPage(){
     _renderMySubmissionsFromCache();
     loadMySubmittedPlans();
     const canReview=IS_ADMIN||IS_REVIEWER;
-    if(canReview){ _renderAdminQueueFromCache(); loadAdminPlanQueue(); }
+    if(canReview){ _renderAdminQueueFromCache(); loadAdminPlanQueue(); if(typeof loadAdminBlockQueue==='function') loadAdminBlockQueue(); }
     document.getElementById('adminQueueWrap').style.display = canReview ? 'block' : 'none';
     document.getElementById('adminPlanQueueWrap').style.display = canReview ? 'block' : 'none';
+    { const bw=document.getElementById('adminBlockQueueWrap'); if(bw) bw.style.display = canReview ? 'block' : 'none'; }
     // Canvas wird per Button im fieldOverlay geöffnet
   }
   if(typeof _updateFieldTypeOptions==='function') _updateFieldTypeOptions();
@@ -311,6 +312,7 @@ async function doLogout(){
   if(typeof coaches!=='undefined') coaches=[];
   if(typeof playerNotes!=='undefined') playerNotes=[];
   if(typeof calEntries!=='undefined') calEntries=[];
+  if(typeof _pubBlocks!=='undefined') _pubBlocks=[];
   if(typeof resetPlanPlayerNames==='function') resetPlanPlayerNames();
   if(typeof blockLibrary!=='undefined') blockLibrary=blockLibrary.filter(b=>!b._dbId); // nur lokal noch nicht gesicherte Einträge behalten
   currentUser=null; IS_ADMIN=false; IS_REVIEWER=false; REVIEWER_SPORTS=[];
