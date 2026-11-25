@@ -465,58 +465,82 @@ function deleteActiveBlock(blockId){
 // ── DAY MANAGEMENT ──
 function addDayToWeek(blockId,wi){
   const blk=ltpBlocks.find(b=>b.id===blockId); if(!blk)return;
-  const week=blk.weeks[wi];
   const dayNames=['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
-  // Show day picker inline
-  const existing=week.days.map(d=>d.label);
-  const available=dayNames.filter(d=>!existing.includes(d));
-  // Build quick-picker
-  const picker=document.createElement('div');
-  picker.id='dayPicker-'+blockId+'-'+wi;
-  picker.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,.3);min-width:260px;';
-  picker.innerHTML=`<div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;margin-bottom:12px;color:var(--text-1);">Tag auswählen</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px;">
-      ${dayNames.map(d=>`<button onclick="pickDay('${escJs(blockId)}',${wi},'${d}',this.closest('[id]'))" style="padding:9px;border-radius:7px;border:1px solid var(--border);background:${existing.includes(d)?'var(--surface-2)':'var(--surface)'};color:${existing.includes(d)?'var(--text-3)':'var(--text-1)'};font-weight:700;font-size:12px;cursor:pointer;">${d}</button>`).join('')}
-    </div>
-    <button onclick="this.parentElement.remove()" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:7px;background:none;cursor:pointer;font-size:12px;color:var(--text-2);">Abbrechen</button>`;
-  // Add backdrop
-  const bd=document.createElement('div');
-  bd.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:9998;';
-  bd.onclick=()=>{picker.remove();bd.remove();};
-  document.body.appendChild(bd);
-  document.body.appendChild(picker);
+  const existing=(blk.weeks[wi].days||[]).map(d=>d.label);
+  document.getElementById('dayPickModal')?.remove();
+  const m=document.createElement('div');
+  m.id='dayPickModal';
+  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
+  m.onclick=ev=>{if(ev.target===m)m.remove();};
+  m.innerHTML='<div style="background:var(--surface);border-radius:16px;max-width:400px;width:100%;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.4);">'
+    +'<div style="font-family:Barlow Condensed,sans-serif;font-size:22px;font-weight:900;margin-bottom:2px;">Tage auswählen</div>'
+    +'<div style="font-size:12px;color:var(--text-3);margin-bottom:14px;">Du kannst mehrere Tage auf einmal wählen.</div>'
+    +'<div id="dpGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;"></div>'
+    +'<button type="button" class="bpr" data-act="ok" style="width:100%;" disabled>Tage hinzufügen</button>'
+    +'<button type="button" class="bsc" data-act="cancel" style="width:100%;margin-top:8px;">Abbrechen</button></div>';
+  document.body.appendChild(m);
+  const grid=m.querySelector('#dpGrid'), okBtn=m.querySelector('[data-act=ok]'), chosen=new Set();
+  const refresh=()=>{ okBtn.disabled=!chosen.size; okBtn.textContent=chosen.size?(chosen.size===1?'1 Tag hinzufügen':chosen.size+' Tage hinzufügen'):'Tage hinzufügen'; };
+  dayNames.forEach(d=>{
+    const b=document.createElement('button'); b.type='button'; b.textContent=d;
+    const taken=existing.includes(d);
+    const paint=()=>{ const on=chosen.has(d);
+      b.style.cssText='padding:11px 8px;border-radius:10px;font-family:inherit;font-size:14px;font-weight:700;cursor:'+(taken?'not-allowed':'pointer')+';border:1.5px solid '+(on?'var(--accent)':'var(--border)')+';background:'+(on?'var(--accent)':'var(--surface-2)')+';color:'+(on?'#fff':taken?'var(--text-3)':'var(--text-1)')+';opacity:'+(taken?'.45':'1')+';'; };
+    if(taken){ b.disabled=true; b.title='Dieser Tag ist schon vorhanden'; }
+    else b.onclick=()=>{ chosen.has(d)?chosen.delete(d):chosen.add(d); paint(); refresh(); };
+    paint(); grid.appendChild(b);
+  });
+  m.querySelector('[data-act=cancel]').onclick=()=>m.remove();
+  okBtn.onclick=()=>{ const names=dayNames.filter(d=>chosen.has(d)); m.remove(); _addDaysFlow(blk,wi,names); };
 }
 
-function pickDay(blockId,wi,dayName,pickerEl){
-  const blk=ltpBlocks.find(b=>b.id===blockId); if(!blk)return;
-  // Remove picker+backdrop
-  document.querySelectorAll('[style*="z-index:9999"],[style*="z-index:9998"]').forEach(e=>e.remove());
-  // Erste Woche: einfach den leeren Tag anlegen, ohne Nachfrage.
-  // Ab der zweiten Woche: Tage früherer Wochen als Vorlage anbieten (nur wenn es welche gibt).
+// Gewählte Tage anlegen. Erste Woche: ohne Nachfrage. Ab der zweiten Woche: je Tag Vorlage aus früheren Wochen anbieten.
+function _addDaysFlow(blk,wi,names){
+  if(!names||!names.length) return;
   const sources=[];
   blk.weeks.forEach((w,wi2)=>{ if(wi2<wi) (w.days||[]).forEach(d=>sources.push({d,wk:w.label||('Woche '+(wi2+1))})); });
-  const addEmpty=()=>{ blk.weeks[wi].days.push({id:uid(),label:dayName,entries:[]}); save(); renderLtp(); };
-  if(wi===0||!sources.length){ addEmpty(); return; }
-  _openDayTemplateChooser(dayName,sources,
-    src=>{ const c=JSON.parse(JSON.stringify(src)); c.id=uid(); c.label=dayName; blk.weeks[wi].days.push(c); save(); renderLtp(); },
-    addEmpty);
+  const addEmpty=n=>blk.weeks[wi].days.push({id:uid(),label:n,entries:[]});
+  const finish=()=>{ save(); renderLtp(); };
+  if(wi===0||!sources.length){ names.forEach(addEmpty); finish(); return; }
+  let i=0;
+  const next=()=>{
+    if(i>=names.length){ finish(); return; }
+    const n=names[i++];
+    _openDayTemplateChooser(n,sources,
+      src=>{ const c=JSON.parse(JSON.stringify(src)); c.id=uid(); c.label=n; blk.weeks[wi].days.push(c); next(); },
+      ()=>{ addEmpty(n); next(); },
+      {pos:i,total:names.length,
+       onAllEmpty:()=>{ addEmpty(n); while(i<names.length) addEmpty(names[i++]); finish(); },
+       onCancel:finish});
+  };
+  next();
+}
+
+function pickDay(blockId,wi,dayName){
+  const blk=ltpBlocks.find(b=>b.id===blockId); if(!blk)return;
+  _addDaysFlow(blk,wi,[dayName]);
 }
 
 // Auswahl, ob ein neuer Tag aus einem Tag einer früheren Woche übernommen werden soll
-function _openDayTemplateChooser(dayName,sources,onPick,onEmpty){
+function _openDayTemplateChooser(dayName,sources,onPick,onEmpty,opt){
+  opt=opt||{};
   document.getElementById('dayTplModal')?.remove();
   const m=document.createElement('div');
   m.id='dayTplModal';
   m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
-  m.onclick=ev=>{if(ev.target===m)m.remove();};
+  const cancel=()=>{ m.remove(); if(opt.onCancel) opt.onCancel(); };
+  m.onclick=ev=>{if(ev.target===m)cancel();};
   m.innerHTML='<div style="background:var(--surface);border-radius:16px;max-width:460px;width:100%;max-height:88vh;overflow-y:auto;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.4);">'
+    +'<div id="dtStep" style="font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:2px;"></div>'
     +'<div style="font-family:Barlow Condensed,sans-serif;font-size:22px;font-weight:900;margin-bottom:2px;" id="dtTitle"></div>'
     +'<div style="font-size:13px;color:var(--text-2);margin-bottom:14px;line-height:1.5;">Möchtest du einen Tag aus einer früheren Woche als Vorlage übernehmen?</div>'
     +'<div id="dtList" style="display:grid;gap:8px;margin-bottom:14px;"></div>'
     +'<button type="button" class="bpr" data-act="empty" style="width:100%;">Leeren Tag anlegen</button>'
+    +'<button type="button" class="bsc" data-act="allempty" style="width:100%;margin-top:8px;display:none;">Alle übrigen Tage leer anlegen</button>'
     +'<button type="button" class="bsc" data-act="cancel" style="width:100%;margin-top:8px;">Abbrechen</button></div>';
   document.body.appendChild(m);
   m.querySelector('#dtTitle').textContent=dayName+' hinzufügen';
+  if(opt.total>1){ m.querySelector('#dtStep').textContent='Tag '+opt.pos+' von '+opt.total; if(opt.pos<opt.total){ const ae=m.querySelector('[data-act=allempty]'); ae.style.display=''; ae.onclick=()=>{ m.remove(); opt.onAllEmpty(); }; } }
   const list=m.querySelector('#dtList');
   sources.forEach(({d,wk})=>{
     const b=document.createElement('button'); b.type='button';
@@ -529,7 +553,7 @@ function _openDayTemplateChooser(dayName,sources,onPick,onEmpty){
     list.appendChild(b);
   });
   m.querySelector('[data-act=empty]').onclick=()=>{ m.remove(); onEmpty(); };
-  m.querySelector('[data-act=cancel]').onclick=()=>m.remove();
+  m.querySelector('[data-act=cancel]').onclick=cancel;
 }
 
 function deleteDay(blockId,wi,di){
