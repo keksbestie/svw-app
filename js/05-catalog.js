@@ -287,7 +287,7 @@ function saveDesc(){
 function renderSection(){
   const s=SECS[activeSec];const col=s.color;
 
-  const sEx=sportExercises().filter(e=>e.section===activeSec);
+  const sEx=sportExercises().filter(e=>e.section===activeSec&&e.status!=='pending'&&e.status!=='review');
   const q=(document.getElementById(`ss${activeSec}`)||{value:''}).value||'';
 
   // ── FILTER: cluster (OR) + individual tags (AND) + text ──

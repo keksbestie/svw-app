@@ -27,7 +27,38 @@ async function init(){
   updateApiBar();
   if(typeof updateSignInBtn==='function') updateSignInBtn();
   if(typeof loadSquad==='function') loadSquad();
-  setInterval(()=>{if(apiOnline)silentSync();},60000);
+  // Hintergrund-Abgleich: jede Minute, aber nur solange der Tab sichtbar ist.
+  // Beim Zurückkehren in den Tab wird sofort nachgeholt, wenn der letzte Abgleich älter als eine Minute ist.
+  // Verbindung verloren → Offline-Modus; Verbindung wieder da → neu verbinden (auch wenn der Start offline war)
+  window.addEventListener('offline',()=>{apiOnline=false; setStat('err'); updateApiBar();});
+  window.addEventListener('online',()=>{reconnectAPI();});
+  setInterval(()=>{if(document.hidden)return; if(apiOnline)silentSync(); else if(navigator.onLine!==false)reconnectAPI();},SYNC_INTERVAL_MS);
+  document.addEventListener('visibilitychange',()=>{
+    if(!document.hidden&&apiOnline&&Date.now()-_lastSyncAt>=SYNC_INTERVAL_MS) silentSync();
+  });
+}
+// Stellt die Verbindung wieder her. Lädt bei Bedarf die Supabase-Bibliothek nach (CDN war blockiert/offline)
+// und lädt Änderungen hoch, die offline gemacht wurden.
+let _reconnecting=false;
+async function reconnectAPI(){
+  if(_reconnecting) return apiOnline;
+  _reconnecting=true;
+  try{
+    if(!(await ensureSupabase())) return false;
+    // War diese Sitzung schon einmal verbunden, ist der Stand der Datenbank bekannt:
+    // dann zuerst die offline gemachten Änderungen hochladen, danach neu laden.
+    if(currentUser&&_planIdsInDb!==null){
+      apiOnline=true; await saveAPI();
+      if(apiOnline) await silentSync();
+    } else {
+      setStat('loading');
+      const ok=await loadAPI();
+      if(ok){ renderStbar(); renderSection(); renderSavedPlans(); renderLtp(); }
+      if(typeof updateSignInBtn==='function') updateSignInBtn();
+      if(ok&&typeof loadSquad==='function') loadSquad();
+    }
+    return apiOnline;
+  }finally{ _reconnecting=false; updateApiBar(); }
 }
 function hideLS(){const l=document.getElementById('ls');l.classList.add('fade');setTimeout(()=>l.style.display='none',400);}
 
@@ -218,10 +249,30 @@ async function _syncOwned(kind){
   return ok;
 }
 
+// Eigene, noch nicht freigegebene Übungen bleiben im Plan nutzbar (nicht im Katalog sichtbar, siehe renderSection)
+async function _mergeOwnPending(user){
+  if(!user||!_supabase) return;
+  try{
+    const {data}=await _supabase.from('exercises').select('*').eq('created_by',user.id).in('status',['pending','review']);
+    (data||[]).forEach(r=>{ if(!exercises.some(e=>e.id===r.id)) exercises.push(mapExercise(r)); });
+  }catch(e){}
+}
+// Netzwerkfehler (offline, Server/CDN nicht erreichbar) – im Gegensatz zu „nicht angemeldet“
+function _isNetErr(e){
+  if(!e) return false;
+  if(typeof navigator!=='undefined'&&navigator.onLine===false) return true;
+  return e.name==='AuthRetryableFetchError'||e.name==='TypeError'||!e.status||e.status>=500;
+}
 async function loadAPI(){
   if(!_supabase)return false;
   try{
-    const {data:{user}}=await _supabase.auth.getUser();
+    const res=await _supabase.auth.getUser();
+    let user=res.data&&res.data.user;
+    if(!user&&res.error&&_isNetErr(res.error)){
+      // Server nicht erreichbar: angemeldet bleiben (Sitzung aus dem lokalen Speicher), aber offline arbeiten
+      currentUser=await _offlineSessionUser();
+      throw res.error;
+    }
     currentUser=user; IS_ADMIN=false;
     if(user){
       const {data:profile}=await _supabase.from('profiles').select('role,reviewer_sports,club_id,club_role').eq('id',user.id).single();
@@ -236,7 +287,8 @@ async function loadAPI(){
     const {data:exData,error:exErr}=await _supabase.from('exercises').select('*').eq('status','approved');
     if(exErr)throw exErr;
     // Only overwrite local exercises if Supabase actually has data
-    if(exData&&exData.length>0) exercises=exData.map(mapExercise);
+    if(exData&&exData.length>0){ exercises=exData.map(mapExercise); _rememberExStamps(exData); }
+    await _mergeOwnPending(user);
     const {data:descData}=await _supabase.from('section_descs').select('*');
     if(descData&&descData.length>0){
       descData.forEach(r=>{if(r.section_idx>=0&&r.section_idx<6)sectionDescs[r.section_idx]=r.description||'';});
@@ -246,17 +298,67 @@ async function loadAPI(){
       if(typeof syncBlockLibrary==='function') await syncBlockLibrary();
     }
     if(typeof loadRatings==='function') await loadRatings();
-    apiOnline=true; setStat('ok'); cacheLocal();
+    apiOnline=true; setStat('ok'); cacheLocal(); _lastSyncAt=Date.now();
     // Rolle (Admin/Reviewer) und Übungen sind jetzt bekannt → Sportkarten sofort neu bewerten
     if(typeof refreshSportAvailability==='function') refreshSportAvailability();
     return true;
   }catch(e){apiOnline=false; setStat('err'); return false;}
 }
+// ── Inkrementeller Katalog-Abgleich ──
+// Statt jede Minute den kompletten Katalog inkl. Bilder und Felddiagramme (select('*')) zu laden,
+// holt silentSync nur die Liste „id + updated_at“ der freigegebenen Übungen. Vollständige Zeilen
+// werden nur für neue oder geänderte Übungen nachgeladen; nicht mehr freigegebene fallen weg.
+// Fehlt die Spalte updated_at in der Datenbank, wird wie bisher der ganze Katalog geladen.
+const SYNC_INTERVAL_MS=60000;
+let _exStamps=new Map();   // id → {at: updated_at vom Server, obj: zugehöriges Objekt in exercises}
+let _exStampsSupported=true, _lastSyncAt=0, _silentRunning=false;
+function _rememberExStamps(rows){
+  const byId=new Map(exercises.map(e=>[e.id,e]));
+  _exStamps=new Map();
+  rows.forEach(r=>{ if(r.updated_at) _exStamps.set(r.id,{at:r.updated_at,obj:byId.get(r.id)}); });
+}
+async function _syncCatalog(){
+  if(_exStampsSupported){
+    const {data:list,error}=await _supabase.from('exercises').select('id,updated_at').eq('status','approved');
+    if(!error&&list){
+      if(!list.length) return false; // wie bisher: leere Antwort überschreibt den lokalen Katalog nicht
+      const local=new Map(exercises.map(e=>[e.id,e]));
+      // neu oder geändert: unbekannter Zeitstempel, anderer Zeitstempel oder lokal ersetztes Objekt
+      const stale=list.filter(r=>{const k=_exStamps.get(r.id);return !k||!r.updated_at||k.at!==r.updated_at||!local.has(r.id)||local.get(r.id)!==k.obj;}).map(r=>r.id);
+      const fresh=new Map();
+      for(let i=0;i<stale.length;i+=100){ // in Paketen, damit die URL nicht zu lang wird
+        const {data:rows,error:e2}=await _supabase.from('exercises').select('*').eq('status','approved').in('id',stale.slice(i,i+100));
+        if(e2) throw e2;
+        (rows||[]).forEach(r=>fresh.set(r.id,r));
+      }
+      const ids=new Set(list.map(r=>r.id));
+      const removed=exercises.some(e=>!ids.has(e.id));
+      if(!fresh.size&&!removed&&exercises.length===list.length) return false; // nichts geändert
+      // Reihenfolge der Server-Liste beibehalten; unveränderte Übungen behalten ihr bestehendes Objekt
+      exercises=list.map(r=>fresh.has(r.id)?mapExercise(fresh.get(r.id)):local.get(r.id)).filter(Boolean);
+      const byId=new Map(exercises.map(e=>[e.id,e]));
+      list.forEach(r=>{
+        if(fresh.has(r.id)) r=fresh.get(r.id);
+        if(r.updated_at) _exStamps.set(r.id,{at:r.updated_at,obj:byId.get(r.id)}); else _exStamps.delete(r.id);
+      });
+      [..._exStamps.keys()].forEach(id=>{if(!ids.has(id))_exStamps.delete(id);});
+      return true;
+    }
+    if(error&&/updated_at/.test(error.message||'')){
+      _exStampsSupported=false;
+      console.warn('exercises.updated_at fehlt – Katalog wird vollständig geladen. Siehe docs/sql/exercises-updated-at.sql');
+    } else if(error) throw error;
+  }
+  const {data:exData}=await _supabase.from('exercises').select('*').eq('status','approved');
+  if(exData&&exData.length>0){ exercises=exData.map(mapExercise); return true; }
+  return false;
+}
 async function silentSync(){
-  if(!_supabase)return;
+  if(!_supabase||_silentRunning)return;
+  _silentRunning=true; _lastSyncAt=Date.now();
   try{
-    const {data:exData}=await _supabase.from('exercises').select('*').eq('status','approved');
-    if(exData&&exData.length>0) exercises=exData.map(mapExercise);
+    await _syncCatalog();
+    await _mergeOwnPending(currentUser);
     const {data:descData}=await _supabase.from('section_descs').select('*');
     if(descData&&descData.length>0){
       descData.forEach(r=>{if(r.section_idx>=0&&r.section_idx<6)sectionDescs[r.section_idx]=r.description||'';});
@@ -269,7 +371,8 @@ async function silentSync(){
     if(typeof renderSavedPlans==='function') renderSavedPlans();
     if(typeof renderLtp==='function'&&typeof activeLtpTab!=='undefined'&&activeLtpTab===0) renderLtp();
     if(typeof refreshSportAvailability==='function') refreshSportAvailability();
-  }catch{apiOnline=false; setStat('err');}
+  }catch{apiOnline=false; setStat('err'); updateApiBar();}
+  finally{_silentRunning=false;}
 }
 async function saveAPI(){
   if(!_supabase||!currentUser||!apiOnline)return;
@@ -291,7 +394,7 @@ async function saveAPI(){
   }catch(e){apiOnline=false; setStat('err'); showToast('Speichern fehlgeschlagen','warn');}
   finally{_syncRunning=false; if(_syncAgain){_syncAgain=false; setTimeout(saveAPI,300);}}
 }
-async function retryConn(){const ok=await loadAPI();if(ok){showToast('Verbunden');renderSection();renderSavedPlans();renderLtp();}else showToast('Verbindung fehlgeschlagen','err');updateApiBar();}
+async function retryConn(){const ok=await reconnectAPI();if(ok)showToast('Verbunden');else showToast('Verbindung fehlgeschlagen','err');}
 function applyData(d){
   exercises=d.exercises||[];sectionDescs=d.sectionDescs||defaultDescs();
   sectionCustomTags=d.sectionCustomTags||[[],[],[],[],[],[]];savedPlans=(d.savedPlans||[]).map(p=>Object.assign({},p,{lanes:_stripPN(p.lanes)}));

@@ -141,3 +141,17 @@ dass du mit Schritt 1 (Git/GitHub-Setup) anfangen möchtest. Claude Code kann
 dich live durch Installation, Konten-Setup und jeden weiteren Schritt führen,
 inklusive Testen und Fehlerbehebung in Echtzeit — das kann dieser Chat hier
 nicht leisten.
+
+---
+
+## 6. Automatische Tests
+
+Die wichtigsten Abläufe (Start, Seitenwechsel, Onboarding, Hilfe, Planer) werden
+mit Browser-Tests geprüft – ohne Internet und ohne Login:
+
+```
+npm install      # einmalig
+npm test         # startet die App lokal und prüft alles (ca. 10 Sekunden)
+```
+
+Die Tests liegen in `tests/app.spec.js`.

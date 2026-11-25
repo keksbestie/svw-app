@@ -1,0 +1,12 @@
+{
+  "name": "svw-app",
+  "private": true,
+  "description": "AssistCoach – automatische Browser-Tests (npm test)",
+  "scripts": {
+    "start": "npx --yes serve -l 3000 .",
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0"
+  }
+}
