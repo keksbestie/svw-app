@@ -1765,12 +1765,13 @@
     <div class="help-card" data-area="plan" data-tags="notiz notizen übung freitext hinweise variation coaching plan druck pdf privat">
       <div class="help-card-icon" style="background:#e65100;">📝</div>
       <div>
-        <div class="help-card-title">Notizen zu Übungen im Plan</div>
+        <div class="help-card-title">Notizen und Spielernamen im Plan</div>
         <p class="help-card-text">Zu jeder Übung in deinem Trainingsplan kannst du eine eigene Notiz schreiben.</p>
         <div class="help-step"><span class="help-num">1</span><span>Bei der Übung auf <strong>„📝 Notiz +"</strong> neben der Zeitanpassung tippen</span></div>
         <div class="help-step"><span class="help-num">2</span><span>Text eintragen und <strong>Speichern</strong>; mit „Notiz löschen" entfernst du sie wieder</span></div>
         <div class="help-step"><span class="help-num">3</span><span>Die Notiz steht im Plan unter der Übung und im Ausdruck/PDF</span></div>
         <div class="help-step"><span class="help-num">4</span><span>Notizen sind privat: Beim Veröffentlichen eines Plans werden sie nicht mitgeschickt</span></div>
+        <div class="help-step"><span class="help-num">5</span><span><strong>👤 Spieler benennen:</strong> Übungen enthalten nur Nummern und Farben der Spieler (keine Namen im Katalog). Im Trainingsplan gibst du den Spielern einer Übung eigene Namen – eintippen oder aus dem Kader wählen. Die Namen stehen im Plan und im Ausdruck und werden beim Veröffentlichen nicht mitgeschickt</span></div>
       </div>
     </div>
 
@@ -2927,9 +2928,7 @@ if('serviceWorker' in navigator){
         <div style="width:1px;height:16px;background:rgba(255,255,255,.12);"></div>
         <span style="font-size:10px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.5px;">IM KREIS</span>
         <input id="playerLabelInput" type="text" maxlength="4" oninput="updateSelPlayerLabel(this.value)" placeholder="Nr." style="width:44px;padding:3px 7px;border-radius:5px;border:none;background:#344736;color:#fff;font-size:12px;font-weight:700;font-family:'Barlow Condensed',sans-serif;outline:none;text-align:center;">
-        <div style="width:1px;height:16px;background:rgba(255,255,255,.08);"></div>
-        <span style="font-size:10px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.5px;">NAME</span>
-        <input id="playerNameInput" type="text" maxlength="14" oninput="updateSelPlayerName(this.value)" placeholder="Name" style="width:110px;padding:3px 8px;border-radius:5px;border:none;background:#344736;color:#fff;font-size:12px;font-weight:600;font-family:'Barlow Condensed',sans-serif;outline:none;">
+        <input id="playerNameInput" hidden type="text" maxlength="14" oninput="updateSelPlayerName(this.value)" placeholder="Name" style="width:110px;padding:3px 8px;border-radius:5px;border:none;background:#344736;color:#fff;font-size:12px;font-weight:600;font-family:'Barlow Condensed',sans-serif;outline:none;">
       </div>
       <!-- Linien-Label-Editor: nur sichtbar wenn einzelne Linie selektiert -->
       <div id="ctx_line_edit" style="display:none;align-items:center;gap:6px;">

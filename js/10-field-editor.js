@@ -82,12 +82,8 @@ function updateSelPlayerLabel(val){
 }
 
 // Update the selected player's name (below circle)
-function updateSelPlayerName(val){
-  const idx=selectedIndices.length===1?selectedIndices[0]:selectedObjIdx;
-  if(idx===null||idx<0||!canvasObjects[idx]||canvasObjects[idx].type!=='player') return;
-  canvasObjects[idx].name=val;
-  redraw();
-}
+// Spieler werden im Editor nicht mehr benannt (keine Namen in Katalog-Übungen); Namen vergibt man im Trainingsplan.
+function updateSelPlayerName(val){ /* bewusst ohne Wirkung */ }
 
 // Update the selected line's label
 function updateSelLineLabel(val){
@@ -1957,6 +1953,7 @@ function confirmCrop(){
 
 function exportCanvas(){
   if(!canvasEl){showToast('Kein Feld','err');return;}
+  canvasObjects.forEach(o=>{ if(o&&o.type==='player'&&o.name) o.name=''; }); // keine Spielernamen in Übungen
   selectedObjIdx=null; selectedIndices=[]; redraw();
   const fullDataUrl=canvasEl.toDataURL('image/png');
   const autoBounds=canvasObjects.length?_getCropBounds():null;

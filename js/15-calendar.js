@@ -110,6 +110,7 @@ function openCalEntry(id) {
       return '<div style="padding:8px 0;border-bottom:1px solid var(--border);">'
         + '<div style="font-size:13px;font-weight:700;">' + esc(name) + '</div>'
         + '<div style="font-size:11px;color:var(--text-3);margin-top:2px;">' + (dur ? '⏱ ' + esc(dur) + ' min ' : '') + (pl ? '· 👥 ' + esc(pl) + ' ' : '') + (tr.length ? '· 🧑‍🏫 ' + esc(tr.join(', ')) : '') + '</div>'
+        + (ex && typeof _namedCount === 'function' && _namedCount(it) ? '<div class="pi-note-prev" style="max-height:none;">👤 ' + esc(_playerNamesText(it, ex)) + '</div>' : '')
         + (it.notes ? '<div class="pi-note-prev" style="max-height:none;">' + esc(it.notes) + '</div>' : '') + '</div>';
     }).join('');
     if (!items) return '';

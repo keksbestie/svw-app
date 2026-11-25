@@ -76,8 +76,10 @@ function piHTML(item,ex,si,col){
           min
           ${hasDurOvr?`<button class="pi-ovr-rst" onclick="resetPlanOverride('${escJs(ex.id)}',${si},'duration');event.stopPropagation()" title="Zurücksetzen">↺</button>`:''}
         </span>`:''}
+        ${_exPlayers(ex).length?`<button class="mbadge pi-note-btn${_namedCount(item)?' has':''}" onclick="openPlanPlayers('${escJs(ex.id)}',${si});event.stopPropagation()" title="Spieler benennen" aria-label="Spieler benennen">👤 ${_namedCount(item)?'Spieler':'Spieler benennen'}</button>`:''}
         <button class="mbadge pi-note-btn${item.notes?' has':''}" onclick="openPlanNote('${escJs(ex.id)}',${si});event.stopPropagation()" title="Notiz zu dieser Übung" aria-label="Notiz zu dieser Übung">📝 ${item.notes?'Notiz':'Notiz +'}</button>
       </div>
+      ${_namedCount(item)?`<div class="pi-note-prev">👤 ${esc(_playerNamesText(item,ex))}</div>`:''}
       ${item.notes?`<div class="pi-note-prev">${esc(item.notes)}</div>`:''}
     </div>
     <button class="pi-rm" onclick="removePlanLane('${escJs(ex.id)}',${si})">✕</button>
@@ -92,6 +94,76 @@ function piHTML(item,ex,si,col){
       </button>
     </div>`:''}
   </div>`;
+}
+
+// ── Spielernamen je Übung im Plan ────────────────────
+// Übungen enthalten nur Nummern/Farben der Spieler. Die Namen vergibt man hier pro Plan (nur im eigenen Plan, nie im Katalog).
+function _exPlayers(ex){
+  const seen=new Set(), out=[];
+  ((ex&&ex.canvasObjects)||[]).forEach(o=>{
+    if(!o||o.type!=='player') return;
+    const key=(o.color||'')+'|'+(o.label||'');
+    if(seen.has(key)) return; seen.add(key);
+    out.push({key,label:o.label||'',color:o.color||'#fff'});
+  });
+  const num=v=>{const n=parseInt(v);return isNaN(n)?1e6:n;};
+  return out.sort((a,b)=>num(a.label)-num(b.label)||String(a.label).localeCompare(String(b.label)));
+}
+function _namedCount(item){ return Object.values((item&&item.playerNames)||{}).filter(Boolean).length; }
+function _playerNamesText(item,ex){
+  const names=(item&&item.playerNames)||{};
+  return _exPlayers(ex).filter(p=>names[p.key]).map(p=>(p.label?p.label+' ':'')+names[p.key]).join(', ');
+}
+function openPlanPlayers(id,si){
+  const lane=currentPlan.lanes[si]||[];
+  const item=lane.map(r=>_laneItem(r)).find(r=>r.id===id); if(!item) return;
+  const ex=exercises.find(e=>e.id===id)||{name:''};
+  const players=_exPlayers(ex); if(!players.length){showToast('Für diese Übung liegen keine Spielerdaten vor','err');return;}
+  const names=item.playerNames||{};
+  const kader=(typeof squad!=='undefined'?squad:[]).map(p=>p.name).filter(Boolean);
+  document.getElementById('planPlayersModal')?.remove();
+  const m=document.createElement('div');
+  m.id='planPlayersModal';
+  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
+  m.onclick=e=>{if(e.target===m)m.remove();};
+  m.innerHTML='<div style="background:var(--surface);border-radius:16px;max-width:460px;width:100%;max-height:88vh;overflow-y:auto;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.4);">'
+    +'<div style="font-family:Barlow Condensed,sans-serif;font-size:20px;font-weight:900;margin-bottom:2px;">👤 Spieler benennen</div>'
+    +'<div id="ppSub" style="font-size:12px;color:var(--text-3);margin-bottom:12px;"></div>'
+    +'<div id="ppRows" style="display:grid;gap:8px;"></div>'
+    +'<div style="font-size:11px;color:var(--text-3);margin:10px 0 14px;">Namen gelten nur für diesen Plan und stehen im Ausdruck. Beim Veröffentlichen eines Plans werden sie nicht mitgeschickt.</div>'
+    +'<div style="display:flex;gap:8px;"><button class="bsc" data-act="cancel" style="flex:1;">Abbrechen</button><button class="bpr" data-act="save" style="flex:2;">Speichern</button></div>'
+    +'<button data-act="clear" style="width:100%;margin-top:10px;padding:8px;background:none;border:1.5px solid #e53935;color:#e53935;border-radius:8px;cursor:pointer;font-weight:700;">Alle Namen löschen</button></div>';
+  document.body.appendChild(m);
+  m.querySelector('#ppSub').textContent=ex.name||'';
+  const rows=m.querySelector('#ppRows');
+  players.forEach(p=>{
+    const row=document.createElement('div'); row.style.cssText='display:flex;align-items:center;gap:8px;';
+    const dot=document.createElement('div'); dot.style.cssText='width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;border:2px solid rgba(0,0,0,.25);background:'+p.color+';color:'+(['#ffffff','#f9a825'].includes(p.color)?'#222':'#fff')+';';
+    dot.textContent=p.label||'•'; row.appendChild(dot);
+    const inp=document.createElement('input'); inp.type='text'; inp.maxLength=20; inp.className='fc'; inp.placeholder='Name'; inp.dataset.key=p.key; inp.value=names[p.key]||''; inp.style.cssText='flex:1;min-width:0;';
+    row.appendChild(inp);
+    if(kader.length){
+      const sel=document.createElement('select'); sel.className='fc'; sel.style.cssText='flex:0 0 42%;min-width:0;';
+      sel.innerHTML='<option value="">Aus Kader …</option>'+kader.map(n=>'<option>'+esc(n)+'</option>').join('');
+      sel.onchange=()=>{ if(sel.value){inp.value=sel.value; sel.value='';} };
+      row.appendChild(sel);
+    }
+    rows.appendChild(row);
+  });
+  const done=obj=>{ setPlanOverride(id,si,'playerNames',obj&&Object.keys(obj).length?obj:null); m.remove(); renderLanes(); };
+  m.querySelector('[data-act=cancel]').onclick=()=>m.remove();
+  m.querySelector('[data-act=clear]').onclick=()=>done(null);
+  m.querySelector('[data-act=save]').onclick=()=>{
+    const obj={}, used=new Set();
+    for(const inp of rows.querySelectorAll('input')){
+      const v=(inp.value||'').trim(); if(!v) continue;
+      const k=v.toLowerCase();
+      if(used.has(k)){ showToast('„'+v+'“ ist doppelt vergeben','err'); return; }
+      used.add(k); obj[inp.dataset.key]=v;
+    }
+    done(obj);
+  };
+  setTimeout(()=>rows.querySelector('input')?.focus(),50);
 }
 
 // ── Notiz je Übung im Plan ───────────────────────────
@@ -348,6 +420,7 @@ function printPlan(){
           ${(typeof coachNames==='function'&&coachNames(item.coachIds).length)?`<span>🧑‍🏫 ${coachNames(item.coachIds).map(n=>esc(n)).join(', ')}</span>`:''}
         </div>
         ${ex.desc?`<div class="ex-desc">${esc(ex.desc)}</div>`:''}
+        ${_namedCount(item)?`<div class="ex-note"><strong>Spieler:</strong> ${esc(_playerNamesText(item,ex))}</div>`:''}
         ${item.notes?`<div class="ex-note"><strong>Notiz:</strong> ${esc(item.notes)}</div>`:''}
       </div>
     </div>`;
