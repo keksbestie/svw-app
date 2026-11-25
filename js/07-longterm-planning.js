@@ -491,25 +491,45 @@ function pickDay(blockId,wi,dayName,pickerEl){
   const blk=ltpBlocks.find(b=>b.id===blockId); if(!blk)return;
   // Remove picker+backdrop
   document.querySelectorAll('[style*="z-index:9999"],[style*="z-index:9998"]').forEach(e=>e.remove());
-  // Check copy from other day
-  const allDays=blk.weeks.flatMap((w,wi2)=>w.days.map((d,di)=>({...d,_wi:wi2,_di:di})));
-  if(allDays.length>0){
-    // Offer to copy
-    const copy=confirm(`Tag "${dayName}" hinzufügen.\n\nEinen bestehenden Tag als Vorlage übernehmen?\n(OK = Auswahl, Abbrechen = leerer Tag)`);
-    if(copy){
-      const opts=allDays.map((d,i)=>`${i}: ${d.label} (Woche ${d._wi+1})`).join('\n');
-      const sel=prompt('Welchen Tag übernehmen?\n'+opts+'\n\nNummer eingeben:');
-      const idx=parseInt(sel);
-      if(!isNaN(idx)&&allDays[idx]){
-        const src=JSON.parse(JSON.stringify(allDays[idx]));
-        src.id=uid(); src.label=dayName;
-        blk.weeks[wi].days.push(src);
-        save(); renderLtp(); return;
-      }
-    }
-  }
-  blk.weeks[wi].days.push({id:uid(),label:dayName,entries:[]});
-  save(); renderLtp();
+  // Erste Woche: einfach den leeren Tag anlegen, ohne Nachfrage.
+  // Ab der zweiten Woche: Tage früherer Wochen als Vorlage anbieten (nur wenn es welche gibt).
+  const sources=[];
+  blk.weeks.forEach((w,wi2)=>{ if(wi2<wi) (w.days||[]).forEach(d=>sources.push({d,wk:w.label||('Woche '+(wi2+1))})); });
+  const addEmpty=()=>{ blk.weeks[wi].days.push({id:uid(),label:dayName,entries:[]}); save(); renderLtp(); };
+  if(wi===0||!sources.length){ addEmpty(); return; }
+  _openDayTemplateChooser(dayName,sources,
+    src=>{ const c=JSON.parse(JSON.stringify(src)); c.id=uid(); c.label=dayName; blk.weeks[wi].days.push(c); save(); renderLtp(); },
+    addEmpty);
+}
+
+// Auswahl, ob ein neuer Tag aus einem Tag einer früheren Woche übernommen werden soll
+function _openDayTemplateChooser(dayName,sources,onPick,onEmpty){
+  document.getElementById('dayTplModal')?.remove();
+  const m=document.createElement('div');
+  m.id='dayTplModal';
+  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
+  m.onclick=ev=>{if(ev.target===m)m.remove();};
+  m.innerHTML='<div style="background:var(--surface);border-radius:16px;max-width:460px;width:100%;max-height:88vh;overflow-y:auto;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.4);">'
+    +'<div style="font-family:Barlow Condensed,sans-serif;font-size:22px;font-weight:900;margin-bottom:2px;" id="dtTitle"></div>'
+    +'<div style="font-size:13px;color:var(--text-2);margin-bottom:14px;line-height:1.5;">Möchtest du einen Tag aus einer früheren Woche als Vorlage übernehmen?</div>'
+    +'<div id="dtList" style="display:grid;gap:8px;margin-bottom:14px;"></div>'
+    +'<button type="button" class="bpr" data-act="empty" style="width:100%;">Leeren Tag anlegen</button>'
+    +'<button type="button" class="bsc" data-act="cancel" style="width:100%;margin-top:8px;">Abbrechen</button></div>';
+  document.body.appendChild(m);
+  m.querySelector('#dtTitle').textContent=dayName+' hinzufügen';
+  const list=m.querySelector('#dtList');
+  sources.forEach(({d,wk})=>{
+    const b=document.createElement('button'); b.type='button';
+    b.style.cssText='text-align:left;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2);color:var(--text-1);cursor:pointer;font-family:inherit;';
+    const n=(d.entries||[]).length;
+    const titles=(d.entries||[]).slice(0,3).map(x=>x.title||'Eintrag').join(' · ');
+    const h=document.createElement('div'); h.style.cssText='font-weight:800;font-size:14px;'; h.textContent=d.label+' · '+wk; b.appendChild(h);
+    const sub=document.createElement('div'); sub.style.cssText='font-size:12px;color:var(--text-3);margin-top:2px;'; sub.textContent=(n?(n===1?'1 Eintrag':n+' Einträge')+(titles?': '+titles:''):'Noch keine Einträge'); b.appendChild(sub);
+    b.onclick=()=>{ m.remove(); onPick(d); };
+    list.appendChild(b);
+  });
+  m.querySelector('[data-act=empty]').onclick=()=>{ m.remove(); onEmpty(); };
+  m.querySelector('[data-act=cancel]').onclick=()=>m.remove();
 }
 
 function deleteDay(blockId,wi,di){
