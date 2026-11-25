@@ -498,8 +498,15 @@ function addDayToWeek(blockId,wi){
 // (leerer Tag oder Vorlage aus einer früheren Woche), mit Zurück-Möglichkeit. Angelegt wird erst am Ende.
 function _addDaysFlow(blk,wi,names){
   if(!names||!names.length) return;
-  const sources=[];
-  blk.weeks.forEach((w,wi2)=>{ if(wi2<wi) (w.days||[]).forEach(d=>sources.push({d,wk:w.label||('Woche '+(wi2+1))})); });
+  // Vorlagen: leere Tage entfallen (dafür gibt es „Leerer Tag“), inhaltlich identische Tage erscheinen nur einmal
+  const sources=[], bySig=new Map();
+  const sigOf=d=>JSON.stringify((d.entries||[]).map(e=>{const c=Object.assign({},e);delete c.id;return c;}));
+  blk.weeks.forEach((w,wi2)=>{ if(wi2<wi) (w.days||[]).forEach(d=>{
+    if(!(d.entries||[]).length) return;
+    const wk=w.label||('Woche '+(wi2+1)), sig=sigOf(d);
+    if(bySig.has(sig)){ const s=bySig.get(sig); if(!s.also.includes(wk)&&wk!==s.wk) s.also.push(wk); return; }
+    const s={d,wk,also:[]}; bySig.set(sig,s); sources.push(s);
+  }); });
   const finish=()=>{ save(); renderLtp(); };
   if(wi===0||!sources.length){ names.forEach(n=>blk.weeks[wi].days.push({id:uid(),label:n,entries:[]})); finish(); return; }
   const choices=new Array(names.length).fill(null); // null = noch nicht gewählt, 'empty' oder Quelltag
@@ -574,10 +581,10 @@ function _openDayTemplateChooser(dayName,sources,opt){
     m.querySelector('#dtList').appendChild(b); cards.push({b,val,chk});
   };
   addCard('empty','Leerer Tag','Ohne Einträge starten');
-  sources.forEach(({d,wk})=>{
+  sources.forEach(({d,wk,also})=>{
     const n=(d.entries||[]).length;
     const titles=(d.entries||[]).slice(0,3).map(x=>x.title||'Eintrag').join(' · ');
-    addCard(d,d.label+' · '+wk,n?(n===1?'1 Eintrag':n+' Einträge')+(titles?': '+titles:''):'Noch keine Einträge');
+    addCard(d,d.label+' · '+wk+(also&&also.length?' (auch '+also.join(', ')+')':''),n?(n===1?'1 Eintrag':n+' Einträge')+(titles?': '+titles:''):'Noch keine Einträge');
   });
   paint();
   nextBtn.onclick=()=>{ if(!chosen) return; m.remove(); opt.onNext&&opt.onNext(chosen); };

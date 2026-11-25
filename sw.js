@@ -1,4 +1,4 @@
-const CACHE = 'assistcoach-v237';
+const CACHE = 'assistcoach-v238';
 const ASSETS = [
   '/',
   '/index.html',
