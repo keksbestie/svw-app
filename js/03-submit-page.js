@@ -311,6 +311,7 @@ async function doLogout(){
   if(typeof coaches!=='undefined') coaches=[];
   if(typeof playerNotes!=='undefined') playerNotes=[];
   if(typeof calEntries!=='undefined') calEntries=[];
+  if(typeof resetPlanPlayerNames==='function') resetPlanPlayerNames();
   if(typeof blockLibrary!=='undefined') blockLibrary=blockLibrary.filter(b=>!b._dbId); // nur lokal noch nicht gesicherte Einträge behalten
   currentUser=null; IS_ADMIN=false; IS_REVIEWER=false; REVIEWER_SPORTS=[];
   if(typeof renderSavedPlans==='function') renderSavedPlans();
@@ -604,7 +605,7 @@ async function openQueueSection(secIdx){
   } else {
     el.innerHTML = subs.map(s=>`
       <div class="sub-list-item" onclick="openReviewMod('${escJs(s.id)}')">
-        <div class="sub-list-thumb">${s.diagram?`<img src="${esc(s.diagram)}" style="width:100%;height:100%;object-fit:cover;">`:'⚽'}</div>
+        <div class="sub-list-thumb">${s.diagram?`<img src="${esc(s.diagram)}" style="width:100%;height:100%;object-fit:cover;">`:_ballIcon()}</div>
         <div class="sub-list-info">
           <div class="sub-list-name">${esc(s.name)}</div>
           <div class="sub-list-meta">👤 ${esc(s.author)} · ${SECS[s.section].name}${s.sport?' · '+esc(s.sport):''} · ${esc(s.tags.slice(0,3).join(', '))}</div>

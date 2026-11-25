@@ -72,6 +72,7 @@ function _resetSportScopedState() {
       currentPlan = { name: '', lanes: [[], [], [], [], [], []] };
       if (typeof _cartParallel !== 'undefined') _cartParallel.clear();
       if (typeof planSquadAbsent !== 'undefined') planSquadAbsent.clear();
+      if (typeof resetPlanPlayerNames === 'function') resetPlanPlayerNames();
       const pn = document.getElementById('planName'); if (pn) pn.value = '';
       if (typeof renderLanes === 'function') renderLanes();
       if (typeof updatePlanCart === 'function') updatePlanCart();
@@ -162,6 +163,9 @@ function _updateHelpSport() {
   const isVb = sport === 'volleyball';
   const isTn = sport === 'tennis';
   const ballIcon = isVb ? '🏐' : isTn ? '🎾' : '⚽';
+
+  // Platzhalter-Symbole in Fenstern
+  document.querySelectorAll('.sport-ico').forEach(el => el.textContent = ballIcon);
 
   // Suchleiste Icon
   const gsIco = document.getElementById('gsIco');

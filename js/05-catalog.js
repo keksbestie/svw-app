@@ -460,7 +460,7 @@ function cardHTML(e,col){
   const authorLine = e.author ? `<div class="card-author">erstellt von ${esc(e.author)}</div>` : '';
   const imgHtml = e.image
     ? `<img src="${esc(e.image)}" alt="${esc(e.name)}">`
-    : `<div class="cimg-field"><div class="cimg-field-lines"></div><div class="cimg-ico">⚽</div></div>`;
+    : `<div class="cimg-field"><div class="cimg-field-lines"></div><div class="cimg-ico">${_ballIcon()}</div></div>`;
 
   if(_catalogView==='collapsed'){
     return`<div class="card card-collapsed" data-id="${esc(e.id)}" onclick="openExDetail('${escJs(e.id)}')">
@@ -661,7 +661,7 @@ function renderTrash(){
   if(!trashItems.length){el.innerHTML='<div style="font-size:13px;color:var(--text-3);padding:16px 0;text-align:center;">Papierkorb ist leer.</div>';return;}
   el.innerHTML=trashItems.map(e=>`
     <div class="trash-item">
-      <div class="trash-thumb">${e.image?`<img src="${esc(e.image)}" style="width:100%;height:100%;object-fit:cover;">`:'⚽'}</div>
+      <div class="trash-thumb">${e.image?`<img src="${esc(e.image)}" style="width:100%;height:100%;object-fit:cover;">`:_ballIcon()}</div>
       <div class="trash-info">
         <div class="trash-name">${esc(e.name)}</div>
         <div class="trash-meta">${SECS[e.section]?.name||''} · ${esc(e.players||'')} · ${esc(e.difficulty||'')}</div>

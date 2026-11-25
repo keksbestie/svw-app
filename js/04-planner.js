@@ -76,8 +76,10 @@ function piHTML(item,ex,si,col){
           min
           ${hasDurOvr?`<button class="pi-ovr-rst" onclick="resetPlanOverride('${escJs(ex.id)}',${si},'duration');event.stopPropagation()" title="Zurücksetzen">↺</button>`:''}
         </span>`:''}
+        ${_exPlayers(ex).length?`<button class="mbadge pi-note-btn${_namedCount(ex.id,si)?' has':''}" onclick="openPlanPlayers('${escJs(ex.id)}',${si});event.stopPropagation()" title="Spieler benennen" aria-label="Spieler benennen">👤 ${_namedCount(ex.id,si)?'Spieler':'Spieler benennen'}</button>`:''}
         <button class="mbadge pi-note-btn${item.notes?' has':''}" onclick="openPlanNote('${escJs(ex.id)}',${si});event.stopPropagation()" title="Notiz zu dieser Übung" aria-label="Notiz zu dieser Übung">📝 ${item.notes?'Notiz':'Notiz +'}</button>
       </div>
+      ${_namedCount(ex.id,si)?`<div class="pi-note-prev">👤 ${esc(_playerNamesText(ex.id,si,ex))}</div>`:''}
       ${item.notes?`<div class="pi-note-prev">${esc(item.notes)}</div>`:''}
     </div>
     <button class="pi-rm" onclick="removePlanLane('${escJs(ex.id)}',${si})">✕</button>
@@ -92,6 +94,85 @@ function piHTML(item,ex,si,col){
       </button>
     </div>`:''}
   </div>`;
+}
+
+// ── Spielernamen je Übung im Plan ────────────────────
+// Übungen enthalten nur Nummern/Farben der Spieler. Die Namen vergibt man hier pro Plan (nur im eigenen Plan, nie im Katalog).
+function _exPlayers(ex){
+  const seen=new Set(), out=[];
+  ((ex&&ex.canvasObjects)||[]).forEach(o=>{
+    if(!o||o.type!=='player') return;
+    const key=(o.color||'')+'|'+(o.label||'');
+    if(seen.has(key)) return; seen.add(key);
+    out.push({key,label:o.label||'',color:o.color||'#fff'});
+  });
+  const num=v=>{const n=parseInt(v);return isNaN(n)?1e6:n;};
+  return out.sort((a,b)=>num(a.label)-num(b.label)||String(a.label).localeCompare(String(b.label)));
+}
+// Spielernamen gelten nur für diese eine Einheit: ausschließlich im Arbeitsspeicher, nie Teil des Plans (nicht gespeichert, nicht im Kalender, nicht veröffentlichbar)
+let planPlayerNames={};
+function _pnKey(id,si){return id+'|'+si;}
+function resetPlanPlayerNames(){ planPlayerNames={}; }
+function _namedCount(id,si){ return Object.values(planPlayerNames[_pnKey(id,si)]||{}).filter(Boolean).length; }
+function _playerNamesText(id,si,ex){
+  const names=planPlayerNames[_pnKey(id,si)]||{};
+  return _exPlayers(ex).filter(p=>names[p.key]).map(p=>(p.label?p.label+' ':'')+names[p.key]).join(', ');
+}
+function openPlanPlayers(id,si){
+  const lane=currentPlan.lanes[si]||[];
+  const item=lane.map(r=>_laneItem(r)).find(r=>r.id===id); if(!item) return;
+  const ex=exercises.find(e=>e.id===id)||{name:''};
+  const players=_exPlayers(ex); if(!players.length){showToast('Für diese Übung liegen keine Spielerdaten vor','err');return;}
+  const names=planPlayerNames[_pnKey(id,si)]||{};
+  // Nur Spieler:innen, die heute dabei sind und bei dieser Übung nicht ausgeschlossen wurden
+  const excl=new Set(item.excludedIds||[]);
+  const kader=(typeof squadForPlan==='function'?squadForPlan():(typeof squad!=='undefined'?squad:[])).filter(p=>!excl.has(p.id)).map(p=>p.name).filter(Boolean);
+  document.getElementById('planPlayersModal')?.remove();
+  const m=document.createElement('div');
+  m.id='planPlayersModal';
+  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
+  m.onclick=e=>{if(e.target===m)m.remove();};
+  m.innerHTML='<div style="background:var(--surface);border-radius:16px;max-width:'+(ex.image?'860':'460')+'px;width:100%;max-height:88vh;overflow-y:auto;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.4);">'
+    +'<div style="font-family:Barlow Condensed,sans-serif;font-size:20px;font-weight:900;margin-bottom:2px;">👤 Spieler benennen</div>'
+    +'<div id="ppSub" style="font-size:12px;color:var(--text-3);margin-bottom:12px;"></div>'
+    +'<div style="display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap;">'
+    +'<div id="ppImgBox" style="flex:1 1 320px;min-width:0;display:none;"><img id="ppImg" alt="Felddiagramm der Übung" style="width:100%;max-height:60vh;object-fit:contain;border-radius:10px;border:1px solid var(--border);background:#2d7a3a;display:block;"><div style="font-size:11px;color:var(--text-3);margin-top:6px;">Die Nummern im Bild entsprechen den Nummern links.</div></div>'
+    +'<div style="flex:1 1 280px;min-width:0;"><div id="ppRows" style="display:grid;gap:8px;"></div></div></div>'
+    +'<div style="font-size:11px;color:var(--text-3);margin:10px 0 14px;">Die Namen gelten nur für diese eine Einheit: Sie werden nicht gespeichert und stehen nur im Ausdruck. Nach dem Schließen der App oder dem Laden eines anderen Plans sind sie weg.</div>'
+    +'<div style="display:flex;gap:8px;"><button class="bsc" data-act="cancel" style="flex:1;">Abbrechen</button><button class="bpr" data-act="save" style="flex:2;">Speichern</button></div>'
+    +'<button data-act="clear" style="width:100%;margin-top:10px;padding:8px;background:none;border:1.5px solid #e53935;color:#e53935;border-radius:8px;cursor:pointer;font-weight:700;">Alle Namen löschen</button></div>';
+  document.body.appendChild(m);
+  m.querySelector('#ppSub').textContent=ex.name||'';
+  if(ex.image){ const im=m.querySelector('#ppImg'); im.src=ex.image; m.querySelector('#ppImgBox').style.display=''; }
+  const rows=m.querySelector('#ppRows');
+  players.forEach(p=>{
+    const row=document.createElement('div'); row.style.cssText='display:flex;align-items:center;gap:8px;';
+    const dot=document.createElement('div'); dot.style.cssText='width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;border:2px solid rgba(0,0,0,.25);background:'+p.color+';color:'+(['#ffffff','#f9a825'].includes(p.color)?'#222':'#fff')+';';
+    dot.textContent=p.label||'•'; row.appendChild(dot);
+    const inp=document.createElement('input'); inp.type='text'; inp.maxLength=20; inp.className='fc'; inp.placeholder='Name'; inp.dataset.key=p.key; inp.value=names[p.key]||''; inp.style.cssText='flex:1;min-width:0;';
+    row.appendChild(inp);
+    if(kader.length){
+      const sel=document.createElement('select'); sel.className='fc'; sel.style.cssText='flex:0 0 42%;min-width:0;';
+      sel.innerHTML='<option value="">Aus Kader …</option>'+kader.map(n=>'<option>'+esc(n)+'</option>').join('');
+      sel.onchange=()=>{ if(sel.value){inp.value=sel.value; sel.value='';} };
+      row.appendChild(sel);
+    }
+    rows.appendChild(row);
+  });
+  const done=obj=>{ if(obj&&Object.keys(obj).length) planPlayerNames[_pnKey(id,si)]=obj; else delete planPlayerNames[_pnKey(id,si)]; m.remove(); renderLanes(); };
+  m.querySelector('[data-act=cancel]').onclick=()=>m.remove();
+  m.querySelector('[data-act=clear]').onclick=()=>done(null);
+  m.querySelector('[data-act=save]').onclick=()=>{
+    const obj={}, used=new Set();
+    for(const inp of rows.querySelectorAll('input')){
+      const v=(inp.value||'').trim(); if(!v) continue;
+      const k=v.toLowerCase();
+      if(used.has(k)){ showToast('„'+v+'“ ist doppelt vergeben','err'); return; }
+      used.add(k); obj[inp.dataset.key]=v;
+    }
+    done(obj);
+  };
+  setTimeout(()=>rows.querySelector('input')?.focus(),50);
 }
 
 // ── Notiz je Übung im Plan ───────────────────────────
@@ -156,6 +237,7 @@ function resetPlanOverride(id,si,field){
 }
 
 function removePlanLane(id,si){
+  delete planPlayerNames[_pnKey(id,si)];
   currentPlan.lanes[si]=(currentPlan.lanes[si]||[]).filter(raw=>_laneItem(raw).id!==id);
   renderLanes();updatePlanCart();
 }
@@ -209,7 +291,7 @@ function renderLanePickerList(q){
   el.innerHTML=filtered.map(e=>{
     const inPlan=(currentPlan.lanes[si]||[]).some(raw=>_laneItem(raw).id===e.id);
     return`<div class="lp-item ${inPlan?'lp-inplan':''}">
-      <div class="lp-img">${e.image?`<img src="${esc(e.image)}" style="width:100%;height:100%;object-fit:cover;">`:'⚽'}</div>
+      <div class="lp-img">${e.image?`<img src="${esc(e.image)}" style="width:100%;height:100%;object-fit:cover;">`:_ballIcon()}</div>
       <div class="lp-info">
         <div class="lp-name">${esc(e.name)}</div>
         <div class="lp-meta">
@@ -253,6 +335,7 @@ function loadTemplate(tpl){
   if(!t) return;
   if(!confirm(`Vorlage "${t.name}" laden? Der aktuelle Plan wird überschrieben.`)) return;
   currentPlan = {lanes: t.lanes.map(l=>[...l])};
+  resetPlanPlayerNames();
   document.getElementById('planName').value = t.name;
   renderPlanner();
   showToast('Vorlage geladen');
@@ -265,6 +348,7 @@ function clearPlan(){
   if(!confirm('Trainingsplan leeren? Alle Übungen werden entfernt.')) return;
   // Komplett neu beginnen: Übungen, Titel, Datum und alle Markierungen zurücksetzen (nichts vom vorher geöffneten Plan bleibt)
   currentPlan={name:'',lanes:[[],[],[],[],[],[]]};
+  resetPlanPlayerNames();
   const pn=document.getElementById('planName'); if(pn) pn.value='';
   const pd=document.getElementById('planDate'); if(pd) pd.value=new Date().toISOString().slice(0,10);
   if(typeof _cartParallel!=='undefined') _cartParallel.clear();
@@ -348,6 +432,7 @@ function printPlan(){
           ${(typeof coachNames==='function'&&coachNames(item.coachIds).length)?`<span>🧑‍🏫 ${coachNames(item.coachIds).map(n=>esc(n)).join(', ')}</span>`:''}
         </div>
         ${ex.desc?`<div class="ex-desc">${esc(ex.desc)}</div>`:''}
+        ${_namedCount(ex.id,si)?`<div class="ex-note"><strong>Spieler:</strong> ${esc(_playerNamesText(ex.id,si,ex))}</div>`:''}
         ${item.notes?`<div class="ex-note"><strong>Notiz:</strong> ${esc(item.notes)}</div>`:''}
       </div>
     </div>`;

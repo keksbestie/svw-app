@@ -82,12 +82,8 @@ function updateSelPlayerLabel(val){
 }
 
 // Update the selected player's name (below circle)
-function updateSelPlayerName(val){
-  const idx=selectedIndices.length===1?selectedIndices[0]:selectedObjIdx;
-  if(idx===null||idx<0||!canvasObjects[idx]||canvasObjects[idx].type!=='player') return;
-  canvasObjects[idx].name=val;
-  redraw();
-}
+// Spieler werden im Editor nicht mehr benannt (keine Namen in Katalog-Übungen); Namen vergibt man im Trainingsplan.
+function updateSelPlayerName(val){ /* bewusst ohne Wirkung */ }
 
 // Update the selected line's label
 function updateSelLineLabel(val){
@@ -537,7 +533,7 @@ function _resizeHandlePos(o){
 function hitAt(x,y){
   for(let i=canvasObjects.length-1;i>=0;i--){
     const o=canvasObjects[i];
-    if((o.type==='player'||o.type==='ball'||o.type==='equip'||o.type==='goal')&&Math.hypot(x-o.x,y-o.y)<22*_objSc(o)) return i;
+    if((o.type==='player'||o.type==='coach'||o.type==='ball'||o.type==='equip'||o.type==='goal')&&Math.hypot(x-o.x,y-o.y)<22*_objSc(o)) return i;
     if(_LINE_TYPES.includes(o.type)&&_hitLine(o,x,y)) return i;
   }
   return -1;
@@ -722,6 +718,8 @@ function placeObj(t,x,y){
     else if(_autoNumber) lbl=String(playerCounters[col]++);
     else { lbl=''; playerCounters[col]++; }
     canvasObjects.push({type:'player',x,y,color:col,label:lbl,name:'',angle:0});
+  } else if(t==='coach'){
+    canvasObjects.push({type:'coach',x,y});
   } else if(t==='ball'){
     canvasObjects.push({type:'ball',x,y,scale:0.5});
   } else if(t==='equip'){
@@ -1268,6 +1266,7 @@ function drawObj(o,sel){
   else if(o.type==='dribble') {drawSnakeLine(o.x1,o.y1,o.x2,o.y2,sel);_drawLineLabel(o.x1,o.y1,o.x2,o.y2,o.label);}
   else if(o.type==='shot')    {drawDoubleArrowLine(o.x1,o.y1,o.x2,o.y2,sel,_cx,_cy);_drawLineLabel(_c?_c.x:o.x1,_c?_c.y:o.y1,o.x2,o.y2,o.label);}
   else if(o.type==='player')  drawPlayer(o.x,o.y,o.label,o.color,sel,o.angle||0,o.name||'');
+  else if(o.type==='coach')   drawCoach(o.x,o.y,sel);
   else if(o.type==='ball')    drawBall(o.x,o.y,sel,_objSc(o));
   else if(o.type==='equip')   drawEquip(o.x,o.y,o.subtype,sel,o.angle||0,_objSc(o));
   else if(o.type==='goal')    drawGoal(o.x,o.y,o.subtype,sel,o.angle||0,_objSc(o));
@@ -1580,6 +1579,19 @@ function drawTennisBall(x,y,sel,sc){
   ctx.restore();
 }
 
+// Trainer:in / Coach: schwarzes Dreieck mit weißem C
+function drawCoach(x,y,sel){
+  ctx.save();
+  ctx.translate(x,y);
+  ctx.shadowColor='rgba(0,0,0,.55)'; ctx.shadowBlur=9; ctx.shadowOffsetY=3;
+  ctx.fillStyle='#111';
+  ctx.beginPath(); ctx.moveTo(0,-17); ctx.lineTo(16,13); ctx.lineTo(-16,13); ctx.closePath(); ctx.fill();
+  ctx.shadowBlur=0; ctx.shadowOffsetY=0;
+  ctx.strokeStyle=sel?'#ffe082':'rgba(255,255,255,.92)'; ctx.lineWidth=sel?2.5:1.8; ctx.lineJoin='round'; ctx.stroke();
+  ctx.fillStyle='#fff'; ctx.font='900 15px Barlow Condensed, Arial, sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('C',0,4);
+  ctx.restore();
+}
 function drawBall(x,y,sel,sc){
   if(_isVolleyballSport()){ drawVolleyball(x,y,sel,sc); return; }
   if(_isTennisSport()){ drawTennisBall(x,y,sel,sc); return; }
@@ -1957,6 +1969,7 @@ function confirmCrop(){
 
 function exportCanvas(){
   if(!canvasEl){showToast('Kein Feld','err');return;}
+  canvasObjects.forEach(o=>{ if(o&&o.type==='player'&&o.name) o.name=''; }); // keine Spielernamen in Übungen
   selectedObjIdx=null; selectedIndices=[]; redraw();
   const fullDataUrl=canvasEl.toDataURL('image/png');
   const autoBounds=canvasObjects.length?_getCropBounds():null;
