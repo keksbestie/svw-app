@@ -27,7 +27,12 @@ async function init(){
   updateApiBar();
   if(typeof updateSignInBtn==='function') updateSignInBtn();
   if(typeof loadSquad==='function') loadSquad();
-  setInterval(()=>{if(apiOnline)silentSync();},60000);
+  // Hintergrund-Abgleich: jede Minute, aber nur solange der Tab sichtbar ist.
+  // Beim Zurückkehren in den Tab wird sofort nachgeholt, wenn der letzte Abgleich älter als eine Minute ist.
+  setInterval(()=>{if(apiOnline&&!document.hidden)silentSync();},SYNC_INTERVAL_MS);
+  document.addEventListener('visibilitychange',()=>{
+    if(!document.hidden&&apiOnline&&Date.now()-_lastSyncAt>=SYNC_INTERVAL_MS) silentSync();
+  });
 }
 function hideLS(){const l=document.getElementById('ls');l.classList.add('fade');setTimeout(()=>l.style.display='none',400);}
 
@@ -236,7 +241,7 @@ async function loadAPI(){
     const {data:exData,error:exErr}=await _supabase.from('exercises').select('*').eq('status','approved');
     if(exErr)throw exErr;
     // Only overwrite local exercises if Supabase actually has data
-    if(exData&&exData.length>0) exercises=exData.map(mapExercise);
+    if(exData&&exData.length>0){ exercises=exData.map(mapExercise); _rememberExStamps(exData); }
     const {data:descData}=await _supabase.from('section_descs').select('*');
     if(descData&&descData.length>0){
       descData.forEach(r=>{if(r.section_idx>=0&&r.section_idx<6)sectionDescs[r.section_idx]=r.description||'';});
@@ -246,17 +251,66 @@ async function loadAPI(){
       if(typeof syncBlockLibrary==='function') await syncBlockLibrary();
     }
     if(typeof loadRatings==='function') await loadRatings();
-    apiOnline=true; setStat('ok'); cacheLocal();
+    apiOnline=true; setStat('ok'); cacheLocal(); _lastSyncAt=Date.now();
     // Rolle (Admin/Reviewer) und Übungen sind jetzt bekannt → Sportkarten sofort neu bewerten
     if(typeof refreshSportAvailability==='function') refreshSportAvailability();
     return true;
   }catch(e){apiOnline=false; setStat('err'); return false;}
 }
+// ── Inkrementeller Katalog-Abgleich ──
+// Statt jede Minute den kompletten Katalog inkl. Bilder und Felddiagramme (select('*')) zu laden,
+// holt silentSync nur die Liste „id + updated_at“ der freigegebenen Übungen. Vollständige Zeilen
+// werden nur für neue oder geänderte Übungen nachgeladen; nicht mehr freigegebene fallen weg.
+// Fehlt die Spalte updated_at in der Datenbank, wird wie bisher der ganze Katalog geladen.
+const SYNC_INTERVAL_MS=60000;
+let _exStamps=new Map();   // id → {at: updated_at vom Server, obj: zugehöriges Objekt in exercises}
+let _exStampsSupported=true, _lastSyncAt=0, _silentRunning=false;
+function _rememberExStamps(rows){
+  const byId=new Map(exercises.map(e=>[e.id,e]));
+  _exStamps=new Map();
+  rows.forEach(r=>{ if(r.updated_at) _exStamps.set(r.id,{at:r.updated_at,obj:byId.get(r.id)}); });
+}
+async function _syncCatalog(){
+  if(_exStampsSupported){
+    const {data:list,error}=await _supabase.from('exercises').select('id,updated_at').eq('status','approved');
+    if(!error&&list){
+      if(!list.length) return false; // wie bisher: leere Antwort überschreibt den lokalen Katalog nicht
+      const local=new Map(exercises.map(e=>[e.id,e]));
+      // neu oder geändert: unbekannter Zeitstempel, anderer Zeitstempel oder lokal ersetztes Objekt
+      const stale=list.filter(r=>{const k=_exStamps.get(r.id);return !k||!r.updated_at||k.at!==r.updated_at||!local.has(r.id)||local.get(r.id)!==k.obj;}).map(r=>r.id);
+      const fresh=new Map();
+      for(let i=0;i<stale.length;i+=100){ // in Paketen, damit die URL nicht zu lang wird
+        const {data:rows,error:e2}=await _supabase.from('exercises').select('*').eq('status','approved').in('id',stale.slice(i,i+100));
+        if(e2) throw e2;
+        (rows||[]).forEach(r=>fresh.set(r.id,r));
+      }
+      const ids=new Set(list.map(r=>r.id));
+      const removed=exercises.some(e=>!ids.has(e.id));
+      if(!fresh.size&&!removed&&exercises.length===list.length) return false; // nichts geändert
+      // Reihenfolge der Server-Liste beibehalten; unveränderte Übungen behalten ihr bestehendes Objekt
+      exercises=list.map(r=>fresh.has(r.id)?mapExercise(fresh.get(r.id)):local.get(r.id)).filter(Boolean);
+      const byId=new Map(exercises.map(e=>[e.id,e]));
+      list.forEach(r=>{
+        if(fresh.has(r.id)) r=fresh.get(r.id);
+        if(r.updated_at) _exStamps.set(r.id,{at:r.updated_at,obj:byId.get(r.id)}); else _exStamps.delete(r.id);
+      });
+      [..._exStamps.keys()].forEach(id=>{if(!ids.has(id))_exStamps.delete(id);});
+      return true;
+    }
+    if(error&&/updated_at/.test(error.message||'')){
+      _exStampsSupported=false;
+      console.warn('exercises.updated_at fehlt – Katalog wird vollständig geladen. Siehe docs/sql/exercises-updated-at.sql');
+    } else if(error) throw error;
+  }
+  const {data:exData}=await _supabase.from('exercises').select('*').eq('status','approved');
+  if(exData&&exData.length>0){ exercises=exData.map(mapExercise); return true; }
+  return false;
+}
 async function silentSync(){
-  if(!_supabase)return;
+  if(!_supabase||_silentRunning)return;
+  _silentRunning=true; _lastSyncAt=Date.now();
   try{
-    const {data:exData}=await _supabase.from('exercises').select('*').eq('status','approved');
-    if(exData&&exData.length>0) exercises=exData.map(mapExercise);
+    await _syncCatalog();
     const {data:descData}=await _supabase.from('section_descs').select('*');
     if(descData&&descData.length>0){
       descData.forEach(r=>{if(r.section_idx>=0&&r.section_idx<6)sectionDescs[r.section_idx]=r.description||'';});
@@ -270,6 +324,7 @@ async function silentSync(){
     if(typeof renderLtp==='function'&&typeof activeLtpTab!=='undefined'&&activeLtpTab===0) renderLtp();
     if(typeof refreshSportAvailability==='function') refreshSportAvailability();
   }catch{apiOnline=false; setStat('err');}
+  finally{_silentRunning=false;}
 }
 async function saveAPI(){
   if(!_supabase||!currentUser||!apiOnline)return;
