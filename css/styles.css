@@ -1000,7 +1000,7 @@ body.admin .hero-edit-btn { display: flex; }
 .bsc:hover { border-color: var(--accent); color: var(--accent); }
 
 /* Toast */
-.toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: var(--text-1); color: var(--surface); padding: 11px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 9000; opacity: 0; transition: opacity .25s; pointer-events: none; white-space: nowrap; box-shadow: var(--shadow-lg); }
+.toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: var(--text-1); color: var(--surface); padding: 11px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 10050; opacity: 0; transition: opacity .25s; pointer-events: none; white-space: nowrap; box-shadow: var(--shadow-lg); }
 .toast.show { opacity: 1; }
 .toast.err { background: #7a0e3f; }
 
@@ -1526,3 +1526,10 @@ body:not(.on-home) .home-topbar { display: none; }
 .ltp-hbtn--danger { color: #c62828; border-color: rgba(198,40,40,.55); padding: 10px 14px; font-size: 16px; }
 .ltp-hbtn--danger:hover { background: rgba(198,40,40,.12); border-color: #c62828; }
 @media (max-width: 600px) { .ltp-hbtn { min-height: 44px; padding: 10px 14px; } }
+
+/* Pop-ups: Hintergrund bleibt stehen (kein Mitscrollen), Seitenleiste springt nicht */
+html { scrollbar-gutter: stable; }
+body:has(.mbg:not(.h)),
+body:has([style*="inset: 0px"][style*="z-index: 9999"]),
+body:has([style*="inset:0"][style*="z-index:9999"]) { overflow: hidden; }
+.mbg, [style*="inset: 0px"][style*="z-index: 9999"], [style*="inset:0"][style*="z-index:9999"] { overscroll-behavior: contain; }

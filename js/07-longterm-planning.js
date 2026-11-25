@@ -537,6 +537,7 @@ function openFixedEntries(blockId){
     +'<input id="fxNotes" class="fc" type="text" maxlength="200" placeholder="Notiz (optional)" style="width:100%;box-sizing:border-box;margin-bottom:10px;">'
     +'<div style="display:flex;gap:8px;"><button type="button" class="bsc" data-act="fxreset" style="flex:1;display:none;">Abbrechen</button><button type="button" class="bpr" data-act="fxsave" style="flex:2;">Termin hinzufügen</button></div></div>'
     +'<label style="display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--text-2);margin:14px 0 8px;line-height:1.4;cursor:pointer;"><input type="checkbox" id="fxRefresh" style="margin-top:2px;"> Bereits übernommene Einträge ebenfalls an die Zeiten oben anpassen (überschreibt Einzeländerungen)</label>'
+    +'<div id="fxStatus" role="status" style="display:none;font-size:13px;font-weight:700;margin:0 0 8px;"></div>'
     +'<button type="button" class="bpr" data-act="apply" style="width:100%;">Auf alle Tage übernehmen</button>'
     +'<button type="button" class="bsc" data-act="close" style="width:100%;margin-top:8px;">Schließen</button></div>';
   document.body.appendChild(m);
@@ -566,21 +567,28 @@ function openFixedEntries(blockId){
     });
   };
   m.querySelector('[data-act=fxreset]').onclick=resetForm;
-  m.querySelector('[data-act=fxsave]').onclick=()=>{
+  const status=(msg,err)=>{ const s=m.querySelector('#fxStatus'); s.textContent=msg; s.style.color=err?'#c62828':'var(--accent)'; s.style.display=''; showToast(msg,err?'err':''); };
+  const saveForm=()=>{
     const title=m.querySelector('#fxTitle').value.trim(), start=m.querySelector('#fxStart').value, end=m.querySelector('#fxEnd').value, notes=m.querySelector('#fxNotes').value.trim();
-    if(!title){ showToast('Bitte einen Titel eingeben','err'); return; }
-    if(!start){ showToast('Bitte eine Uhrzeit eingeben','err'); return; }
-    if(!daySel.size){ showToast('Bitte mindestens einen Wochentag wählen','err'); return; }
+    if(!title){ status('Bitte einen Titel eingeben',true); return false; }
+    if(!start){ status('Bitte eine Uhrzeit eingeben',true); return false; }
+    if(!daySel.size){ status('Bitte mindestens einen Wochentag wählen',true); return false; }
     const days=daySel.size===7?[]:_LTP_DAYS.filter(d=>daySel.has(d)); // leer = alle Tage
     if(_fixedEditId){ const f=blk.fixedEntries.find(x=>x.id===_fixedEditId); if(f){ Object.assign(f,{title,startTime:start,endTime:end,notes,days}); } }
     else blk.fixedEntries.push({id:uid(),title,startTime:start,endTime:end,notes,days});
-    save(); showToast(_fixedEditId?'Termin geändert':'Termin hinzugefügt – mit „Auf alle Tage übernehmen“ eintragen'); resetForm(); paintList();
+    save(); status(_fixedEditId?'Termin geändert':'Termin hinzugefügt – mit „Auf alle Tage übernehmen“ eintragen'); resetForm(); paintList();
+    return true;
   };
+  m.querySelector('[data-act=fxsave]').onclick=saveForm;
   m.querySelector('[data-act=apply]').onclick=()=>{
-    if(!blk.fixedEntries.length){ showToast('Noch keine festen Termine angelegt','err'); return; }
+    // Ist im Formular ein Termin eingetragen, der noch nicht gespeichert wurde, wird er zuerst hinzugefügt
+    if(m.querySelector('#fxTitle').value.trim()||m.querySelector('#fxStart').value){ if(!saveForm()) return; }
+    if(!blk.fixedEntries.length){ status('Lege zuerst einen festen Termin an (Titel und Uhrzeit)',true); return; }
     const refresh=m.querySelector('#fxRefresh').checked; let added=0, days=0;
     blk.weeks.forEach(w=>(w.days||[]).forEach(d=>{ const n=_applyFixedToDay(blk,d,refresh); if(n){ added+=n; days++; } }));
-    save(); renderLtp(); showToast(added?(added+' Einträge in '+days+' Tagen übernommen'):'Alles schon übernommen – nichts zu ergänzen');
+    save(); renderLtp();
+    const totalDays=blk.weeks.reduce((a,w)=>a+(w.days||[]).length,0);
+    status(added?('✓ '+added+' Einträge in '+days+' Tagen übernommen'):(totalDays?'Alles schon übernommen – nichts zu ergänzen':'Der Block hat noch keine Tage – lege zuerst Tage an'),!added&&!totalDays);
   };
   m.querySelector('[data-act=close]').onclick=()=>m.remove();
   resetForm(); paintList();
