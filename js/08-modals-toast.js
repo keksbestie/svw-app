@@ -15,15 +15,29 @@ document.querySelectorAll('.mbg').forEach(b=>b.addEventListener('click',e=>{if(e
 // ══════════════════════════════════════════════════════
 function showToast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(type?' '+type:'');setTimeout(()=>t.className='toast',3200);}
 
+// EmailJS wird erst beim Absenden geladen: So bremst oder blockiert es den App-Start nicht,
+// und ohne Feedback wird gar keine Verbindung zu EmailJS/jsDelivr aufgebaut.
+const EMAILJS_URL='https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js';
+let _emailjsReady=null;
+function loadEmailJS(){
+  if(!_emailjsReady){
+    _emailjsReady=(window.emailjs?Promise.resolve():_loadScript(EMAILJS_URL))
+      .then(()=>{if(!window.emailjs)throw new Error('EmailJS fehlt');emailjs.init('Gdp0v57LwSddbt-GE');})
+      .catch(e=>{_emailjsReady=null;throw e;});
+  }
+  return _emailjsReady;
+}
 async function sendFeedback(){
   const name=(document.getElementById('fbName').value||'').trim();
   const email=(document.getElementById('fbEmail').value||'').trim();
   const message=(document.getElementById('fbMessage').value||'').trim();
   if(!name){showToast('Bitte Namen eingeben','err');return;}
   if(!message){showToast('Bitte Nachricht eingeben','err');return;}
+  if(navigator.onLine===false){showToast('Keine Internetverbindung – Feedback bitte später senden','err');return;}
   const btn=document.querySelector('#feedbackMod .bpr');
   btn.textContent='Wird gesendet…';btn.disabled=true;
   try{
+    await loadEmailJS();
     await emailjs.send('service_7flvj0n','zadbnkd',{name,email:email||'Keine Angabe',message});
     showToast('Feedback gesendet – danke!');
     closeMod('feedbackMod');

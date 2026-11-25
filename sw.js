@@ -1,4 +1,4 @@
-const CACHE = 'assistcoach-v246';
+const CACHE = 'assistcoach-v247';
 const ASSETS = [
   '/',
   '/index.html',
@@ -34,9 +34,21 @@ const ASSETS = [
   '/icons/equip-yogamat.png'
 ];
 
+// Fremde Bibliotheken mit fester Versionsnummer: ändern sich nie, daher aus dem Zwischenspeicher
+// (schneller Start, funktioniert offline und wenn das CDN gesperrt ist). Muss zu index.html passen.
+const CDN_ASSETS = [
+  'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0'
+];
+
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting())
+    caches.open(CACHE).then(async c => {
+      await c.addAll(ASSETS);
+      // Best effort: Ist das CDN gerade nicht erreichbar, darf die Installation trotzdem nicht scheitern
+      await Promise.all(CDN_ASSETS.map(url =>
+        fetch(url, { mode: 'cors' }).then(res => { if (res.ok) return c.put(url, res); }).catch(() => {})
+      ));
+    }).then(() => self.skipWaiting())
   );
 });
 
@@ -55,7 +67,8 @@ const NETWORK_TIMEOUT = 3500;
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
-  // Supabase, CDN und fremde Bilder direkt vom Netz (nicht abfangen)
+  if (CDN_ASSETS.includes(req.url)) { e.respondWith(cacheFirst(req)); return; }
+  // Supabase, übriges CDN und fremde Bilder direkt vom Netz (nicht abfangen)
   if (new URL(req.url).origin !== self.location.origin) return;
   e.respondWith(networkFirst(req));
 });
@@ -78,4 +91,13 @@ async function networkFirst(req) {
     if (cached) return cached;
     return fromNetwork; // keine Kopie vorhanden: auf das Netz warten
   }
+}
+
+async function cacheFirst(req) {
+  const cache = await caches.open(CACHE);
+  const cached = await cache.match(req.url);
+  if (cached) return cached;
+  const res = await fetch(req);
+  if (res && res.ok) cache.put(req.url, res.clone());
+  return res;
 }
