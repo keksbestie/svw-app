@@ -20,7 +20,7 @@ function sportSectionStatus(id) {
   const total = (typeof SECS !== 'undefined') ? SECS.length : 6;
   const counts = new Array(total).fill(0);
   (typeof exercises !== 'undefined' ? exercises : []).forEach(e => {
-    if ((e.sport || 'fussball') === id && e.section >= 0 && e.section < total) counts[e.section]++;
+    if (e.status !== 'pending' && e.status !== 'review' && (e.sport || 'fussball') === id && e.section >= 0 && e.section < total) counts[e.section]++;
   });
   const full = counts.filter(c => c >= SPORT_MIN_PER_SECTION).length;
   return { full, total, counts, ready: full === total };

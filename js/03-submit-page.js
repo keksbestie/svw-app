@@ -428,6 +428,8 @@ function updateSubmitChecklist(){
 
   const btn = document.getElementById('submitBtn');
   if(btn) btn.disabled = !allOk;
+  const pbtn = document.getElementById('submitPlanBtn');
+  if(pbtn) pbtn.disabled = !allOk;
 }
 
 // ── Tags for submit form ─────────────────────────────
@@ -469,8 +471,12 @@ function renderSTagSuggestions(){
 }
 
 // ── Submit exercise ──────────────────────────────────
-async function submitExercise(){
+async function submitExercise(alsoPlan){
   if(!submitUser||!currentUser)return;
+  if(window._submittingEx) return; window._submittingEx=true;
+  try{ await _submitExerciseInner(alsoPlan===true); } finally { window._submittingEx=false; }
+}
+async function _submitExerciseInner(alsoPlan){
   if(!getAgeSel('sAgePick').length){showToast('Bitte mindestens eine Altersstufe wählen','err');return;}
   const sec=parseInt(document.getElementById('sSec').value);
   // Upload image to Storage (avoid storing large base64 in DB)
@@ -505,6 +511,14 @@ async function submitExercise(){
   }
   if(error){showToast(/age_groups/.test(error.message||'')?'Fehler: Datenbank-Spalte age_groups fehlt (Admin informieren)':'Fehler beim Einreichen','err');return;}
   if(submitReplacesId){ await _supabase.from('exercises').delete().eq('id',submitReplacesId).eq('created_by',currentUser.id); submitReplacesId=null; }
+  if(alsoPlan && _ins){
+    // Übung sofort nutzbar machen: lokal als "in Prüfung" führen und in den aktuellen Plan legen
+    const _loc={id:_ins.id,name:document.getElementById('sName').value.trim(),players:document.getElementById('sPlayers').value.trim(),material:document.getElementById('sMat').value.trim(),section:sec,difficulty:document.getElementById('sIntensity').value,desc:document.getElementById('sDesc').value.trim(),tags:[...submitTags],image:imageUrl,duration:parseInt(document.getElementById('sDuration')?.value)||null,canvasObjects:(submitCanvasObjs&&submitCanvasObjs.length)?JSON.parse(JSON.stringify(submitCanvasObjs)):[],fieldType:submitFieldType||'small',sport:window.currentSport?.id||'fussball',ageGroups:getAgeSel('sAgePick'),status:'pending'};
+    if(!exercises.some(e=>e.id===_loc.id)) exercises.push(_loc);
+    if(typeof addToPlanOrPick==='function') addToPlanOrPick(_loc.id,sec); else addToPlan(_loc.id,Math.min(sec,4));
+    save();
+    showToast('✓ Übung eingereicht und in den Plan eingefügt.');
+  } else
   showToast('✓ Übung eingereicht! Das Admin-Team prüft sie.');
   submitCopyOf=null;
   renderSubmitChecklist_init();
