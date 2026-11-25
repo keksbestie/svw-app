@@ -1821,7 +1821,7 @@
         <div class="help-card-title">Feldeditor – Grundlagen</div>
         <p class="help-card-text">Taktische Aufstellungen und Übungsabläufe direkt auf dem Spielfeld zeichnen.</p>
         <div class="help-step"><span class="help-num">1</span><span><strong>Feldtyp</strong> oben links wählen: Vollfeld, Halbfeld, Kleines Feld, Neutralzone</span></div>
-        <div class="help-step"><span class="help-num">2</span><span>Werkzeug wählen (Spieler:in, Ball, Tor, Hütchen, Equipment)</span></div>
+        <div class="help-step"><span class="help-num">2</span><span>Werkzeug wählen (Spieler:in, Coach als schwarzes Dreieck mit C, Ball, Tor, Hütchen, Equipment)</span></div>
         <div class="help-step"><span class="help-num">3</span><span>Ins Feld klicken → Objekt wird platziert</span></div>
         <div class="help-step"><span class="help-num">4</span><span>Auswählen-Werkzeug (↖) → Objekte verschieben oder drehen</span></div>
         <div class="help-step"><span class="help-num">5</span><span>Rechtsklick auf Objekt → um 22,5° drehen</span></div>
@@ -1856,7 +1856,7 @@
         <div class="help-card-title">Feldeditor – Grundlagen (Volleyball)</div>
         <p class="help-card-text">Taktische Aufstellungen und Übungsabläufe direkt auf dem Volleyballfeld zeichnen.</p>
         <div class="help-step"><span class="help-num">1</span><span><strong>Feldtyp</strong> oben links wählen: Vollfeld (18×9m), Halbfeld, Beach-Vollfeld, Beach-Halbfeld</span></div>
-        <div class="help-step"><span class="help-num">2</span><span>Werkzeug wählen (Spieler:in, Ball, Hütchen, Equipment) – kein Tor, kein Dribbling im Volleyball</span></div>
+        <div class="help-step"><span class="help-num">2</span><span>Werkzeug wählen (Spieler:in, Coach als schwarzes Dreieck mit C, Ball, Hütchen, Equipment) – kein Tor, kein Dribbling im Volleyball</span></div>
         <div class="help-step"><span class="help-num">3</span><span>Ins Feld klicken → Objekt wird platziert</span></div>
         <div class="help-step"><span class="help-num">4</span><span>Auswählen-Werkzeug (↖) → Objekte verschieben oder drehen</span></div>
         <div class="help-step"><span class="help-num">5</span><span>Rechtsklick auf Objekt → um 22,5° drehen</span></div>
@@ -1891,7 +1891,7 @@
         <div class="help-card-title">Feldeditor – Grundlagen (Tennis)</div>
         <p class="help-card-text">Taktische Aufstellungen und Übungsabläufe direkt auf dem Tennisplatz zeichnen.</p>
         <div class="help-step"><span class="help-num">1</span><span><strong>Feldtyp</strong> oben links wählen: Vollfeld, Halbfeld, Aufschlagfeld</span></div>
-        <div class="help-step"><span class="help-num">2</span><span>Werkzeug wählen (Spieler:in, Ball, Hütchen, Equipment) – kein Tor, kein Dribbling im Tennis</span></div>
+        <div class="help-step"><span class="help-num">2</span><span>Werkzeug wählen (Spieler:in, Coach als schwarzes Dreieck mit C, Ball, Hütchen, Equipment) – kein Tor, kein Dribbling im Tennis</span></div>
         <div class="help-step"><span class="help-num">3</span><span>Ins Feld klicken → Objekt wird platziert</span></div>
         <div class="help-step"><span class="help-num">4</span><span>Auswählen-Werkzeug (↖) → Objekte verschieben oder drehen</span></div>
         <div class="help-step"><span class="help-num">5</span><span>Rechtsklick auf Objekt → um 22,5° drehen</span></div>
@@ -2802,6 +2802,9 @@ if('serviceWorker' in navigator){
       <span style="font-size:9px;color:rgba(255,255,255,.3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding-right:2px;">Objekte</span>
       <button class="tb active" id="tb_player" onclick="setTool('player')" title="Spieler:in setzen" style="background:#1565c0;width:30px;height:30px;border:none;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;">
         <svg width="16" height="18" viewBox="0 0 16 18" fill="white"><circle cx="8" cy="4.5" r="3.5"/><path d="M1,17.5 C1,11.5 4,9.5 8,9.5 C12,9.5 15,11.5 15,17.5Z"/></svg>
+      </button>
+      <button class="tb" id="tb_coach" onclick="setTool('coach')" title="Trainer:in / Coach setzen" style="background:#344736;width:30px;height:30px;border:none;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;">
+        <svg width="18" height="18" viewBox="0 0 18 18"><polygon points="9,1.5 16.5,15.5 1.5,15.5" fill="#111" stroke="#fff" stroke-width="1.3" stroke-linejoin="round"/><text x="9" y="13" text-anchor="middle" font-size="9" font-weight="900" font-family="Arial,sans-serif" fill="#fff">C</text></svg>
       </button>
       <button class="tb" id="tb_ball" onclick="setTool('ball')" title="Ball setzen" style="background:#344736;font-size:14px;width:30px;height:30px;border:none;border-radius:6px;cursor:pointer;color:#fff;">&#x26BD;</button>
       <button class="tb" id="tb_equip" onclick="setTool('equip')" title="Equipment (Hütchen, Stange …)" style="background:#344736;width:30px;height:30px;border:none;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;">
