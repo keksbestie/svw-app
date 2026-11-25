@@ -694,12 +694,12 @@ function openEntryEdit(type, editIdx){
       <div class="fg"><label>Notizen</label><textarea class="fc dta" id="ee-notes" rows="2" style="resize:vertical;">${esc(e.notes||'')}</textarea></div>`;
   } else if(t==='game'){
     bodyHtml=`
-      <div class="fg"><label>Titel / Gegner</label><input class="fc" id="ee-title" value="${esc(e.title||'')}" placeholder="z.B. Funino vs. Bremen West"></div>
+      <div class="fg"><label>Titel / Gegner</label><input class="fc" id="ee-title" value="${esc(e.title||'')}" placeholder="z.B. Heimspiel, Turnier oder Gegnername"></div>
       <div class="fr">
         <div class="fg"><label>Von</label><input class="fc" id="ee-start" type="time" value="${esc(e.startTime||'')}"></div>
         <div class="fg"><label>Bis</label><input class="fc" id="ee-end" type="time" value="${esc(e.endTime||'')}"></div>
       </div>
-      <div class="fg"><label>Spielformat</label><input class="fc" id="ee-format" value="${esc(e.gameFormat||'')}" placeholder="z.B. Funino, 4vs4, 7vs7"></div>
+      <div class="fg"><label>Spielformat</label><input class="fc" id="ee-format" value="${esc(e.gameFormat||'')}" placeholder="z.B. Turnier, Freundschaftsspiel, 4 gegen 4"></div>
       <div class="fg"><label>Notizen</label><textarea class="fc dta" id="ee-notes" rows="2" style="resize:vertical;">${esc(e.notes||'')}</textarea></div>`;
   }
 
