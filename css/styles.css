@@ -1164,6 +1164,8 @@ body:not(.on-home) .home-topbar { display: none; }
 .submit-btn-wrap { margin-top: 20px; }
 .submit-btn-main { width: 100%; padding: 14px; background: #8b5cf6; color: #fff; border: none; border-radius: 10px; font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all .18s; }
 .submit-btn-main:disabled { opacity: .4; cursor: not-allowed; }
+.submit-btn-plan { margin-top: 8px; background: transparent; color: #8b5cf6; border: 2px solid #8b5cf6; }
+.submit-btn-plan:not(:disabled):hover { background: rgba(139,92,246,.12); }
 .submit-btn-main:not(:disabled):hover { background: #7c3aed; transform: translateY(-1px); }
 
 /* My Submissions */
