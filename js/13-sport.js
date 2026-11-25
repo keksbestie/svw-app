@@ -164,6 +164,9 @@ function _updateHelpSport() {
   const isTn = sport === 'tennis';
   const ballIcon = isVb ? '🏐' : isTn ? '🎾' : '⚽';
 
+  // Platzhalter-Symbole in Fenstern
+  document.querySelectorAll('.sport-ico').forEach(el => el.textContent = ballIcon);
+
   // Suchleiste Icon
   const gsIco = document.getElementById('gsIco');
   if (gsIco) gsIco.textContent = ballIcon;

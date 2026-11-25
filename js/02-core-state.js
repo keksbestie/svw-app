@@ -41,6 +41,7 @@ function mapExercise(e){
 }
 // Sportartfilter: Übungen ohne sport-Angabe gelten als Fußball
 function _curSportId(){return (window.currentSport&&window.currentSport.id)||'fussball';}
+function _ballIcon(){const s=_curSportId();return s==='volleyball'?'🏐':s==='tennis'?'🎾':'⚽';}
 function sportExercises(){const s=_curSportId();return exercises.filter(e=>(e.sport||'fussball')===s);}
 
 // ── Altersstufen ──
@@ -482,7 +483,7 @@ function onGS(){
     const s=SECS[si];
     html+=`<div class="grl"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${s.color};margin-right:5px;vertical-align:middle;"></span>${s.name}</div>`;
     byS[si].forEach(e=>{html+=`<div class="gri" onclick="jumpTo(${+e.section},'${escJs(e.id)}')">
-      <div class="gri-th">${e.image?`<img src="${esc(e.image)}" alt="">`:'⚽'}</div>
+      <div class="gri-th">${e.image?`<img src="${esc(e.image)}" alt="">`:_ballIcon()}</div>
       <div><div class="gri-n">${esc(e.name)}</div><div class="gri-m">${e.players?'👥 '+esc(e.players):''}</div></div>
     </div>`;});
   });

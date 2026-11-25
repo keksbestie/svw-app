@@ -605,7 +605,7 @@ async function openQueueSection(secIdx){
   } else {
     el.innerHTML = subs.map(s=>`
       <div class="sub-list-item" onclick="openReviewMod('${escJs(s.id)}')">
-        <div class="sub-list-thumb">${s.diagram?`<img src="${esc(s.diagram)}" style="width:100%;height:100%;object-fit:cover;">`:'⚽'}</div>
+        <div class="sub-list-thumb">${s.diagram?`<img src="${esc(s.diagram)}" style="width:100%;height:100%;object-fit:cover;">`:_ballIcon()}</div>
         <div class="sub-list-info">
           <div class="sub-list-name">${esc(s.name)}</div>
           <div class="sub-list-meta">👤 ${esc(s.author)} · ${SECS[s.section].name}${s.sport?' · '+esc(s.sport):''} · ${esc(s.tags.slice(0,3).join(', '))}</div>

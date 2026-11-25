@@ -291,7 +291,7 @@ function renderLanePickerList(q){
   el.innerHTML=filtered.map(e=>{
     const inPlan=(currentPlan.lanes[si]||[]).some(raw=>_laneItem(raw).id===e.id);
     return`<div class="lp-item ${inPlan?'lp-inplan':''}">
-      <div class="lp-img">${e.image?`<img src="${esc(e.image)}" style="width:100%;height:100%;object-fit:cover;">`:'⚽'}</div>
+      <div class="lp-img">${e.image?`<img src="${esc(e.image)}" style="width:100%;height:100%;object-fit:cover;">`:_ballIcon()}</div>
       <div class="lp-info">
         <div class="lp-name">${esc(e.name)}</div>
         <div class="lp-meta">

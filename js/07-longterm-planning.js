@@ -333,7 +333,7 @@ function renderWeekRow(blockId, week, wi){
 function renderDayCard(blockId,wi,day,di){
   const entries = day.entries||[];
   const entryColors = {training:'#1a7f4b',free:'#1565c0',game:'#e65100'};
-  const entryIcos = {training:'⚽',free:'☕',game:'🏆'};
+  const entryIcos = {training:_ballIcon(),free:'☕',game:'🏆'};
   return `<div class="ltp-day-card" onclick="openDayEditor('${escJs(blockId)}',${wi},${di})">
     <div class="ltp-day-card-hdr">
       <span class="ltp-day-card-label">${esc(day.label||'Tag '+(di+1))}</span>
@@ -548,7 +548,7 @@ function renderDayEditor(){
 
 function renderEntryList(el){
   const typeColors={training:'#1a7f4b',free:'#1565c0',game:'#e65100'};
-  const typeIcos={training:'⚽',free:'☕',game:'🏆'};
+  const typeIcos={training:_ballIcon(),free:'☕',game:'🏆'};
   const typeLabels={training:'Trainingseinheit',free:'Freier Block',game:'Spieltag'};
   // Sort by start time
   const sorted=[...dayEditorEntries].sort((a,b)=>(a.startTime||'00:00').localeCompare(b.startTime||'00:00'));
@@ -578,7 +578,7 @@ function renderTimeGrid(el){
   const minH=times.length?Math.min(...times):6;
   const maxH=times.length?Math.max(...times)+2:22;
   const typeColors={training:'#1a7f4b',free:'#1565c0',game:'#e65100'};
-  const typeIcos={training:'⚽',free:'☕',game:'🏆'};
+  const typeIcos={training:_ballIcon(),free:'☕',game:'🏆'};
   const hourH=60; // px per hour
   const totalH=(maxH-minH)*hourH;
 
@@ -614,7 +614,7 @@ function openEntryEdit(type, editIdx){
   const e = isEdit ? dayEditorEntries[editIdx] : {type, title:'', startTime:'', endTime:'', planId:'', notes:'', tags:[], color:'#1565c0'};
   const typeLabels={training:'Trainingseinheit',free:'Freier Block',game:'Spieltag'};
   const typeColors={training:'#1a7f4b',free:'#1565c0',game:'#e65100'};
-  document.getElementById('entryEditIco').textContent=type==='training'?'⚽':type==='game'?'🏆':'☕';
+  document.getElementById('entryEditIco').textContent=type==='training'?_ballIcon():type==='game'?'🏆':'☕';
   document.getElementById('entryEditTitle').textContent=(isEdit?'Bearbeiten: ':'')+typeLabels[type||e.type];
 
   const planOpts='<option value="">– Kein Plan –</option>'+savedPlans.filter(p=>!p._dup&&_planSport(p)===_curSportId()).map(p=>`<option value="${esc(p.id)}" ${e.planId===p.id?'selected':''}>${esc(p.name)}</option>`).join('');
@@ -900,7 +900,7 @@ function _ltpPlanHTML(plan){
 function _ltpDayHTML(blk, week, day){
   const typeColors={training:'#1a7f4b',free:'#1565c0',game:'#e65100'};
   const typeLabels={training:'Trainingseinheit',free:'Freier Block',game:'Spieltag'};
-  const typeIcos={training:'⚽',free:'☕',game:'🏆'};
+  const typeIcos={training:_ballIcon(),free:'☕',game:'🏆'};
   const entries=day.entries||[];
   let html=`<div class="day-hdr">${esc(day.label||'Tag')}</div>`;
   if(!entries.length){html+=`<div style="color:#999;font-size:9pt;font-style:italic;">Keine Einträge</div>`;return html;}
