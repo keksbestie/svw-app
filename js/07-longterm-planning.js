@@ -494,26 +494,32 @@ function addDayToWeek(blockId,wi){
   okBtn.onclick=()=>{ const names=dayNames.filter(d=>chosen.has(d)); m.remove(); _addDaysFlow(blk,wi,names); };
 }
 
-// Gewählte Tage anlegen. Erste Woche: ohne Nachfrage. Ab der zweiten Woche: je Tag Vorlage aus früheren Wochen anbieten.
+// Gewählte Tage anlegen. Erste Woche: ohne Nachfrage. Ab der zweiten Woche: pro Tag Schritt für Schritt wählen
+// (leerer Tag oder Vorlage aus einer früheren Woche), mit Zurück-Möglichkeit. Angelegt wird erst am Ende.
 function _addDaysFlow(blk,wi,names){
   if(!names||!names.length) return;
   const sources=[];
   blk.weeks.forEach((w,wi2)=>{ if(wi2<wi) (w.days||[]).forEach(d=>sources.push({d,wk:w.label||('Woche '+(wi2+1))})); });
-  const addEmpty=n=>blk.weeks[wi].days.push({id:uid(),label:n,entries:[]});
   const finish=()=>{ save(); renderLtp(); };
-  if(wi===0||!sources.length){ names.forEach(addEmpty); finish(); return; }
-  let i=0;
-  const next=()=>{
-    if(i>=names.length){ finish(); return; }
-    const n=names[i++];
-    _openDayTemplateChooser(n,sources,
-      src=>{ const c=JSON.parse(JSON.stringify(src)); c.id=uid(); c.label=n; blk.weeks[wi].days.push(c); next(); },
-      ()=>{ addEmpty(n); next(); },
-      {pos:i,total:names.length,
-       onAllEmpty:()=>{ addEmpty(n); while(i<names.length) addEmpty(names[i++]); finish(); },
-       onCancel:finish});
+  if(wi===0||!sources.length){ names.forEach(n=>blk.weeks[wi].days.push({id:uid(),label:n,entries:[]})); finish(); return; }
+  const choices=new Array(names.length).fill(null); // null = noch nicht gewählt, 'empty' oder Quelltag
+  const apply=()=>{
+    names.forEach((n,k)=>{
+      const c=choices[k];
+      if(c&&c!=='empty'){ const cp=JSON.parse(JSON.stringify(c)); cp.id=uid(); cp.label=n; blk.weeks[wi].days.push(cp); }
+      else blk.weeks[wi].days.push({id:uid(),label:n,entries:[]});
+    });
+    finish();
   };
-  next();
+  const show=i=>{
+    _openDayTemplateChooser(names[i],sources,{
+      pos:i+1,total:names.length,selected:choices[i],
+      onNext:c=>{ choices[i]=c; if(i+1<names.length) show(i+1); else apply(); },
+      onBack:i>0?c=>{ if(c) choices[i]=c; show(i-1); }:null,
+      onAllEmpty:i+1<names.length?c=>{ choices[i]=c||'empty'; for(let k=i+1;k<names.length;k++) choices[k]='empty'; apply(); }:null
+    });
+  };
+  show(0);
 }
 
 function pickDay(blockId,wi,dayName){
@@ -521,39 +527,63 @@ function pickDay(blockId,wi,dayName){
   _addDaysFlow(blk,wi,[dayName]);
 }
 
-// Auswahl, ob ein neuer Tag aus einem Tag einer früheren Woche übernommen werden soll
-function _openDayTemplateChooser(dayName,sources,onPick,onEmpty,opt){
+// Auswahl für einen neuen Tag: leerer Tag oder Tag aus einer früheren Woche als Vorlage.
+// Die gewählte Karte wird farbig markiert; "Weiter" bestätigt, "Zurück" geht zum vorigen Tag.
+function _openDayTemplateChooser(dayName,sources,opt){
   opt=opt||{};
   document.getElementById('dayTplModal')?.remove();
   const m=document.createElement('div');
   m.id='dayTplModal';
   m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
-  const cancel=()=>{ m.remove(); if(opt.onCancel) opt.onCancel(); };
-  m.onclick=ev=>{if(ev.target===m)cancel();};
+  m.onclick=ev=>{if(ev.target===m)m.remove();};
   m.innerHTML='<div style="background:var(--surface);border-radius:16px;max-width:460px;width:100%;max-height:88vh;overflow-y:auto;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.4);">'
     +'<div id="dtStep" style="font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:2px;"></div>'
     +'<div style="font-family:Barlow Condensed,sans-serif;font-size:22px;font-weight:900;margin-bottom:2px;" id="dtTitle"></div>'
-    +'<div style="font-size:13px;color:var(--text-2);margin-bottom:14px;line-height:1.5;">Möchtest du einen Tag aus einer früheren Woche als Vorlage übernehmen?</div>'
+    +'<div style="font-size:13px;color:var(--text-2);margin-bottom:14px;line-height:1.5;">Wie soll der Tag angelegt werden? Leer oder aus einem Tag einer früheren Woche übernehmen.</div>'
     +'<div id="dtList" style="display:grid;gap:8px;margin-bottom:14px;"></div>'
-    +'<button type="button" class="bpr" data-act="empty" style="width:100%;">Leeren Tag anlegen</button>'
+    +'<div style="display:flex;gap:8px;"><button type="button" class="bsc" data-act="back" style="flex:1;display:none;">‹ Zurück</button><button type="button" class="bpr" data-act="next" style="flex:2;" disabled>Weiter</button></div>'
     +'<button type="button" class="bsc" data-act="allempty" style="width:100%;margin-top:8px;display:none;">Alle übrigen Tage leer anlegen</button>'
     +'<button type="button" class="bsc" data-act="cancel" style="width:100%;margin-top:8px;">Abbrechen</button></div>';
   document.body.appendChild(m);
+  const total=opt.total||1, pos=opt.pos||1;
   m.querySelector('#dtTitle').textContent=dayName+' hinzufügen';
-  if(opt.total>1){ m.querySelector('#dtStep').textContent='Tag '+opt.pos+' von '+opt.total; if(opt.pos<opt.total){ const ae=m.querySelector('[data-act=allempty]'); ae.style.display=''; ae.onclick=()=>{ m.remove(); opt.onAllEmpty(); }; } }
-  const list=m.querySelector('#dtList');
-  sources.forEach(({d,wk})=>{
+  if(total>1) m.querySelector('#dtStep').textContent='Tag '+pos+' von '+total;
+  const nextBtn=m.querySelector('[data-act=next]');
+  nextBtn.textContent=pos<total?'Weiter ›':(total>1?'Tage anlegen':'Tag anlegen');
+  let chosen=opt.selected||null;
+  const cards=[];
+  const paint=()=>{
+    cards.forEach(({b,val,chk})=>{
+      const on=(chosen===val);
+      b.style.border=on?'2px solid var(--accent)':'1px solid var(--border)';
+      b.style.background=on?'rgba(26,127,75,.18)':'var(--surface-2)';
+      b.style.padding=on?'9px 11px':'10px 12px';
+      chk.style.display=on?'':'none';
+    });
+    nextBtn.disabled=!chosen;
+  };
+  const addCard=(val,title,subText)=>{
     const b=document.createElement('button'); b.type='button';
-    b.style.cssText='text-align:left;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2);color:var(--text-1);cursor:pointer;font-family:inherit;';
+    b.style.cssText='text-align:left;border-radius:10px;color:var(--text-1);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:10px;';
+    const body=document.createElement('div'); body.style.cssText='flex:1;min-width:0;';
+    const h=document.createElement('div'); h.style.cssText='font-weight:800;font-size:14px;'; h.textContent=title; body.appendChild(h);
+    const sub=document.createElement('div'); sub.style.cssText='font-size:12px;color:var(--text-3);margin-top:2px;'; sub.textContent=subText; body.appendChild(sub);
+    const chk=document.createElement('div'); chk.textContent='✓'; chk.style.cssText='font-size:18px;font-weight:900;color:var(--accent);flex-shrink:0;';
+    b.appendChild(body); b.appendChild(chk);
+    b.onclick=()=>{ chosen=val; paint(); };
+    m.querySelector('#dtList').appendChild(b); cards.push({b,val,chk});
+  };
+  addCard('empty','Leerer Tag','Ohne Einträge starten');
+  sources.forEach(({d,wk})=>{
     const n=(d.entries||[]).length;
     const titles=(d.entries||[]).slice(0,3).map(x=>x.title||'Eintrag').join(' · ');
-    const h=document.createElement('div'); h.style.cssText='font-weight:800;font-size:14px;'; h.textContent=d.label+' · '+wk; b.appendChild(h);
-    const sub=document.createElement('div'); sub.style.cssText='font-size:12px;color:var(--text-3);margin-top:2px;'; sub.textContent=(n?(n===1?'1 Eintrag':n+' Einträge')+(titles?': '+titles:''):'Noch keine Einträge'); b.appendChild(sub);
-    b.onclick=()=>{ m.remove(); onPick(d); };
-    list.appendChild(b);
+    addCard(d,d.label+' · '+wk,n?(n===1?'1 Eintrag':n+' Einträge')+(titles?': '+titles:''):'Noch keine Einträge');
   });
-  m.querySelector('[data-act=empty]').onclick=()=>{ m.remove(); onEmpty(); };
-  m.querySelector('[data-act=cancel]').onclick=cancel;
+  paint();
+  nextBtn.onclick=()=>{ if(!chosen) return; m.remove(); opt.onNext&&opt.onNext(chosen); };
+  if(opt.onBack){ const bb=m.querySelector('[data-act=back]'); bb.style.display=''; bb.onclick=()=>{ m.remove(); opt.onBack(chosen); }; }
+  if(opt.onAllEmpty){ const ae=m.querySelector('[data-act=allempty]'); ae.style.display=''; ae.onclick=()=>{ m.remove(); opt.onAllEmpty(chosen&&chosen!=='empty'?chosen:'empty'); }; }
+  m.querySelector('[data-act=cancel]').onclick=()=>m.remove();
 }
 
 function deleteDay(blockId,wi,di){
