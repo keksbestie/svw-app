@@ -128,7 +128,9 @@ function _planSport(p){
   return best?best[0]:'fussball';
 }
 let _plansHaveSport=false; // erst true, wenn die Spalte plans.sport in der Datenbank existiert
-function _planPayload(p){const o={name:p.name||'Plan',date:p.date||'',lanes:p.lanes,totals:p.totals||[]};if(_plansHaveSport)o.sport=_planSport(p);return o;}
+// Spielernamen sind nie Teil gespeicherter Pläne (Sicherheitsnetz gegen Altstände)
+function _stripPN(lanes){return (lanes||[]).map(l=>(l||[]).map(r=>{if(r&&typeof r==='object'&&'playerNames' in r){const {playerNames,...rest}=r;return rest;}return r;}));}
+function _planPayload(p){const o={name:p.name||'Plan',date:p.date||'',lanes:_stripPN(p.lanes),totals:p.totals||[]};if(_plansHaveSport)o.sport=_planSport(p);return o;}
 function _ltpPayload(b){const c=Object.assign({},b);delete c._dbId;return {name:b.name||'Block',weeks:c};}
 
 // Lädt Pläne + Blöcke des Kontos. Bei JEDEM Fehler bleibt der lokale Zustand unverändert.
@@ -162,6 +164,8 @@ async function _loadOwnedData(userId){
   savedPlans=[...localUnsynced,...remotePlans,...submittedOnly].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
   _planIdsInDb=new Set(remoteIds);
   _syncSnap.plans=new Map(remotePlans.map(p=>[p._dbId,JSON.stringify(_planPayload(p))]));
+  // Altlasten: enthält ein gespeicherter Plan noch Spielernamen, beim nächsten Abgleich bereinigt zurückschreiben
+  remotePlans.forEach(p=>{ if(JSON.stringify(p.lanes)!==JSON.stringify(_stripPN(p.lanes))){ _syncSnap.plans.set(p._dbId,'__bereinigen__'); p.lanes=_stripPN(p.lanes); } });
   const remoteBlocks=(rb.data||[]).map(r=>Object.assign({},r.weeks,{_dbId:r.id}));
   // Lokale Blöcke ohne Kennung, die schon in der Datenbank liegen (Zwischenspeicher aus der Zeit vor der Umstellung), nicht doppelt führen
   const _bk=b=>b.id||('n:'+(b.name||'')+'|'+(b.createdAt||''));
@@ -289,7 +293,7 @@ async function saveAPI(){
 async function retryConn(){const ok=await loadAPI();if(ok){showToast('Verbunden');renderSection();renderSavedPlans();renderLtp();}else showToast('Verbindung fehlgeschlagen','err');updateApiBar();}
 function applyData(d){
   exercises=d.exercises||[];sectionDescs=d.sectionDescs||defaultDescs();
-  sectionCustomTags=d.sectionCustomTags||[[],[],[],[],[],[]];savedPlans=d.savedPlans||[];
+  sectionCustomTags=d.sectionCustomTags||[[],[],[],[],[],[]];savedPlans=(d.savedPlans||[]).map(p=>Object.assign({},p,{lanes:_stripPN(p.lanes)}));
   ltpBlocks=d.ltpBlocks||defaultLtp();
   if(d.sectionClusters)SECTION_CLUSTERS=d.sectionClusters;
   else if(d.tagClusters)SECTION_CLUSTERS=Array.from({length:6},()=>JSON.parse(JSON.stringify(d.tagClusters)));
@@ -300,7 +304,7 @@ function cacheLocal(){
   try{
     // Strip large image data from exercises to keep cache small (images load from Supabase)
     const exLean=exercises.map(({image,...rest})=>rest);
-    localStorage.setItem(SK,JSON.stringify({exercises:exLean,sectionDescs,sectionCustomTags,savedPlans,ltpBlocks,blockLibrary,sectionClusters:SECTION_CLUSTERS}));
+    localStorage.setItem(SK,JSON.stringify({exercises:exLean,sectionDescs,sectionCustomTags,savedPlans:savedPlans.map(p=>Object.assign({},p,{lanes:_stripPN(p.lanes)})),ltpBlocks,blockLibrary,sectionClusters:SECTION_CLUSTERS}));
   }catch(e){console.warn('localStorage voll – Cache übersprungen:',e);}
 }
 function loadLocal(){

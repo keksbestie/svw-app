@@ -51,7 +51,7 @@ function commitSavePlan(name){
   renderLtpDayPlanSelect();
   save();
 }
-function loadPlan(p){if(!currentUser){showLoginRequired('Gespeicherte Pläne');return;}currentPlan={name:p.name,lanes:p.lanes.map(l=>[...l])};document.getElementById('planName').value=p.name;renderPlanner();showToast('Plan geladen');}
+function loadPlan(p){if(!currentUser){showLoginRequired('Gespeicherte Pläne');return;}if(typeof resetPlanPlayerNames==='function')resetPlanPlayerNames();currentPlan={name:p.name,lanes:p.lanes.map(l=>[...l])};document.getElementById('planName').value=p.name;renderPlanner();showToast('Plan geladen');}
 function delPlan(id){if(!currentUser){showLoginRequired('Gespeicherte Pläne');return;}if(!confirm('Plan löschen?'))return;savedPlans=savedPlans.filter(p=>p.id!==id);save();renderSavedPlans();}
 function renderSavedPlans(){
   const el=document.getElementById('splist');if(!el)return;

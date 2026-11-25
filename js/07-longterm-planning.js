@@ -232,6 +232,7 @@ async function openLtpPlanPreview(idx){
 
 function loadLtpPlanIntoPlanner(p){
   if(!p||!p.lanes)return;
+  if(typeof resetPlanPlayerNames==='function') resetPlanPlayerNames();
   currentPlan={name:p.name,lanes:(p.lanes||[]).map(l=>[...l])};
   const inp=document.getElementById('planName');if(inp)inp.value=p.name;
   if(typeof renderPlanner==='function') renderPlanner();

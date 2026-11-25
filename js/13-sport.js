@@ -72,6 +72,7 @@ function _resetSportScopedState() {
       currentPlan = { name: '', lanes: [[], [], [], [], [], []] };
       if (typeof _cartParallel !== 'undefined') _cartParallel.clear();
       if (typeof planSquadAbsent !== 'undefined') planSquadAbsent.clear();
+      if (typeof resetPlanPlayerNames === 'function') resetPlanPlayerNames();
       const pn = document.getElementById('planName'); if (pn) pn.value = '';
       if (typeof renderLanes === 'function') renderLanes();
       if (typeof updatePlanCart === 'function') updatePlanCart();

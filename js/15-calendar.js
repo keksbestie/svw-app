@@ -13,6 +13,8 @@ function _calISO(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).pa
 function _calDe(iso) { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso || ''); return m ? m[3] + '.' + m[2] + '.' + m[1] : ''; }
 function _calSportEntries() { const s = _curSportId(); return calEntries.filter(e => (e.sport || 'fussball') === s); }
 function _calDeepCopy(o) { return JSON.parse(JSON.stringify(o)); }
+// Spielernamen gehören nie in gespeicherte Daten (Sicherheitsnetz, falls ältere Stände sie enthalten)
+function _stripLaneNames(lanes) { return (lanes || []).map(l => (l || []).map(r => { if (r && typeof r === 'object') { const { playerNames, ...rest } = r; return rest; } return r; })); }
 
 async function loadCalendarEntries() {
   if (!currentUser || !_supabase) { calEntries = []; return false; }
@@ -110,7 +112,6 @@ function openCalEntry(id) {
       return '<div style="padding:8px 0;border-bottom:1px solid var(--border);">'
         + '<div style="font-size:13px;font-weight:700;">' + esc(name) + '</div>'
         + '<div style="font-size:11px;color:var(--text-3);margin-top:2px;">' + (dur ? '⏱ ' + esc(dur) + ' min ' : '') + (pl ? '· 👥 ' + esc(pl) + ' ' : '') + (tr.length ? '· 🧑‍🏫 ' + esc(tr.join(', ')) : '') + '</div>'
-        + (ex && typeof _namedCount === 'function' && _namedCount(it) ? '<div class="pi-note-prev" style="max-height:none;">👤 ' + esc(_playerNamesText(it, ex)) + '</div>' : '')
         + (it.notes ? '<div class="pi-note-prev" style="max-height:none;">' + esc(it.notes) + '</div>' : '') + '</div>';
     }).join('');
     if (!items) return '';
@@ -150,7 +151,8 @@ function openCalEntry(id) {
 function openCalEntryInPlanner(id) {
   const e = calEntries.find(x => x.id === id); if (!e) return;
   const p = e.plan || {};
-  currentPlan = { name: e.name || p.name || '', lanes: _calDeepCopy(p.lanes || [[], [], [], [], [], []]) };
+  if (typeof resetPlanPlayerNames === 'function') resetPlanPlayerNames();
+  currentPlan = { name: e.name || p.name || '', lanes: _stripLaneNames(_calDeepCopy(p.lanes || [[], [], [], [], [], []])) };
   const n = document.getElementById('planName'); if (n) n.value = currentPlan.name;
   goPage('planner');
   setTimeout(() => { const d = document.getElementById('planDate'); if (d) d.value = e.entry_date; }, 50);
@@ -202,7 +204,7 @@ async function saveCalendarEntry(plan, dateISO) {
   if (!currentUser || !_supabase) return;
   const exNames = {};
   (plan.lanes || []).forEach(l => (l || []).forEach(raw => { const id = typeof raw === 'string' ? raw : raw.id; const ex = exercises.find(e => e.id === id); if (ex) exNames[id] = ex.name; }));
-  const snapshot = { name: plan.name, lanes: _calDeepCopy(plan.lanes || []), totals: plan.totals || [], exNames };
+  const snapshot = { name: plan.name, lanes: _stripLaneNames(_calDeepCopy(plan.lanes || [])), totals: plan.totals || [], exNames };
   const sport = plan.sport || _curSportId();
   // Gleicher Plan am gleichen Tag: vorhandenen Eintrag aktualisieren statt doppelt anzulegen
   const found = await _supabase.from('calendar_entries').select('id').eq('owner_id', currentUser.id).eq('source_plan_id', plan.id).eq('entry_date', dateISO);

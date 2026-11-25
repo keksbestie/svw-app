@@ -76,10 +76,10 @@ function piHTML(item,ex,si,col){
           min
           ${hasDurOvr?`<button class="pi-ovr-rst" onclick="resetPlanOverride('${escJs(ex.id)}',${si},'duration');event.stopPropagation()" title="Zurücksetzen">↺</button>`:''}
         </span>`:''}
-        ${_exPlayers(ex).length?`<button class="mbadge pi-note-btn${_namedCount(item)?' has':''}" onclick="openPlanPlayers('${escJs(ex.id)}',${si});event.stopPropagation()" title="Spieler benennen" aria-label="Spieler benennen">👤 ${_namedCount(item)?'Spieler':'Spieler benennen'}</button>`:''}
+        ${_exPlayers(ex).length?`<button class="mbadge pi-note-btn${_namedCount(ex.id,si)?' has':''}" onclick="openPlanPlayers('${escJs(ex.id)}',${si});event.stopPropagation()" title="Spieler benennen" aria-label="Spieler benennen">👤 ${_namedCount(ex.id,si)?'Spieler':'Spieler benennen'}</button>`:''}
         <button class="mbadge pi-note-btn${item.notes?' has':''}" onclick="openPlanNote('${escJs(ex.id)}',${si});event.stopPropagation()" title="Notiz zu dieser Übung" aria-label="Notiz zu dieser Übung">📝 ${item.notes?'Notiz':'Notiz +'}</button>
       </div>
-      ${_namedCount(item)?`<div class="pi-note-prev">👤 ${esc(_playerNamesText(item,ex))}</div>`:''}
+      ${_namedCount(ex.id,si)?`<div class="pi-note-prev">👤 ${esc(_playerNamesText(ex.id,si,ex))}</div>`:''}
       ${item.notes?`<div class="pi-note-prev">${esc(item.notes)}</div>`:''}
     </div>
     <button class="pi-rm" onclick="removePlanLane('${escJs(ex.id)}',${si})">✕</button>
@@ -109,9 +109,13 @@ function _exPlayers(ex){
   const num=v=>{const n=parseInt(v);return isNaN(n)?1e6:n;};
   return out.sort((a,b)=>num(a.label)-num(b.label)||String(a.label).localeCompare(String(b.label)));
 }
-function _namedCount(item){ return Object.values((item&&item.playerNames)||{}).filter(Boolean).length; }
-function _playerNamesText(item,ex){
-  const names=(item&&item.playerNames)||{};
+// Spielernamen gelten nur für diese eine Einheit: ausschließlich im Arbeitsspeicher, nie Teil des Plans (nicht gespeichert, nicht im Kalender, nicht veröffentlichbar)
+let planPlayerNames={};
+function _pnKey(id,si){return id+'|'+si;}
+function resetPlanPlayerNames(){ planPlayerNames={}; }
+function _namedCount(id,si){ return Object.values(planPlayerNames[_pnKey(id,si)]||{}).filter(Boolean).length; }
+function _playerNamesText(id,si,ex){
+  const names=planPlayerNames[_pnKey(id,si)]||{};
   return _exPlayers(ex).filter(p=>names[p.key]).map(p=>(p.label?p.label+' ':'')+names[p.key]).join(', ');
 }
 function openPlanPlayers(id,si){
@@ -119,7 +123,7 @@ function openPlanPlayers(id,si){
   const item=lane.map(r=>_laneItem(r)).find(r=>r.id===id); if(!item) return;
   const ex=exercises.find(e=>e.id===id)||{name:''};
   const players=_exPlayers(ex); if(!players.length){showToast('Für diese Übung liegen keine Spielerdaten vor','err');return;}
-  const names=item.playerNames||{};
+  const names=planPlayerNames[_pnKey(id,si)]||{};
   // Nur Spieler:innen, die heute dabei sind und bei dieser Übung nicht ausgeschlossen wurden
   const excl=new Set(item.excludedIds||[]);
   const kader=(typeof squadForPlan==='function'?squadForPlan():(typeof squad!=='undefined'?squad:[])).filter(p=>!excl.has(p.id)).map(p=>p.name).filter(Boolean);
@@ -134,7 +138,7 @@ function openPlanPlayers(id,si){
     +'<div style="display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap;">'
     +'<div id="ppImgBox" style="flex:1 1 320px;min-width:0;display:none;"><img id="ppImg" alt="Felddiagramm der Übung" style="width:100%;max-height:60vh;object-fit:contain;border-radius:10px;border:1px solid var(--border);background:#2d7a3a;display:block;"><div style="font-size:11px;color:var(--text-3);margin-top:6px;">Die Nummern im Bild entsprechen den Nummern links.</div></div>'
     +'<div style="flex:1 1 280px;min-width:0;"><div id="ppRows" style="display:grid;gap:8px;"></div></div></div>'
-    +'<div style="font-size:11px;color:var(--text-3);margin:10px 0 14px;">Namen gelten nur für diesen Plan und stehen im Ausdruck. Beim Veröffentlichen eines Plans werden sie nicht mitgeschickt.</div>'
+    +'<div style="font-size:11px;color:var(--text-3);margin:10px 0 14px;">Die Namen gelten nur für diese eine Einheit: Sie werden nicht gespeichert und stehen nur im Ausdruck. Nach dem Schließen der App oder dem Laden eines anderen Plans sind sie weg.</div>'
     +'<div style="display:flex;gap:8px;"><button class="bsc" data-act="cancel" style="flex:1;">Abbrechen</button><button class="bpr" data-act="save" style="flex:2;">Speichern</button></div>'
     +'<button data-act="clear" style="width:100%;margin-top:10px;padding:8px;background:none;border:1.5px solid #e53935;color:#e53935;border-radius:8px;cursor:pointer;font-weight:700;">Alle Namen löschen</button></div>';
   document.body.appendChild(m);
@@ -155,7 +159,7 @@ function openPlanPlayers(id,si){
     }
     rows.appendChild(row);
   });
-  const done=obj=>{ setPlanOverride(id,si,'playerNames',obj&&Object.keys(obj).length?obj:null); m.remove(); renderLanes(); };
+  const done=obj=>{ if(obj&&Object.keys(obj).length) planPlayerNames[_pnKey(id,si)]=obj; else delete planPlayerNames[_pnKey(id,si)]; m.remove(); renderLanes(); };
   m.querySelector('[data-act=cancel]').onclick=()=>m.remove();
   m.querySelector('[data-act=clear]').onclick=()=>done(null);
   m.querySelector('[data-act=save]').onclick=()=>{
@@ -233,6 +237,7 @@ function resetPlanOverride(id,si,field){
 }
 
 function removePlanLane(id,si){
+  delete planPlayerNames[_pnKey(id,si)];
   currentPlan.lanes[si]=(currentPlan.lanes[si]||[]).filter(raw=>_laneItem(raw).id!==id);
   renderLanes();updatePlanCart();
 }
@@ -330,6 +335,7 @@ function loadTemplate(tpl){
   if(!t) return;
   if(!confirm(`Vorlage "${t.name}" laden? Der aktuelle Plan wird überschrieben.`)) return;
   currentPlan = {lanes: t.lanes.map(l=>[...l])};
+  resetPlanPlayerNames();
   document.getElementById('planName').value = t.name;
   renderPlanner();
   showToast('Vorlage geladen');
@@ -342,6 +348,7 @@ function clearPlan(){
   if(!confirm('Trainingsplan leeren? Alle Übungen werden entfernt.')) return;
   // Komplett neu beginnen: Übungen, Titel, Datum und alle Markierungen zurücksetzen (nichts vom vorher geöffneten Plan bleibt)
   currentPlan={name:'',lanes:[[],[],[],[],[],[]]};
+  resetPlanPlayerNames();
   const pn=document.getElementById('planName'); if(pn) pn.value='';
   const pd=document.getElementById('planDate'); if(pd) pd.value=new Date().toISOString().slice(0,10);
   if(typeof _cartParallel!=='undefined') _cartParallel.clear();
@@ -425,7 +432,7 @@ function printPlan(){
           ${(typeof coachNames==='function'&&coachNames(item.coachIds).length)?`<span>🧑‍🏫 ${coachNames(item.coachIds).map(n=>esc(n)).join(', ')}</span>`:''}
         </div>
         ${ex.desc?`<div class="ex-desc">${esc(ex.desc)}</div>`:''}
-        ${_namedCount(item)?`<div class="ex-note"><strong>Spieler:</strong> ${esc(_playerNamesText(item,ex))}</div>`:''}
+        ${_namedCount(ex.id,si)?`<div class="ex-note"><strong>Spieler:</strong> ${esc(_playerNamesText(ex.id,si,ex))}</div>`:''}
         ${item.notes?`<div class="ex-note"><strong>Notiz:</strong> ${esc(item.notes)}</div>`:''}
       </div>
     </div>`;
