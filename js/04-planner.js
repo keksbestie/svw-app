@@ -120,7 +120,9 @@ function openPlanPlayers(id,si){
   const ex=exercises.find(e=>e.id===id)||{name:''};
   const players=_exPlayers(ex); if(!players.length){showToast('Für diese Übung liegen keine Spielerdaten vor','err');return;}
   const names=item.playerNames||{};
-  const kader=(typeof squad!=='undefined'?squad:[]).map(p=>p.name).filter(Boolean);
+  // Nur Spieler:innen, die heute dabei sind und bei dieser Übung nicht ausgeschlossen wurden
+  const excl=new Set(item.excludedIds||[]);
+  const kader=(typeof squadForPlan==='function'?squadForPlan():(typeof squad!=='undefined'?squad:[])).filter(p=>!excl.has(p.id)).map(p=>p.name).filter(Boolean);
   document.getElementById('planPlayersModal')?.remove();
   const m=document.createElement('div');
   m.id='planPlayersModal';
