@@ -295,10 +295,10 @@ function renderBlockCard(blk,bi){
         <div class="ltp-block-meta">${blk.weeks.length} Wochen · ${totalDays} Tage · ${totalEntries} Einheiten${blk.startDate?' · ab '+new Date(blk.startDate).toLocaleDateString('de-DE'):''}</div>
         ${blk.notes?`<div class="ltp-block-notes">${esc(blk.notes)}</div>`:''}
       </div>
-      <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">
-        <button onclick="openFixedEntries('${escJs(blk.id)}')" title="Feste Termine für alle Tage" style="padding:5px 10px;font-size:10px;font-weight:800;border:1px solid var(--border);background:var(--surface-2);border-radius:6px;cursor:pointer;color:var(--text-2);">⏰ Feste Termine</button>
-        <button onclick="openSaveBlockLib('${escJs(blk.id)}')" style="padding:5px 10px;font-size:10px;font-weight:800;border:1px solid var(--border);background:var(--surface-2);border-radius:6px;cursor:pointer;color:var(--text-2);">💾 Bibliothek</button>
-        <button onclick="deleteActiveBlock('${escJs(blk.id)}')" style="padding:5px 8px;font-size:10px;border:1px solid var(--border);background:none;border-radius:6px;cursor:pointer;color:#880e4f;">✕</button>
+      <div class="ltp-hbtns">
+        <button class="ltp-hbtn ltp-hbtn--accent" onclick="openFixedEntries('${escJs(blk.id)}')" title="Feste Termine für alle Tage">⏰ Feste Termine</button>
+        <button class="ltp-hbtn" onclick="openSaveBlockLib('${escJs(blk.id)}')" title="Block in der Bibliothek speichern">💾 Bibliothek</button>
+        <button class="ltp-hbtn ltp-hbtn--danger" onclick="deleteActiveBlock('${escJs(blk.id)}')" title="Block löschen" aria-label="Block löschen">✕</button>
       </div>
     </div>
     <div class="ltp-weeks-wrap">

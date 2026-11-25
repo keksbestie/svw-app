@@ -1516,3 +1516,13 @@ body:not(.on-home) .home-topbar { display: none; }
 
 /* Spieler benennen: Bild bleibt neben der Liste sichtbar (nur breite Fenster) */
 @media (min-width: 700px) { #ppImgBox { position: sticky; top: 0; } }
+
+/* Langzeitplanung: Block-Kopfzeile – große, gut sichtbare Schaltflächen */
+.ltp-hbtns { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+.ltp-hbtn { min-height: 42px; padding: 10px 16px; font-family: inherit; font-size: 14px; font-weight: 800; border: 1.5px solid var(--border-strong, var(--border)); background: var(--surface); color: var(--text-1); border-radius: 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: background .15s, border-color .15s; }
+.ltp-hbtn:hover { background: var(--surface-2); border-color: var(--accent); }
+.ltp-hbtn--accent { background: var(--accent); border-color: var(--accent); color: #fff; }
+.ltp-hbtn--accent:hover { background: var(--accent); filter: brightness(1.1); }
+.ltp-hbtn--danger { color: #c62828; border-color: rgba(198,40,40,.55); padding: 10px 14px; font-size: 16px; }
+.ltp-hbtn--danger:hover { background: rgba(198,40,40,.12); border-color: #c62828; }
+@media (max-width: 600px) { .ltp-hbtn { min-height: 44px; padding: 10px 14px; } }
