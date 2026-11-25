@@ -218,6 +218,14 @@ async function _syncOwned(kind){
   return ok;
 }
 
+// Eigene, noch nicht freigegebene Übungen bleiben im Plan nutzbar (nicht im Katalog sichtbar, siehe renderSection)
+async function _mergeOwnPending(user){
+  if(!user||!_supabase) return;
+  try{
+    const {data}=await _supabase.from('exercises').select('*').eq('created_by',user.id).in('status',['pending','review']);
+    (data||[]).forEach(r=>{ if(!exercises.some(e=>e.id===r.id)) exercises.push(mapExercise(r)); });
+  }catch(e){}
+}
 async function loadAPI(){
   if(!_supabase)return false;
   try{
@@ -237,6 +245,7 @@ async function loadAPI(){
     if(exErr)throw exErr;
     // Only overwrite local exercises if Supabase actually has data
     if(exData&&exData.length>0) exercises=exData.map(mapExercise);
+    await _mergeOwnPending(user);
     const {data:descData}=await _supabase.from('section_descs').select('*');
     if(descData&&descData.length>0){
       descData.forEach(r=>{if(r.section_idx>=0&&r.section_idx<6)sectionDescs[r.section_idx]=r.description||'';});
@@ -257,6 +266,7 @@ async function silentSync(){
   try{
     const {data:exData}=await _supabase.from('exercises').select('*').eq('status','approved');
     if(exData&&exData.length>0) exercises=exData.map(mapExercise);
+    await _mergeOwnPending(currentUser);
     const {data:descData}=await _supabase.from('section_descs').select('*');
     if(descData&&descData.length>0){
       descData.forEach(r=>{if(r.section_idx>=0&&r.section_idx<6)sectionDescs[r.section_idx]=r.description||'';});
