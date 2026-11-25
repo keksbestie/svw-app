@@ -29,10 +29,36 @@ async function init(){
   if(typeof loadSquad==='function') loadSquad();
   // Hintergrund-Abgleich: jede Minute, aber nur solange der Tab sichtbar ist.
   // Beim Zurückkehren in den Tab wird sofort nachgeholt, wenn der letzte Abgleich älter als eine Minute ist.
-  setInterval(()=>{if(apiOnline&&!document.hidden)silentSync();},SYNC_INTERVAL_MS);
+  // Verbindung verloren → Offline-Modus; Verbindung wieder da → neu verbinden (auch wenn der Start offline war)
+  window.addEventListener('offline',()=>{apiOnline=false; setStat('err'); updateApiBar();});
+  window.addEventListener('online',()=>{reconnectAPI();});
+  setInterval(()=>{if(document.hidden)return; if(apiOnline)silentSync(); else if(navigator.onLine!==false)reconnectAPI();},SYNC_INTERVAL_MS);
   document.addEventListener('visibilitychange',()=>{
     if(!document.hidden&&apiOnline&&Date.now()-_lastSyncAt>=SYNC_INTERVAL_MS) silentSync();
   });
+}
+// Stellt die Verbindung wieder her. Lädt bei Bedarf die Supabase-Bibliothek nach (CDN war blockiert/offline)
+// und lädt Änderungen hoch, die offline gemacht wurden.
+let _reconnecting=false;
+async function reconnectAPI(){
+  if(_reconnecting) return apiOnline;
+  _reconnecting=true;
+  try{
+    if(!(await ensureSupabase())) return false;
+    // War diese Sitzung schon einmal verbunden, ist der Stand der Datenbank bekannt:
+    // dann zuerst die offline gemachten Änderungen hochladen, danach neu laden.
+    if(currentUser&&_planIdsInDb!==null){
+      apiOnline=true; await saveAPI();
+      if(apiOnline) await silentSync();
+    } else {
+      setStat('loading');
+      const ok=await loadAPI();
+      if(ok){ renderStbar(); renderSection(); renderSavedPlans(); renderLtp(); }
+      if(typeof updateSignInBtn==='function') updateSignInBtn();
+      if(ok&&typeof loadSquad==='function') loadSquad();
+    }
+    return apiOnline;
+  }finally{ _reconnecting=false; updateApiBar(); }
 }
 function hideLS(){const l=document.getElementById('ls');l.classList.add('fade');setTimeout(()=>l.style.display='none',400);}
 
@@ -231,10 +257,22 @@ async function _mergeOwnPending(user){
     (data||[]).forEach(r=>{ if(!exercises.some(e=>e.id===r.id)) exercises.push(mapExercise(r)); });
   }catch(e){}
 }
+// Netzwerkfehler (offline, Server/CDN nicht erreichbar) – im Gegensatz zu „nicht angemeldet“
+function _isNetErr(e){
+  if(!e) return false;
+  if(typeof navigator!=='undefined'&&navigator.onLine===false) return true;
+  return e.name==='AuthRetryableFetchError'||e.name==='TypeError'||!e.status||e.status>=500;
+}
 async function loadAPI(){
   if(!_supabase)return false;
   try{
-    const {data:{user}}=await _supabase.auth.getUser();
+    const res=await _supabase.auth.getUser();
+    let user=res.data&&res.data.user;
+    if(!user&&res.error&&_isNetErr(res.error)){
+      // Server nicht erreichbar: angemeldet bleiben (Sitzung aus dem lokalen Speicher), aber offline arbeiten
+      currentUser=await _offlineSessionUser();
+      throw res.error;
+    }
     currentUser=user; IS_ADMIN=false;
     if(user){
       const {data:profile}=await _supabase.from('profiles').select('role,reviewer_sports,club_id,club_role').eq('id',user.id).single();
@@ -333,7 +371,7 @@ async function silentSync(){
     if(typeof renderSavedPlans==='function') renderSavedPlans();
     if(typeof renderLtp==='function'&&typeof activeLtpTab!=='undefined'&&activeLtpTab===0) renderLtp();
     if(typeof refreshSportAvailability==='function') refreshSportAvailability();
-  }catch{apiOnline=false; setStat('err');}
+  }catch{apiOnline=false; setStat('err'); updateApiBar();}
   finally{_silentRunning=false;}
 }
 async function saveAPI(){
@@ -356,7 +394,7 @@ async function saveAPI(){
   }catch(e){apiOnline=false; setStat('err'); showToast('Speichern fehlgeschlagen','warn');}
   finally{_syncRunning=false; if(_syncAgain){_syncAgain=false; setTimeout(saveAPI,300);}}
 }
-async function retryConn(){const ok=await loadAPI();if(ok){showToast('Verbunden');renderSection();renderSavedPlans();renderLtp();}else showToast('Verbindung fehlgeschlagen','err');updateApiBar();}
+async function retryConn(){const ok=await reconnectAPI();if(ok)showToast('Verbunden');else showToast('Verbindung fehlgeschlagen','err');}
 function applyData(d){
   exercises=d.exercises||[];sectionDescs=d.sectionDescs||defaultDescs();
   sectionCustomTags=d.sectionCustomTags||[[],[],[],[],[],[]];savedPlans=(d.savedPlans||[]).map(p=>Object.assign({},p,{lanes:_stripPN(p.lanes)}));
