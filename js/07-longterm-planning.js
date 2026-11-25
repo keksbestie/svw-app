@@ -296,6 +296,7 @@ function renderBlockCard(blk,bi){
         ${blk.notes?`<div class="ltp-block-notes">${esc(blk.notes)}</div>`:''}
       </div>
       <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">
+        <button onclick="openFixedEntries('${escJs(blk.id)}')" title="Feste Termine für alle Tage" style="padding:5px 10px;font-size:10px;font-weight:800;border:1px solid var(--border);background:var(--surface-2);border-radius:6px;cursor:pointer;color:var(--text-2);">⏰ Feste Termine</button>
         <button onclick="openSaveBlockLib('${escJs(blk.id)}')" style="padding:5px 10px;font-size:10px;font-weight:800;border:1px solid var(--border);background:var(--surface-2);border-radius:6px;cursor:pointer;color:var(--text-2);">💾 Bibliothek</button>
         <button onclick="deleteActiveBlock('${escJs(blk.id)}')" style="padding:5px 8px;font-size:10px;border:1px solid var(--border);background:none;border-radius:6px;cursor:pointer;color:#880e4f;">✕</button>
       </div>
@@ -494,6 +495,97 @@ function addDayToWeek(blockId,wi){
   okBtn.onclick=()=>{ const names=dayNames.filter(d=>chosen.has(d)); m.remove(); _addDaysFlow(blk,wi,names); };
 }
 
+// ── FESTE TERMINE (pro Block) ─────────────────────────
+// Wiederkehrende Einträge (z. B. Frühstück 8:30–9:30, Bettruhe 22:00), die in die Tage des Blocks übernommen werden.
+// Die übernommenen Einträge sind normale Einträge: an einzelnen Tagen frei änderbar oder löschbar.
+const _LTP_DAYS=['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
+function _fixedMatches(f,dayLabel){ return !f.days||!f.days.length||f.days.includes(dayLabel); }
+function _fixedToEntry(f){ return {id:uid(),type:'free',title:f.title,startTime:f.startTime||'',endTime:f.endTime||'',notes:f.notes||'',planId:'',tags:[],color:'#1565c0',gameFormat:'',fixedId:f.id}; }
+// Ergänzt fehlende feste Termine in einem Tag; gibt die Anzahl neuer Einträge zurück
+function _applyFixedToDay(blk,day,refresh){
+  let n=0; day.entries=day.entries||[];
+  (blk.fixedEntries||[]).forEach(f=>{
+    if(!_fixedMatches(f,day.label)) return;
+    const ex=day.entries.find(e=>e.fixedId===f.id);
+    if(ex){ if(refresh){ ex.title=f.title; ex.startTime=f.startTime||''; ex.endTime=f.endTime||''; ex.notes=f.notes||''; n++; } return; }
+    day.entries.push(_fixedToEntry(f)); n++;
+  });
+  return n;
+}
+function _pushDay(blk,wi,day){ _applyFixedToDay(blk,day,false); blk.weeks[wi].days.push(day); }
+
+let _fixedEditId=null;
+function openFixedEntries(blockId){
+  const blk=ltpBlocks.find(b=>b.id===blockId); if(!blk)return;
+  if(!blk.fixedEntries) blk.fixedEntries=[];
+  _fixedEditId=null;
+  document.getElementById('fixedModal')?.remove();
+  const m=document.createElement('div');
+  m.id='fixedModal';
+  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
+  m.onclick=ev=>{if(ev.target===m)m.remove();};
+  m.innerHTML='<div style="background:var(--surface);border-radius:16px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.4);">'
+    +'<div style="font-family:Barlow Condensed,sans-serif;font-size:22px;font-weight:900;margin-bottom:2px;">⏰ Feste Termine</div>'
+    +'<div id="fxSub" style="font-size:12px;color:var(--text-3);margin-bottom:6px;"></div>'
+    +'<div style="font-size:12px;color:var(--text-2);line-height:1.5;margin-bottom:14px;">Termine, die jeden Tag gelten (z. B. Frühstück, Bettruhe). Nach dem Übernehmen kannst du jeden Eintrag an einzelnen Tagen ändern oder löschen.</div>'
+    +'<div id="fxList" style="display:grid;gap:8px;margin-bottom:14px;"></div>'
+    +'<div style="border:1px solid var(--border);border-radius:12px;padding:14px;background:var(--surface-2);">'
+    +'<div id="fxFormTitle" style="font-weight:800;font-size:13px;margin-bottom:10px;">Neuer fester Termin</div>'
+    +'<input id="fxTitle" class="fc" type="text" maxlength="60" placeholder="Titel, z. B. Frühstück" style="width:100%;box-sizing:border-box;margin-bottom:8px;">'
+    +'<div style="display:flex;gap:8px;margin-bottom:8px;"><div style="flex:1;"><label style="font-size:11px;color:var(--text-3);">Von</label><input id="fxStart" class="fc" type="time" style="width:100%;box-sizing:border-box;"></div><div style="flex:1;"><label style="font-size:11px;color:var(--text-3);">Bis (optional)</label><input id="fxEnd" class="fc" type="time" style="width:100%;box-sizing:border-box;"></div></div>'
+    +'<div style="font-size:11px;color:var(--text-3);margin-bottom:4px;">Wochentage</div><div id="fxDays" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;"></div>'
+    +'<input id="fxNotes" class="fc" type="text" maxlength="200" placeholder="Notiz (optional)" style="width:100%;box-sizing:border-box;margin-bottom:10px;">'
+    +'<div style="display:flex;gap:8px;"><button type="button" class="bsc" data-act="fxreset" style="flex:1;display:none;">Abbrechen</button><button type="button" class="bpr" data-act="fxsave" style="flex:2;">Termin hinzufügen</button></div></div>'
+    +'<label style="display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--text-2);margin:14px 0 8px;line-height:1.4;cursor:pointer;"><input type="checkbox" id="fxRefresh" style="margin-top:2px;"> Bereits übernommene Einträge ebenfalls an die Zeiten oben anpassen (überschreibt Einzeländerungen)</label>'
+    +'<button type="button" class="bpr" data-act="apply" style="width:100%;">Auf alle Tage übernehmen</button>'
+    +'<button type="button" class="bsc" data-act="close" style="width:100%;margin-top:8px;">Schließen</button></div>';
+  document.body.appendChild(m);
+  m.querySelector('#fxSub').textContent='Block: '+(blk.name||'');
+  const daySel=new Set(_LTP_DAYS);
+  const dayBox=m.querySelector('#fxDays');
+  const paintDays=()=>{ dayBox.innerHTML=''; _LTP_DAYS.forEach(d=>{ const b=document.createElement('button'); b.type='button'; const on=daySel.has(d); b.textContent=d.slice(0,2);
+    b.style.cssText='padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;border:1.5px solid '+(on?'var(--accent)':'var(--border)')+';background:'+(on?'var(--accent)':'var(--surface)')+';color:'+(on?'#fff':'var(--text-2)')+';';
+    b.title=d; b.onclick=()=>{ on?daySel.delete(d):daySel.add(d); paintDays(); }; dayBox.appendChild(b); }); };
+  const daysText=f=>{ if(!f.days||!f.days.length||f.days.length===7) return 'Alle Tage'; return _LTP_DAYS.filter(d=>f.days.includes(d)).map(d=>d.slice(0,2)).join(', '); };
+  const resetForm=()=>{ _fixedEditId=null; m.querySelector('#fxTitle').value=''; m.querySelector('#fxStart').value=''; m.querySelector('#fxEnd').value=''; m.querySelector('#fxNotes').value=''; daySel.clear(); _LTP_DAYS.forEach(d=>daySel.add(d)); paintDays();
+    m.querySelector('#fxFormTitle').textContent='Neuer fester Termin'; m.querySelector('[data-act=fxsave]').textContent='Termin hinzufügen'; m.querySelector('[data-act=fxreset]').style.display='none'; };
+  const paintList=()=>{
+    const list=m.querySelector('#fxList'); list.innerHTML='';
+    if(!blk.fixedEntries.length){ list.innerHTML='<div style="font-size:12px;color:var(--text-3);">Noch keine festen Termine.</div>'; return; }
+    blk.fixedEntries.forEach(f=>{
+      const row=document.createElement('div'); row.style.cssText='display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2);';
+      const body=document.createElement('div'); body.style.cssText='flex:1;min-width:0;';
+      const h=document.createElement('div'); h.style.cssText='font-weight:800;font-size:14px;'; h.textContent=f.title; body.appendChild(h);
+      const s=document.createElement('div'); s.style.cssText='font-size:12px;color:var(--text-3);margin-top:2px;'; s.textContent=(f.startTime||'?')+(f.endTime?' – '+f.endTime:'')+' · '+daysText(f); body.appendChild(s);
+      const ed=document.createElement('button'); ed.type='button'; ed.textContent='✏️'; ed.title='Bearbeiten'; ed.style.cssText='border:1px solid var(--border);background:var(--surface);border-radius:6px;padding:4px 8px;cursor:pointer;';
+      ed.onclick=()=>{ _fixedEditId=f.id; m.querySelector('#fxTitle').value=f.title; m.querySelector('#fxStart').value=f.startTime||''; m.querySelector('#fxEnd').value=f.endTime||''; m.querySelector('#fxNotes').value=f.notes||''; daySel.clear(); (f.days&&f.days.length?f.days:_LTP_DAYS).forEach(d=>daySel.add(d)); paintDays();
+        m.querySelector('#fxFormTitle').textContent='Termin bearbeiten'; m.querySelector('[data-act=fxsave]').textContent='Änderung speichern'; m.querySelector('[data-act=fxreset]').style.display=''; m.querySelector('#fxTitle').focus(); };
+      const del=document.createElement('button'); del.type='button'; del.textContent='🗑'; del.title='Löschen'; del.style.cssText='border:none;background:none;cursor:pointer;color:#880e4f;padding:4px 6px;';
+      del.onclick=()=>{ if(!confirm('Diesen festen Termin löschen? Bereits in Tage übernommene Einträge bleiben bestehen.')) return; blk.fixedEntries=blk.fixedEntries.filter(x=>x.id!==f.id); save(); if(_fixedEditId===f.id) resetForm(); paintList(); };
+      row.appendChild(body); row.appendChild(ed); row.appendChild(del); list.appendChild(row);
+    });
+  };
+  m.querySelector('[data-act=fxreset]').onclick=resetForm;
+  m.querySelector('[data-act=fxsave]').onclick=()=>{
+    const title=m.querySelector('#fxTitle').value.trim(), start=m.querySelector('#fxStart').value, end=m.querySelector('#fxEnd').value, notes=m.querySelector('#fxNotes').value.trim();
+    if(!title){ showToast('Bitte einen Titel eingeben','err'); return; }
+    if(!start){ showToast('Bitte eine Uhrzeit eingeben','err'); return; }
+    if(!daySel.size){ showToast('Bitte mindestens einen Wochentag wählen','err'); return; }
+    const days=daySel.size===7?[]:_LTP_DAYS.filter(d=>daySel.has(d)); // leer = alle Tage
+    if(_fixedEditId){ const f=blk.fixedEntries.find(x=>x.id===_fixedEditId); if(f){ Object.assign(f,{title,startTime:start,endTime:end,notes,days}); } }
+    else blk.fixedEntries.push({id:uid(),title,startTime:start,endTime:end,notes,days});
+    save(); showToast(_fixedEditId?'Termin geändert':'Termin hinzugefügt – mit „Auf alle Tage übernehmen“ eintragen'); resetForm(); paintList();
+  };
+  m.querySelector('[data-act=apply]').onclick=()=>{
+    if(!blk.fixedEntries.length){ showToast('Noch keine festen Termine angelegt','err'); return; }
+    const refresh=m.querySelector('#fxRefresh').checked; let added=0, days=0;
+    blk.weeks.forEach(w=>(w.days||[]).forEach(d=>{ const n=_applyFixedToDay(blk,d,refresh); if(n){ added+=n; days++; } }));
+    save(); renderLtp(); showToast(added?(added+' Einträge in '+days+' Tagen übernommen'):'Alles schon übernommen – nichts zu ergänzen');
+  };
+  m.querySelector('[data-act=close]').onclick=()=>m.remove();
+  resetForm(); paintList();
+}
+
 // Gewählte Tage anlegen. Erste Woche: ohne Nachfrage. Ab der zweiten Woche: pro Tag Schritt für Schritt wählen
 // (leerer Tag oder Vorlage aus einer früheren Woche), mit Zurück-Möglichkeit. Angelegt wird erst am Ende.
 function _addDaysFlow(blk,wi,names){
@@ -508,13 +600,13 @@ function _addDaysFlow(blk,wi,names){
     const s={d,wk,also:[]}; bySig.set(sig,s); sources.push(s);
   }); });
   const finish=()=>{ save(); renderLtp(); };
-  if(wi===0||!sources.length){ names.forEach(n=>blk.weeks[wi].days.push({id:uid(),label:n,entries:[]})); finish(); return; }
+  if(wi===0||!sources.length){ names.forEach(n=>_pushDay(blk,wi,{id:uid(),label:n,entries:[]})); finish(); return; }
   const choices=new Array(names.length).fill(null); // null = noch nicht gewählt, 'empty' oder Quelltag
   const apply=()=>{
     names.forEach((n,k)=>{
       const c=choices[k];
-      if(c&&c!=='empty'){ const cp=JSON.parse(JSON.stringify(c)); cp.id=uid(); cp.label=n; blk.weeks[wi].days.push(cp); }
-      else blk.weeks[wi].days.push({id:uid(),label:n,entries:[]});
+      if(c&&c!=='empty'){ const cp=JSON.parse(JSON.stringify(c)); cp.id=uid(); cp.label=n; _pushDay(blk,wi,cp); }
+      else _pushDay(blk,wi,{id:uid(),label:n,entries:[]});
     });
     finish();
   };
@@ -641,6 +733,7 @@ function renderEntryList(el){
       <div style="flex:1;min-width:0;">
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;color:var(--text-1);">${esc(e.title||typeLabels[e.type])}</div>
         ${e.startTime||e.endTime?`<div style="font-size:11px;color:var(--text-3);margin-top:2px;">⏱ ${esc(e.startTime||'?')}${e.endTime?' – '+esc(e.endTime):''}</div>`:''}
+        ${e.fixedId?`<div style="font-size:10px;color:var(--text-3);margin-top:2px;">📌 fester Termin</div>`:''}
         ${plan?`<div style="font-size:11px;color:var(--accent);margin-top:2px;">📋 ${esc(plan.name)}</div>`:''}
         ${e.notes?`<div style="font-size:11px;color:var(--text-2);margin-top:3px;font-style:italic;">${esc(e.notes)}</div>`:''}
         ${(e.tags||[]).length?`<div style="margin-top:4px;">${e.tags.map(t=>`<span style="font-size:9px;font-weight:800;padding:2px 6px;border-radius:5px;${tagStyle(t)};display:inline-block;margin:1px;">${esc(t)}</span>`).join('')}</div>`:''}
@@ -764,6 +857,7 @@ function saveEntry(type){
   const entry={id:uid(),type,title,startTime,endTime,notes,planId,tags,color,gameFormat};
   if(editingEntryIdx!==null){
     entry.id=dayEditorEntries[editingEntryIdx].id;
+    if(dayEditorEntries[editingEntryIdx].fixedId) entry.fixedId=dayEditorEntries[editingEntryIdx].fixedId;
     dayEditorEntries[editingEntryIdx]=entry;
   } else {
     dayEditorEntries.push(entry);
