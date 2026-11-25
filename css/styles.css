@@ -1513,3 +1513,6 @@ body:not(.on-home) .home-topbar { display: none; }
 #lineLegend .ll-item b { color: #fff; font-weight: 700; }
 #lineLegend .ll-item i { display: none; }
 #lineLegend .ll-on { background: rgba(255,255,255,.14); outline: 1px solid rgba(255,255,255,.25); }
+
+/* Spieler benennen: Bild bleibt neben der Liste sichtbar (nur breite Fenster) */
+@media (min-width: 700px) { #ppImgBox { position: sticky; top: 0; } }

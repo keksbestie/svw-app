@@ -126,15 +126,18 @@ function openPlanPlayers(id,si){
   m.id='planPlayersModal';
   m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
   m.onclick=e=>{if(e.target===m)m.remove();};
-  m.innerHTML='<div style="background:var(--surface);border-radius:16px;max-width:460px;width:100%;max-height:88vh;overflow-y:auto;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.4);">'
+  m.innerHTML='<div style="background:var(--surface);border-radius:16px;max-width:'+(ex.image?'860':'460')+'px;width:100%;max-height:88vh;overflow-y:auto;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.4);">'
     +'<div style="font-family:Barlow Condensed,sans-serif;font-size:20px;font-weight:900;margin-bottom:2px;">👤 Spieler benennen</div>'
     +'<div id="ppSub" style="font-size:12px;color:var(--text-3);margin-bottom:12px;"></div>'
-    +'<div id="ppRows" style="display:grid;gap:8px;"></div>'
+    +'<div style="display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap;">'
+    +'<div id="ppImgBox" style="flex:1 1 320px;min-width:0;display:none;"><img id="ppImg" alt="Felddiagramm der Übung" style="width:100%;max-height:60vh;object-fit:contain;border-radius:10px;border:1px solid var(--border);background:#2d7a3a;display:block;"><div style="font-size:11px;color:var(--text-3);margin-top:6px;">Die Nummern im Bild entsprechen den Nummern links.</div></div>'
+    +'<div style="flex:1 1 280px;min-width:0;"><div id="ppRows" style="display:grid;gap:8px;"></div></div></div>'
     +'<div style="font-size:11px;color:var(--text-3);margin:10px 0 14px;">Namen gelten nur für diesen Plan und stehen im Ausdruck. Beim Veröffentlichen eines Plans werden sie nicht mitgeschickt.</div>'
     +'<div style="display:flex;gap:8px;"><button class="bsc" data-act="cancel" style="flex:1;">Abbrechen</button><button class="bpr" data-act="save" style="flex:2;">Speichern</button></div>'
     +'<button data-act="clear" style="width:100%;margin-top:10px;padding:8px;background:none;border:1.5px solid #e53935;color:#e53935;border-radius:8px;cursor:pointer;font-weight:700;">Alle Namen löschen</button></div>';
   document.body.appendChild(m);
   m.querySelector('#ppSub').textContent=ex.name||'';
+  if(ex.image){ const im=m.querySelector('#ppImg'); im.src=ex.image; m.querySelector('#ppImgBox').style.display=''; }
   const rows=m.querySelector('#ppRows');
   players.forEach(p=>{
     const row=document.createElement('div'); row.style.cssText='display:flex;align-items:center;gap:8px;';
