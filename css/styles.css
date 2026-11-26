@@ -1566,8 +1566,10 @@ body:has([style*="inset:0"][style*="z-index:9999"]) { overflow: hidden; }
 :root { --accent-on: #fff; --ac-glow: #22d38c; --ac-soft: #9fe9c6; }
 
 /* Dunkles Design + Vereinsfarbe: Akzent ist ein heller Ton, darauf braucht es dunkle Schrift */
-html[data-club-color][data-theme="dark"] :is(.hbtn.pri, .slot-btn-copy, .cfg-avatar, .haf-btn.active, .help-num, .offer-btn, .cal-sel, .card-collapsed-add, .view-toggle-btn.active, .bpl.gr, .spa.l, .bpr, .ltp-week-badge, .ltp-hbtn--accent, .st.active .sn, #ls, .ls-t, .logo-mark svg),
+html[data-club-color][data-theme="dark"] :is(.hbtn.pri, .slot-btn-copy, .cfg-avatar, .haf-btn.active, .help-num, .cal-sel, .card-collapsed-add, .view-toggle-btn.active, .bpl.gr, .spa.l, .bpr, .ltp-week-badge, .ltp-hbtn--accent, .st.active .sn, #ls, .ls-t, .logo-mark svg),
 html[data-club-color][data-theme="dark"] [style*="background:var(--accent)"] { color: var(--accent-on) !important; fill: var(--accent-on); }
+/* Rahmen-Knopf in der Kopfzeile (Trainingsplan): Schrift in Akzentfarbe, nicht dunkel */
+html[data-club-color][data-theme="dark"] header #hcnt { color: var(--accent) !important; }
 html[data-club-color][data-theme="dark"] .ls-spin { border-color: rgba(0,0,0,.2); border-top-color: var(--accent-on); }
 
 /* Vereinsfarbe wählen */

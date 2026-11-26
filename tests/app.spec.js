@@ -186,3 +186,17 @@ test('Vereins-Schwerpunkte erscheinen im Planer und sind gegen HTML geschützt',
   await expect(card).toBeHidden();
   expect(errors).toEqual([]);
 });
+
+test('Vereinsfarbe: Trainingsplan-Knopf in der Kopfzeile hat die Akzentfarbe als Schrift (alle Farben, hell und dunkel)', async ({ page }) => {
+  const errors = await openApp(page);
+  await page.evaluate(() => goPage('planner'));
+  await page.addStyleTag({ content: '*{transition:none!important}' }); // sonst liest der Test Zwischenfarben
+  const toRgb = h => { const n = parseInt(h.slice(1), 16); return `rgb(${n >> 16}, ${(n >> 8) & 255}, ${n & 255})`; };
+  const ids = await page.evaluate(() => CLUB_COLORS.filter(c => c.id !== 'gruen').map(c => ({ id: c.id, light: c.light, dark: c.dark })));
+  for (const theme of ['dark', 'light']) for (const c of ids) {
+    await page.evaluate(([t, id]) => { applyTheme(t); applyClubColor(id, false); }, [theme, c.id]);
+    const col = await page.evaluate(() => getComputedStyle(document.getElementById('hcnt')).color);
+    expect(col, `${c.id} ${theme}`).toBe(toRgb(theme === 'dark' ? c.dark : c.light));
+  }
+  expect(errors).toEqual([]);
+});
