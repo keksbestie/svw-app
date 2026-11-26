@@ -41,7 +41,6 @@ html[data-stil="nacht"] #page-home::after{inset:-20%;background:
   radial-gradient(40% 36% at 22% 8%,rgba(34,211,140,.40),transparent 70%),
   radial-gradient(38% 34% at 82% 30%,rgba(56,120,255,.30),transparent 70%),
   radial-gradient(46% 40% at 50% 108%,rgba(34,211,140,.22),transparent 70%);animation:stilGlow 16s ease-in-out infinite}
-html[data-stil="nacht"] #clubLogoBg{display:none}
 html[data-stil="nacht"] .home-motto{color:rgba(255,255,255,.4)!important}
 html[data-stil="nacht"] .home-hero-eyebrow{color:#7ff0bf}
 html[data-stil="nacht"] .home-hero-eyebrow::before,html[data-stil="nacht"] .home-hero-eyebrow::after{background:#7ff0bf}

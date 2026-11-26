@@ -33,9 +33,12 @@ async function initClubLogoBg(sportId) {
   const H = window.innerHeight;
   // Seitenrand-Breite: Bereich links und rechts vom zentrierten Content
   // Content ist max ~760px breit, zentriert → Ränder je (W-760)/2, min 60px
-  const sideW = Math.max(60, (W - 760) / 2);
+  // Im Rad-Look ist der Inhalt breiter (Rad ca. 1060 px), die Logos bleiben im freien Raum daneben
+  const mix = document.documentElement.hasAttribute('data-mix');
+  const sideW = mix ? (W - 1060) / 2 : Math.max(60, (W - 760) / 2);
+  if (sideW < 64) { wrap.innerHTML = ''; return; }
   wrap.innerHTML = logos.map(c => {
-    const size = (44 + Math.random() * 28) | 0;
+    const size = Math.min((44 + Math.random() * 28) | 0, Math.max(40, sideW - 12));
     // Zufällig links oder rechts platzieren
     let px;
     if (Math.random() < 0.5) {
