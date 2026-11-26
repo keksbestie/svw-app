@@ -11,9 +11,9 @@
 
   /* Blick vom Rasen: 3D-Rechnung. Betrachter in der Mitte des Spielfelds (Augenhöhe 1,7 m), Tribüne als abgerundetes Rechteck rundherum. */
   var VARS = {
-    kurve: { a: 62, b: 78, n: 3.2, rows: 34, rise: 0.55, off: 5, ex: 2.7, label: 'Kurve' },
-    steil: { a: 46, b: 58, n: 3.6, rows: 44, rise: 0.8, off: 4, ex: 2.1, label: 'Steil' },
-    weit:  { a: 100, b: 125, n: 3, rows: 30, rise: 0.5, off: 6, ex: 3.6, label: 'Weit' }
+    kurve: { a: 62, b: 78, n: 3.2, rows: 46, split: 16, gap: 8, jump: 3.2, rise: 0.55, off: 3, ex: 3, label: 'Kurve' },
+    steil: { a: 46, b: 58, n: 3.6, rows: 42, split: 18, gap: 7, jump: 3.5, rise: 0.7, off: 2.5, ex: 2.1, label: 'Steil' },
+    weit:  { a: 100, b: 125, n: 3, rows: 34, split: 14, gap: 12, jump: 4, rise: 0.46, off: 5, ex: 3.6, label: 'Weit' }
   };
   function sp(v, e) { return (v < 0 ? -1 : 1) * Math.pow(Math.abs(v), e); }
 
@@ -21,8 +21,10 @@
     var V = VARS[kind] || VARS.kurve, seats = [], cx = W / 2, hz = H * 0.64, F = W * 0.36;
     var spacing = 0.55, e = 2 / V.n;
     for (var k = 0; k < V.rows; k++) {
-      var sc = 1 + (V.off + k * 0.78) / V.a, scz = 1 + (V.off + k * 0.78) / V.b;
-      var hgt = 0.7 + k * V.rise, acc = 0, prev = null, idx = 0;
+      var upper = k >= V.split, ku = upper ? k - V.split : k;
+      var d = V.off + k * 0.5 + k * k * 0.035 + (upper ? V.gap : 0);
+      var sc = 1 + d / V.a, scz = 1 + d / V.b;
+      var hgt = 0.7 + k * V.rise + (upper ? V.jump : 0), acc = 0, prev = null, idx = 0;
       for (var ph = -Math.PI; ph <= Math.PI; ph += 0.002) {
         var X = V.a * sc * sp(Math.sin(ph), e), Z = V.b * scz * sp(Math.cos(ph), e);
         if (prev) acc += Math.hypot(X - prev[0], Z - prev[1]);
@@ -33,7 +35,7 @@
         if (idx % 18 === 0) continue; /* Treppe */
         var sx = cx + X * F / Z, sy = hz - (hgt - 1.7) * F * V.ex / Z;
         if (sx < -10 || sx > W + 10 || sy < -6 || sy > H + 6) continue;
-        seats.push({ x: sx, y: sy, z: Z, k: k, a: 0.45 + 0.5 * (k / V.rows) });
+        seats.push({ x: sx, y: sy, z: Z, k: k, a: 0.6 + 0.4 * (k / V.rows) });
       }
     }
     return { seats: seats, hz: hz, F: F, V: V };
@@ -50,13 +52,6 @@
     cv.width = W * dpr; cv.height = H * dpr; cv.style.cssText = 'position:absolute;left:0;top:0;width:' + W + 'px;height:' + H + 'px;';
     var c = cv.getContext('2d'); c.scale(dpr, dpr);
     var lt = light(), base = lt ? '20,40,34' : '200,225,215';
-    /* Rasen: weiche Mähstreifen in Perspektive unterhalb des Horizonts */
-    for (var z = 8, st = 0; z < 120; z += 7, st++) {
-      var y0 = g.hz + 1.7 * g.F * g.V.ex / z, y1 = g.hz + 1.7 * g.F * g.V.ex / (z + 7);
-      if (st % 2 === 0) { c.fillStyle = lt ? 'rgba(15,138,90,.05)' : 'rgba(47,208,143,.035)'; c.fillRect(0, Math.min(y0, y1), W, Math.abs(y0 - y1) + 1); }
-    }
-    var gr = c.createLinearGradient(0, g.hz - 30, 0, g.hz + 60);
-    gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
     /* Plätze */
     g.seats.forEach(function (s) {
       var sc = g.F / s.z, w = Math.max(2.2, 0.52 * sc), h = Math.max(1.8, 0.34 * sc);
