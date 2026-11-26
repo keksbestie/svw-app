@@ -23,6 +23,7 @@ async function init(){
   // Sync with API in background — no blocking, no re-navigating
   setStat('loading');
   const ok=await loadAPI();
+  _authPending=false; if(typeof renderStbar==='function'){renderStbar();renderSection();}
   if(ok){ renderStbar(); renderSection(); renderSavedPlans(); renderLtp(); }
   updateApiBar();
   if(typeof updateSignInBtn==='function') updateSignInBtn();
@@ -73,7 +74,37 @@ function mapExercise(e){
 // Sportartfilter: Übungen ohne sport-Angabe gelten als Fußball
 function _curSportId(){return (window.currentSport&&window.currentSport.id)||'fussball';}
 function _ballIcon(){const s=_curSportId();return s==='volleyball'?'🏐':s==='tennis'?'🎾':'⚽';}
-function sportExercises(){const s=_curSportId();return exercises.filter(e=>(e.sport||'fussball')===s);}
+// ── Zugriffsstufen: Gast / Advanced+ ──
+// Gäste (nicht angemeldet) sehen je Abschnitt nur GUEST_EX_PER_SEC Übungen. Feste Auswahl: Ids in GUEST_FIXED_IDS
+// eintragen; ist die Liste leer, gelten die ersten drei des Abschnitts nach Namen.
+const GUEST_EX_PER_SEC=3;
+const GUEST_FIXED_IDS=[];
+const SEC_SONDER=5; // Reiter „Sondertraining“: erst ab Advanced
+let _authPending=true; // true, bis init() den Anmeldestatus geklärt hat
+function _likelyMember(){ // Es liegt eine gespeicherte Sitzung vor: nicht kurz als Gast anzeigen
+  try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(/^sb-.*-auth-token$/.test(k||''))return true;}}catch(e){}
+  return false;
+}
+function isGuest(){return !currentUser&&!(_authPending&&_likelyMember());}
+// Vorbereitet für ein Konto-Feld „Stufe“. Bis es die Stufen in der Datenbank gibt, sehen nur Admins den Reiter.
+function hasAdvanced(){return !!(IS_ADMIN||(typeof USER_TIER!=='undefined'&&(USER_TIER==='advanced'||USER_TIER==='pro')));}
+function sectionVisible(i){return i!==SEC_SONDER||hasAdvanced();}
+function guestAllowedIds(){
+  const ids=new Set(GUEST_FIXED_IDS.map(String));
+  if(ids.size)return ids;
+  const bySec={};
+  exercises.filter(e=>e.status==='approved'||!e.status).forEach(e=>{const k=(e.sport||'fussball')+'|'+e.section;(bySec[k]=bySec[k]||[]).push(e);});
+  Object.values(bySec).forEach(l=>l.sort((a,b)=>String(a.name).localeCompare(String(b.name),'de')).slice(0,GUEST_EX_PER_SEC).forEach(e=>ids.add(String(e.id))));
+  return ids;
+}
+function sportExercises(){
+  const s=_curSportId();
+  let l=exercises.filter(e=>(e.sport||'fussball')===s&&sectionVisible(e.section));
+  if(isGuest()){const ok=guestAllowedIds();l=l.filter(e=>ok.has(String(e.id)));}
+  return l;
+}
+// Gäste dürfen nur den Katalog ansehen; alles andere verlangt die Anmeldung
+const GUEST_PAGES={planner:'Den Trainingsplan',longterm:'Die Langzeitplanung',calendar:'Den Kalender',submit:'Das Einreichen von Übungen',kader:'Den Kader'};
 
 // ── Altersstufen ──
 // Altersstufen je Sportart: Volleyball hat eigene Jahrgänge (U12/14/16/18/20), Fußball und Tennis die ungeraden
@@ -520,6 +551,7 @@ async function migrateImagesToStorage(){
 // ══════════════════════════════════════════════════════
 function goPage(name,btn){
   const homeEl=document.getElementById('page-home');
+  if(GUEST_PAGES[name]&&isGuest()){showLoginRequired(GUEST_PAGES[name]);return;}
 
   // ── Go Home ──────────────────────────────────────────
   if(name==='home'){

@@ -95,7 +95,9 @@
   function frame(t) {
     var dt = Math.min(50, t - last); last = t;
     var w = wrap();
-    ui.style.display = (isMix() && w && w.offsetParent) ? '' : 'none';
+    var onHome = document.body.classList.contains('on-home');
+    ui.style.display = (isMix() && onHome && w && w.offsetParent) ? '' : 'none';
+    var sw = document.getElementById('stilSwitch'); if (sw) sw.style.display = (isMix() && onHome && w && w.offsetParent) ? '' : 'none';
     if (isMix() && w && w.offsetParent && document.documentElement.getAttribute('data-anim') !== 'off') {
       buildUi();
       var cs = cards(), n = cs.length, st = 360 / n, cs0 = getComputedStyle(w);
@@ -228,6 +230,22 @@
       if (el.textContent.length < 12 && EMO_ONLY.test(el.textContent) && el.textContent.trim()) { el.setAttribute('data-emo-hide', el.style.display || ''); el.style.display = 'none'; }
     });
   }
+  /* Angebote: lange Listen einklappen, Rest per Knopf zeigen */
+  function ensureOffers() {
+    document.querySelectorAll('#page-angebote .offer-card').forEach(function (c, idx) {
+      if (c.getAttribute('data-more')) return;
+      c.setAttribute('data-more', '1');
+      if (c.classList.contains('offer-card--hero')) { var fl = document.createElement('span'); fl.className = 'offer-flag'; fl.textContent = 'Empfohlen'; c.insertBefore(fl, c.firstChild); }
+      var items = c.querySelectorAll('.offer-list li');
+      var lim = c.classList.contains('offer-card--hero') ? 99 : (c.classList.contains('offer-card--min') ? 3 : 4);
+      if (items.length <= lim) return;
+      items.forEach(function (li, i) { if (i >= lim) li.classList.add('hid'); });
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'offer-more'; b.textContent = 'Alle Funktionen';
+      b.onclick = function () { var o = c.classList.toggle('open'); b.textContent = o ? 'Weniger anzeigen' : 'Alle Funktionen'; };
+      c.querySelector('.offer-list').insertAdjacentElement('afterend', b);
+    });
+  }
+  setInterval(ensureOffers, 500);
   setInterval(stripEmoji, 400);
   setInterval(function () { if (isMix()) { ensureExtras(); ensureObIcons(); ensureBall(); } }, 300);
   requestAnimationFrame(frame);

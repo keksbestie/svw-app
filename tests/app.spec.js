@@ -8,9 +8,9 @@ const TEST_EXERCISES = [
 ];
 
 // Fehlermeldungen, die ohne Internet erwartet sind und den Test nicht stören sollen
-const IGNORED_ERRORS = [/emailjs/i];
+const IGNORED_ERRORS = [/emailjs/i, /reading 'from'/]; // 2. Eintrag: Supabase fehlt offline, Kader/Kalender fragen es mit dem Test-Konto ab
 
-async function openApp(page, { onboarded = true, seed = true } = {}) {
+async function openApp(page, { onboarded = true, seed = true, guest = false } = {}) {
   await page.route(/^(?!http:\/\/localhost).*/, r => r.abort());
   const errors = [];
   page.on('pageerror', e => { if (!IGNORED_ERRORS.some(re => re.test(e.message))) errors.push(e.message); });
@@ -22,6 +22,9 @@ async function openApp(page, { onboarded = true, seed = true } = {}) {
   }, { onboarded, seed, ex: TEST_EXERCISES });
   await page.goto('/');
   await page.waitForFunction(() => typeof goPage === 'function' && document.getElementById('ls').style.display === 'none');
+  // Ohne Gast-Modus tut der Test so, als wäre ein Konto angemeldet (Gäste dürfen nur den Katalog sehen)
+  await page.waitForFunction(() => _authPending === false);
+  if (!guest) await page.evaluate(() => { currentUser = { id: 'test-user' }; renderStbar(); renderSection(); });
   return errors;
 }
 
@@ -99,6 +102,7 @@ test('Planer: Speichern ohne Login speichert nichts', async ({ page }) => {
   const errors = await openApp(page);
   await page.evaluate(() => goPage('planner'));
   await page.evaluate(() => addToPlan('t1', 0));
+  await page.evaluate(() => { currentUser = null; });
   await page.evaluate(() => savePlan());
   expect(await page.evaluate(() => savedPlans.length)).toBe(0); // nicht angemeldet → nichts gespeichert
   expect(errors).toEqual([]);
@@ -118,5 +122,22 @@ test('Gespeicherte Daten bleiben nach Neuladen erhalten', async ({ page }) => {
   await page.reload();
   await page.waitForFunction(() => typeof goPage === 'function' && document.getElementById('ls').style.display === 'none');
   expect(await page.evaluate(() => exercises.map(e => e.name))).toEqual(['Testübung Pass', 'Testübung Schuss']);
+  expect(errors).toEqual([]);
+});
+
+test('Gast: nur 3 Übungen pro Abschnitt, Planer und Sondertraining gesperrt', async ({ page }) => {
+  const errors = await openApp(page, { guest: true });
+  const r = await page.evaluate(() => {
+    exercises = [];
+    for (let s = 0; s < 6; s++) for (let i = 0; i < 5; i++) exercises.push({ id: 'g' + s + i, name: 'G' + s + i, section: s, status: 'approved', sport: 'fussball', tags: [] });
+    renderStbar(); goPage('handbook'); renderSection();
+    const guestTotal = sportExercises().length;
+    const tabs = document.querySelectorAll('.st').length;
+    const locked = document.querySelectorAll('.card-locked').length;
+    goPage('planner');
+    const prompt = !!document.getElementById('loginRequiredModal');
+    return { guestTotal, tabs, locked, prompt, onPlanner: document.getElementById('page-planner').classList.contains('active') };
+  });
+  expect(r).toEqual({ guestTotal: 15, tabs: 5, locked: 2, prompt: true, onPlanner: false });
   expect(errors).toEqual([]);
 });
