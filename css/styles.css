@@ -133,6 +133,20 @@ header {
 .club-logo-preview { height: 40px; max-width: 100px; object-fit: contain; border-radius: 6px; border: 1px solid var(--border); }
 .club-consent-label { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: var(--gd2); line-height: 1.5; margin-top: 10px; cursor: pointer; }
 .club-consent-label input[type="checkbox"] { flex-shrink: 0; margin-top: 2px; accent-color: var(--accent); width: 15px; height: 15px; }
+/* Reviewer: kleine blaue Fahne am Logo (nur für Reviewer) und Hinweiskarte im Profil */
+.logo { position: relative; }
+.logo-flag { display: none; position: absolute; left: 0; bottom: -7px; background: #1e6fe0; color: #fff; font-size: 8px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; line-height: 1; padding: 2px 9px 2px 5px; clip-path: polygon(0 0, 100% 0, 84% 50%, 100% 100%, 0 100%); pointer-events: none; }
+body.reviewer .logo-flag { display: block; }
+.rev-card { background: linear-gradient(165deg, rgba(60,130,255,.14), rgba(255,255,255,.03)); border: 1px solid rgba(90,160,255,.35); border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; position: relative; overflow: hidden; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.rev-card::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: linear-gradient(90deg, transparent, #4d9bff, transparent); }
+.rev-card-head { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.rev-card-flag { background: #1e6fe0; color: #fff; font-size: 11px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; padding: 4px 14px 4px 9px; clip-path: polygon(0 0, 100% 0, 88% 50%, 100% 100%, 0 100%); }
+.rev-card-title { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 800; color: var(--text-1); }
+.rev-card-text { font-size: 13px; line-height: 1.55; color: var(--gd2); margin: 0 0 12px; }
+.rev-card-label { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #7db6ff; margin: 12px 0 5px; }
+.rev-card-sports { font-size: 14px; font-weight: 700; color: var(--text-1); line-height: 1.5; }
+.rev-card-list { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.55; color: var(--text-1); }
+.rev-card-list li { margin-bottom: 4px; }
 .beta-badge--hero { font-size: 16px; padding: 4px 12px; border-radius: 8px; letter-spacing: 1.5px; }
 
 /* Settings / gear dropdown */
