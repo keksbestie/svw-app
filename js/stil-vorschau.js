@@ -1,0 +1,252 @@
+/* Mix-Look: Standard-Look der App (Rad, Ball, Tour, Bewegung an/aus). */
+(function () {
+  var NAMES = [];
+  var KEY = 'stil-vorschau';
+  function get() {
+    return 'mix';
+  }
+  function apply(s) {
+    var h = document.documentElement;
+    if (s === 'mix') { h.setAttribute('data-stil', 'nacht'); h.setAttribute('data-mix', '1'); }
+    else { h.removeAttribute('data-mix'); if (s === 'aktuell') h.removeAttribute('data-stil'); else h.setAttribute('data-stil', s); }
+    var b = document.querySelectorAll('#stilSwitch button');
+    for (var i = 0; i < b.length; i++) b[i].setAttribute('aria-pressed', b[i].dataset.s === s);
+  }
+  var bar = document.createElement('div');
+  bar.id = 'stilSwitch';
+  bar.setAttribute('role', 'group'); if (!/[?&]stil=/.test(location.search)) bar.className = 'solo';
+  bar.setAttribute('aria-label', 'Stil wählen');
+  var PREVIEW = false; /* Stil-Knöpfe nur mit ?stil=… sichtbar (Vergleich) */
+  if (PREVIEW) NAMES.forEach(function (n) {
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.dataset.s = n[0]; btn.textContent = n[1];
+    btn.onclick = function () { apply(n[0]); };
+    bar.appendChild(btn);
+  });
+  /* Zusatzschalter: Hell/Dunkel und Bewegung */
+  var KEYA = 'stil-anim';
+  function animGet() {
+    try { var v = localStorage.getItem(KEYA); if (v) return v; } catch (e) {}
+    var small = window.matchMedia && (matchMedia('(pointer: coarse)').matches || matchMedia('(max-width: 700px)').matches);
+    var red = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    return small || red ? 'off' : 'on';
+  }
+  function animApply(v) {
+    document.documentElement.setAttribute('data-anim', v);
+    try { localStorage.setItem(KEYA, v); } catch (e) {}
+    var b = document.getElementById('stilAnim'); if (b) { b.textContent = v === 'off' ? 'Bewegung: aus' : 'Bewegung: an'; b.setAttribute('aria-pressed', v === 'on'); }
+    if (v === 'off') { cards().forEach(function (c) { c.style.transform = ''; c.style.filter = ''; c.style.zIndex = ''; }); }
+  }
+  var sep = document.createElement('span'); sep.style.cssText = 'width:1px;background:rgba(255,255,255,.2);margin:4px 2px'; if (PREVIEW) bar.appendChild(sep);
+  var bm = document.createElement('button'); bm.type = 'button'; bm.id = 'stilMode';
+  function modeLabel() { bm.textContent = document.documentElement.getAttribute('data-theme') === 'light' ? 'Hell' : 'Dunkel'; }
+  bm.onclick = function () { if (typeof toggleTheme === 'function') toggleTheme(); setTimeout(modeLabel, 50); };
+  if (PREVIEW) bar.appendChild(bm);
+  var ba = document.createElement('button'); ba.type = 'button'; ba.id = 'stilAnim';
+  ba.onclick = function () { animApply(document.documentElement.getAttribute('data-anim') === 'off' ? 'on' : 'off'); };
+  bar.appendChild(ba);
+  document.body.appendChild(bar);
+  apply(get()); modeLabel(); animApply(animGet());
+  setInterval(modeLabel, 800);
+
+  /* ---------- 3D-Rad für die Karten (nur im Stil "Mix") ---------- */
+  var hv = 0, rot = 0, target = 0, dragging = false, moved = 0, startX = 0, startRot = 0, hover = 0, snapping = false, active = -1;
+  var ui = document.createElement('div'); ui.id = 'ringUi';
+  function wrap() { return document.getElementById('homeCards'); }
+  function cards() { var w = wrap(); return w ? [].slice.call(w.querySelectorAll('.home-card')) : []; }
+  function isMix() { return document.documentElement.hasAttribute('data-mix'); }
+  function mod(a, n) { return ((a % n) + n) % n; }
+  function step() { return 360 / Math.max(1, cards().length); }
+  function cur() { return mod(Math.round(rot / step()), cards().length); }
+  function go(i) { var n = cards().length, st = step(), c = Math.round(rot / st), d = mod(i - c, n); if (d > n / 2) d -= n; target = (c + d) * st; snapping = true; }
+  window._ringFocus = function (sel) {
+    if (!isMix() || document.documentElement.getAttribute('data-anim') === 'off') return false;
+    var cs = cards(), i = -1; cs.forEach(function (c, k) { if (i < 0 && c.matches(sel)) i = k; });
+    if (i < 0) return false; go(i); return true;
+  };
+  window._ringSettled = function () { return Math.abs(rot - target) < 0.4; };
+  function buildUi() {
+    var w = wrap(); if (!w || ui.parentNode) return;
+    ui.innerHTML = '<div class="rg-row"><button type="button" class="rg-btn" aria-label="Vorherige Karte" data-d="-1">←</button><div class="rg-dots"></div><button type="button" class="rg-btn" aria-label="Nächste Karte" data-d="1">→</button></div>' +
+      '<div class="rg-detail"><div><div class="rg-title"></div><p class="rg-text"></p><button type="button" class="rg-open">Öffnen</button></div></div>';
+    w.parentNode.insertBefore(ui, w.nextSibling);
+    ui.addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      if (b.dataset.d) go(cur() + +b.dataset.d);
+      else if (b.classList.contains('rg-dot')) go(+b.dataset.i);
+      else if (b.classList.contains('rg-open')) { var c = cards()[active]; if (c) c.click(); }
+    });
+  }
+  function updateUi(idx) {
+    var cs = cards(), c = cs[idx]; if (!c) return;
+    var dots = ui.querySelector('.rg-dots');
+    if (dots.children.length !== cs.length) { dots.innerHTML = ''; cs.forEach(function (_, i) { var d = document.createElement('button'); d.type = 'button'; d.className = 'rg-dot'; d.dataset.i = i; d.setAttribute('aria-label', 'Karte ' + (i + 1)); dots.appendChild(d); }); }
+    [].forEach.call(dots.children, function (d, i) { d.setAttribute('aria-current', i === idx); });
+    ui.style.setProperty('--c', getComputedStyle(c).getPropertyValue('--c').trim() || '#8fe9c0');
+    ui.querySelector('.rg-title').textContent = (c.querySelector('.home-card-title') || {}).textContent || '';
+    ui.querySelector('.rg-text').textContent = (c.querySelector('.home-card-desc') || {}).textContent || '';
+    var box = ui.querySelector('.rg-detail > div'); box.classList.remove('rg-fade'); void box.offsetWidth; box.classList.add('rg-fade');
+  }
+  var last = performance.now();
+  /* Nach einer Minute ohne Eingabe dreht sich das Rad ganz langsam von selbst */
+  var lastAct = performance.now(), iv = 0;
+  ['pointermove', 'pointerdown', 'keydown', 'wheel', 'touchstart', 'scroll'].forEach(function (ev) { window.addEventListener(ev, function () { lastAct = performance.now(); }, { passive: true, capture: true }); });
+  window._ringIdleTest = function (ms) { lastAct = performance.now() - ms; };
+  function frame(t) {
+    var dt = Math.min(50, t - last); last = t;
+    var w = wrap();
+    var onHome = document.body.classList.contains('on-home');
+    ui.style.display = (isMix() && onHome && w && w.offsetParent) ? '' : 'none';
+    var sw = document.getElementById('stilSwitch'); if (sw) sw.style.display = (isMix() && onHome && w && w.offsetParent) ? '' : 'none';
+    if (isMix() && w && w.offsetParent && document.documentElement.getAttribute('data-anim') !== 'off') {
+      buildUi();
+      var cs = cards(), n = cs.length, st = 360 / n, cs0 = getComputedStyle(w);
+      var Rx = parseFloat(cs0.getPropertyValue('--Rx')) || 520, Rz = parseFloat(cs0.getPropertyValue('--Rz')) || 300, lift = parseFloat(cs0.getPropertyValue('--lift')) || 70;
+      if (!dragging) {
+        hv += (hover * 0.028 - hv) * Math.min(1, dt * 0.004);
+        if (hover) { snapping = false; }
+        rot += hv * dt;
+        var tb = document.getElementById('tourBubble');
+        var idle = !hover && performance.now() - lastAct > 60000 && !(tb && tb.style.display === 'block');
+        iv += ((idle ? 0.005 : 0) - iv) * Math.min(1, dt * 0.0015);
+        if (idle || iv > 0.0003) { rot += iv * dt; snapping = false; }
+        else if (hover) { /* läuft */ }
+        else {
+          if (!snapping) { target = Math.round(rot / st) * st; snapping = true; }
+          if (!hover) rot += (target - rot) * Math.min(1, dt * 0.0045);
+        }
+      }
+      cs.forEach(function (c, i) {
+        var a = mod(i * st - rot + 180, 360) - 180, rad = a * Math.PI / 180, cs_ = Math.cos(rad);
+        var f = Math.max(-48, Math.min(48, a));
+        var x = Rx * Math.sin(rad), z = Rz * (cs_ - 1), y = -lift * (1 - cs_) / 2;
+        c.style.transform = 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,' + z.toFixed(1) + 'px) rotateY(' + f.toFixed(1) + 'deg)';
+        c.style.setProperty('--d', ((cs_ + 1) / 2).toFixed(3));
+        c.style.zIndex = Math.round(cs_ * 20 + 20);
+      });
+      var idx = cur();
+      if (idx !== active) { active = idx; updateUi(idx); }
+    }
+    requestAnimationFrame(frame);
+  }
+  /* Maus am linken/rechten Rand: Rad dreht sich; Mitte: rastet auf die nächste Karte ein */
+  document.addEventListener('pointermove', function (e) {
+    var w = wrap();
+    if (dragging) { var dx = e.clientX - startX; moved = Math.max(moved, Math.abs(dx)); rot = startRot - dx * 0.3; return; }
+    if (!isMix() || !w || e.pointerType !== 'mouse') { hover = 0; return; }
+    var r = w.getBoundingClientRect();
+    if (e.clientY < r.top - 20 || e.clientY > r.bottom + 20) { hover = 0; return; }
+    var g = getComputedStyle(w), half = (parseFloat(g.getPropertyValue('--Rx')) || 290) + (parseFloat(g.getPropertyValue('--cw')) || 236) / 2;
+    var p = (e.clientX - (r.left + r.width / 2)) / half;
+    if (Math.abs(p) > 1.15) { hover = 0; return; }
+    var z = .3;
+    hover = Math.abs(p) < z ? 0 : Math.sign(p) * Math.min(1, (Math.abs(p) - z) / (1 - z));
+  });
+  document.addEventListener('pointerdown', function (e) {
+    var w = wrap(); if (!isMix() || !w || !w.contains(e.target)) return;
+    dragging = true; moved = 0; startX = e.clientX; startRot = rot; snapping = false;
+  });
+  function end() { if (!dragging) return; dragging = false; snapping = false; }
+  document.addEventListener('pointerup', end); document.addEventListener('pointercancel', end);
+  document.addEventListener('click', function (e) {
+    var w = wrap(); if (!isMix() || !w || !w.contains(e.target)) return;
+    var c = e.target.closest('.home-card'); if (!c) return;
+    if (moved > 6) { e.stopPropagation(); e.preventDefault(); moved = 0; return; }
+    var i = cards().indexOf(c);
+    if (i !== cur()) { e.stopPropagation(); e.preventDefault(); hover = 0; go(i); }
+  }, true);
+  document.addEventListener('keydown', function (e) {
+    if (!isMix() || !wrap() || !wrap().offsetParent) return;
+    if (e.key === 'ArrowRight') go(cur() + 1); if (e.key === 'ArrowLeft') go(cur() - 1);
+  });
+
+  /* ---------- Zusatzkarten (Vision, Angebote) und Einführungs-Symbole ---------- */
+  var ARROW = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+  function ico(path) { return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + path + '</svg>'; }
+  var EXTRA = [
+    ['about', 'about', '05', 'Vision &amp; Ziele', 'Wofür AssistCoach steht und wohin die Reise geht.', '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><line x1="12" y1="1" x2="12" y2="4"/>'],
+    ['offers', 'angebote', '06', 'Angebote', 'Pakete und Möglichkeiten für Trainer:innen und Vereine.', '<path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.2"/>']
+  ];
+  function ensureExtras() {
+    var w = wrap(); if (!w || w.querySelector('.home-card--about')) return;
+    EXTRA.forEach(function (x) {
+      var d = document.createElement('div');
+      d.className = 'home-card home-card--' + x[0];
+      d.setAttribute('onclick', "goPage('" + x[1] + "')");
+      d.innerHTML = '<div class="home-card-num">' + x[2] + '</div><div class="home-card-inner"><div class="home-card-icon">' + ico(x[5]) + '</div><div class="home-card-title">' + x[3] + '</div><div class="home-card-desc">' + x[4] + '</div></div><div class="home-card-arrow">' + ARROW + '</div>';
+      w.appendChild(d);
+    });
+  }
+  function ensureObIcons() {
+    var sl = document.querySelectorAll('.ob-slide'); if (sl.length < 4) return;
+    var set = [[1, '#2fd08f', '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>'],
+               [2, '#4f8bff', '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>'],
+               [3, '#a874ff', '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>']];
+    set.forEach(function (x) {
+      var f = sl[x[0]] && sl[x[0]].firstElementChild; if (!f || f.dataset.done) return;
+      f.dataset.done = '1'; f.className = 'ob-ico'; f.removeAttribute('style'); f.style.setProperty('--c', x[1]); f.innerHTML = ico(x[2]).replace('width="22" height="22"', 'width="28" height="28"');
+    });
+  }
+
+  var ballSport = '';
+  function ensureBall() {
+    var w = wrap(); if (!w) return;
+    var sp = window.currentSport && window.currentSport.id; if (!sp) return;
+    var b = document.getElementById('ringBall');
+    if (!b) {
+      b = document.createElement('button'); b.type = 'button'; b.id = 'ringBall';
+      b.setAttribute('aria-label', 'Sportart ändern'); b.title = 'Sportart ändern';
+      b.innerHTML = '<span class="rb-disc"><img alt=""></span><span class="rb-lbl"></span>';
+      b.addEventListener('pointerdown', function (e) { e.stopPropagation(); });
+      b.addEventListener('click', function (e) { e.stopPropagation(); if (typeof changeSport === 'function') changeSport(); });
+      w.insertBefore(b, w.firstChild);
+    }
+    if (ballSport !== sp) {
+      ballSport = sp;
+      b.querySelector('img').src = 'icons/sport-' + sp + '-w.png';
+      b.querySelector('.rb-lbl').textContent = (window.currentSport.label || sp);
+    }
+  }
+  /* Im Mix-Look keine Emoji vor Schlagwörtern und keine freistehenden Emoji-Symbole; beim Verlassen kommen sie zurück */
+  var EMO = /^(?:[\u2600-\u2605\u2607-\u2712\u2719-\u27BF\uFE0F\u200D]|[\uD83C-\uD83E][\uDC00-\uDFFF])+\s*/;
+  var EMO_ONLY = /^(?:[\u2600-\u2605\u2607-\u2712\u2719-\u27BF\uFE0F\u200D]|[\uD83C-\uD83E][\uDC00-\uDFFF]|\s)+$/;
+  var STRIP_SEL = 'h1,h2,h3,h4,h5,legend,summary,.mb,button,label,[class*="title"],[class*="tab"],[class*="lbl"],[class*="head"],[class*="name"],[class*="hdr"],[class*="sb"],.home-hero-btn';
+  function skip(el) { return el.closest('.bottom-nav,#homeThemeBtn,.theme-btn,.cfg-drop,.lang-drop,#stilSwitch,#tourBubble'); }
+  function stripEmoji() {
+    var mix = isMix();
+    if (!mix) {
+      document.querySelectorAll('[data-emo]').forEach(function (el) { var n = el.firstChild; if (n && n.nodeType === 3) n.nodeValue = el.getAttribute('data-emo') + n.nodeValue; el.removeAttribute('data-emo'); });
+      document.querySelectorAll('[data-emo-hide]').forEach(function (el) { el.style.display = el.getAttribute('data-emo-hide'); el.removeAttribute('data-emo-hide'); });
+      return;
+    }
+    document.querySelectorAll(STRIP_SEL).forEach(function (el) {
+      if (skip(el)) return;
+      var n = el.firstChild; if (!n || n.nodeType !== 3) return;
+      var m = n.nodeValue.match(EMO);
+      if (m && n.nodeValue.slice(m[0].length).trim()) { el.setAttribute('data-emo', m[0]); n.nodeValue = n.nodeValue.slice(m[0].length); }
+    });
+    document.querySelectorAll('div,span,p').forEach(function (el) {
+      if (el.hasAttribute('data-emo-hide') || el.children.length || skip(el) || el.closest('button,a,[onclick],select')) return;
+      if (el.textContent.length < 12 && EMO_ONLY.test(el.textContent) && el.textContent.trim()) { el.setAttribute('data-emo-hide', el.style.display || ''); el.style.display = 'none'; }
+    });
+  }
+  /* Angebote: lange Listen einklappen, Rest per Knopf zeigen */
+  function ensureOffers() {
+    document.querySelectorAll('#page-angebote .offer-card').forEach(function (c, idx) {
+      if (c.getAttribute('data-more')) return;
+      c.setAttribute('data-more', '1');
+      if (c.classList.contains('offer-card--hero')) { var fl = document.createElement('span'); fl.className = 'offer-flag'; fl.textContent = 'Empfohlen'; c.insertBefore(fl, c.firstChild); }
+      var items = c.querySelectorAll('.offer-list li');
+      var lim = c.classList.contains('offer-card--hero') ? 99 : (c.classList.contains('offer-card--min') ? 3 : 4);
+      if (items.length <= lim) return;
+      items.forEach(function (li, i) { if (i >= lim) li.classList.add('hid'); });
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'offer-more'; b.textContent = 'Alle Funktionen';
+      b.onclick = function () { var o = c.classList.toggle('open'); b.textContent = o ? 'Weniger anzeigen' : 'Alle Funktionen'; };
+      c.querySelector('.offer-list').insertAdjacentElement('afterend', b);
+    });
+  }
+  setInterval(ensureOffers, 500);
+  setInterval(stripEmoji, 400);
+  setInterval(function () { if (isMix()) { ensureExtras(); ensureObIcons(); ensureBall(); } }, 300);
+  requestAnimationFrame(frame);
+})();

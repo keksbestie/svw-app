@@ -14,6 +14,9 @@
 <link rel="apple-touch-icon" href="/icons/icon-192.png">
 <link rel="stylesheet" href="fonts/fonts.css?v=20261125">
 <link rel="stylesheet" href="css/styles.css?v=20261008">
+<script>document.documentElement.setAttribute("data-stil","nacht");document.documentElement.setAttribute("data-mix","1")</script>
+<link rel="stylesheet" href="css/stil-vorschau.css">
+<link rel="stylesheet" href="css/angebote-vorschau.css">
 </head>
 <body class="on-home">
 
@@ -888,14 +891,14 @@
     <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;margin:0 0 6px;" data-i18n="angebote.angebote">Angebote</h1>
     <p style="font-size:14px;color:var(--gd2);margin:0 0 26px;max-width:640px;line-height:1.6;">Das bekommst du bei AssistCoach. <strong data-i18n="angebote.gaste_und_basic_sind_immer_k">Gäste und Basic sind immer kostenlos.</strong> Basic +, Advanced und Verein sind <strong data-i18n="angebote.bis_30_06_2027_kostenlos_nut">bis 30.06.2027 kostenlos nutzbar</strong>, danach folgen Preise. Pro ist noch in Arbeit. Die Stufen und Übungsgrenzen gelten ab dem 1. Januar 2027.</p>
     <div class="offer-grid">
-      <div class="home-card home-card--catalog offer-card">
+      <div class="home-card home-card--catalog offer-card offer-card--min">
         <div class="home-card-num" data-i18n="angebote.gast">GAST</div>
         <div class="home-card-title" data-i18n="angebote.gaste">Gäste</div>
         <div class="offer-sub" data-i18n="angebote.ohne_konto_sofort_loslegen">Ohne Konto sofort loslegen</div>
         <div class="offer-badge offer-badge--free" data-i18n="angebote.immer_kostenlos">Immer kostenlos</div>
         <ul class="offer-list">
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Übungskatalog durchsuchen und filtern – <strong data-i18n="angebote.3_ubungen_pro_kategorie">3 Übungen pro Kategorie</strong></span></li>
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span data-i18n="angebote.trainingsplan_zusammenstelle">Trainingsplan zusammenstellen und drucken</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Übungskatalog durchsuchen und filtern – <strong data-i18n="angebote.3_ubungen_pro_abschnitt">3 Übungen pro Abschnitt</strong> ansehen</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span data-i18n="angebote.fur_alles_weitere_anmelden_z">Für alles Weitere anmelden (z. B. Trainingsplan erstellen)</span></li>
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span data-i18n="angebote.felddiagramme_ansehen">Felddiagramme ansehen</span></li>
           <li class="off"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/></svg><span data-i18n="angebote.speichern_und_bewerten">Speichern und bewerten</span></li>
           <li class="off"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/></svg><span data-i18n="angebote.ubungen_einreichen">Übungen einreichen</span></li>
@@ -917,7 +920,7 @@
         </ul>
         <button class="offer-btn" id="offerTrainerBtn" onclick="offerTrainerAction()">Kostenlos registrieren</button>
       </div>
-      <div class="home-card home-card--blocks offer-card">
+      <div class="home-card home-card--blocks offer-card offer-card--hero">
         <div class="home-card-num" data-i18n="angebote.basic_3">BASIC +</div>
         <div class="home-card-title" data-i18n="angebote.basic_4">Basic +</div>
         <div class="offer-sub" data-i18n="angebote.alles_von_basic_zusatzlich">Alles von Basic, zusätzlich</div>
@@ -931,7 +934,7 @@
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span data-i18n="angebote.trainerteam_anlegen">Trainerteam anlegen</span></li>
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span data-i18n="angebote.verein_anlegen">Verein anlegen</span></li>
         </ul>
-        
+        <button class="offer-btn" onclick="offerTrainerAction()" data-i18n="angebote.basic_kostenlos_sichern">Basic + kostenlos sichern</button>
       </div>
       <div class="home-card home-card--templates offer-card">
         <div class="home-card-num" data-i18n="angebote.advanced">ADVANCED</div>
@@ -943,10 +946,11 @@
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span data-i18n="angebote.kalenderfunktion_einheiten_p">Kalenderfunktion: Einheiten pro Tag nachschlagen</span></li>
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span data-i18n="angebote.langzeitplanung_blocke_erste">Langzeitplanung: Blöcke erstellen</span></li>
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span data-i18n="angebote.zugriff_auf_die_block_biblio">Zugriff auf die Block-Bibliothek</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span data-i18n="angebote.zugriff_auf_sondertraining">Zugriff auf Sondertraining</span></li>
         </ul>
         
       </div>
-      <div class="home-card home-card--submit offer-card">
+      <div class="home-card home-card--submit offer-card offer-card--min">
         <div class="home-card-num" data-i18n="angebote.pro">PRO</div>
         <div class="home-card-title" data-i18n="angebote.pro_2">Pro</div>
         <div class="offer-sub" data-i18n="angebote.das_volle_paket">Das volle Paket</div>
@@ -957,7 +961,7 @@
         </ul>
         
       </div>
-      <div class="home-card home-card--plan offer-card--club offer-card">
+      <div class="home-card home-card--plan offer-card--club offer-card offer-card--min">
         <div class="home-card-num" data-i18n="angebote.verein">VEREIN</div>
         <div class="home-card-title" data-i18n="angebote.verein_2">Verein</div>
         <div class="offer-sub" data-i18n="angebote.fur_vereine_und_trainerteams">Für Vereine und Trainerteams</div>
@@ -1766,10 +1770,10 @@
         <div class="help-card-title" data-i18n="helpOverlay.angebote_was_bekomme_ich">Angebote – was bekomme ich?</div>
         <p class="help-card-text">Die Angebote-Seite zeigt alle Stufen. <strong data-i18n="helpOverlay.gaste_und_basic_sind_immer_k">Gäste und Basic sind immer kostenlos</strong>, Basic +, Advanced und Verein sind <strong data-i18n="angebote.bis_30_06_2027_kostenlos_nut">bis 30.06.2027 kostenlos nutzbar</strong> (Preis folgt). Pro ist noch in Arbeit. Die Stufen und Übungsgrenzen gelten ab dem 1. Januar 2027.</p>
         <div class="help-step"><span class="help-num">1</span><span>Öffnen: Startseite → Button <strong data-i18n="angebote.angebote">Angebote</strong> (neben „Einführung“), am Handy auch unter <strong data-i18n="app.mehr">Mehr</strong>, am Desktop im Zahnrad-Menü</span></div>
-        <div class="help-step"><span class="help-num">2</span><span><strong data-i18n="angebote.gaste">Gäste</strong> (ohne Konto): Katalog mit 3 Übungen pro Kategorie, Trainingsplan zusammenstellen und drucken</span></div>
+        <div class="help-step"><span class="help-num">2</span><span><strong data-i18n="angebote.gaste">Gäste</strong> (ohne Konto): 3 Übungen pro Abschnitt ansehen, für alles Weitere (z. B. Trainingsplan erstellen) anmelden</span></div>
         <div class="help-step"><span class="help-num">3</span><span><strong data-i18n="angebote.basic_2">Basic</strong> (kostenloses Konto): 5 Übungen pro Kategorie, Übungen erstellen, einreichen und bewerten, Notizen zu Übungen, Verein beitreten</span></div>
         <div class="help-step"><span class="help-num">4</span><span><strong data-i18n="angebote.basic_4">Basic +</strong>: 10 Übungen pro Kategorie, Pläne speichern und einreichen, vollständige Plan-Bibliothek, Pläne bewerten, Kader mit Notizen, Trainerteam, Verein anlegen</span></div>
-        <div class="help-step"><span class="help-num">5</span><span><strong data-i18n="angebote.advanced_2">Advanced</strong>: 20 Übungen pro Kategorie, Kalender, Langzeitplanung mit Block-Bibliothek</span></div>
+        <div class="help-step"><span class="help-num">5</span><span><strong data-i18n="angebote.advanced_2">Advanced</strong>: 20 Übungen pro Kategorie, Kalender, Langzeitplanung mit Block-Bibliothek, Sondertraining</span></div>
         <div class="help-step"><span class="help-num">6</span><span><strong data-i18n="angebote.pro_2">Pro</strong> (in Arbeit): voller Zugriff auf alle Funktionen und alle Übungen</span></div>
         <div class="help-step"><span class="help-num">7</span><span><strong data-i18n="angebote.verein_2">Verein</strong>: Vereinsportal mit Logo und Zugangslinks. Der Verein wählt eine Stufe, eingeladene Trainer:innen erhalten sie (oder ihre eigene, wenn sie höher ist)</span></div>
       </div>
@@ -2806,4 +2810,7 @@ if('serviceWorker' in navigator){
   <button onclick="goPage('agb')" style="background:none;border:none;color:var(--gd2);font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.3px;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px;" data-i18n="home.agb">AGB</button>
 </footer>
 
+<script src="js/stil-vorschau.js"></script>
+<script src="js/tribuene-vorschau.js"></script>
+<script src="js/angebote-vorschau.js"></script>
 </html>
