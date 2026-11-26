@@ -27,6 +27,7 @@ async function _applyProfile(userId){
   REVIEWER_SPORTS=profile?.reviewer_sports||[];
   document.body.classList.toggle('admin',IS_ADMIN);
   document.body.classList.toggle('reviewer',IS_REVIEWER);
+  if(typeof loadUserSports==='function') await loadUserSports(userId);
 }
 
 async function loadSubmissions(){
@@ -144,12 +145,14 @@ function toggleRegisterMode(){
   if(isRegMode){
     usernameField.style.display='none';
     if(agbWrap)agbWrap.style.display='none';
+    document.getElementById('regSportWrap').style.display='none';
     loginBtn.textContent='Anmelden';
     loginBtn.onclick=doLogin;
     registerBtn.textContent='Neu registrieren';
   } else {
     usernameField.style.display='block';
     if(agbWrap)agbWrap.style.display='flex';
+    document.getElementById('regSportWrap').style.display='block';
     loginBtn.textContent='Registrieren';
     loginBtn.onclick=doRegister;
     registerBtn.textContent='Zurück zum Login';
@@ -162,7 +165,8 @@ async function doRegister(){
   const username=(document.getElementById('loginUsername').value||'').trim();
   if(!email||!pass||!username){showToast('Alle Felder ausfüllen','err');return;}
   if(!document.getElementById('agbCheck')?.checked){showToast('Bitte AGB und Datenschutzerklärung bestätigen','err');return;}
-  const {error}=await _supabase.auth.signUp({email,password:pass,options:{data:{username}}});
+  if(!_regSport){showToast('Bitte eine Sportart wählen','err');return;}
+  const {error}=await _supabase.auth.signUp({email,password:pass,options:{data:{username,primary_sport:_regSport}}});
   if(error){showToast('Registrierung fehlgeschlagen: '+error.message,'err');return;}
   // Show confirmation pending screen instead of toast
   document.getElementById('loginForm').style.display='none';
@@ -317,6 +321,7 @@ async function doLogout(){
   if(typeof resetPlanPlayerNames==='function') resetPlanPlayerNames();
   if(typeof blockLibrary!=='undefined') blockLibrary=blockLibrary.filter(b=>!b._dbId); // nur lokal noch nicht gesicherte Einträge behalten
   currentUser=null; IS_ADMIN=false; IS_REVIEWER=false; REVIEWER_SPORTS=[];
+  if(typeof clearUserSports==='function') clearUserSports();
   if(typeof renderSavedPlans==='function') renderSavedPlans();
   if(typeof renderLtp==='function') renderLtp();
   if(typeof renderLibrary==='function'&&typeof activeLtpTab!=='undefined'&&activeLtpTab===1) renderLibrary();
@@ -864,6 +869,7 @@ function renderAccountPage(){
   // public flag from metadata
   const pub=currentUser.user_metadata?.publicName===true;
   document.getElementById('accPublicName').checked=pub;
+  if(typeof renderAccountSports==='function') renderAccountSports();
 }
 
 async function saveAccountProfile(){
@@ -991,8 +997,9 @@ async function doRegisterMod(){
   const errEl=document.getElementById('loginModErr');
   const btn=document.getElementById('loginModBtn');
   if(!email||!pass||!username){errEl.textContent='Alle Felder ausfüllen.';errEl.style.display='block';return;}
+  if(!_regSport){errEl.textContent='Bitte eine Sportart wählen.';errEl.style.display='block';return;}
   btn.disabled=true;btn.textContent='Registrieren…';
-  const {error}=await _supabase.auth.signUp({email,password:pass,options:{data:{username}}});
+  const {error}=await _supabase.auth.signUp({email,password:pass,options:{data:{username,primary_sport:_regSport}}});
   btn.disabled=false;btn.textContent='Registrieren';
   if(error){errEl.textContent=error.message;errEl.style.display='block';return;}
   errEl.style.color='#a5d6a7';errEl.textContent='Bestätigungs-E-Mail gesendet. Bitte E-Mail-Adresse bestätigen.';errEl.style.display='block';

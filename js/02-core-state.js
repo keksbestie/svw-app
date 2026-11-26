@@ -271,6 +271,7 @@ async function loadAPI(){
     if(!user&&res.error&&_isNetErr(res.error)){
       // Server nicht erreichbar: angemeldet bleiben (Sitzung aus dem lokalen Speicher), aber offline arbeiten
       currentUser=await _offlineSessionUser();
+      if(currentUser&&typeof _restoreCachedSports==='function'){ _restoreCachedSports(currentUser.id); if(typeof _enforceSport==='function') _enforceSport(); }
       throw res.error;
     }
     currentUser=user; IS_ADMIN=false;
@@ -279,6 +280,7 @@ async function loadAPI(){
       IS_ADMIN=profile?.role==='admin';
       IS_REVIEWER=profile?.role==='reviewer';
       REVIEWER_SPORTS=profile?.reviewer_sports||[];
+      if(typeof loadUserSports==='function') await loadUserSports(user.id);
       if(typeof loadClubData==='function') await loadClubData(user.id);
       if(typeof checkPendingToken==='function') await checkPendingToken(user.id);
     }

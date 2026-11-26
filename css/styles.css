@@ -1539,3 +1539,20 @@ body:has([style*="inset:0"][style*="z-index:9999"]) { overflow: hidden; }
 /* Tab-Leisten: horizontal wischbar, aber ohne sichtbaren Mini-Scrollbalken */
 .tab-scroll { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -ms-overflow-style: none; }
 .tab-scroll::-webkit-scrollbar { display: none; width: 0; height: 0; }
+
+/* Sportarten: Auswahl bei Anmeldung und im Konto (nur Text, keine Symbole) */
+.sport-pick-lbl { font-size: 12px; color: var(--gd2); margin: 12px 0 6px; font-weight: 600; }
+.sport-pick-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.sport-pick-col { flex-direction: column; }
+.sport-pick-btn { flex: 1 1 0; min-width: 90px; padding: 10px 12px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--surface-2, transparent); color: inherit; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; cursor: pointer; transition: border-color .15s, background .15s; }
+.sport-pick-btn:hover:not(:disabled) { border-color: var(--accent); }
+.sport-pick-btn.on { border-color: var(--accent); background: var(--accent); color: #fff; }
+.sport-pick-btn:disabled { opacity: .5; cursor: not-allowed; }
+.sport-pick-btn small { display: block; font-size: 10px; letter-spacing: .3px; font-weight: 700; text-transform: none; opacity: .8; }
+.sport-chooser-txt { font-size: 13px; line-height: 1.5; margin: 0 0 14px; }
+.acc-sport-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.acc-sport-row:last-child { border-bottom: 0; }
+.acc-sport-name { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 800; letter-spacing: .5px; flex: 1; }
+.acc-sport-state { font-size: 12px; color: var(--gd2); }
+.acc-sport-btn { padding: 7px 14px; border-radius: 8px; border: 0; background: var(--accent); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 800; letter-spacing: .5px; cursor: pointer; }
+.acc-sport-note { font-size: 12px; color: var(--gd2); }
