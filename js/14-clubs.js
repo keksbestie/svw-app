@@ -28,6 +28,7 @@ async function initClubLogoBg(sportId) {
     logos = logos.filter(c => (c.sports || []).includes(sportId));
   }
 
+  if (document.documentElement.hasAttribute('data-mix') && window.renderTribune) { window.renderTribune(wrap, logos); return; }
   if (!logos.length) return;
   const W = window.innerWidth;
   const H = window.innerHeight;

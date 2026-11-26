@@ -493,3 +493,9 @@ html[data-mix] header #authBtn:hover{background:var(--surface-2)!important}
 html[data-mix] header #hcnt{background:transparent!important;color:var(--accent)!important;border:1px solid color-mix(in srgb,var(--accent) 55%,transparent)!important}
 html[data-mix] header #hcnt:hover{background:var(--accent-l)!important}
 }
+
+/* Tribüne: Auswahl (Vorschau) */
+#tribSwitch{position:fixed;left:16px;bottom:16px;z-index:99999;display:flex;align-items:center;gap:4px;padding:5px;border-radius:99px;background:color-mix(in srgb,var(--bg) 82%,transparent);border:1px solid var(--border-s);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font:600 10px 'Barlow',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--text-2)}
+#tribSwitch span{padding:0 8px 0 10px}
+#tribSwitch button{font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;background:none;border:0;border-radius:99px;padding:6px 10px;cursor:pointer}
+#tribSwitch button[aria-pressed="true"]{background:var(--text-1);color:var(--bg)}
