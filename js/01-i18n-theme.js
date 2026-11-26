@@ -164,16 +164,46 @@ const TRANSLATIONS = {
 const LANG_META = {
   de: { flag: '🇩🇪', code: 'DE' },
   en: { flag: '🇬🇧', code: 'EN' },
-  es: { flag: '🇪🇸', code: 'ES' }
+  es: { flag: '🇪🇸', code: 'ES' },
+  fr: { flag: '🇫🇷', code: 'FR' },
+  tr: { flag: '🇹🇷', code: 'TR' }
 };
 
 let currentLang = localStorage.getItem('tb_lang') || localStorage.getItem('svw_lang') || 'de';
 
-function applyI18n() {
+// Zusaetzliche Sprachdateien (lang/en.json, lang/es.json) werden bei Bedarf geladen.
+// Deutsch ist der Originaltext im HTML; er wird beim ersten Umschalten gemerkt.
+const LANG_FILES = {};
+function loadLangFile(lang) {
+  if (lang === 'de' || LANG_FILES[lang] !== undefined) return;
+  LANG_FILES[lang] = null; // laedt gerade
+  fetch('lang/' + lang + '.json').then(r => r.ok ? r.json() : {}).then(j => {
+    LANG_FILES[lang] = j || {};
+    if (currentLang === lang) applyI18n();
+  }).catch(() => { LANG_FILES[lang] = {}; });
+}
+function i18nText(key, fallback) {
+  const f = LANG_FILES[currentLang];
+  return (f && f[key]) || (TRANSLATIONS[currentLang] || {})[key] || fallback;
+}
+const I18N_ATTRS = ['placeholder', 'title', 'aria-label'];
+function applyI18n(root) {
+  loadLangFile(currentLang);
   const t = TRANSLATIONS[currentLang] || TRANSLATIONS.de;
-  document.querySelectorAll('[data-i18n]').forEach(el => {
+  const f = LANG_FILES[currentLang] || {};
+  (root || document).querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
-    if (t[key]) el.textContent = t[key];
+    if (el._de === undefined) el._de = el.textContent;
+    const val = currentLang === 'de' ? el._de : (f[key] || t[key] || el._de);
+    if (el.textContent !== val) el.textContent = val;
+  });
+  I18N_ATTRS.forEach(attr => {
+    (root || document).querySelectorAll('[data-i18n-' + attr + ']').forEach(el => {
+      const key = el.getAttribute('data-i18n-' + attr);
+      if (el['_de_' + attr] === undefined) el['_de_' + attr] = el.getAttribute(attr);
+      const val = currentLang === 'de' ? el['_de_' + attr] : (f[key] || t[key] || el['_de_' + attr]);
+      if (val != null) el.setAttribute(attr, val);
+    });
   });
   // search placeholder
   const si = document.querySelector('.gs-in');
