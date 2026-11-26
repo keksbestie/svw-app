@@ -96,6 +96,7 @@
     var dt = Math.min(50, t - last); last = t;
     var w = wrap();
     ui.style.display = (isMix() && w && w.offsetParent) ? '' : 'none';
+    var sw = document.getElementById('stilSwitch'); if (sw) sw.style.display = (isMix() && w && w.offsetParent) ? '' : 'none';
     if (isMix() && w && w.offsetParent && document.documentElement.getAttribute('data-anim') !== 'off') {
       buildUi();
       var cs = cards(), n = cs.length, st = 360 / n, cs0 = getComputedStyle(w);

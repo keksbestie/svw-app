@@ -425,7 +425,7 @@ html[data-mix] #homeSignInBtn,html[data-mix] header #signInBtn{letter-spacing:.1
 /* Normalbetrieb: nur ein kleiner Bewegung-Schalter unten rechts */
 #stilSwitch.solo{left:auto;right:14px;transform:none;padding:3px;background:rgba(20,24,22,.72)}
 #stilSwitch.solo button{font-size:11px;padding:6px 12px;color:#cfd6d2}
-@media (max-width:700px){#stilSwitch.solo{display:none}}
+
 #stilSwitch.solo button,#stilSwitch.solo button[aria-pressed="true"]{background:none;color:#e6ebe8}
 /* Kopfzeile: alle Knöpfe gleich hoch, die drei großen rechts gleich breit */
 @media (min-width:701px){
