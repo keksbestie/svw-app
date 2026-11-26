@@ -12,9 +12,9 @@
   /* Blick vom Rasen: 3D-Rechnung. Betrachter auf dem Spielfeld (Augenhöhe 1,7 m), die Tribüne ist eine runde, flache Schüssel (ein durchgehender Rang):
      unten nah am Spielfeld, nach oben rücken die Reihen immer weiter nach hinten. Gezeichnet werden Flächen, die Logos sitzen willkürlich darauf. */
   var VARS = {
-    frontal: { a: 70, b: 84, n: 2.4, rows: 46, rise: 0.42, off: 1.5, ex: 4, yaw: 0 },
-    schraeg: { a: 64, b: 80, n: 2.5, rows: 46, rise: 0.42, off: 1.5, ex: 3.8, yaw: 0.5 },
-    weit:    { a: 105, b: 125, n: 2.3, rows: 40, rise: 0.4, off: 3, ex: 5, yaw: 0.25 }
+    frontal: { a: 70, b: 84, n: 2.05, rows: 42, rise: 0.3, off: 1.5, ex: 3.1, yaw: 0 },
+    schraeg: { a: 64, b: 80, n: 2.1, rows: 42, rise: 0.3, off: 1.5, ex: 3, yaw: 0.5 },
+    weit:    { a: 105, b: 125, n: 2.0, rows: 38, rise: 0.28, off: 3, ex: 3.8, yaw: 0.25 }
   };
   function sp(v, e) { return (v < 0 ? -1 : 1) * Math.pow(Math.abs(v), e); }
 
@@ -97,7 +97,7 @@
     var items = lastLogos.slice();
     if (DEMO[demo]) { var base0 = items.length ? items : [{ name: 'Beispiel', logo_url: 'icons/logo.svg' }]; items = []; for (var q = 0; q < DEMO[demo]; q++) items.push(base0[q % base0.length]); }
     var N = items.length, placed = [], rr = rnd(23);
-    function sizeAt(z) { return Math.max(15, Math.min(44, Math.round(2.4 * cam.F / z))); }
+    function sizeAt(z) { return Math.max(17, Math.min(50, Math.round(2.8 * cam.F / z))); }
     var tries = 0;
     while (placed.length < N && tries < N * 80 + 200) {
       tries++;
