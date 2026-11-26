@@ -1,10 +1,8 @@
-/* Stil-Vorschau: nur zum Ansehen. Mit ?stil=nacht|frisch|studio|aktuell aufrufbar. */
+/* Mix-Look: Standard-Look der App (Rad, Ball, Tour, Bewegung an/aus). */
 (function () {
-  var NAMES = [['aktuell', 'Aktuell'], ['nacht', '1 Nacht'], ['frisch', '2 Frisch'], ['studio', '3 Studio'], ['mix', '4 Mix']];
+  var NAMES = [];
   var KEY = 'stil-vorschau';
   function get() {
-    var q = /[?&]stil=([a-z]+)/.exec(location.search);
-    if (q) return q[1];
     return 'mix';
   }
   function apply(s) {
@@ -18,7 +16,7 @@
   bar.id = 'stilSwitch';
   bar.setAttribute('role', 'group'); if (!/[?&]stil=/.test(location.search)) bar.className = 'solo';
   bar.setAttribute('aria-label', 'Stil wählen');
-  var PREVIEW = /[?&]stil=/.test(location.search); /* Stil-Knöpfe nur mit ?stil=… sichtbar (Vergleich) */
+  var PREVIEW = false; /* Stil-Knöpfe nur mit ?stil=… sichtbar (Vergleich) */
   if (PREVIEW) NAMES.forEach(function (n) {
     var btn = document.createElement('button');
     btn.type = 'button'; btn.dataset.s = n[0]; btn.textContent = n[1];
