@@ -438,3 +438,32 @@ html[data-mix] header #navKaderBtn,html[data-mix] header #navClubBtn,html[data-m
 html[data-mix] header #navClubBtn img{width:22px;height:22px;border-radius:5px;flex:none}
 }
 @media (min-width:701px){html[data-mix] header #authBtn{font-size:11px!important;letter-spacing:.14em!important;text-transform:uppercase;font-weight:600!important;font-family:'Barlow',sans-serif!important}}
+
+/* ═════ Angebote: ein Hauptplan (Basic +), Rest ruhiger ═════ */
+html[data-mix] #page-angebote .offer-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;align-items:start}
+html[data-mix] #page-angebote .offer-card:nth-child(2){order:1}
+html[data-mix] #page-angebote .offer-card:nth-child(3){order:2}
+html[data-mix] #page-angebote .offer-card:nth-child(4){order:3}
+html[data-mix] #page-angebote .offer-card:nth-child(1){order:4}
+html[data-mix] #page-angebote .offer-card:nth-child(5){order:5}
+html[data-mix] #page-angebote .offer-card:nth-child(6){order:6}
+html[data-mix] #page-angebote .offer-card{display:flex;flex-direction:column;border-radius:14px;padding:30px 26px 24px;transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s}
+html[data-mix] #page-angebote .offer-card:hover{transform:translateY(-3px)}
+html[data-mix] #page-angebote .offer-card--feat{border-width:1px;border-color:var(--border)}
+html[data-mix] #page-angebote .offer-card--hero{position:relative;margin-top:-14px;padding:30px 30px 30px;border:1.5px solid transparent;background:linear-gradient(var(--surface),var(--surface)) padding-box,linear-gradient(135deg,#2fd08f,#4f8bff 55%,#a874ff) border-box;box-shadow:0 40px 90px -40px rgba(79,139,255,.55),0 0 0 1px rgba(255,255,255,.02)}
+html[data-mix] #page-angebote .offer-flag{align-self:flex-start;margin:0 0 18px;font:700 10px 'Barlow',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#04130c;background:linear-gradient(90deg,#2fd08f,#7fe3b6);padding:6px 12px;border-radius:2px}
+html[data-mix] #page-angebote .offer-card--hero .home-card-title{font-size:22px}
+html[data-mix] #page-angebote .offer-card--min{padding:22px 22px 20px;opacity:.92}
+html[data-mix] #page-angebote .offer-card--min .home-card-title{font-size:15px}
+html[data-mix] #page-angebote .offer-card--min .offer-list{font-size:13px}
+html[data-mix] #page-angebote .offer-card:not(.open) .offer-list li.hid{display:none}
+html[data-mix] #page-angebote .offer-more{align-self:flex-start;background:none;border:0;padding:4px 0;margin:-6px 0 16px;color:var(--text-2);font:600 11px 'Barlow',sans-serif;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;border-bottom:1px solid var(--border-s)}
+html[data-mix] #page-angebote .offer-more:hover{color:var(--text-1)}
+html[data-mix] #page-angebote .offer-btn{border-radius:2px;font:600 11px 'Barlow',sans-serif;letter-spacing:.2em;padding:14px 18px;background:transparent;color:var(--text-1);border:1px solid var(--border-s);transition:background .25s,color .25s,box-shadow .25s}
+html[data-mix] #page-angebote .offer-btn:hover{background:var(--text-1);color:var(--bg)}
+html[data-mix] #page-angebote .offer-card--hero .offer-btn{background:linear-gradient(90deg,#2fd08f,#4f8bff);color:#04130c;border:0;padding:16px 18px}
+html[data-mix] #page-angebote .offer-card--hero .offer-btn:hover{box-shadow:0 12px 36px -8px rgba(79,139,255,.7);color:#04130c;background:linear-gradient(90deg,#2fd08f,#4f8bff)}
+@media (max-width:900px){
+html[data-mix] #page-angebote .offer-grid{grid-template-columns:1fr}
+html[data-mix] #page-angebote .offer-card--hero{margin-top:10px;order:0!important}
+}
