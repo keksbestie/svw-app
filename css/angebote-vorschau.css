@@ -46,9 +46,10 @@
 .ag-step.hero .ag-dot{border-color:#4f8bff;box-shadow:0 0 0 5px #4f8bff30,0 0 26px #4f8bff80}
 .ag-step em{position:absolute;top:58px;left:50%;transform:translateX(-50%);font-style:normal;font-size:9px;letter-spacing:.18em;color:#2fd08f;white-space:nowrap;background:none;border:0;padding:0}
 /* Stapel */
-.ag-v-stapel{perspective:1600px;height:640px;margin-bottom:60px}
+.ag-v-stapel{perspective:1600px;height:640px;margin-bottom:30px}
 .ag-stack{position:relative;height:560px}
-.ag-sc{position:absolute;left:50%;top:0;width:min(420px,78%);margin-left:calc(min(420px,78%) / -2);padding:30px 28px 26px;border:1px solid var(--border);border-radius:16px;background:linear-gradient(var(--surface),var(--surface)),var(--bg);transition:transform .7s cubic-bezier(.22,1,.36,1),opacity .5s;cursor:pointer}
+.ag-sc{position:absolute;left:50%;top:0;width:min(420px,78%);margin-left:calc(min(420px,78%) / -2);padding:30px 28px 26px;border:1px solid var(--border);border-radius:16px;background:linear-gradient(var(--surface),var(--surface)),var(--bg);transition:transform .8s cubic-bezier(.22,1,.36,1),opacity .6s ease;cursor:pointer;height:100%;overflow:hidden;will-change:transform,opacity;box-sizing:border-box}
+.ag-sc:not(.front) .ag-ctas{opacity:0;pointer-events:none}.ag-ctas{transition:opacity .4s}
 .ag-sc.front{cursor:default;box-shadow:0 50px 100px -40px rgba(0,0,0,.6)}
 .ag-sc.hero{border:1.5px solid transparent;background:linear-gradient(var(--surface),var(--surface)) padding-box,linear-gradient(var(--bg),var(--bg)) padding-box,linear-gradient(135deg,#2fd08f,#4f8bff 55%,#a874ff) border-box}
 .ag-sc .ag-name{font-size:22px}
