@@ -95,7 +95,7 @@ function saveSport(sport) {
   const prevId = window.currentSport && window.currentSport.id;
   try { localStorage.setItem(SPORT_KEY, JSON.stringify(sport)); } catch {}
   window.currentSport = sport;
-  if (prevId !== (sport && sport.id)) { _resetSportScopedState(); if (typeof renderSavedPlans === 'function') renderSavedPlans(); }
+  if (prevId !== (sport && sport.id)) { _resetSportScopedState(); if (typeof refreshSquad === 'function') { refreshSquad(); if (typeof renderKaderPage === 'function') renderKaderPage(); } if (typeof renderSavedPlans === 'function') renderSavedPlans(); }
 }
 
 function selectSport(id) {
@@ -146,6 +146,7 @@ function renderHomeSportState() {
     if (sub) sub.textContent = 'Was möchtest du tun?';
     if (heroBtns) heroBtns.style.display = 'flex';
     window.currentSport = sport;
+    if (typeof refreshSquad === 'function') refreshSquad();
     if (typeof initClubLogoBg === 'function') initClubLogoBg(sport.id);
   } else {
     grid.style.display = 'grid';
