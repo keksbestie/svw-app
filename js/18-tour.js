@@ -49,11 +49,11 @@
       mob:{target:'#bnavMore',pos:'top',text:'Unter <strong>Mehr</strong> findest du <strong>Mein Kader</strong>: Dort legst du Spieler:innen (mit Notizen in einer eigenen Kartei) und dein Trainerteam an und wählst vor dem Training aus, wer heute dabei ist.'}
     },
     {
-      page:'home',target:'#offersBtn, #homeCards',pos:'bottom',
+      page:'home',target:'#offersBtn, .home-card--offers',pos:'bottom',
       title:'Angebote',
       text:'Hier findest du die <strong>Angebote</strong> (auch über das Zahnrad oben rechts): Gäste, Basic, Basic +, Advanced, Pro und Verein. Gäste und Basic sind immer kostenlos, Basic +, Advanced und Verein bis 30.06.2027.',
       fallbackTarget:'#cfgBtn',
-      mob:{target:'#offersBtn, #homeCards',fallbackTarget:'#bnavMore',text:'Hier findest du die <strong>Angebote</strong> (auch unter <strong>Mehr</strong>): Gäste, Basic, Basic +, Advanced, Pro und Verein. Gäste und Basic sind immer kostenlos, Basic +, Advanced und Verein bis 30.06.2027.'}
+      mob:{target:'#offersBtn, .home-card--offers',fallbackTarget:'#bnavMore',text:'Hier findest du die <strong>Angebote</strong> (auch unter <strong>Mehr</strong>): Gäste, Basic, Basic +, Advanced, Pro und Verein. Gäste und Basic sind immer kostenlos, Basic +, Advanced und Verein bis 30.06.2027.'}
     },
     {
       page:'handbook',target:'button[onclick*="toggleHelpPanel"], .cfg-btn[title*="Hilfe"]',pos:'bottom',
@@ -115,19 +115,21 @@
       bubble.style.transform='none';
       const bw=Math.min(bubble.offsetWidth||300,vw-24);
       const spaceBelow=vh-r.bottom, spaceAbove=r.top;
+      const bh=bubble.offsetHeight||200;
       let left=Math.max(12,Math.min(r.left,vw-bw-12));
-      if(spaceBelow>250||spaceBelow>spaceAbove){
-        bubble.style.top=(r.bottom+14)+'px'; bubble.style.bottom='auto'; bubble.style.left=left+'px';
+      bubble.style.bottom='auto'; bubble.style.left=left+'px';
+      if(spaceBelow>bh+30||spaceBelow>spaceAbove){
+        bubble.style.top=Math.max(8,Math.min(r.bottom+14,vh-bh-8))+'px';
         if(arrow){arrow.style.display='block';arrow.style.top='-6px';arrow.style.left=(r.left+r.width/2-left-6)+'px';arrow.style.bottom='auto';}
       } else {
-        bubble.style.left=left+'px'; bubble.style.bottom=(vh-r.top+14)+'px'; bubble.style.top='auto';
+        bubble.style.top=Math.max(8,r.top-14-bh)+'px';
         if(arrow){arrow.style.display='block';arrow.style.bottom='-6px';arrow.style.top='auto';arrow.style.left=(r.left+r.width/2-left-6)+'px';}
       }
       // Passt die Sprechblase nicht neben das Ziel (z. B. sehr hohes Ziel), sitzt sie am unteren Bildschirmrand
-      const br=bubble.getBoundingClientRect();
-      if(br.bottom>vh-8||br.top<8){
-        bubble.style.left=Math.max(12,(vw-bw)/2)+'px'; bubble.style.top='auto';
-        bubble.style.bottom=((_mobile()?76:16))+'px';
+      const br0=bubble.getBoundingClientRect();
+      if(br0.bottom>vh-8&&spaceBelow<=bh+30&&spaceAbove<=bh+30){
+        bubble.style.left=Math.max(12,(vw-bw)/2)+'px';
+        bubble.style.top=Math.max(8,vh-bh-(_mobile()?76:16))+'px';
         if(arrow)arrow.style.display='none';
       }
       if(onDone)onDone();
@@ -151,17 +153,20 @@
   function _renderStep(){
     const s=STEPS[_step];
     const bubble=document.getElementById('tourBubble');
-    // Fade out
-    bubble.style.opacity='0';
+    const inner=bubble.firstElementChild;
+    // Inhalt kurz ausblenden, Blase und Hervorhebung gleiten danach gemeinsam zum neuen Ziel
+    if(inner){inner.style.transition='opacity .16s ease';inner.style.opacity='0';}
     setTimeout(function(){
       _updateContent();
       if(s.page&&typeof goPage==='function') goPage(s.page);
-      // Im Rad-Stil zuerst das Rad zur passenden Karte drehen
       const _ring=(s.page==='home'&&window._ringFocus&&window._ringFocus('.home-card--offers'));
-      setTimeout(function(){
-        _positionBubble(_getTarget(s), function(){ bubble.style.opacity='1'; });
-      }, _ring?800:(s.page?600:0));
-    },200);
+      const t0=Date.now();
+      (function wait(){
+        const ready=_ring?(window._ringSettled&&window._ringSettled()||Date.now()-t0>5000):Date.now()-t0>(s.page?500:0);
+        if(!ready){setTimeout(wait,80);return;}
+        _positionBubble(_getTarget(s), function(){ if(inner)inner.style.opacity='1'; });
+      })();
+    },170);
   }
 
   window.startTour=function(){

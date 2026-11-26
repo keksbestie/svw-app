@@ -66,6 +66,7 @@
     var cs = cards(), i = -1; cs.forEach(function (c, k) { if (i < 0 && c.matches(sel)) i = k; });
     if (i < 0) return false; go(i); return true;
   };
+  window._ringSettled = function () { return Math.abs(rot - target) < 0.4; };
   function buildUi() {
     var w = wrap(); if (!w || ui.parentNode) return;
     ui.innerHTML = '<div class="rg-row"><button type="button" class="rg-btn" aria-label="Vorherige Karte" data-d="-1">←</button><div class="rg-dots"></div><button type="button" class="rg-btn" aria-label="Nächste Karte" data-d="1">→</button></div>' +
