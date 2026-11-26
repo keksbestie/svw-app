@@ -30,7 +30,7 @@
   function cta(p) {
     var h = '';
     if (p.btn) h += '<button type="button" class="ag-cta' + (isHero(p) ? ' hero' : '') + '" data-act="btn">' + p.btn.textContent + '</button>';
-    if (!isHero(p)) h += '<button type="button" class="ag-link" data-go="hero">Zum empfohlenen Plan Basic + ›</button>';
+    if (ORDER.indexOf(p.key) < ORDER.indexOf(HERO)) h += '<button type="button" class="ag-link" data-go="hero">Zum empfohlenen Plan Basic + ›</button>';
     return h;
   }
   function heroIdx() { return plans.findIndex(isHero); }
