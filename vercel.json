@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/uebungen", "destination": "/api/uebungen" },
+    { "source": "/uebungen/:slug", "destination": "/api/uebung?slug=:slug" },
+    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
+    { "source": "/robots.txt", "destination": "/api/robots" }
+  ]
+}
