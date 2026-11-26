@@ -93,7 +93,9 @@ let _catalogView = localStorage.getItem('catalogView') || 'expanded';
 function setCatalogView(v){ _catalogView=v; localStorage.setItem('catalogView',v); renderSection(); }
 
 function renderStbar(){
-  document.getElementById('stbar').innerHTML=SECS.map((s,i)=>`
+  if(!sectionVisible(activeSec))activeSec=0;
+  document.querySelectorAll('option[value="5"]').forEach(o=>{if(/Sondertraining/.test(o.textContent)){o.hidden=!hasAdvanced();o.disabled=!hasAdvanced();}});
+  document.getElementById('stbar').innerHTML=SECS.map((s,i)=>!sectionVisible(i)?'':`
     <button class="st ${i===activeSec?'active':''}" style="--sc:${s.color}" onclick="switchSec(${i})">
       <span class="sn">${i+1}</span>${s.name}
     </button>`).join('');
@@ -114,6 +116,7 @@ function toggleCartParallel(exId){
 }
 
 function renderPlanCart(){
+  if(isGuest())return '';
   const allItems = currentPlan.lanes.flat();
   const secNames = SECS.map(s=>s.name);
   const secColors = SECS.map(s=>s.color);
@@ -268,7 +271,17 @@ function openExDetail(id){
   openMod('exDetailMod');
 }
 
-function switchSec(idx){activeSec=idx;selectedTags=[];activeCluster=null;clusterFilterTags=[];TAG_CLUSTERS=SECTION_CLUSTERS[idx]||SECTION_CLUSTERS[0];document.querySelectorAll('.st').forEach((b,i)=>b.classList.toggle('active',i===idx));renderSection();}
+// Gäste: weitere Karten als unscharfe Platzhalter ohne echte Inhalte (nicht anklickbar)
+function _lockedCardsHTML(sec,noFilter){
+  if(!noFilter)return '';
+  const s=_curSportId();
+  const total=exercises.filter(e=>(e.sport||'fussball')===s&&e.section===sec&&(e.status==='approved'||!e.status)).length;
+  const n=Math.min(Math.max(total-GUEST_EX_PER_SEC,0),9);
+  let h='';
+  for(let i=0;i<n;i++)h+=`<div class="card card-locked" aria-hidden="true" onclick="showLoginRequired('Alle Übungen')"><div class="cimg"><div class="cimg-field"><div class="cimg-field-lines"></div></div></div><div class="cbody"><div class="cname">Übung gesperrt</div><div class="cdesc">Melde dich an, um diese Übung zu sehen und alle Funktionen zu nutzen.</div></div></div>`;
+  return h;
+}
+function switchSec(idx){if(!sectionVisible(idx))idx=0;activeSec=idx;selectedTags=[];activeCluster=null;clusterFilterTags=[];TAG_CLUSTERS=SECTION_CLUSTERS[idx]||SECTION_CLUSTERS[0];document.querySelectorAll('.st').forEach((b,i)=>b.classList.toggle('active',i===idx));renderSection();}
 
 function openDescMod(si){
   descIdx=si;
@@ -285,6 +298,7 @@ function saveDesc(){
 }
 
 function renderSection(){
+  if(!sectionVisible(activeSec))activeSec=0;
   const s=SECS[activeSec];const col=s.color;
 
   const sEx=sportExercises().filter(e=>e.section===activeSec&&e.status!=='pending'&&e.status!=='review');
@@ -365,6 +379,7 @@ function renderSection(){
             }).join('')}
             ${!allTags.length?'<span style="font-size:10px;color:var(--gm);">Noch keine Tags</span>':''}
           </div>
+          ${isGuest()?`<div class="guest-note" style="margin-bottom:12px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;font-size:13px;line-height:1.5;color:var(--text-2);"><strong style="color:var(--text-1);">Du siehst eine Auswahl von ${GUEST_EX_PER_SEC} Übungen pro Abschnitt.</strong> Melde dich kostenlos an, um mehr Übungen und alle Funktionen zu nutzen. <a href="#" onclick="openLoginMod();return false;" style="font-weight:800;color:inherit;">Anmelden</a> · <a href="#" onclick="goPage('angebote');return false;" style="font-weight:800;color:inherit;">Angebote</a></div>`:''}
           <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gm);margin-bottom:11px;">${filtered.length} von ${sEx.length} Übungen</div>
           <div class="exgrid${_catalogView==='collapsed'?' collapsed':''}">
             ${filtered.length===0
@@ -372,7 +387,8 @@ function renderSection(){
                 ?`<div class="empty-grid"><div class="ei">${window.currentSport&&window.currentSport.icon?`<img src="${window.currentSport.icon}" style="width:48px;opacity:.4;">`:'🏗️'}</div><h3>Noch keine Inhalte</h3><p>Für <strong>${window.currentSport?window.currentSport.label:''}</strong> werden hier bald Übungen verfügbar sein.</p></div>`
                 :`<div class="empty-grid"><div class="ei">${window.currentSport&&window.currentSport.icon?`<img src="${window.currentSport.icon}" style="width:48px;opacity:.4;">`:'⚽'}</div><h3>Keine Übungen gefunden</h3><p>${IS_ADMIN?'Über „+ Übung" hinzufügen.':'Filter anpassen.'}</p></div>`)
               :_applyRatingOrder(filtered).map(e=>cardHTML(e,col)).join('')
-            }
+            }${isGuest()?_lockedCardsHTML(activeSec,filtered.length===sEx.length):''}
+            ${''            }
           </div>
         </div>
         <div id="planCartSidebar" style="position:sticky;top:calc(var(--header-h) + var(--nav-h) + 52px);">
@@ -690,6 +706,7 @@ function renderIZ(){} // no image upload
 let _pendingSonderExId = null;
 
 function addToPlanOrPick(id, fromSec, closeDetailFirst) {
+  if (isGuest()) { showLoginRequired('Das Einplanen von Übungen'); return; }
   if (fromSec === 5) {
     _pendingSonderExId = id;
     if (closeDetailFirst) closeMod('exDetailMod');
