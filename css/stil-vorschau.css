@@ -41,7 +41,6 @@ html[data-stil="nacht"] #page-home::after{inset:-20%;background:
   radial-gradient(40% 36% at 22% 8%,rgba(34,211,140,.40),transparent 70%),
   radial-gradient(38% 34% at 82% 30%,rgba(56,120,255,.30),transparent 70%),
   radial-gradient(46% 40% at 50% 108%,rgba(34,211,140,.22),transparent 70%);animation:stilGlow 16s ease-in-out infinite}
-html[data-stil="nacht"] #clubLogoBg{display:none}
 html[data-stil="nacht"] .home-motto{color:rgba(255,255,255,.4)!important}
 html[data-stil="nacht"] .home-hero-eyebrow{color:#7ff0bf}
 html[data-stil="nacht"] .home-hero-eyebrow::before,html[data-stil="nacht"] .home-hero-eyebrow::after{background:#7ff0bf}
@@ -426,7 +425,7 @@ html[data-mix] #homeSignInBtn,html[data-mix] header #signInBtn{letter-spacing:.1
 /* Normalbetrieb: nur ein kleiner Bewegung-Schalter unten rechts */
 #stilSwitch.solo{left:auto;right:14px;transform:none;padding:3px;background:rgba(20,24,22,.72)}
 #stilSwitch.solo button{font-size:11px;padding:6px 12px;color:#cfd6d2}
-@media (max-width:700px){#stilSwitch.solo{display:none}}
+
 #stilSwitch.solo button,#stilSwitch.solo button[aria-pressed="true"]{background:none;color:#e6ebe8}
 /* Kopfzeile: alle Knöpfe gleich hoch, die drei großen rechts gleich breit */
 @media (min-width:701px){
@@ -438,3 +437,59 @@ html[data-mix] header #navKaderBtn,html[data-mix] header #navClubBtn,html[data-m
 html[data-mix] header #navClubBtn img{width:22px;height:22px;border-radius:5px;flex:none}
 }
 @media (min-width:701px){html[data-mix] header #authBtn{font-size:11px!important;letter-spacing:.14em!important;text-transform:uppercase;font-weight:600!important;font-family:'Barlow',sans-serif!important}}
+
+/* ═════ Angebote: ein Hauptplan (Basic +), Rest ruhiger ═════ */
+html[data-mix] #page-angebote .offer-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;align-items:start}
+html[data-mix] #page-angebote .offer-card:nth-child(2){order:1}
+html[data-mix] #page-angebote .offer-card:nth-child(3){order:2}
+html[data-mix] #page-angebote .offer-card:nth-child(4){order:3}
+html[data-mix] #page-angebote .offer-card:nth-child(1){order:4}
+html[data-mix] #page-angebote .offer-card:nth-child(5){order:5}
+html[data-mix] #page-angebote .offer-card:nth-child(6){order:6}
+html[data-mix] #page-angebote .offer-card{display:flex;flex-direction:column;border-radius:14px;padding:30px 26px 24px;transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s}
+html[data-mix] #page-angebote .offer-card:hover{transform:translateY(-3px)}
+html[data-mix] #page-angebote .offer-card--feat{border-width:1px;border-color:var(--border)}
+html[data-mix] #page-angebote .offer-card--hero{position:relative;margin-top:-14px;padding:30px 30px 30px;border:1.5px solid transparent;background:linear-gradient(var(--surface),var(--surface)) padding-box,linear-gradient(135deg,#2fd08f,#4f8bff 55%,#a874ff) border-box;box-shadow:0 40px 90px -40px rgba(79,139,255,.55),0 0 0 1px rgba(255,255,255,.02)}
+html[data-mix] #page-angebote .offer-flag{align-self:flex-start;margin:0 0 18px;font:700 10px 'Barlow',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#04130c;background:linear-gradient(90deg,#2fd08f,#7fe3b6);padding:6px 12px;border-radius:2px}
+html[data-mix] #page-angebote .offer-card--hero .home-card-title{font-size:22px}
+html[data-mix] #page-angebote .offer-card--min{padding:22px 22px 20px;opacity:.92}
+html[data-mix] #page-angebote .offer-card--min .home-card-title{font-size:15px}
+html[data-mix] #page-angebote .offer-card--min .offer-list{font-size:13px}
+html[data-mix] #page-angebote .offer-card:not(.open) .offer-list li.hid{display:none}
+html[data-mix] #page-angebote .offer-more{align-self:flex-start;background:none;border:0;padding:4px 0;margin:-6px 0 16px;color:var(--text-2);font:600 11px 'Barlow',sans-serif;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;border-bottom:1px solid var(--border-s)}
+html[data-mix] #page-angebote .offer-more:hover{color:var(--text-1)}
+html[data-mix] #page-angebote .offer-btn{border-radius:2px;font:600 11px 'Barlow',sans-serif;letter-spacing:.2em;padding:14px 18px;background:transparent;color:var(--text-1);border:1px solid var(--border-s);transition:background .25s,color .25s,box-shadow .25s}
+html[data-mix] #page-angebote .offer-btn:hover{background:var(--text-1);color:var(--bg)}
+html[data-mix] #page-angebote .offer-card--hero .offer-btn{background:linear-gradient(90deg,#2fd08f,#4f8bff);color:#04130c;border:0;padding:16px 18px}
+html[data-mix] #page-angebote .offer-card--hero .offer-btn:hover{box-shadow:0 12px 36px -8px rgba(79,139,255,.7);color:#04130c;background:linear-gradient(90deg,#2fd08f,#4f8bff)}
+@media (max-width:900px){
+html[data-mix] #page-angebote .offer-grid{grid-template-columns:1fr}
+html[data-mix] #page-angebote .offer-card--hero{margin-top:10px;order:0!important}
+}
+
+/* Vereinslogos auf der Startseite: kleine Glas-Kacheln statt grosser Bilder */
+.club-chip{display:flex;align-items:center;justify-content:center;box-sizing:border-box;padding:5px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 6px 18px -8px rgba(0,0,0,.6);overflow:hidden;transition:opacity .3s,box-shadow .3s}
+.club-chip img{width:100%;height:100%;object-fit:contain;border-radius:7px;filter:grayscale(.25) saturate(.9)}
+.club-chip:hover{opacity:1!important;box-shadow:0 0 0 1px #2fd08f66,0 8px 22px -8px #2fd08f55}
+html[data-theme="light"] .club-chip{background:rgba(255,255,255,.7);border-color:rgba(0,0,0,.1);box-shadow:0 6px 16px -8px rgba(0,0,0,.25)}
+
+/* Verbindungsleiste (offline): schmale Pille oben mittig statt loser Text-Streifen */
+.apibar{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:400;display:flex;align-items:center;gap:10px;padding:5px 6px 5px 14px;border-radius:99px;font:600 11px 'Barlow',sans-serif;letter-spacing:.08em;color:var(--text-1,#eef3f0);background:color-mix(in srgb,var(--bg,#05090d) 85%,transparent);border:1px solid rgba(255,170,60,.45);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 6px 20px -8px rgba(0,0,0,.6)}
+.apibar.h{display:none}
+@media (max-width:700px){.apibar{bottom:78px;max-width:calc(100% - 24px)}}
+.apibar .api-retry{font:inherit;letter-spacing:inherit;color:inherit;background:rgba(255,255,255,.08);border:0;border-radius:99px;padding:4px 10px;cursor:pointer}
+.apibar .api-retry:hover{background:rgba(255,255,255,.16)}
+
+/* Kopfzeile rechts: schmaler und ruhiger */
+@media (min-width:701px){
+html[data-mix] header .hr{gap:6px}
+html[data-mix] header .hr button,html[data-mix] header .hr .lang-btn,html[data-mix] header .hr .theme-btn,html[data-mix] header .hr .cfg-btn{height:30px!important;min-height:30px;font-size:10px!important}
+html[data-mix] header .hr .theme-btn,html[data-mix] header .hr .cfg-btn,html[data-mix] header .hr .hbtn:not(.pri){min-width:30px;padding-left:8px!important;padding-right:8px!important;background:transparent!important;border-color:transparent!important}
+html[data-mix] header .hr .theme-btn:hover,html[data-mix] header .hr .cfg-btn:hover,html[data-mix] header .hr .hbtn:not(.pri):hover,html[data-mix] header .hr .lang-btn:hover{background:var(--surface-2)!important}
+html[data-mix] header .hr .lang-btn{background:transparent!important;border-color:transparent!important;padding-left:8px!important;padding-right:8px!important}
+html[data-mix] header #navKaderBtn,html[data-mix] header #navClubBtn,html[data-mix] header #hcnt{width:116px;font-size:10px!important;letter-spacing:.12em!important}
+html[data-mix] header #authBtn{min-width:84px;font-size:10px!important;background:transparent!important;color:var(--text-1)!important;border:1px solid var(--border-s)!important}
+html[data-mix] header #authBtn:hover{background:var(--surface-2)!important}
+html[data-mix] header #hcnt{background:transparent!important;color:var(--accent)!important;border:1px solid color-mix(in srgb,var(--accent) 55%,transparent)!important}
+html[data-mix] header #hcnt:hover{background:var(--accent-l)!important}
+}
