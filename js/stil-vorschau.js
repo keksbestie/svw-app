@@ -207,14 +207,27 @@
       b.querySelector('.rb-lbl').textContent = (window.currentSport.label || sp);
     }
   }
-  /* Im Mix-Look keine Emoji vor Schlagwörtern (Navigation, Knöpfe); beim Verlassen kommen sie zurück */
-  var EMO = /^(?:[\u2600-\u27BF\uFE0F]|[\uD83C-\uD83E][\uDC00-\uDFFF])+\s*/;
+  /* Im Mix-Look keine Emoji vor Schlagwörtern und keine freistehenden Emoji-Symbole; beim Verlassen kommen sie zurück */
+  var EMO = /^(?:[\u2600-\u2605\u2607-\u2712\u2719-\u27BF\uFE0F\u200D]|[\uD83C-\uD83E][\uDC00-\uDFFF])+\s*/;
+  var EMO_ONLY = /^(?:[\u2600-\u2605\u2607-\u2712\u2719-\u27BF\uFE0F\u200D]|[\uD83C-\uD83E][\uDC00-\uDFFF]|\s)+$/;
+  var STRIP_SEL = 'h1,h2,h3,h4,h5,legend,summary,.mb,button,label,[class*="title"],[class*="tab"],[class*="lbl"],[class*="head"],[class*="name"],[class*="hdr"],[class*="sb"],.home-hero-btn';
+  function skip(el) { return el.closest('.bottom-nav,#homeThemeBtn,.theme-btn,.cfg-drop,.lang-drop,#stilSwitch,#tourBubble'); }
   function stripEmoji() {
     var mix = isMix();
-    document.querySelectorAll('.mb, #homeHeroBtns button, .home-hero-btn').forEach(function (el) {
+    if (!mix) {
+      document.querySelectorAll('[data-emo]').forEach(function (el) { var n = el.firstChild; if (n && n.nodeType === 3) n.nodeValue = el.getAttribute('data-emo') + n.nodeValue; el.removeAttribute('data-emo'); });
+      document.querySelectorAll('[data-emo-hide]').forEach(function (el) { el.style.display = el.getAttribute('data-emo-hide'); el.removeAttribute('data-emo-hide'); });
+      return;
+    }
+    document.querySelectorAll(STRIP_SEL).forEach(function (el) {
+      if (skip(el)) return;
       var n = el.firstChild; if (!n || n.nodeType !== 3) return;
-      if (mix) { var m = n.nodeValue.match(EMO); if (m) { el.setAttribute('data-emo', m[0]); n.nodeValue = n.nodeValue.slice(m[0].length); } }
-      else if (el.hasAttribute('data-emo')) { n.nodeValue = el.getAttribute('data-emo') + n.nodeValue; el.removeAttribute('data-emo'); }
+      var m = n.nodeValue.match(EMO);
+      if (m && n.nodeValue.slice(m[0].length).trim()) { el.setAttribute('data-emo', m[0]); n.nodeValue = n.nodeValue.slice(m[0].length); }
+    });
+    document.querySelectorAll('div,span,p').forEach(function (el) {
+      if (el.hasAttribute('data-emo-hide') || el.children.length || skip(el) || el.closest('button,a,[onclick],select')) return;
+      if (el.textContent.length < 12 && EMO_ONLY.test(el.textContent) && el.textContent.trim()) { el.setAttribute('data-emo-hide', el.style.display || ''); el.style.display = 'none'; }
     });
   }
   setInterval(stripEmoji, 400);
