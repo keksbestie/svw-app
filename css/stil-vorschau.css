@@ -223,3 +223,93 @@ html[data-stil="nacht"][data-mix] #homeCards .home-card-arrow{margin-top:14px;wi
 html[data-stil="nacht"][data-mix] .home-hero{padding-top:36px;padding-bottom:4px}
 html[data-stil="nacht"][data-mix] .home-hero-title{margin-bottom:14px}
 html[data-stil="nacht"][data-mix] #ringUi{margin-bottom:28px}
+
+/* ══════════ MIX auf allen Seiten: Farben, Kopfzeile, Katalog ══════════ */
+/* Dunkel ist der Standard im Mix, Hell kommt über data-theme="light" (App-Mond-Knopf oder Schalter unten) */
+html[data-mix]{
+  --accent:#2fd08f;--accent-d:#1fb578;--accent-l:rgba(47,208,143,.13);--accent-mid:#2fd08f;
+  --bg:#05090d;--surface:#0c1318;--surface-2:#111b22;--border:rgba(255,255,255,.10);--border-s:rgba(255,255,255,.22);
+  --text-1:#eef3f0;--text-2:#a9b7b0;--text-3:#71827a;
+  --shadow:0 10px 36px rgba(0,0,0,.40);--shadow-lg:0 18px 54px rgba(0,0,0,.55);
+  --radius-sm:5px;--radius-md:9px;--radius-lg:12px;color-scheme:dark}
+html[data-mix][data-theme="light"]{
+  --accent:#0f8a5a;--accent-d:#0b6e48;--accent-l:#e3f4ec;--accent-mid:#14a06b;
+  --bg:#f5f7f7;--surface:#ffffff;--surface-2:#eef2f1;--border:#e0e6e4;--border-s:#c8d1ce;
+  --text-1:#0d1613;--text-2:#46544e;--text-3:#7a8883;
+  --shadow:0 1px 3px rgba(15,35,28,.05),0 8px 28px rgba(15,35,28,.06);--shadow-lg:0 18px 48px rgba(15,35,28,.13);color-scheme:light}
+html[data-mix] body{background:var(--bg)}
+html[data-mix] body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+  radial-gradient(42% 30% at 15% 0%,rgba(34,211,140,.16),transparent 70%),radial-gradient(38% 30% at 90% 8%,rgba(56,120,255,.14),transparent 70%)}
+html[data-mix][data-theme="light"] body::before{background:
+  radial-gradient(42% 30% at 12% 0%,rgba(52,211,153,.18),transparent 70%),radial-gradient(38% 30% at 92% 6%,rgba(96,165,250,.16),transparent 70%)}
+/* Kopfzeile und Hauptnavigation */
+html[data-mix] header,html[data-mix] .mnav{background:color-mix(in srgb,var(--bg) 78%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:none;border-bottom:1px solid var(--border)}
+html[data-mix] .logo-t{font-family:'Barlow',sans-serif;font-weight:600;font-size:14px;letter-spacing:.26em}
+html[data-mix] .logo-s{letter-spacing:.28em}
+html[data-mix] .gs-in{border-radius:99px;background:var(--surface-2);border:1px solid var(--border)}
+html[data-mix] .mb{font-family:'Barlow',sans-serif;font-weight:600;font-size:11.5px;letter-spacing:.24em;border-bottom-width:2px}
+html[data-mix] .mb.active{color:var(--text-1);border-bottom-color:var(--accent);box-shadow:0 8px 16px -10px var(--accent)}
+html[data-mix] .st{font-family:'Barlow',sans-serif;font-weight:600;font-size:11px;letter-spacing:.2em}
+/* Abschnitts-Kopf im Katalog: Farbe des Abschnitts bleibt, wirkt aber tiefer und ruhiger */
+html[data-mix] .hero{border-radius:var(--radius-md);box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.12)}
+html[data-mix]:not([data-theme="light"]) .hero{filter:saturate(.9) brightness(.62)}
+html[data-mix] .hero-title{font-family:'Barlow',sans-serif;font-weight:600;font-size:20px;letter-spacing:.16em;text-transform:uppercase}
+html[data-mix] .hero-lbl{letter-spacing:.34em}
+html[data-mix] .hero-num{font-family:'Barlow',sans-serif;font-weight:300}
+/* Filter, Karten, Plan-Spalte */
+html[data-mix] .fbar,html[data-mix] .plan-cart{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:none}
+html[data-mix] .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:none;transition:transform .25s cubic-bezier(.2,.7,.2,1),border-color .25s,box-shadow .25s}
+html[data-mix] .card:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--accent) 60%,transparent);box-shadow:0 16px 44px -12px color-mix(in srgb,var(--accent) 40%,transparent)}
+html[data-mix] .cname{font-weight:600;letter-spacing:.01em}
+html[data-mix] .card-collapsed:hover{transform:none}
+html[data-mix] .mbadge,html[data-mix] .matpill{border-radius:4px}
+html[data-mix] .tchip,html[data-mix] .cpill{border-radius:99px}
+
+/* Hell-Modus der Startseite im Mix (skandinavisch: viel Weiß, gleiche Schrift, gleiche Farben) */
+html[data-stil="nacht"][data-mix][data-theme="light"] #page-home{background:#f5f7f7}
+html[data-stil="nacht"][data-mix][data-theme="light"] #page-home::after{background:
+  radial-gradient(40% 36% at 20% 6%,rgba(52,211,153,.30),transparent 70%),
+  radial-gradient(38% 34% at 84% 24%,rgba(96,165,250,.26),transparent 70%),
+  radial-gradient(46% 40% at 50% 108%,rgba(52,211,153,.16),transparent 70%)}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-motto{color:#7a8883!important}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-hero-eyebrow{color:#0f8a5a}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-hero-eyebrow::before,html[data-stil="nacht"][data-mix][data-theme="light"] .home-hero-eyebrow::after{background:#0f8a5a}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-hero-title{background:linear-gradient(180deg,#0d1613 45%,#0f8a5a);-webkit-background-clip:text;background-clip:text}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-hero-tagline{color:#46544e}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-hero-sub{color:#5b6963}
+html[data-stil="nacht"][data-mix][data-theme="light"] #homeSportBadge{color:#0d1613}
+html[data-stil="nacht"][data-mix][data-theme="light"] #page-home .home-hero-btn{background:#fff!important;color:#0d1613!important;border:1px solid #d6dedb!important}
+html[data-stil="nacht"][data-mix][data-theme="light"] #page-home .home-hero-btn:hover{background:#0d1613!important;color:#fff!important}
+html[data-stil="nacht"][data-mix][data-theme="light"] #page-home .home-topbar button,html[data-stil="nacht"][data-mix][data-theme="light"] #page-home .lang-btn{background:#fff!important;color:#0d1613!important;border:1px solid #d6dedb!important}
+html[data-stil="nacht"][data-mix][data-theme="light"] #homeSignInBtn{background:#0d1613!important;color:#fff!important;border-color:#0d1613!important}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-sport-card{background:#fff;border:1px solid #dfe6e3;box-shadow:0 10px 30px rgba(15,35,28,.08)}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-sport-label{color:#0d1613}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-sport-img{filter:brightness(0) !important}
+html[data-stil="nacht"][data-mix][data-theme="light"] #homeCards .home-card{background:#fff;border:1px solid #dfe6e3;box-shadow:0 24px 50px rgba(15,35,28,.12),0 0 40px color-mix(in srgb,var(--c,#22d38c) 12%,transparent)}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-card-num{color:var(--c)}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-card-title{color:#0d1613}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-card-desc{color:#55635d}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-card-arrow{color:#0d1613;border-color:#c8d1ce;background:#fff}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-card:hover .home-card-arrow{background:#0d1613;color:#fff}
+html[data-stil="nacht"][data-mix][data-theme="light"] #homeQr{background:#fff!important;border:1px solid #dfe6e3!important}
+html[data-stil="nacht"][data-mix][data-theme="light"] #homeQr div{color:#0d1613!important}
+html[data-stil="nacht"][data-mix][data-theme="light"] #homeQr div div{color:#5b6963!important}
+html[data-stil="nacht"][data-mix][data-theme="light"] #page-home footer,html[data-stil="nacht"][data-mix][data-theme="light"] #page-home footer button{color:#5b6963!important}
+html[data-stil="nacht"][data-mix][data-theme="light"] #page-home footer{border-top-color:#dfe6e3!important}
+html[data-mix][data-theme="light"] #ringUi{color:#0d1613}
+html[data-mix][data-theme="light"] #ringUi .rg-text{color:#55635d}
+html[data-mix][data-theme="light"] #ringUi .rg-btn{border-color:#c8d1ce;background:#fff;color:#0d1613}
+html[data-mix][data-theme="light"] #ringUi .rg-btn:hover,html[data-mix][data-theme="light"] #ringUi .rg-open{background:#0d1613;color:#fff}
+html[data-mix][data-theme="light"] #ringUi .rg-dot{background:#cfd8d5}
+
+/* Bewegung aus: keine Animationen, Karten als ruhiges Raster statt Rad */
+html[data-stil][data-anim="off"] *,html[data-stil][data-anim="off"] *::before,html[data-stil][data-anim="off"] *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+html[data-stil="nacht"][data-mix][data-anim="off"] #homeCards{height:auto;perspective:none;display:grid!important;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;padding:6px 24px 24px;max-width:1000px;cursor:default;margin-top:0}
+html[data-stil="nacht"][data-mix][data-anim="off"] #homeCards[style*="display: none"]{display:none!important}
+html[data-stil="nacht"][data-mix][data-anim="off"] #homeCards .home-card{position:relative;left:auto;top:auto;margin:0;width:auto;height:auto;transform:none!important;filter:none;z-index:auto!important}
+html[data-stil="nacht"][data-mix][data-anim="off"] #ringUi{display:none}
+html[data-stil="nacht"][data-mix][data-anim="off"] .home-card:hover{transform:none}
+html[data-mix][data-theme="light"] #homeCards .home-card{filter:none!important;opacity:calc(.5 + .5 * var(--d,1))}
+html[data-mix][data-theme="light"][data-anim="off"] #homeCards .home-card{opacity:1}
+#stilSwitch{flex-wrap:wrap;justify-content:center;border-radius:22px}
+@media (max-width:520px){#stilSwitch{width:calc(100vw - 20px)}#stilSwitch span{display:none}#stilSwitch button{padding:7px 9px;font-size:12px}}

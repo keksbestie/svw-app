@@ -25,8 +25,31 @@
     btn.onclick = function () { apply(n[0]); };
     bar.appendChild(btn);
   });
+  /* Zusatzschalter: Hell/Dunkel und Bewegung */
+  var KEYA = 'stil-anim';
+  function animGet() {
+    try { var v = localStorage.getItem(KEYA); if (v) return v; } catch (e) {}
+    var small = window.matchMedia && (matchMedia('(pointer: coarse)').matches || matchMedia('(max-width: 700px)').matches);
+    var red = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    return small || red ? 'off' : 'on';
+  }
+  function animApply(v) {
+    document.documentElement.setAttribute('data-anim', v);
+    try { localStorage.setItem(KEYA, v); } catch (e) {}
+    var b = document.getElementById('stilAnim'); if (b) { b.textContent = v === 'off' ? 'Bewegung: aus' : 'Bewegung: an'; b.setAttribute('aria-pressed', v === 'on'); }
+    if (v === 'off') { cards().forEach(function (c) { c.style.transform = ''; c.style.filter = ''; c.style.zIndex = ''; }); }
+  }
+  var sep = document.createElement('span'); sep.style.cssText = 'width:1px;background:rgba(255,255,255,.2);margin:4px 2px'; bar.appendChild(sep);
+  var bm = document.createElement('button'); bm.type = 'button'; bm.id = 'stilMode';
+  function modeLabel() { bm.textContent = document.documentElement.getAttribute('data-theme') === 'light' ? 'Hell' : 'Dunkel'; }
+  bm.onclick = function () { if (typeof toggleTheme === 'function') toggleTheme(); setTimeout(modeLabel, 50); };
+  bar.appendChild(bm);
+  var ba = document.createElement('button'); ba.type = 'button'; ba.id = 'stilAnim';
+  ba.onclick = function () { animApply(document.documentElement.getAttribute('data-anim') === 'off' ? 'on' : 'off'); };
+  bar.appendChild(ba);
   document.body.appendChild(bar);
-  apply(get());
+  apply(get()); modeLabel(); animApply(animGet());
+  setInterval(modeLabel, 800);
 
   /* ---------- 3D-Rad für die Karten (nur im Stil "Mix") ---------- */
   var rot = 0, target = 0, dragging = false, moved = 0, startX = 0, startRot = 0, hover = 0, snapping = false, active = -1;
@@ -64,7 +87,7 @@
   function frame(t) {
     var dt = Math.min(50, t - last); last = t;
     var w = wrap();
-    if (isMix() && w && w.offsetParent) {
+    if (isMix() && w && w.offsetParent && document.documentElement.getAttribute('data-anim') !== 'off') {
       buildUi();
       var cs = cards(), n = cs.length, st = 360 / n, cs0 = getComputedStyle(w);
       var Rx = parseFloat(cs0.getPropertyValue('--Rx')) || 520, Rz = parseFloat(cs0.getPropertyValue('--Rz')) || 300, lift = parseFloat(cs0.getPropertyValue('--lift')) || 70;
