@@ -38,7 +38,7 @@ async function initClubLogoBg(sportId) {
   const sideW = mix ? (W - 1060) / 2 : Math.max(60, (W - 760) / 2);
   if (sideW < 64) { wrap.innerHTML = ''; return; }
   wrap.innerHTML = logos.map(c => {
-    const size = Math.min((44 + Math.random() * 28) | 0, Math.max(40, sideW - 12));
+    const size = mix ? Math.min((34 + Math.random() * 10) | 0, Math.max(34, sideW - 12)) : Math.min((44 + Math.random() * 28) | 0, Math.max(40, sideW - 12));
     // Zufällig links oder rechts platzieren
     let px;
     if (Math.random() < 0.5) {
@@ -50,6 +50,9 @@ async function initClubLogoBg(sportId) {
     }
     const py = (Math.random() * Math.max(0, H - size)) | 0;
     const op = (0.55 + Math.random() * 0.25).toFixed(2);
+    if (mix) {
+      return `<span class="club-chip" title="${esc(c.name)}" style="position:absolute;left:0;top:0;width:${size}px;height:${size}px;opacity:${(0.6 + Math.random() * 0.25).toFixed(2)};transform:translate(${px}px,${py}px);"><img src="${esc(c.logo_url)}" alt="${esc(c.name)}" loading="lazy"></span>`;
+    }
     return `<img src="${esc(c.logo_url)}" alt="${esc(c.name)}" loading="lazy"
       style="position:absolute;left:0;top:0;
         width:${size}px;height:${size}px;object-fit:contain;
