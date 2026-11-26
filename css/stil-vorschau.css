@@ -428,3 +428,13 @@ html[data-mix] #homeSignInBtn,html[data-mix] header #signInBtn{letter-spacing:.1
 #stilSwitch.solo button{font-size:11px;padding:6px 12px;color:#cfd6d2}
 @media (max-width:700px){#stilSwitch.solo{display:none}}
 #stilSwitch.solo button,#stilSwitch.solo button[aria-pressed="true"]{background:none;color:#e6ebe8}
+/* Kopfzeile: alle Knöpfe gleich hoch, die drei großen rechts gleich breit */
+@media (min-width:701px){
+html[data-mix] header .hr>*,html[data-mix] header .hr .lang-btn,html[data-mix] header .hr button{box-sizing:border-box}
+html[data-mix] header .hr button,html[data-mix] header .hr .lang-btn,html[data-mix] header .hr .theme-btn,html[data-mix] header .hr .cfg-btn{height:36px!important;min-height:36px;padding-top:0!important;padding-bottom:0!important;display:inline-flex;align-items:center;justify-content:center;line-height:1}
+html[data-mix] header .hr .theme-btn,html[data-mix] header .hr .cfg-btn,html[data-mix] header .hr .hbtn:not(.pri){min-width:36px}
+html[data-mix] header #authBtn{min-width:104px}
+html[data-mix] header #navKaderBtn,html[data-mix] header #navClubBtn,html[data-mix] header #hcnt{width:148px;padding-left:12px!important;padding-right:12px!important;gap:8px;font-size:11px!important;letter-spacing:.14em!important;text-transform:uppercase;font-weight:600!important}
+html[data-mix] header #navClubBtn img{width:22px;height:22px;border-radius:5px;flex:none}
+}
+@media (min-width:701px){html[data-mix] header #authBtn{font-size:11px!important;letter-spacing:.14em!important;text-transform:uppercase;font-weight:600!important;font-family:'Barlow',sans-serif!important}}
