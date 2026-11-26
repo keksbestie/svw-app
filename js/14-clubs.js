@@ -92,7 +92,7 @@ async function loadClubData(userId) {
 
 // Verein weg (Logout, Austritt, gelöscht): Zustand und Vereinsfarbe zurücksetzen
 function _clearClubState() {
-  _clearClubState();
+  currentClub = null; currentClubRole = null; clubLogoUrl = null;
   applyClubColor(null);
   _renderClubBtn();
   renderClubFocusPlanner();
@@ -623,8 +623,7 @@ async function leaveClub() {
   await _supabase.from('profiles').update({ club_id: null, club_role: null }).eq('id', user.id);
   // Slot freigeben
   await _supabase.from('club_slots').update({ user_id: null, token: crypto.randomUUID(), last_swapped_at: new Date().toISOString() }).eq('user_id', user.id);
-  currentClub = null; currentClubRole = null; clubLogoUrl = null;
-  _renderClubBtn();
+  _clearClubState();
   showToast('Du hast den Verein verlassen.');
   renderClubTab();
 }
