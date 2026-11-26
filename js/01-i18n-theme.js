@@ -56,6 +56,7 @@ const TRANSLATIONS = {
     club_focus_saved:'Schwerpunkte gespeichert.',
     club_db_missing:'Speichern nicht möglich: Die Datenbank wurde noch nicht aktualisiert.',
     club_focus_planner:'Schwerpunkte deines Vereins',
+    offer_club_color:'Eigene Vereinsfarbe: Die Primärfarbe der App passt sich für alle Vereinsmitglieder an',
   },
   en: {
     nav_home:'Home', nav_catalog:'Catalog', nav_plan:'Planner', nav_longterm:'Blocks',
@@ -104,6 +105,7 @@ const TRANSLATIONS = {
     club_focus_saved:'Focus points saved.',
     club_db_missing:'Cannot save: the database has not been updated yet.',
     club_focus_planner:'Your club’s focus points',
+    offer_club_color:'Own club colour: the app’s primary colour adapts for all club members',
   },
   es: {
     nav_home:'Inicio', nav_catalog:'Catálogo', nav_plan:'Planificador', nav_longterm:'Bloques',
@@ -152,6 +154,7 @@ const TRANSLATIONS = {
     club_focus_saved:'Prioridades guardadas.',
     club_db_missing:'No se puede guardar: la base de datos aún no está actualizada.',
     club_focus_planner:'Prioridades de tu club',
+    offer_club_color:'Color propio del club: el color principal de la app se adapta para todos los miembros',
   }
 };
 
