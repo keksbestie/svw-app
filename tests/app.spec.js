@@ -141,3 +141,48 @@ test('Gast: nur 3 Übungen pro Abschnitt, Planer und Sondertraining gesperrt', a
   expect(r).toEqual({ guestTotal: 15, tabs: 5, locked: 2, prompt: true, onPlanner: false });
   expect(errors).toEqual([]);
 });
+
+// ── Vereinsfarbe: Palette, Kontrast, Anwenden ──
+test('Vereinsfarben: Kontrast im hellen und dunklen Design reicht für Text', async ({ page }) => {
+  await openApp(page);
+  const res = await page.evaluate(() => {
+    const lum = h => { const n = parseInt(h.slice(1), 16); return [n >> 16, (n >> 8) & 255, n & 255].map(v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); }).reduce((a, v, i) => a + v * [.2126, .7152, .0722][i], 0); };
+    const cr = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + .05) / (Math.min(x, y) + .05); };
+    return CLUB_COLORS.filter(c => c.id !== 'gruen').map(c => ({
+      id: c.id,
+      whiteOnLight: cr('#ffffff', c.light), lightOnBg: cr(c.light, '#f6f7f6'), lightOnMix: cr(c.light, '#f5f7f7'), lightOnMix2: cr(c.light, '#eef2f1'),
+      darkOnSurface: cr(c.dark, '#1c221c'), darkOnBg: cr(c.dark, '#111612'), darkOnNight: cr(c.dark, '#050d12'), darkOnMixSurface: cr(c.dark, '#0e161c'), darkOnMixSurface2: cr(c.dark, '#1a2831'), darkOnMixBg: cr(c.dark, '#05090d'),
+      textOnDark: cr(CLUB_COLOR_ON_DARK, c.dark),
+    }));
+  });
+  expect(res.length).toBeGreaterThanOrEqual(8);
+  for (const r of res) for (const [k, v] of Object.entries(r)) if (k !== 'id') expect(v, `${r.id} ${k}`).toBeGreaterThanOrEqual(4.5);
+});
+
+test('Vereinsfarbe wird gesetzt, wieder entfernt und Unbekanntes bleibt Standard', async ({ page }) => {
+  const errors = await openApp(page);
+  const get = () => page.evaluate(() => ({ accent: getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(), on: getComputedStyle(document.documentElement).getPropertyValue('--accent-on').trim(), attr: document.documentElement.getAttribute('data-club-color') }));
+  expect((await get()).accent).toMatch(/^#(2fd08f|0f8a5a|1a7f4b)$/); // Standard-Grün im jeweiligen Design
+  await page.evaluate(() => { applyTheme('light'); applyClubColor('rot'); });
+  expect(await get()).toMatchObject({ accent: '#c62828', on: '#ffffff', attr: 'rot' });
+  await page.evaluate(() => applyTheme('dark'));
+  expect(await get()).toMatchObject({ accent: '#ff6b6b', on: '#0b0f0c' });
+  await page.evaluate(() => { applyTheme('dark'); applyClubColor('schwarz'); });
+  expect((await get()).accent).toBe('#e5e7eb'); // Schwarz: im dunklen Design helle Variante
+  await page.evaluate(() => applyClubColor('gibtsnicht'));
+  expect(await get()).toMatchObject({ attr: null });
+  expect((await get()).accent).toBe('#2fd08f');
+  expect(errors).toEqual([]);
+});
+
+test('Vereins-Schwerpunkte erscheinen im Planer und sind gegen HTML geschützt', async ({ page }) => {
+  const errors = await openApp(page);
+  await page.evaluate(() => { currentClub = { id: 'c1', name: 'Test', focus_points: [{ title: 'Defensivverhalten', text: 'Kompakt <b>stehen</b>' }, { title: '' }] }; renderClubFocusPlanner(); goPage('planner'); });
+  const card = page.locator('#clubFocusPlanner');
+  await expect(card).toBeVisible();
+  await expect(card).toContainText('Defensivverhalten');
+  await expect(card).toContainText('<b>stehen</b>'); // als Text, nicht als HTML
+  await page.evaluate(() => { currentClub = null; renderClubFocusPlanner(); });
+  await expect(card).toBeHidden();
+  expect(errors).toEqual([]);
+});

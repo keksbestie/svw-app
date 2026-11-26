@@ -38,33 +38,33 @@ html[data-stil] .home-card::before{display:none}
 /* ══════════ 1  NACHT: dunkel, Glas, Leuchtverläufe ══════════ */
 html[data-stil="nacht"] #page-home{background:#050d12}
 html[data-stil="nacht"] #page-home::after{inset:-20%;background:
-  radial-gradient(40% 36% at 22% 8%,rgba(34,211,140,.40),transparent 70%),
+  radial-gradient(40% 36% at 22% 8%,color-mix(in srgb,var(--ac-glow) 40%,transparent),transparent 70%),
   radial-gradient(38% 34% at 82% 30%,rgba(56,120,255,.30),transparent 70%),
-  radial-gradient(46% 40% at 50% 108%,rgba(34,211,140,.22),transparent 70%);animation:stilGlow 16s ease-in-out infinite}
+  radial-gradient(46% 40% at 50% 108%,color-mix(in srgb,var(--ac-glow) 22%,transparent),transparent 70%);animation:stilGlow 16s ease-in-out infinite}
 html[data-stil="nacht"] .home-motto{color:rgba(255,255,255,.4)!important}
-html[data-stil="nacht"] .home-hero-eyebrow{color:#7ff0bf}
-html[data-stil="nacht"] .home-hero-eyebrow::before,html[data-stil="nacht"] .home-hero-eyebrow::after{background:#7ff0bf}
-html[data-stil="nacht"] .home-hero-title{font-weight:800;letter-spacing:.02em;background:linear-gradient(180deg,#fff 30%,#9fe9c6);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
-html[data-stil="nacht"] .home-hero-tagline{color:#bfe7d3;opacity:1;font-weight:500;letter-spacing:.2em;font-size:clamp(13px,1.4vw,16px)}
+html[data-stil="nacht"] .home-hero-eyebrow{color:var(--ac-soft)}
+html[data-stil="nacht"] .home-hero-eyebrow::before,html[data-stil="nacht"] .home-hero-eyebrow::after{background:var(--ac-soft)}
+html[data-stil="nacht"] .home-hero-title{font-weight:800;letter-spacing:.02em;background:linear-gradient(180deg,#fff 30%,var(--ac-soft));-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+html[data-stil="nacht"] .home-hero-tagline{color:var(--ac-soft);opacity:1;font-weight:500;letter-spacing:.2em;font-size:clamp(13px,1.4vw,16px)}
 html[data-stil="nacht"] .home-hero-sub{color:rgba(255,255,255,.7)}
 html[data-stil="nacht"] #homeSportBadge{color:#fff}
 html[data-stil="nacht"] .home-hero-btn,html[data-stil="nacht"] #page-home .home-hero-btn{background:rgba(255,255,255,.08)!important;border:1px solid rgba(255,255,255,.22)!important;color:#fff!important;backdrop-filter:blur(8px)}
 html[data-stil="nacht"] .home-hero-btn:hover{background:rgba(255,255,255,.18)!important}
 html[data-stil="nacht"] .home-sport-card{background:linear-gradient(160deg,rgba(255,255,255,.10),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.16);border-radius:24px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 10px 40px rgba(0,0,0,.35);overflow:hidden}
-html[data-stil="nacht"] .home-sport-card::before{content:"";position:absolute;inset:auto -30% -45% -30%;height:70%;background:radial-gradient(closest-side,rgba(34,211,140,.40),transparent);opacity:.0;transition:opacity .3s}
-html[data-stil="nacht"] .home-sport-card:hover{border-color:rgba(127,240,191,.7);transform:translateY(-5px);background:linear-gradient(160deg,rgba(255,255,255,.14),rgba(255,255,255,.04));box-shadow:0 16px 48px rgba(34,211,140,.22)}
+html[data-stil="nacht"] .home-sport-card::before{content:"";position:absolute;inset:auto -30% -45% -30%;height:70%;background:radial-gradient(closest-side,color-mix(in srgb,var(--ac-glow) 40%,transparent),transparent);opacity:.0;transition:opacity .3s}
+html[data-stil="nacht"] .home-sport-card:hover{border-color:rgba(127,240,191,.7);transform:translateY(-5px);background:linear-gradient(160deg,rgba(255,255,255,.14),rgba(255,255,255,.04));box-shadow:0 16px 48px color-mix(in srgb,var(--ac-glow) 22%,transparent)}
 html[data-stil="nacht"] .home-sport-card:hover::before{opacity:1}
 html[data-stil] .home-sport-img{mix-blend-mode:normal;width:80px;height:80px;object-fit:contain}
 html[data-stil] .home-sport-card[data-sport="fussball"] .home-sport-img{content:url(../icons/sport-fussball-w.png)}
 html[data-stil] .home-sport-card[data-sport="volleyball"] .home-sport-img{content:url(../icons/sport-volleyball-w.png)}
 html[data-stil] .home-sport-card[data-sport="tennis"] .home-sport-img{content:url(../icons/sport-tennis-w.png)}
-html[data-stil="nacht"] .home-sport-img{filter:drop-shadow(0 0 10px rgba(34,211,140,.55)) !important}
+html[data-stil="nacht"] .home-sport-img{filter:drop-shadow(0 0 10px color-mix(in srgb,var(--ac-glow) 55%,transparent)) !important}
 html[data-stil="nacht"] .home-sport-label{color:#fff;letter-spacing:.14em}
 html[data-stil="nacht"] .home-card{background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.14);border-radius:24px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 12px 44px rgba(0,0,0,.35);overflow:hidden}
 html[data-stil="nacht"] .home-card::after{content:"";position:absolute;right:-60px;top:-60px;width:180px;height:180px;border-radius:50%;background:radial-gradient(closest-side,var(--c,#22d38c),transparent);opacity:.28;transition:opacity .3s,transform .5s}
 html[data-stil="nacht"] .home-card:hover{border-color:rgba(255,255,255,.34);box-shadow:0 18px 56px rgba(0,0,0,.45)}
 html[data-stil="nacht"] .home-card:hover::after{opacity:.55;transform:scale(1.25)}
-html[data-stil="nacht"] .home-card--catalog{--c:#22d38c}
+html[data-stil="nacht"] .home-card--catalog{--c:var(--ac-glow)}
 html[data-stil="nacht"] .home-card--plan{--c:#4f8bff}
 html[data-stil="nacht"] .home-card--blocks{--c:#a874ff}
 html[data-stil="nacht"] .home-card--templates{--c:#ffb020}
@@ -85,7 +85,7 @@ html[data-stil="nacht"] #homeSignInBtn{background:#fff!important;color:#06121a!i
 html[data-stil="nacht"][data-mix] #page-home{background:#04090d}
 html[data-stil="nacht"][data-mix] .home-hero{padding-top:56px;max-width:860px}
 html[data-stil="nacht"][data-mix] .home-hero-eyebrow{font-weight:600;letter-spacing:.42em;font-size:11px}
-html[data-stil="nacht"][data-mix] .home-hero-title{font-family:'Barlow',sans-serif;font-weight:500;letter-spacing:.32em;margin-right:-.32em;font-size:clamp(28px,5vw,62px);background:linear-gradient(180deg,#fff 40%,#8fe9c0);-webkit-background-clip:text;background-clip:text}
+html[data-stil="nacht"][data-mix] .home-hero-title{font-family:'Barlow',sans-serif;font-weight:500;letter-spacing:.32em;margin-right:-.32em;font-size:clamp(28px,5vw,62px);background:linear-gradient(180deg,#fff 40%,var(--ac-soft));-webkit-background-clip:text;background-clip:text}
 html[data-stil="nacht"][data-mix] .home-hero-tagline{font-family:'Barlow',sans-serif;font-weight:500;letter-spacing:.32em;font-size:12px;color:#b9c9c1}
 html[data-stil="nacht"][data-mix] .home-hero-sub{color:#93a39b;max-width:420px}
 html[data-stil="nacht"][data-mix] .home-hero-btn,html[data-stil="nacht"][data-mix] #page-home .home-hero-btn{border-radius:2px!important;letter-spacing:.2em!important;font-size:11px!important;font-weight:600!important;font-family:'Barlow',sans-serif!important;text-transform:uppercase}
@@ -112,16 +112,16 @@ html[data-stil="nacht"][data-mix] #ringUi{display:block;position:relative;z-inde
 #ringUi .rg-row{display:flex;justify-content:center;align-items:center;gap:18px}
 #ringUi .rg-btn{width:42px;height:42px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.05);color:#fff;border-radius:2px;cursor:pointer;display:grid;place-items:center;transition:background .2s,color .2s}
 #ringUi .rg-btn:hover{background:#fff;color:#04090d}
-#ringUi .rg-btn:focus-visible,#ringUi .rg-dot:focus-visible,#ringUi .rg-open:focus-visible{outline:2px solid #8fe9c0;outline-offset:3px}
+#ringUi .rg-btn:focus-visible,#ringUi .rg-dot:focus-visible,#ringUi .rg-open:focus-visible{outline:2px solid var(--ac-soft);outline-offset:3px}
 #ringUi .rg-dots{display:flex;gap:10px}
 #ringUi .rg-dot{width:28px;height:3px;border:0;padding:0;background:rgba(255,255,255,.22);cursor:pointer;transition:background .3s,width .3s}
-#ringUi .rg-dot[aria-current="true"]{background:var(--c,#8fe9c0);width:44px}
+#ringUi .rg-dot[aria-current="true"]{background:var(--c,var(--ac-soft));width:44px}
 #ringUi .rg-detail{display:grid;grid-template-rows:1fr;margin-top:22px}
 #ringUi .rg-detail>div{overflow:hidden}
-#ringUi .rg-title{font:600 12px 'Barlow',sans-serif;letter-spacing:.34em;text-transform:uppercase;color:var(--c,#8fe9c0);margin-bottom:8px}
+#ringUi .rg-title{font:600 12px 'Barlow',sans-serif;letter-spacing:.34em;text-transform:uppercase;color:var(--c,var(--ac-soft));margin-bottom:8px}
 #ringUi .rg-text{font:400 15px/1.6 'Barlow',sans-serif;color:#aab8b1;margin:0 auto 18px;max-width:46ch}
 #ringUi .rg-open{font:600 11px 'Barlow',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#04090d;background:#fff;border:0;border-radius:2px;padding:13px 26px;cursor:pointer;transition:transform .2s,box-shadow .2s}
-#ringUi .rg-open:hover{box-shadow:0 8px 28px color-mix(in srgb,var(--c,#8fe9c0) 50%,transparent);transform:translateY(-2px)}
+#ringUi .rg-open:hover{box-shadow:0 8px 28px color-mix(in srgb,var(--c,var(--ac-soft)) 50%,transparent);transform:translateY(-2px)}
 #ringUi .rg-fade{animation:stilUp .45s cubic-bezier(.2,.7,.2,1) both}
 @media (max-width:700px){html[data-stil="nacht"][data-mix] #homeCards{height:470px;--Rx:215px;--Rz:160px;--lift:90px;--cw:220px;perspective:1100px}html[data-stil="nacht"][data-mix] #homeCards .home-card{height:270px;top:160px;padding:20px 18px 16px}}
 @media (prefers-reduced-motion:reduce){#ringUi .rg-fade{animation:none}}
@@ -144,13 +144,13 @@ html[data-mix]{
   --shadow:0 10px 36px rgba(0,0,0,.40);--shadow-lg:0 18px 54px rgba(0,0,0,.55);
   --radius-sm:5px;--radius-md:9px;--radius-lg:12px;color-scheme:dark}
 html[data-mix][data-theme="light"]{
-  --accent:#0f8a5a;--accent-d:#0b6e48;--accent-l:#e3f4ec;--accent-mid:#14a06b;
+  --accent:var(--ac-lt,#0f8a5a);--accent-d:#0b6e48;--accent-l:#e3f4ec;--accent-mid:#14a06b;
   --bg:#f5f7f7;--surface:#ffffff;--surface-2:#eef2f1;--border:#e0e6e4;--border-s:#c8d1ce;
   --text-1:#0d1613;--text-2:#46544e;--text-3:#7a8883;
   --shadow:0 1px 3px rgba(15,35,28,.05),0 8px 28px rgba(15,35,28,.06);--shadow-lg:0 18px 48px rgba(15,35,28,.13);color-scheme:light}
 html[data-mix] body{background:var(--bg)}
 html[data-mix] body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:
-  radial-gradient(42% 30% at 15% 0%,rgba(34,211,140,.16),transparent 70%),radial-gradient(38% 30% at 90% 8%,rgba(56,120,255,.14),transparent 70%)}
+  radial-gradient(42% 30% at 15% 0%,color-mix(in srgb,var(--ac-glow) 16%,transparent),transparent 70%),radial-gradient(38% 30% at 90% 8%,rgba(56,120,255,.14),transparent 70%)}
 html[data-mix][data-theme="light"] body::before{background:
   radial-gradient(42% 30% at 12% 0%,rgba(52,211,153,.18),transparent 70%),radial-gradient(38% 30% at 92% 6%,rgba(96,165,250,.16),transparent 70%)}
 /* Kopfzeile und Hauptnavigation */
@@ -187,9 +187,9 @@ html[data-stil="nacht"][data-mix][data-theme="light"] #page-home::after{backgrou
   radial-gradient(38% 34% at 84% 24%,rgba(96,165,250,.26),transparent 70%),
   radial-gradient(46% 40% at 50% 108%,rgba(52,211,153,.16),transparent 70%)}
 html[data-stil="nacht"][data-mix][data-theme="light"] .home-motto{color:#7a8883!important}
-html[data-stil="nacht"][data-mix][data-theme="light"] .home-hero-eyebrow{color:#0f8a5a}
-html[data-stil="nacht"][data-mix][data-theme="light"] .home-hero-eyebrow::before,html[data-stil="nacht"][data-mix][data-theme="light"] .home-hero-eyebrow::after{background:#0f8a5a}
-html[data-stil="nacht"][data-mix][data-theme="light"] .home-hero-title{background:linear-gradient(180deg,#0d1613 45%,#0f8a5a);-webkit-background-clip:text;background-clip:text}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-hero-eyebrow{color:var(--ac-lt,#0f8a5a)}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-hero-eyebrow::before,html[data-stil="nacht"][data-mix][data-theme="light"] .home-hero-eyebrow::after{background:var(--ac-lt,#0f8a5a)}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-hero-title{background:linear-gradient(180deg,#0d1613 45%,var(--ac-lt,#0f8a5a));-webkit-background-clip:text;background-clip:text}
 html[data-stil="nacht"][data-mix][data-theme="light"] .home-hero-tagline{color:#46544e}
 html[data-stil="nacht"][data-mix][data-theme="light"] .home-hero-sub{color:#5b6963}
 html[data-stil="nacht"][data-mix][data-theme="light"] #homeSportBadge{color:#0d1613}

@@ -1557,3 +1557,44 @@ body:has([style*="inset:0"][style*="z-index:9999"]) { overflow: hidden; }
 /* Gäste: gesperrte Übungskarten (unscharf, nicht auswählbar) */
 .card-locked{filter:blur(5px);opacity:.7;cursor:pointer;user-select:none;}
 .card-locked *{pointer-events:none;}
+
+/* ══════════════════════════════════════════════════
+   VEREINSFARBE + VEREINS-SCHWERPUNKTE
+   --accent-on = Schrift auf Akzentflächen, --ac-glow / --ac-soft = Leuchtfarben im dunklen Mix-Look.
+   Standard (Grün) bleibt unverändert; die Vereinsfarbe setzt die Variablen über #clubColorStyle (js/01-i18n-theme.js).
+   ══════════════════════════════════════════════════ */
+:root { --accent-on: #fff; --ac-glow: #22d38c; --ac-soft: #9fe9c6; }
+
+/* Dunkles Design + Vereinsfarbe: Akzent ist ein heller Ton, darauf braucht es dunkle Schrift */
+html[data-club-color][data-theme="dark"] :is(.hbtn.pri, .slot-btn-copy, .cfg-avatar, .haf-btn.active, .help-num, .offer-btn, .cal-sel, .card-collapsed-add, .view-toggle-btn.active, .bpl.gr, .spa.l, .bpr, .ltp-week-badge, .ltp-hbtn--accent, .st.active .sn, #ls, .ls-t, .logo-mark svg),
+html[data-club-color][data-theme="dark"] [style*="background:var(--accent)"] { color: var(--accent-on) !important; fill: var(--accent-on); }
+html[data-club-color][data-theme="dark"] .ls-spin { border-color: rgba(0,0,0,.2); border-top-color: var(--accent-on); }
+
+/* Vereinsfarbe wählen */
+.cc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; }
+.cc-opt { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border: 1.5px solid var(--border-s); border-radius: 10px; background: var(--surface-2); color: var(--text-1); font: 700 12px 'Barlow', sans-serif; cursor: pointer; text-align: left; }
+.cc-opt:hover { border-color: var(--text-2); }
+.cc-opt.sel { border-color: var(--text-1); box-shadow: 0 0 0 1px var(--text-1); }
+.cc-opt:focus-visible { outline: 2px solid var(--text-1); outline-offset: 2px; }
+.cc-sw { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; background: var(--sw-l); border: 1px solid rgba(128,128,128,.45); }
+[data-theme="dark"] .cc-sw { background: var(--sw-d); }
+
+/* Schwerpunkte: Glas-Karte (Planer und Vereinsansicht), kein Symbol bei den Schlagwörtern */
+.focus-card { position: relative; overflow: hidden; background: linear-gradient(165deg, color-mix(in srgb, var(--accent) 16%, transparent), rgba(255,255,255,.04)); border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); border-radius: 12px; padding: 16px 20px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.focus-card::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+.focus-card-title { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 800; color: var(--text-1); }
+.focus-card-intro { font-size: 13px; color: var(--text-2); margin: 4px 0 8px; }
+.focus-item { margin-top: 10px; }
+.focus-item-title { font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--accent); }
+.focus-item-text { font-size: 13px; line-height: 1.55; color: var(--text-1); white-space: pre-line; margin-top: 2px; }
+.focus-empty { font-size: 13px; color: var(--text-2); margin-top: 6px; }
+.focus-card--planner { margin: 0 0 12px; padding: 10px 16px; }
+.focus-card--planner summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 10px; }
+.focus-card--planner summary::-webkit-details-marker { display: none; }
+.focus-card--planner summary .focus-card-title { font-size: 15px; }
+.focus-count { font-size: 11px; font-weight: 800; padding: 1px 8px; border-radius: 99px; background: color-mix(in srgb, var(--accent) 24%, transparent); color: var(--text-1); }
+#clubFocusPlanner { margin-bottom: 0; }
+.focus-edit-row { display: flex; flex-direction: column; gap: 6px; padding: 10px; margin-bottom: 8px; border: 1px solid var(--border); border-radius: 10px; }
+.focus-edit-row .fc { margin: 0; }
+.focus-edit-row .slot-btn { align-self: flex-start; }
+@media print { #clubFocusPlanner { display: none !important; } }
