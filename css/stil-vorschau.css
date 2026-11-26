@@ -252,7 +252,11 @@ html[data-mix] .mb.active{color:var(--text-1);border-bottom-color:var(--accent);
 html[data-mix] .st{font-family:'Barlow',sans-serif;font-weight:600;font-size:11px;letter-spacing:.2em}
 /* Abschnitts-Kopf im Katalog: Farbe des Abschnitts bleibt, wirkt aber tiefer und ruhiger */
 html[data-mix] .hero{border-radius:var(--radius-md);box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.12)}
-html[data-mix]:not([data-theme="light"]) .hero{filter:saturate(.9) brightness(.62)}
+html[data-mix]:not([data-theme="light"]) .hero{filter:saturate(1.05) brightness(.95)}
+html[data-mix] .hero-title,html[data-mix] .hero-num{filter:none}
+html[data-mix] .hero-title{color:#fff}
+html[data-mix] .hero-desc{color:rgba(255,255,255,.88)}
+html[data-mix] .hero-lbl{color:rgba(255,255,255,.7)}
 html[data-mix] .hero-title{font-family:'Barlow',sans-serif;font-weight:600;font-size:20px;letter-spacing:.16em;text-transform:uppercase}
 html[data-mix] .hero-lbl{letter-spacing:.34em}
 html[data-mix] .hero-num{font-family:'Barlow',sans-serif;font-weight:300}
