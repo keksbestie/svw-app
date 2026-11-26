@@ -49,11 +49,11 @@
       mob:{target:'#bnavMore',pos:'top',text:'Unter <strong>Mehr</strong> findest du <strong>Mein Kader</strong>: Dort legst du Spieler:innen (mit Notizen in einer eigenen Kartei) und dein Trainerteam an und wählst vor dem Training aus, wer heute dabei ist.'}
     },
     {
-      page:'home',target:'#offersBtn',pos:'bottom',
+      page:'home',target:'#offersBtn, #homeCards',pos:'bottom',
       title:'Angebote',
       text:'Hier findest du die <strong>Angebote</strong> (auch über das Zahnrad oben rechts): Gäste, Basic, Basic +, Advanced, Pro und Verein. Gäste und Basic sind immer kostenlos, Basic +, Advanced und Verein bis 30.06.2027.',
       fallbackTarget:'#cfgBtn',
-      mob:{target:'#offersBtn',fallbackTarget:'#bnavMore',text:'Hier findest du die <strong>Angebote</strong> (auch unter <strong>Mehr</strong>): Gäste, Basic, Basic +, Advanced, Pro und Verein. Gäste und Basic sind immer kostenlos, Basic +, Advanced und Verein bis 30.06.2027.'}
+      mob:{target:'#offersBtn, #homeCards',fallbackTarget:'#bnavMore',text:'Hier findest du die <strong>Angebote</strong> (auch unter <strong>Mehr</strong>): Gäste, Basic, Basic +, Advanced, Pro und Verein. Gäste und Basic sind immer kostenlos, Basic +, Advanced und Verein bis 30.06.2027.'}
     },
     {
       page:'handbook',target:'button[onclick*="toggleHelpPanel"], .cfg-btn[title*="Hilfe"]',pos:'bottom',
@@ -113,7 +113,7 @@
       hl.style.left=(r.left-pad)+'px'; hl.style.top=(r.top-pad)+'px';
       hl.style.width=(r.width+pad*2)+'px'; hl.style.height=(r.height+pad*2)+'px';
       bubble.style.transform='none';
-      const bw=Math.min(300,vw-24);
+      const bw=Math.min(bubble.offsetWidth||300,vw-24);
       const spaceBelow=vh-r.bottom, spaceAbove=r.top;
       let left=Math.max(12,Math.min(r.left,vw-bw-12));
       if(spaceBelow>250||spaceBelow>spaceAbove){
@@ -156,9 +156,11 @@
     setTimeout(function(){
       _updateContent();
       if(s.page&&typeof goPage==='function') goPage(s.page);
+      // Im Rad-Stil zuerst das Rad zur passenden Karte drehen
+      const _ring=(s.page==='home'&&window._ringFocus&&window._ringFocus('.home-card--offers'));
       setTimeout(function(){
         _positionBubble(_getTarget(s), function(){ bubble.style.opacity='1'; });
-      }, s.page?600:0);
+      }, _ring?800:(s.page?600:0));
     },200);
   }
 

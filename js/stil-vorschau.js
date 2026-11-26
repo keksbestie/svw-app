@@ -61,6 +61,11 @@
   function step() { return 360 / Math.max(1, cards().length); }
   function cur() { return mod(Math.round(rot / step()), cards().length); }
   function go(i) { var n = cards().length, st = step(), c = Math.round(rot / st), d = mod(i - c, n); if (d > n / 2) d -= n; target = (c + d) * st; snapping = true; }
+  window._ringFocus = function (sel) {
+    if (!isMix() || document.documentElement.getAttribute('data-anim') === 'off') return false;
+    var cs = cards(), i = -1; cs.forEach(function (c, k) { if (i < 0 && c.matches(sel)) i = k; });
+    if (i < 0) return false; go(i); return true;
+  };
   function buildUi() {
     var w = wrap(); if (!w || ui.parentNode) return;
     ui.innerHTML = '<div class="rg-row"><button type="button" class="rg-btn" aria-label="Vorherige Karte" data-d="-1">←</button><div class="rg-dots"></div><button type="button" class="rg-btn" aria-label="Nächste Karte" data-d="1">→</button></div>' +

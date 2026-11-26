@@ -183,10 +183,10 @@ html[data-stil="nacht"][data-mix] .home-sport-card{border-radius:6px}
 html[data-stil="nacht"][data-mix] .home-sport-label{font-family:'Barlow',sans-serif;font-weight:600;font-size:11px;letter-spacing:.3em}
 
 /* Das Rad */
-html[data-stil="nacht"][data-mix] #homeCards{display:block!important;position:relative;max-width:none;width:100%;height:400px;flex:none;overflow:visible;padding:0;margin:8px auto 0;perspective:1600px;perspective-origin:50% 30%;touch-action:pan-y;cursor:grab;--Rx:390px;--Rz:230px;--lift:90px;--cw:236px}
+html[data-stil="nacht"][data-mix] #homeCards{display:block!important;position:relative;max-width:none;width:100%;height:520px;flex:none;overflow:visible;padding:0;margin:8px auto 0;perspective:1600px;perspective-origin:50% 30%;touch-action:pan-y;cursor:grab;--Rx:390px;--Rz:230px;--lift:110px;--cw:236px}
 html[data-stil="nacht"][data-mix] #homeCards:active{cursor:grabbing}
 html[data-stil="nacht"][data-mix] #homeCards[style*="display: none"]{display:none!important}
-html[data-stil="nacht"][data-mix] #homeCards .home-card{position:absolute;left:50%;top:80px;width:var(--cw);height:290px;margin-left:calc(var(--cw) / -2);filter:brightness(calc(.4 + .6 * var(--d,1)));animation:stilFade .8s both;padding:22px 20px 18px;border-radius:10px;background:linear-gradient(165deg,rgba(255,255,255,.10),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.16);box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 50px color-mix(in srgb,var(--c,#22d38c) 16%,transparent);user-select:none;-webkit-user-select:none;will-change:transform}
+html[data-stil="nacht"][data-mix] #homeCards .home-card{position:absolute;left:50%;top:196px;width:var(--cw);height:290px;margin-left:calc(var(--cw) / -2);filter:brightness(calc(.4 + .6 * var(--d,1)));animation:stilFade .8s both;padding:22px 20px 18px;border-radius:10px;background:linear-gradient(165deg,rgba(255,255,255,.10),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.16);box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 50px color-mix(in srgb,var(--c,#22d38c) 16%,transparent);user-select:none;-webkit-user-select:none;will-change:transform}
 html[data-stil="nacht"][data-mix] #homeCards .home-card:hover{box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 60px color-mix(in srgb,var(--c,#22d38c) 30%,transparent)}
 html[data-stil="nacht"][data-mix] #homeCards .home-card::before{display:block;content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,var(--c),transparent);opacity:.9}
 html[data-stil="nacht"][data-mix] .home-card-num{color:var(--c);font-family:'Barlow',sans-serif;font-weight:600;letter-spacing:.3em;margin-bottom:30px}
@@ -212,7 +212,7 @@ html[data-stil="nacht"][data-mix] #ringUi{display:block;position:relative;z-inde
 #ringUi .rg-open{font:600 11px 'Barlow',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#04090d;background:#fff;border:0;border-radius:2px;padding:13px 26px;cursor:pointer;transition:transform .2s,box-shadow .2s}
 #ringUi .rg-open:hover{box-shadow:0 8px 28px color-mix(in srgb,var(--c,#8fe9c0) 50%,transparent);transform:translateY(-2px)}
 #ringUi .rg-fade{animation:stilUp .45s cubic-bezier(.2,.7,.2,1) both}
-@media (max-width:700px){html[data-stil="nacht"][data-mix] #homeCards{height:370px;--Rx:215px;--Rz:160px;--lift:80px;--cw:220px;perspective:1100px}html[data-stil="nacht"][data-mix] #homeCards .home-card{height:270px;top:70px;padding:20px 18px 16px}}
+@media (max-width:700px){html[data-stil="nacht"][data-mix] #homeCards{height:470px;--Rx:215px;--Rz:160px;--lift:90px;--cw:220px;perspective:1100px}html[data-stil="nacht"][data-mix] #homeCards .home-card{height:270px;top:160px;padding:20px 18px 16px}}
 @media (prefers-reduced-motion:reduce){#ringUi .rg-fade{animation:none}}
 
 html[data-stil="nacht"][data-mix] #homeCards .home-card-num{margin-bottom:16px}
@@ -353,17 +353,22 @@ html[data-mix] #obTourBtn{border:1px solid var(--accent)!important;color:var(--a
 /* Schwebender Ball in der Mitte des Rads = aktuelle Sportart (Klick: Sportart ändern) */
 #ringBall{display:none}
 html[data-mix] #homeSportBadge{display:none!important}
-html[data-stil="nacht"][data-mix] #homeCards #ringBall{display:flex;flex-direction:column;align-items:center;gap:8px;position:absolute;left:50%;top:8px;margin-left:-48px;width:96px;z-index:10;background:none;border:0;padding:0;cursor:pointer;color:var(--text-1);transform:translate3d(0,0,-170px);animation:ballBob 5s ease-in-out infinite}
-@keyframes ballBob{0%,100%{transform:translate3d(0,0,-170px)}50%{transform:translate3d(0,-12px,-170px)}}
-#ringBall .rb-disc{width:84px;height:84px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.22),rgba(255,255,255,.04) 60%);border:1px solid rgba(255,255,255,.28);box-shadow:0 0 50px rgba(47,208,143,.35),inset 0 0 20px rgba(255,255,255,.06);transition:box-shadow .3s,transform .3s}
-#ringBall:hover .rb-disc{box-shadow:0 0 70px rgba(47,208,143,.6),inset 0 0 20px rgba(255,255,255,.1);transform:scale(1.06)}
-#ringBall img{width:54px;height:54px;object-fit:contain;animation:ballSpin 28s linear infinite}
+html[data-stil="nacht"][data-mix] #homeCards #ringBall{display:block;position:absolute;left:50%;top:0;margin-left:-95px;width:190px;height:190px;z-index:10;background:none;border:0;padding:0;cursor:pointer;transform:translate3d(0,0,-200px);animation:ballBob 6s ease-in-out infinite}
+@keyframes ballBob{0%,100%{transform:translate3d(0,0,-200px)}50%{transform:translate3d(0,-10px,-200px)}}
+#ringBall .rb-disc{display:block;width:100%;height:100%}
+#ringBall img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 14px 30px rgba(47,208,143,.45));animation:ballSpin 40s linear infinite;transition:filter .3s}
+#ringBall:hover img{filter:drop-shadow(0 14px 40px rgba(47,208,143,.8))}
 @keyframes ballSpin{to{transform:rotate(360deg)}}
-#ringBall .rb-lbl{font:600 10px 'Barlow',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:var(--text-2)}
-#ringBall:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:12px}
-html[data-mix][data-theme="light"] #ringBall .rb-disc{background:radial-gradient(circle at 35% 30%,#fff,#eef3f1 70%);border-color:#d3dcd8;box-shadow:0 12px 36px rgba(15,35,28,.14),0 0 40px rgba(15,138,90,.18)}
-html[data-mix][data-theme="light"] #ringBall img{filter:brightness(0)}
-html[data-stil="nacht"][data-mix][data-anim="off"] #homeCards #ringBall{position:relative;left:auto;top:auto;margin:0 auto 6px;grid-column:1/-1;transform:none!important;animation:none!important}
+#ringBall .rb-lbl{display:none}
+#ringBall:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:50%}
+html[data-mix][data-theme="light"] #ringBall img{filter:brightness(0) drop-shadow(0 16px 20px rgba(15,35,28,.25))}
+html[data-mix][data-theme="light"] #ringBall:hover img{filter:brightness(0) drop-shadow(0 16px 26px rgba(15,35,28,.4))}
+html[data-stil="nacht"][data-mix][data-anim="off"] #homeCards #ringBall{position:relative;left:auto;top:auto;margin:0 auto 6px;width:120px;height:120px;grid-column:1/-1;transform:none!important;animation:none!important}
+@media (max-width:700px){html[data-stil="nacht"][data-mix] #homeCards #ringBall{width:140px;height:140px;margin-left:-70px}}
+/* Tour: schnelles Ausblenden, ruhiges Einblenden, Hervorhebung gleitet */
+html[data-mix] #tourBubble[style*="opacity: 0"]{transition:opacity .14s ease!important}
+html[data-mix] #tourBubble{will-change:opacity}
+html[data-mix] #tourHighlight{will-change:top,left,width,height}
 
 /* Kopfzeile und Navigation: deckend, nicht mehr durchsichtig */
 html[data-mix] header,html[data-mix] .mnav{background:var(--surface)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
@@ -372,8 +377,7 @@ html[data-mix] .mnav{border-bottom:1px solid var(--border)}
 /* Tour im Mix-Stil */
 html[data-mix] #tourHighlight{border-radius:8px!important;box-shadow:0 0 0 4000px rgba(2,6,9,.74),0 0 0 2px var(--accent),0 0 36px color-mix(in srgb,var(--accent) 55%,transparent)!important;transition:top .55s cubic-bezier(.22,1,.36,1),left .55s cubic-bezier(.22,1,.36,1),width .55s cubic-bezier(.22,1,.36,1),height .55s cubic-bezier(.22,1,.36,1)!important;animation:tourPulse 2.6s ease-in-out infinite}
 @keyframes tourPulse{0%,100%{outline:0 solid color-mix(in srgb,var(--accent) 40%,transparent);outline-offset:2px}50%{outline:6px solid transparent;outline-offset:6px}}
-html[data-mix] #tourBubble{transform:translateY(10px);transition:opacity .35s ease,transform .5s cubic-bezier(.22,1,.36,1)!important}
-html[data-mix] #tourBubble[style*="opacity: 1"]{transform:none}
+html[data-mix] #tourBubble{transition:opacity .4s ease!important}
 html[data-mix] #tourBubble{max-width:340px!important}
 html[data-mix] #tourBubble > div{background:var(--surface)!important;border:1px solid var(--border-s);border-radius:10px!important;padding:22px 24px 18px!important;box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 60px color-mix(in srgb,var(--accent) 12%,transparent)!important;overflow:hidden}
 html[data-mix] #tourBubble > div::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,#2fd08f,#4f8bff,#a874ff,#ff6a9a)}
