@@ -16,8 +16,8 @@
 
 /* Gemeinsam: altes Raster und Rahmen-Effekte aus */
 html[data-stil] #page-home::before{display:none}
-html[data-stil] #page-home{isolation:isolate;overflow:hidden}
-html[data-stil] #page-home::after{content:"";position:absolute;z-index:-1;pointer-events:none}
+html[data-stil] #page-home{isolation:isolate;overflow-x:hidden;overflow-y:auto}
+html[data-stil] #page-home::after{content:"";position:fixed;z-index:-1;pointer-events:none}
 html[data-stil] .home-hero-eyebrow::before,html[data-stil] .home-hero-eyebrow::after{width:36px;opacity:.6}
 html[data-stil] .home-hero>*{animation:stilUp .7s cubic-bezier(.2,.7,.2,1) both}
 html[data-stil] .home-hero>*:nth-child(2){animation-delay:.06s}
