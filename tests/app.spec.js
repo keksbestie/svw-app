@@ -200,3 +200,21 @@ test('Vereins-Schwerpunkte erscheinen im Planer und sind gegen HTML geschützt',
   await expect(card).toBeHidden();
   expect(errors).toEqual([]);
 });
+
+test('Alle vier Sprachdateien (en, es, fr, tr) sind vollständig und schalten um', async ({ page }) => {
+  const de = require('../lang/de.json');
+  const keys = Object.keys(de);
+  for (const l of ['en', 'es', 'fr', 'tr']) {
+    const j = require('../lang/' + l + '.json');
+    expect(keys.filter(k => !j[k]), l + ' fehlt').toEqual([]);
+  }
+  const errors = await openApp(page);
+  const key = keys.find(k => k.startsWith('home.') && de[k].length > 5);
+  for (const l of ['fr', 'tr']) {
+    const expected = require('../lang/' + l + '.json')[key];
+    await page.evaluate(code => setLang(code), l);
+    await expect.poll(() => page.evaluate(k => document.querySelector('[data-i18n="' + k + '"]').textContent.trim(), key)).toBe(expected.trim());
+    expect(await page.evaluate(() => document.documentElement.lang)).toBe(l);
+  }
+  expect(errors).toEqual([]);
+});

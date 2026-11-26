@@ -1,0 +1,718 @@
+0|AssistCoach soutient les entraîneurs et les responsables du sport des jeunes, que ce soit le football, le volley-ball ou le tennis. Il doit aussi devenir un lieu où se rassemble le savoir collectif de nombreuses personnes, afin que nous progressions tous ensemble et puissions offrir à nos athlètes un entraînement encore meilleur.
+1|Pour tous
+2|Pour les débutants
+3|Pour les confirmés
+4|Pour les professionnels
+5|Laissez-vous inspirer par une grande variété d'exercices, planifiez vos séances à l'avance et gardez une vue d'ensemble du contenu et de l'intensité. Préparez l'entraînement de façon qu'il se déroule sans accroc même sans vous – idéal si quelqu'un d'autre doit prendre le relais.
+6|Apprenez à donner à chaque séance une structure claire et un fil conducteur. Découvrez de nouveaux exercices et utilisez les filtres lorsque vous cherchez des idées sur un thème – quelle que soit votre expérience.
+7|Plus de temps sur le terrain
+8|Planifiez votre entraînement, votre semaine ou toute la saison – que ce soit la préparation ou une double charge de matchs. Gardez une vue d'ensemble de l'intensité, des jours d'entraînement et des joueurs engagés dans chaque exercice. Personnalisez chaque séance entièrement ou laissez-vous inspirer – et assurez-vous que tout se déroule comme prévu, même en votre absence.
+9|Planifier et anticiper
+10|Structure et repères
+11|Notre mission
+12|Ne perdez plus jamais la vue d'ensemble du matériel, de la planification et de la répartition de la charge. Voyez en un coup d'œil la durée de chaque exercice et la répartition de l'intensité dans votre séance. Une préparation plus professionnelle avec moins d'effort – pour qu'il reste plus de temps et de vraie interaction sur le terrain.
+13|Contrôle total
+14|Vers le catalogue
+15|Vers la page d'accueil
+16|📲 Enregistrer comme appli
+17|Enregistrer les modifications
+18|Installer l'appli
+19|Données utilisateur
+20|Nom d'utilisateur
+21|E-mail
+22|Aucun plan disponible.
+23|Compte
+24|🗑 Supprimer le compte définitivement
+25|Supprimer le compte
+26|Supprime définitivement votre compte et toutes les données associées.
+27|Mon compte
+28|Rechercher par e-mail …
+29|Afficher le nom publiquement dans le catalogue
+30|Visibilité publique
+31|Partager ↗
+32|Gérer les entraîneurs
+33|Si cette option est activée, votre nom d'utilisateur apparaît sur vos exercices soumis dans le catalogue public.
+34|Vers l'écran d'accueil
+35|← Retour
+36|10 exercices par catégorie
+37|20 exercices par catégorie
+38|3 exercices par section
+39|3 exercices par catégorie
+40|5 exercices par catégorie
+41|ADVANCED
+42|Advanced
+43|toutes les fonctions
+44|tous les exercices
+45|Tout de Basic, en plus
+46|Tout de Basic +, en plus
+47|Offres
+48|BASIC
+49|Basic
+50|BASIC +
+51|Basic +
+52|Obtenir Basic + gratuitement
+53|gratuit jusqu'au 30/06/2027
+54|Le pack complet
+55|Le club choisit le niveau (Basic +, Advanced ou Pro) – les entraîneurs invités reçoivent ce niveau, ou le leur s'il est supérieur
+56|Créer et soumettre ses propres exercices
+57|Consulter les schémas de terrain
+58|Se connecter pour tout le reste (p. ex. créer un plan d'entraînement)
+59|Pour les clubs et les équipes d'entraîneurs
+60|INVITÉ
+61|Invités
+62|Les invités et Basic sont toujours gratuits.
+63|Toujours gratuit
+64|Commencer maintenant
+65|Créer un effectif, avec des notes par joueur
+66|Fonction calendrier : consulter les séances par jour
+67|Compte gratuit
+68|Planification à long terme : créer des blocs
+69|Avec Basic +, vous pouvez créer un club et en devenir l'administrateur – ou désigner une personne administratrice
+70|Notes sur les exercices du plan
+71|Commencer tout de suite sans compte
+72|Noter les plans
+73|Créer, enregistrer et soumettre ses propres plans
+74|Prix à venir
+75|PRO
+76|Pro
+77|Enregistrer et noter
+78|Créer une équipe d'entraîneurs
+79|Composer et imprimer un plan d'entraînement
+80|Noter les exercices
+81|Soumettre des exercices
+82|Copier et étendre des exercices
+83|CLUB
+84|Club
+85|Créer un club
+86|Rejoindre un club
+87|Portail du club avec le logo du club
+88|Diffusion de liens d'accès aux entraîneurs
+89|En cours de développement
+90|Accès à la bibliothèque de blocs
+91|Accès à la bibliothèque complète de plans
+92|Accès à l'entraînement spécial
+93|↩ Se déconnecter
+94|Admin
+95|AssistCoach
+96|bientôt
+97|Bêta
+98|Votre catalogue d'entraînement
+99|✏️ Soumettre
+100|Paramètres
+101|Envoyer un retour
+102|Aide et explications
+103|📅 Calendrier
+104|Catalogue
+105|Planification à long terme
+106|Plus
+107|👤 Mon espace
+108|Police
+109|🏠 Accueil
+110|Changer de thème
+111|Plan d'entraînement
+112|Rechercher des exercices, des tags, des sections…
+113|↺ Connecter
+114|Réinitialiser
+115|Vous voyez ici quelle séance d'entraînement vous avez effectuée quel jour. En enregistrant un plan d'entraînement, vous pouvez l'ajouter au calendrier.
+116|Calendrier
+117|Préparateur physique
+118|Responsable d'équipe
+119|Entraîneur principal
+120|Entraîneur adjoint
+121|Rôle (facultatif)
+122|Entraîneur des gardiens
+123|Prénom et nom
+124|-- choisir --
+125|PLACER LA COMPOSITION
+126|SÉLECTION
+127|Sélectionner et déplacer
+128|Numérotation automatique activée/désactivée
+129|Placer le ballon
+130|● Bleu
+131|🔵 Bleu
+132|Trajet de dribble (2 clics)
+133|Magnétisme et aides à l'alignement
+134|ÉQUIPEMENT
+135|Équipement (plots, piquet …)
+136|COULEUR
+137|Couleur du joueur sélectionné / de la joueuse sélectionnée
+138|FORME
+139|FORMAT
+140|🟡 Jaune
+141|● Jaune / gardien·libéro
+142|Grand terrain
+143|Grand terrain de plage
+144|Grand but
+145|● Vert
+146|🟢 Vert
+147|Demi-terrain
+148|Demi-terrain de plage
+149|Haie
+150|Plot
+151|EN CERCLE
+152|But pour jeunes
+153|Terrain réduit
+154|Échelle de rythme
+155|Force
+156|Trajet de course (2 clics)
+157|Légende des lignes
+158|● Violet
+159|LIGNE
+160|Lignes
+161|– Matériel –
+162|Mini-but
+163|Zone neutre
+164|N°
+165|NUMÉRO
+166|Supprimer l'objet
+167|Objets
+168|Placer des objets
+169|● Orange
+170|🟠 Orange
+171|Trajet de passe (2 clics)
+172|Prévention
+173|Récupération
+174|Anneau
+175|Annuler (Ctrl+Z)
+176|Tir / attaque (2 clics)
+177|● Noir
+178|– Spécial –
+179|Spécial
+180|JOUEUR/EUSE
+181|Placer un joueur / une joueuse
+182|Couleur du joueur
+183|Piste de sprint
+184|Piquet
+185|Surface de réparation
+186|Terrain en T
+187|BUT
+188|Placer un but
+189|Taille du but
+190|Placer un entraîneur / coach
+191|✓ Appliquer
+192|Grand terrain
+193|● Blanc
+194|⚪ Blanc
+195|ANGLE
+196|10 min
+197|12 min
+198|15 min
+199|1 · Open Field
+200|20 min
+201|25 min
+202|2 · Warm Up
+203|30 min
+204|3 · Introduction
+205|3 clics :
+206|4 · Partie principale
+207|5 · Jeu final
+208|6 · Entraînement spécial
+209|Annuler
+210|Refusé
+211|Déroulement, organisation, coaching…
+212|Section
+213|Choisissez la section avec les onglets du haut (Open Field, Warm Up, Introduction …)
+214|désélectionner
+215|Transférer le rôle d'administrateur :
+216|Administrateurs :
+217|sport actuellement sélectionné
+218|Tous
+219|Tous les exercices validés en 6 sections. Les tags et les groupes aident à filtrer de façon ciblée.
+220|tous
+221|En tant qu'administrateur du club, vous avez le contrôle total de votre compte de club.
+222|Catégorie d'âge :
+223|Catégories d'âge
+224|Catégories d'âge (facultatif)
+225|Android (Chrome) :
+226|Offres – que reçois-je ?
+227|Les utilisateurs connectés peuvent soumettre leurs propres exercices. Après vérification par l'administrateur, ils apparaissent dans le catalogue.
+228|Les utilisateurs connectés peuvent créer un club ou en rejoindre un existant.
+229|⇒ Attaque
+230|⇒ Attaque :
+231|⇒ Attaque / frappe
+232|Se connecter (compte requis)
+233|Nombre de joueurs
+234|Nombre de semaines
+235|Affichage du logo
+236|Administrateurs de l'appli :
+237|Installer l'appli sur le téléphone
+238|AssistCoach – toutes les fonctions expliquées
+239|AssistCoach peut être enregistré comme appli sur l'écran d'accueil – pas besoin d'App Store.
+240|aussi pour les visiteurs sans compte
+241|Bouton « Compo »
+242|Placer automatiquement la composition
+243|Placer automatiquement la composition (volley-ball)
+244|Choisir une composition (p. ex. position de base à 6, 5-1, 4-2)
+245|Ajuster le cadrage
+246|Outil de sélection (↖) → déplacer ou faire pivoter des objets
+247|⚽ Ballon
+248|🏐 Ballon
+249|🎾 Balle
+250|Beach : 2v2
+251|modifier
+252|Gardez un œil sur la durée de la séance et planifiez efficacement des ateliers parallèles.
+253|Au-delà de 10 résultats : les 5 meilleurs + 5 au hasard apparaissent toujours tout en haut
+254|Pour les demandes d'adhésion dans les clubs multisports, vous choisissez le sport lors de l'acceptation
+255|Les deux
+256|Lors du déplacement, de la copie et du collage, le point de courbe suit automatiquement
+257|Demandes d'adhésion
+258|Intensité de la charge
+259|Indiquer l'intensité et la durée de la charge
+260|L'évolution de la charge (haute / moyenne / basse) est représentée en couleur
+261|Temps de charge
+262|Temps de charge (min)
+263|Description
+264|Texte de description…
+265|Écraser le plan existant
+266|Désignation
+267|Au
+268|Lignes bleues = objets alignés entre eux ; lignes jaunes = même distance
+269|Cliquer sur un bloc → modifier les semaines et les séances d'entraînement
+270|« + Bloc » → définir la période, l'objectif principal et le niveau de charge
+271|Utiliser les blocs des autres :
+272|Nom du bloc…
+273|Bouton ∥
+274|Bouton ⛶
+275|Le formulaire de soumission s'ouvre avec toutes les informations et le schéma de terrain de l'exercice d'origine (connexion nécessaire)
+276|L'outil Équipement propose trois menus de sélection. Après le choix, cliquez dans le terrain pour placer l'objet.
+277|La grille aide à placer les objets de façon régulière et précise.
+278|La grille s'adapte au type de terrain choisi (tous les 5 m sur un grand terrain, tous les 2 m sur un petit terrain)
+279|Votre nom affiché
+280|Le ballon est représenté sur le terrain exactement comme sur le bouton de l'outil
+281|L'entrée du calendrier est une copie au moment de l'enregistrement – les modifications ultérieures du plan ne la changent pas
+282|L'administrateur du club examine les demandes et peut les accepter ou les refuser
+283|Le nombre de joueurs actifs est affiché dans l'aperçu du plan
+284|L'appli s'ouvre alors comme une appli native – sans barre de navigateur
+285|La liste de contrôle exige en plus : le schéma de terrain, le titre et la description doivent différer de l'original – ce n'est qu'alors que l'envoi est possible
+286|Les noms figurent ensuite directement sur l'exercice et dans l'impression du plan. Touchez une entrée pour la modifier ou la supprimer (la suppression retire aussi la personne du plan actuel)
+287|La note figure dans le plan sous l'exercice et dans l'impression/PDF
+288|Les fonctions les plus importantes en un coup d'œil. Pour les détails : onglet « Guide détaillé ».
+289|Cet exercice provient de l'entraînement spécial et peut être planifié dans n'importe quelle section.
+290|Ce texte apparaît dans la bannière de la section, visible par tous les utilisateurs.
+291|Double-clic
+292|Glisser-déposer
+293|〰 Dribble
+294|〰 Dribble :
+295|Icône d'impression → exporter le plan en PDF avec la liste du matériel (les entraîneurs assignés et vos notes figurent à chaque exercice)
+296|La moyenne n'est affichée qu'à partir de 5 évaluations
+297|Vos propres plans apparaissent ici dès qu'ils ont été soumis via « ↑ Publier » et validés
+298|Créez vos propres joueurs et affectez-les à l'effectif. Un compte est nécessaire – les données sont liées à votre compte.
+299|Soumettre son propre exercice
+300|Créez et soumettez vos propres exercices. Des tags adaptés sont proposés automatiquement à partir d'exercices similaires. Visible dans le catalogue après vérification par l'administrateur.
+301|Un club peut avoir plusieurs sports – les places d'entraîneur (slots) sont gérées par sport.
+302|Prenez un exercice existant comme modèle, améliorez-le et soumettez-le comme nouvel exercice. L'original reste inchangé.
+303|📤 Soumettre :
+304|« Soumettre » → vérifié puis validé
+305|Ensuite, déplacez ou supprimez librement des joueurs individuels
+306|Ensuite, déplacez librement des joueurs individuels – marquez le libéro (jaune) manuellement
+307|Suppr / Retour arrière
+308|Suppr · Supprimer
+309|Un seul menu est actif à la fois – le choix dans un menu réinitialise les autres
+310|Échap
+311|Échap · Désélectionner
+312|Schéma de terrain
+313|Éditeur de schéma de terrain
+314|Étendre ou modifier le schéma de terrain dans l'éditeur et confirmer avec « Appliquer »
+315|Dessiner le schéma de terrain dans l'éditeur (obligatoire, figure dans la liste de contrôle)
+316|Enregistrer et rejeter le schéma de terrain
+317|⚽ Éditeur de terrain
+318|Éditeur de terrain – bases
+319|Éditeur de terrain – bases (tennis)
+320|Éditeur de terrain – bases (volley-ball)
+321|Type de terrain
+322|Le type de terrain est enregistré par exercice
+323|⏰ Rendez-vous fixes :
+324|« FORME »
+325|Choisir une formation dans la liste déroulante (p. ex. 4-4-2, 4-3-3 …)
+326|+ Bloc libre
+327|✓ Valider
+328|Découvrir les plans d'entraînement validés d'autres entraîneurs, les noter et les reprendre comme modèle.
+329|Football et tennis
+330|Pour les trajets de course en arc ou les ballons à trajectoire courbe – dans tous les sports. Valable pour les flèches de passe, de course, de tir et d'attaque (pas pour le dribble).
+331|Invité
+332|Les invités et Basic sont toujours gratuits
+333|poignée jaune
+334|« ☑ Droite »
+335|Structurer toute la saison en blocs d'entraînement et visualiser l'évolution de la charge.
+336|« ☐ Courbe »
+337|Flèches courbes
+338|Les plans enregistrés restent dans votre compte et peuvent être soumis.
+339|Les plans enregistrés apparaissent dans la liste à droite – cliquez pour les charger. L'enregistrement et la liste ne sont disponibles qu'avec un compte
+340|Consultez les séances d'entraînement enregistrées par jour, voyez-les en entier et placez-en une copie sur un nouveau jour. Lors de l'enregistrement d'un plan, l'appli demande si la séance doit aller dans le calendrier.
+341|Demi-terrain : 11v11
+342|Demi-terrain : moitié à 6
+343|Domicile
+344|Vous voyez ici quelle séance d'entraînement vous avez effectuée quel jour. Le calendrier appartient à votre compte et est séparé par sport.
+345|Aide et guide
+346|🟠 Plot
+347|Plot :
+348|Dans la zone « Lignes » de la barre d'outils, quatre types de flèches sont disponibles – chacun dessiné en 2 clics (début, fin). À droite de « Droite / Courbe », une légende indique à quoi correspond chaque ligne (celle choisie est mise en évidence).
+349|Dans la zone « Lignes », trois types de flèches sont disponibles – chacun dessiné en 2 clics (début, fin). À droite de « Droite / Courbe », une légende indique à quoi correspond chaque ligne (celle choisie est mise en évidence).
+350|Dans la zone « Lignes », deux types de flèches sont disponibles – chacun dessiné en 2 clics (début, fin). À droite de « Droite / Courbe », une légende indique à quoi correspond chaque ligne (celle choisie est mise en évidence).
+351|Dans « Mon espace », voir tous les plans soumis et leur statut
+352|Ouvrir dans le plan d'entraînement
+353|toujours avec une surface vide
+354|Enregistrer dans la bibliothèque
+355|Dans un sport, seuls les logos des clubs de ce sport sont affichés
+356|En cours de vérification
+357|🔍 En révision
+358|« Charger dans le plan d'entraînement »
+359|Dans quelle section ?
+360|Dans quelle section du plan d'entraînement cet exercice doit-il être planifié ?
+361|Cliquer dans le terrain → l'objet est placé
+362|iPhone / iPad (Safari) :
+363|Oui
+364|Chaque exercice peut être noté de 1 à 5 étoiles. Chaque utilisateur peut voter une fois par exercice (modification possible à tout moment).
+365|Actualiser maintenant
+366|👥 Effectif
+367|Liste déroulante de l'effectif
+368|Effectif dans le plan d'entraînement
+369|Gérer l'effectif
+370|L'effectif devient automatiquement disponible dans le plan d'entraînement (liste déroulante en haut)
+371|📅 Calendrier :
+372|Fiche avec notes :
+373|📚 Catalogue
+374|Catalogue et planification sans compte. Enregistrer, noter, soumettre et l'effectif nécessitent un compte gratuit. Dans « Mon espace », gérez vos exercices et vos plans soumis.
+375|Cliquer sur une catégorie → n'afficher que les exercices de cette catégorie
+376|Pas de dribble au volley-ball – la ligne ondulée est masquée
+377|Pas de trajet de passe ni de dribble au tennis – les deux outils sont masqués
+378|Terrain réduit : 9v9 / 7v7
+379|Clic sur le nom → « Mon espace » ou « Se déconnecter »
+380|Cliquez sur un tag pour l'affecter à un groupe. Les tags sans groupe s'affichent comme « Autres ».
+381|Séparés par des virgules, p. ex. DRIBBLE, 1VS1
+382|👤 Compte
+383|Supprimer le compte :
+384|Compte et mon espace
+385|Copie pour un nouveau jour
+386|« Rejeter la copie » annule et vide le formulaire
+387|compte gratuit
+388|Description courte…
+389|📅 Long terme
+390|Lasso
+391|⤳ Trajet de course
+392|⤳ Trajet de course :
+393|« Vider » → réinitialise complètement le plan : exercices, titre, date et noms de joueurs – vous repartez d'un plan entièrement neuf
+394|Sélectionner une ligne (↖) → saisir un nombre à la pointe de la flèche sous « Numéro »
+395|Lignes et flèches (football)
+396|Lignes et flèches (tennis)
+397|Lignes et flèches (volley-ball)
+398|Téléverser un logo :
+399|Les logos des clubs ayant donné leur accord sont affichés en arrière-plan de la page d'accueil.
+400|Supprimer
+401|🗑 Supprimer
+402|Matériel :
+403|Matériel et objets spéciaux
+404|La liste du matériel indique automatiquement la quantité maximale nécessaire (sans double comptage)
+405|Plusieurs blocs forment l'aperçu de la saison
+406|plusieurs jours
+407|Sélection multiple et raccourcis clavier
+408|Mon espace :
+409|Mon club
+410|« Mon club »
+411|Mon club – créer et rejoindre un club
+412|Placez en un clic toute une équipe dans une formation tactique de base.
+413|Placez en un clic toute une équipe dans une composition de base de volley-ball.
+414|Retirer des membres du club
+415|Après la connexion : le nom apparaît en haut à droite
+416|Après l'admission, le logo du club apparaît en haut dans l'en-tête
+417|Après l'envoi d'un exercice, l'éditeur est de nouveau vide et remis sur « Terrain réduit »
+418|Nom *
+419|Nom
+420|Nom du bloc *
+421|En plus de l'effectif, il existe une liste de votre équipe d'entraîneurs. Dans le plan d'entraînement, vous affectez un ou plusieurs entraîneurs à chaque exercice.
+422|Enregistrer comme nouveau
+423|Choisir une nouvelle composition → remplace automatiquement les joueurs précédents
+424|Nouvelle version disponible
+425|Nouveau titre…
+426|Nouveau bloc d'entraînement
+427|pas
+428|jamais enregistré
+429|📝 Note
+430|« 📝 Note + »
+431|Ajouter une note
+432|Notes
+433|Les notes, noms, adversaires de la journée, entraîneurs et dates sont supprimés.
+434|Notes / progression
+435|Les notes sont privées : elles ne sont pas envoyées lors de la publication d'un plan
+436|Notes et noms de joueurs dans le plan
+437|uniquement votre compte
+438|uniquement pour cette séance
+439|En haut à droite « Se connecter » → e-mail + mot de passe ou nouveau compte
+440|Les objets se calent automatiquement sur le point de la grille le plus proche
+441|Sans connexion
+442|Facultatif : mettre à disposition le logo du site AssistCoach à des fins de présentation (volontaire, révocable à tout moment)
+443|→ Trajet de passe
+444|→ Trajet de passe :
+445|→ Trajet de passe / service
+446|→ Trajet de passe / service :
+447|Mot de passe
+448|Remplissez les champs obligatoires : nom, section, nombre de joueurs, description
+449|« + Plan »
+450|Nommer le plan et cliquer sur « Enregistrer »
+451|Le plan existe déjà
+452|Remplir le plan →
+453|Notez les plans avec des étoiles (dans la liste et dans l'aperçu) ; la moyenne est affichée à partir de 3 évaluations
+454|Enregistrer et publier des plans
+455|Faites pivoter les objets placés par un clic droit ; les ballons et le matériel se redimensionnent avec la poignée sur le bord
+456|Grille et magnétisme
+457|Clic droit sur un objet → pivoter de 22,5°
+458|Un avertissement rouge apparaît lorsque la durée totale est dépassée
+459|⇒ Tir
+460|⇒ Tir :
+461|Objectif principal
+462|Objectifs principaux, buts, remarques particulières…
+463|« + Slot »
+464|Voici comment l'éditeur se comporte à l'ouverture et à la fermeture.
+465|Spécial :
+466|Plus tard
+467|Enregistrer un plan d'entraînement
+468|« Enregistrer » (en haut) → sauvegarder le plan avec un nom, il est conservé après la fermeture
+469|👤 Nommer les joueurs :
+470|👤 Joueur/euse
+471|+ Joueur/euse
+472|Cliquer sur un joueur → modifier ou supprimer les données
+473|Créez des joueurs avec nom, numéro et poste. Dans le plan d'entraînement, désélectionnez les absents – le nombre de joueurs actifs est pris en compte automatiquement.
+474|+ Journée de match
+475|Sport
+476|Sports et slots dans le club
+477|Cliquez sur les étoiles directement sur la carte ou dans la fenêtre de détails
+478|Rechercher un mot-clé …
+479|Ctrl+A
+480|Ctrl+A · Tout sélectionner
+481|Ctrl+C · Copier
+482|Ctrl+C / Ctrl+V
+483|Ctrl+V · Coller
+484|Ctrl+Z
+485|Ctrl+Z · Annuler
+486|Champ de recherche : le texte est recherché dans le nom, la description et les tags
+487|Touchez un jour → séances du jour ; touchez une séance → plan complet avec exercices, durées, entraîneurs et notes
+488|Ajouter un tag (global)
+489|Ajouter des jours :
+490|Tags
+491|Affecter des tags à des groupes
+492|Cliquez sur les tags directement sur la carte → filtrer par ce tag
+493|Dessinez des compositions tactiques et des déroulements d'exercices directement sur le terrain.
+494|Dessinez des compositions tactiques et des déroulements d'exercices directement sur le terrain de volley-ball.
+495|Dessinez des compositions tactiques et des déroulements d'exercices directement sur le court de tennis.
+496|⌨️ Raccourcis clavier (éditeur de terrain)
+497|« + Tennis »
+498|Astuce :
+499|Titre
+500|☰☰ / ≡ Bascule : passer des cartes complètes à la liste compacte
+501|« Entraîneurs »
+502|Les entraîneurs voient leur propre sport sous forme de badge
+503|Équipe d'entraîneurs
+504|Planifier l'équipe d'entraîneurs et les entraîneurs
+505|Créez des blocs d'entraînement pour toute la saison et visualisez l'évolution de la charge. Nouveau : bibliothèque de plans d'entraînement avec des plans validés d'autres entraîneurs (noter et charger).
+506|+ Séance d'entraînement
+507|📋 Plan d'entraînement
+508|« Bibliothèque de plans d'entraînement »
+509|Créer un plan d'entraînement
+510|« ✓ Appliquer »
+511|Appliquer
+512|« ✓ Appliquer » → boîte de rognage → joindre à l'exercice
+513|Copier et étendre l'exercice
+514|Rechercher un exercice…
+515|Composez une séance d'entraînement complète à partir d'exercices du catalogue.
+516|Parcourez les exercices dans 6 sections, filtrez par tags, donnez des évaluations par étoiles et reprenez-les directement dans le plan d'entraînement. Affichage : déployé ou en liste compacte.
+517|Triez les exercices par glisser-déposer, ajustez la durée avec − / +, fixez une durée cible (avertissement rouge en cas de dépassement), marquez des exercices comme parallèles (∥), notes par exercice, enregistrez le plan et imprimez-le en PDF.
+518|Détails de l'exercice
+519|Catalogue d'exercices – rechercher et filtrer
+520|🏟️ Club
+521|Créer un club :
+522|Supprimer le club :
+523|Créez ou rejoignez un club avec un ou plusieurs sports. En tant qu'administrateur du club, téléversez un logo, gérez les slots par sport, transmettez le rôle d'administrateur ou supprimez le club.
+524|Rechercher un club :
+525|Logos de clubs sur la page d'accueil et suppression du club
+526|Administration du club (admin)
+527|« ↑ Publier » → soumettre le plan à la vérification de l'administrateur
+528|Publié
+529|« + Volley-ball »
+530|Grand terrain : 11v11
+531|Grand terrain : 6v6
+532|Du
+533|Aperçu
+534|Suggestions
+535|– choisir –
+536|Qui est là aujourd'hui ? Saisissez les absences directement dans le plan d'entraînement pour que le nombre de joueurs soit correct.
+537|Choisir un outil (joueur/euse, coach sous forme de triangle noir avec C, ballon, but, plot, équipement)
+538|Choisir un outil (joueur/euse, coach sous forme de triangle noir avec C, ballon, plot, équipement) – pas de but, pas de dribble au volley-ball
+539|Choisir un outil (joueur/euse, coach sous forme de triangle noir avec C, balle, plot, équipement) – pas de but, pas de dribble au tennis
+540|Semaine
+541|Désignation de la semaine
+542|p. ex. 1vs1 offensif, pressing, technique de frappe
+543|p. ex. 6-12
+544|p. ex. sem. 15
+545|p. ex. sem. 18 · 29/04–03/05
+546|p. ex. jeu de passes…
+547|p. ex. augmentation de l'intensité par rapport à la semaine précédente…
+548|p. ex. préparation printemps 2026
+549|Période
+550|Faites glisser les coins pour agrandir ou réduire le cadrage. Déplacez toute la zone en la faisant glisser par le centre.
+551|Durée cible
+552|Durée cible et exercices parallèles
+553|Objectifs / notes
+554|Pour chaque exercice de votre plan d'entraînement, vous pouvez écrire une note personnelle.
+555|(× pour supprimer)
+556|retirer
+557|© 2026 AssistCoach
+558|CGU
+559|📲 Aussi sur le téléphone
+560|Confidentialité
+561|Créez vos propres exercices et proposez-les pour intégration au catalogue.
+562|Football
+563|Mentions légales
+564|Scannez le code QR avec l'appareil photo du téléphone et enregistrez AssistCoach comme appli.
+565|Code QR vers le site
+566|Tennis
+567|Soumettre un exercice
+568|et s'il a aidé un enfant, une joueuse, un coach ou un responsable … alors tout l'effort en valait la peine
+569|Vision et objectifs ↗
+570|Volley-ball
+571|Ajoutez votre premier joueur pour constituer l'effectif.
+572|Dans le plan d'entraînement, vous pouvez affecter un ou plusieurs entraîneurs à chaque exercice.
+573|Aucun joueur créé pour le moment
+574|Périodisation active de l'entraînement
+575|Bibliothèque de blocs
+576|Créer des blocs, remplir les semaines, planifier les jours
+577|Blocs enregistrés pour une utilisation ultérieure
+578|+ Nouveau bloc
+579|Parcourir les plans publics et les charger dans le plan d'entraînement
+580|Rechercher un plan …
+581|Bibliothèque de plans d'entraînement
+582|Mon effectif
+583|+ Plan
+584|Planification de la saison
+585|Bienvenue sur AssistCoach
+586|Date de la séance d'entraînement
+587|Imprimer
+588|💾 Plans enregistrés
+589|Vider
+590|Enregistrer
+591|Nommer la séance d'entraînement…
+592|Qui est là aujourd'hui ?
+593|Attaquant de côté
+594|Latéral
+595|Milieu défensif
+596|Défenseur central
+597|Année de naissance
+598|Avant-centre
+599|Nouvelle note sur cette personne …
+600|📝 Notes
+601|Numéro (facultatif)
+602|Vous seul voyez ces notes. Merci de ne saisir aucune donnée de santé ni diagnostic.
+603|Milieu offensif
+604|Poste (facultatif)
+605|Seniors hommes
+606|Seniors femmes
+607|Gardien de but
+608|p. ex. 10
+609|Milieu central
+610|Supprimer tous les exercices
+611|URL de base de l'API
+612|Clé d'API (facultatif)
+613|Connexion à l'API
+614|Exporter en CSV
+615|Importer un CSV
+616|Exporter
+617|Si fournie par le service informatique
+618|https://votre-serveur.example/api
+619|Importer
+620|Document informatique
+621|Enregistrer et tester
+622|Modèle
+623|Se déconnecter
+624|Jeu final
+625|Section *
+626|Section choisie
+627|File d'attente admin – blocs
+628|File d'attente admin – plans d'entraînement
+629|File d'attente admin – exercices
+630|Catégorie(s) d'âge choisie(s)
+631|Catégories d'âge *
+632|Nombre de joueurs *
+633|Nombre de joueurs indiqué
+634|Nom affiché (p. ex. Max Müller)
+635|Panier de ballons
+636|Intensité de la charge *
+637|Intensité de la charge choisie
+638|Temps de charge indiqué
+639|Temps de charge (min) *
+640|Description adaptée par rapport à l'original
+641|Description (min. 20 caractères) *
+642|Description (min. 20 caractères)
+643|Veuillez choisir…
+644|Liste de contrôle
+645|Politique de confidentialité
+646|Votre retour…
+647|Votre nom
+648|votre@email.fr
+649|Adresse e-mail
+650|E-mail (facultatif, pour une réponse)
+651|Blocs soumis (anonymisés) à vérifier et à valider.
+652|Plans d'entraînement soumis à vérifier et à valider.
+653|Exercices soumis par section — cliquez sur une zone pour vérifier les exercices.
+654|Créez un nouvel exercice avec toutes les informations obligatoires. L'équipe d'administration le vérifie et le valide éventuellement pour le catalogue.
+655|Presque terminé !
+656|Envoyer le retour
+657|💬 Envoyer un retour
+658|Schéma de terrain modifié par rapport à l'original
+659|Schéma de terrain dessiné
+660|Schéma de terrain (obligatoire – au moins 1 objet) *
+661|Les exercices supprimés peuvent être restaurés ou retirés définitivement.
+662|Saisissez votre nouveau mot de passe. Au moins 6 caractères.
+663|Saisissez votre adresse e-mail – nous vous enverrons un lien de réinitialisation.
+664|Données de base
+665|Vous avez une suggestion d'amélioration, trouvé un bug ou une idée ? Écrivez-nous – chaque retour nous fait plaisir.
+666|Partie principale
+667|Introduction
+668|Élevée
+669|Haies
+670|Buts pour jeunes
+671|Échelle de rythme
+672|Rejeter la copie
+673|Facile
+674|Envoyer le lien
+675|Matériel
+676|Mes envois
+677|Mes plans d'entraînement
+678|Connectez-vous pour créer vos propres exercices et les proposer pour le catalogue.
+679|Au moins 3 tags ajoutés
+680|Mini-buts
+681|Avec la deuxième option, vous pouvez utiliser immédiatement l'exercice dans le plan d'entraînement ; il est tout de même soumis à vérification et entre dans le catalogue après validation.
+682|Moyenne
+683|Message
+684|Nom renseigné
+685|Nom de l'exercice *
+686|Nouveau mot de passe
+687|Définir un nouveau mot de passe
+688|Aucun plan soumis pour le moment.
+689|Aucun envoi pour le moment.
+690|Open Field
+691|🗑 Corbeille
+692|Corbeille
+693|Enregistrer le mot de passe
+694|Mot de passe oublié ?
+695|Répéter le mot de passe
+696|Plans que vous avez soumis ou qui ont déjà été publiés.
+697|Rebondisseur
+698|Anneaux
+699|Visibilité dans le catalogue
+700|Entraînement spécial
+701|Piquets
+702|Saisir un tag…
+703|Tags (min. 3) *
+704|Titre adapté par rapport à l'original
+705|Exercices que vous avez soumis et qui attendent encore une vérification.
+706|Catalogue d'exercices
+707|Nom de l'exercice…
+708|Warm Up
+709|Matériel supplémentaire :
+710|Comment fonctionne l'exercice ? Quel est l'objectif ?
+711|p. ex. 12
+712|p. ex. 6–12
+713|p. ex. plots, ballons, chasubles
+714|p. ex. Max Müller
+715|Matériel dénombrable (choisir la quantité) :
+716|Retour à la connexion
+717|Anneau de passe

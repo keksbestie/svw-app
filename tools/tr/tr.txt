@@ -1,0 +1,718 @@
+0|AssistCoach, ister futbol, ister voleybol ya da tenis olsun, gençlik sporundaki antrenörleri ve sorumluları destekler. Aynı zamanda birçok kişinin ortak bilgisinin bir araya geldiği bir yer olmayı hedefler; böylece hep birlikte gelişebilir ve sporcularımıza daha da iyi bir antrenman sunabiliriz.
+1|Herkes için
+2|Yeni başlayanlar için
+3|İleri düzey için
+4|Profesyoneller için
+5|Çok sayıda egzersizden ilham alın, antrenmanlarınızı önceden planlayın ve içerik ile yoğunluğu gözden kaçırmayın. Antrenmanı, siz olmasanız bile sorunsuz ilerleyecek şekilde hazırlayın – başka biri devralacaksa ideal.
+6|Her antrenmana nasıl net bir yapı ve bir ana hat kazandıracağınızı öğrenin. Yeni egzersizler keşfedin ve bir konuda fikir ararken filtreleri kullanın – deneyiminiz ne kadar az olursa olsun.
+7|Sahada daha fazla zaman
+8|Antrenmanınızı, haftanızı ya da tüm sezonu planlayın – ister hazırlık dönemi ister çift maç yükü olsun. Yoğunluğu, antrenman günlerini ve hangi oyuncuların hangi egzersizlerde görev aldığını takip edin. Her antrenmanı tamamen kişiselleştirin ya da ilham alın – kendiniz orada olmasanız bile her şeyin planlandığı gibi gitmesini sağlayın.
+9|Planlama ve ileriyi düşünme
+10|Yapı ve yönlendirme
+11|Misyonumuz
+12|Malzeme, zaman planlaması ve yük dağılımı üzerindeki kontrolü bir daha asla kaybetmeyin. Her egzersizin ne kadar sürdüğünü ve yoğunluğun antrenmanınıza nasıl dağıldığını bir bakışta görün. Daha az çabayla daha profesyonel bir hazırlık – böylece sahada daha fazla zaman ve gerçek etkileşim kalır.
+13|Tam kontrol
+14|Kataloğa git
+15|Ana sayfaya git
+16|📲 Uygulama olarak kaydet
+17|Değişiklikleri kaydet
+18|Uygulamayı yükle
+19|Kullanıcı verileri
+20|Kullanıcı adı
+21|E-posta
+22|Kayıtlı plan yok.
+23|Hesap
+24|🗑 Hesabı kalıcı olarak sil
+25|Hesabı sil
+26|Hesabınızı ve ilgili tüm verileri kalıcı olarak siler.
+27|Hesabım
+28|E-posta ile ara …
+29|Adı katalogda herkese açık göster
+30|Herkese açık görünürlük
+31|Paylaş ↗
+32|Antrenörleri yönet
+33|Etkinse, kullanıcı adınız gönderdiğiniz egzersizlerde herkese açık katalogda görünür.
+34|Ana ekrana
+35|← Geri
+36|Kategori başına 10 egzersiz
+37|Kategori başına 20 egzersiz
+38|Bölüm başına 3 egzersiz
+39|Kategori başına 3 egzersiz
+40|Kategori başına 5 egzersiz
+41|ADVANCED
+42|Advanced
+43|tüm işlevler
+44|tüm egzersizler
+45|Basic'in tümü, ayrıca
+46|Basic +'ın tümü, ayrıca
+47|Teklifler
+48|BASIC
+49|Basic
+50|BASIC +
+51|Basic +
+52|Basic + ücretsiz edin
+53|30.06.2027'ye kadar ücretsiz kullanılabilir
+54|Tam paket
+55|Kulüp seviyeyi seçer (Basic +, Advanced veya Pro) – davet edilen antrenörler bu seviyeyi alır, kendi seviyeleri daha yüksekse onu korurlar
+56|Kendi egzersizlerini oluşturma ve gönderme
+57|Saha diyagramlarını görüntüleme
+58|Diğer her şey için giriş yapın (ör. antrenman planı oluşturma)
+59|Kulüpler ve antrenör ekipleri için
+60|MİSAFİR
+61|Misafirler
+62|Misafir ve Basic her zaman ücretsizdir.
+63|Her zaman ücretsiz
+64|Şimdi başla
+65|Oyuncu başına notlarla kadro oluşturma
+66|Takvim işlevi: günlere göre antrenmanlara bakma
+67|Ücretsiz hesap
+68|Uzun vadeli planlama: blok oluşturma
+69|Basic + ile bir kulüp oluşturabilir ve kulüp yöneticisi olabilirsiniz – ya da bir kulüp yöneticisi atayabilirsiniz
+70|Plandaki egzersizlere notlar
+71|Hesap olmadan hemen başlayın
+72|Planları puanlama
+73|Kendi planlarını oluşturma, kaydetme ve gönderme
+74|Fiyat yakında
+75|PRO
+76|Pro
+77|Kaydetme ve puanlama
+78|Antrenör ekibi oluşturma
+79|Antrenman planı hazırlama ve yazdırma
+80|Egzersizleri puanlama
+81|Egzersiz gönderme
+82|Egzersizleri kopyalama ve genişletme
+83|KULÜP
+84|Kulüp
+85|Kulüp oluştur
+86|Kulübe katıl
+87|Kulüp logolu kulüp portalı
+88|Antrenörlere erişim bağlantılarının dağıtımı
+89|Geliştirme aşamasında
+90|Blok kütüphanesine erişim
+91|Tam plan kütüphanesine erişim
+92|Özel antrenmana erişim
+93|↩ Çıkış yap
+94|Yönetici
+95|AssistCoach
+96|yakında
+97|Beta
+98|Antrenman kataloğunuz
+99|✏️ Gönder
+100|Ayarlar
+101|Geri bildirim gönder
+102|Yardım ve açıklama
+103|📅 Takvim
+104|Katalog
+105|Uzun vadeli planlama
+106|Daha fazla
+107|👤 Alanım
+108|Yazı tipi
+109|🏠 Ana sayfa
+110|Temayı değiştir
+111|Antrenman planı
+112|Egzersiz, etiket, bölüm ara…
+113|↺ Bağlan
+114|Sıfırla
+115|Burada hangi gün hangi antrenmanı yaptığınızı görürsünüz. Bir antrenman planını kaydederken takvime ekleyebilirsiniz.
+116|Takvim
+117|Atletik antrenör
+118|Takım sorumlusu
+119|Baş antrenör
+120|Yardımcı antrenör
+121|Görev (isteğe bağlı)
+122|Kaleci antrenörü
+123|Ad ve soyad
+124|-- seçin --
+125|DİZİLİŞİ YERLEŞTİR
+126|SEÇİM
+127|Seç ve taşı
+128|Otomatik numaralandırma açık/kapalı
+129|Top yerleştir
+130|● Mavi
+131|🔵 Mavi
+132|Dripling yolu (2 kez tıkla)
+133|Yakalama ve hizalama yardımcıları
+134|EKİPMAN
+135|Ekipman (huni, direk …)
+136|RENK
+137|Seçilen oyuncunun rengi
+138|ŞEKİL
+139|BİÇİM
+140|🟡 Sarı
+141|● Sarı / Kaleci·Libero
+142|Tam saha
+143|Tam saha plaj
+144|Büyük kale
+145|● Yeşil
+146|🟢 Yeşil
+147|Yarım saha
+148|Yarım saha plaj
+149|Engel
+150|Huni
+151|DAİRE İÇİNDE
+152|Gençlik kalesi
+153|Küçük saha
+154|Koordinasyon merdiveni
+155|Kuvvet
+156|Koşu yolu (2 kez tıkla)
+157|Çizgi açıklaması
+158|● Mor
+159|ÇİZGİ
+160|Çizgiler
+161|– Malzeme –
+162|Mini kale
+163|Tarafsız alan
+164|No.
+165|NUMARA
+166|Nesneyi sil
+167|Nesneler
+168|Nesne yerleştir
+169|● Turuncu
+170|🟠 Turuncu
+171|Pas yolu (2 kez tıkla)
+172|Sakatlık önleme
+173|Toparlanma
+174|Halka
+175|Geri al (Ctrl+Z)
+176|Şut / hücum (2 kez tıkla)
+177|● Siyah
+178|– Özel –
+179|Özel
+180|OYUNCU
+181|Oyuncu yerleştir
+182|Oyuncu rengi
+183|Sprint pisti
+184|Direk
+185|Ceza sahası
+186|T sahası
+187|KALE
+188|Kale yerleştir
+189|Kale boyutu
+190|Antrenör / koç yerleştir
+191|✓ Uygula
+192|Tam saha
+193|● Beyaz
+194|⚪ Beyaz
+195|AÇI
+196|10 dk
+197|12 dk
+198|15 dk
+199|1 · Open Field
+200|20 dk
+201|25 dk
+202|2 · Warm Up
+203|30 dk
+204|3 · Giriş
+205|3 tıklama:
+206|4 · Ana bölüm
+207|5 · Final oyunu
+208|6 · Özel antrenman
+209|İptal
+210|Reddedildi
+211|Akış, organizasyon, koçluk…
+212|Bölüm
+213|Bölümü üstteki sekmelerden seçin (Open Field, Warm Up, Giriş …)
+214|seçimi kaldır
+215|Yönetici rolünü devret:
+216|Yöneticiler:
+217|şu anda seçili spor
+218|Tümü
+219|Onaylanmış tüm egzersizler 6 bölümde. Etiketler ve kümeler hedefli filtrelemeye yardımcı olur.
+220|tümü
+221|Kulüp yöneticisi olarak kulüp hesabınız üzerinde tam kontrole sahipsiniz.
+222|Yaş grubu:
+223|Yaş grupları
+224|Yaş grupları (isteğe bağlı)
+225|Android (Chrome):
+226|Teklifler – ne elde ederim?
+227|Giriş yapmış kullanıcılar kendi egzersizlerini gönderebilir. Yönetici incelemesinden sonra katalogda görünürler.
+228|Giriş yapmış kullanıcılar kulüp oluşturabilir veya mevcut bir kulübe katılabilir.
+229|⇒ Hücum
+230|⇒ Hücum:
+231|⇒ Hücum / vuruş
+232|Giriş yap (hesap gerekli)
+233|Oyuncu sayısı
+234|Hafta sayısı
+235|Logonun gösterimi
+236|Uygulama yöneticileri:
+237|Uygulamayı telefona yükle
+238|AssistCoach – tüm işlevler açıklamalı
+239|AssistCoach, ana ekrana uygulama olarak kaydedilebilir – uygulama mağazasına gerek yok.
+240|hesabı olmayan ziyaretçiler için de
+241|"Diziliş" düğmesi
+242|Dizilişi otomatik yerleştir
+243|Dizilişi otomatik yerleştir (voleybol)
+244|Diziliş seçin (ör. 6'lı temel pozisyon, 5-1, 4-2)
+245|Kırpmayı ayarla
+246|Seçim aracı (↖) → nesneleri taşı veya döndür
+247|⚽ Top
+248|🏐 Top
+249|🎾 Top
+250|Plaj: 2v2
+251|düzenle
+252|Antrenman süresini takip edin ve paralel istasyonları verimli planlayın.
+253|10'dan fazla sonuçta: en iyi 5 + rastgele 5 sonuç her zaman en üstte görünür
+254|Çok sporlu kulüplerde katılma isteklerini kabul ederken sporu seçersiniz
+255|İkisi de
+256|Taşırken, kopyalarken ve yapıştırırken eğri noktası otomatik olarak birlikte hareket eder
+257|Katılma istekleri
+258|Yük yoğunluğu
+259|Yük yoğunluğunu ve süresini belirtin
+260|Yük seyri (yüksek / orta / düşük) renkli gösterilir
+261|Yük süresi
+262|Yük süresi (dk)
+263|Açıklama
+264|Açıklama metni…
+265|Mevcut planın üzerine yaz
+266|Ad
+267|Bitiş
+268|Mavi çizgiler = nesneler birbiriyle hizalı; sarı çizgiler = eşit mesafe
+269|Bloğa tıklayın → haftaları ve antrenmanları düzenleyin
+270|"+ Blok" → dönemi, odağı ve yük seviyesini belirleyin
+271|Başkalarının bloklarını kullan:
+272|Blok adı…
+273|∥ düğmesi
+274|⛶ düğmesi
+275|Gönderme formu, orijinal egzersizin tüm bilgileri ve saha diyagramıyla açılır (giriş gerekli)
+276|Ekipman aracının üç seçim menüsü vardır. Seçimden sonra nesneyi yerleştirmek için sahaya tıklayın.
+277|Izgara, nesneleri düzenli ve hassas yerleştirmeye yardımcı olur.
+278|Izgara seçilen saha türüne göre ayarlanır (tam sahada her 5 m, küçük sahada her 2 m)
+279|Görünen adınız
+280|Top sahada araç düğmesindekiyle aynı şekilde gösterilir
+281|Takvim kaydı, kaydetme anındaki bir kopyadır – plandaki sonraki değişiklikler onu etkilemez
+282|Kulüp yöneticisi istekleri inceler ve kabul edebilir veya reddedebilir
+283|Aktif oyuncu sayısı plan genel görünümünde gösterilir
+284|Uygulama daha sonra yerel bir uygulama gibi açılır – tarayıcı çubuğu olmadan
+285|Kontrol listesi ayrıca şunu ister: saha diyagramı, başlık ve açıklama orijinalden farklı olmalı – ancak o zaman gönderilebilir
+286|İsimler daha sonra doğrudan egzersizde ve planın çıktısında yer alır. Düzenlemek veya silmek için kayda dokunun (silinince kişi güncel plandan da çıkarılır)
+287|Not, planda egzersizin altında ve çıktıda/PDF'de yer alır
+288|En önemli işlevler bir bakışta. Ayrıntılar için: "Ayrıntılı rehber" sekmesi.
+289|Bu egzersiz özel antrenmandan gelir ve her bölüme planlanabilir.
+290|Bu metin bölüm başlığında tüm kullanıcılara görünür şekilde yer alır.
+291|Çift tıklama
+292|Sürükle ve bırak
+293|〰 Dripling
+294|〰 Dripling:
+295|Yazdırma simgesi → planı malzeme listesiyle PDF olarak dışa aktar (atanan antrenörler ve notlarınız her egzersizde yer alır)
+296|Ortalama yalnızca 5 puandan sonra gösterilir
+297|Kendi planlarınız, "↑ Yayınla" ile gönderilip onaylandığında burada görünür
+298|Kendi oyuncularınızı oluşturun ve kadroya atayın. Hesap gereklidir – veriler hesabınıza bağlanır.
+299|Kendi egzersizini gönder
+300|Kendi egzersizlerinizi oluşturun ve gönderin. Uygun etiketler benzer egzersizlerden otomatik önerilir. Yönetici incelemesinden sonra katalogda görünür.
+301|Bir kulübün birden fazla sporu olabilir – antrenör kontenjanları (slotlar) spor başına yönetilir.
+302|Mevcut bir egzersizi şablon olarak alın, geliştirin ve yeni egzersiz olarak gönderin. Orijinal değişmeden kalır.
+303|📤 Gönder:
+304|"Gönder" → incelenir ve onaylanır
+305|Ardından tek tek oyuncuları serbestçe taşıyın veya silin
+306|Ardından tek tek oyuncuları serbestçe taşıyın – libero'yu (sarı) elle işaretleyin
+307|Del / Geri tuşu
+308|Del · Sil
+309|Aynı anda yalnızca bir menü etkindir – bir menüde seçim yapmak diğerlerini sıfırlar
+310|Esc
+311|Esc · Seçimi kaldır
+312|Saha diyagramı
+313|Saha diyagramı düzenleyicisi
+314|Saha diyagramını düzenleyicide genişletin veya değiştirin ve "Uygula" ile onaylayın
+315|Saha diyagramını düzenleyicide çizin (zorunlu, kontrol listesinde yer alır)
+316|Saha diyagramını kaydet ve at
+317|⚽ Saha düzenleyici
+318|Saha düzenleyici – temeller
+319|Saha düzenleyici – temeller (tenis)
+320|Saha düzenleyici – temeller (voleybol)
+321|Saha türü
+322|Saha türü egzersiz başına kaydedilir
+323|⏰ Sabit randevular:
+324|"ŞEKİL"
+325|Açılır listeden bir dizilim seçin (ör. 4-4-2, 4-3-3 …)
+326|+ Serbest blok
+327|✓ Onayla
+328|Diğer antrenörlerin onaylanmış antrenman planlarını keşfedin, puanlayın ve şablon olarak kullanın.
+329|Futbol ve tenis
+330|Kavisli koşu yolları veya eğri uçuş yollu toplar için – tüm sporlarda. Pas, koşu, şut ve hücum oklarında geçerlidir (dripling için değil).
+331|Misafir
+332|Misafir ve Basic her zaman ücretsizdir
+333|sarı tutamaç
+334|"☑ Düz"
+335|Tüm sezonu antrenman bloklarında yapılandırın ve yük seyrini görselleştirin.
+336|"☐ Kavisli"
+337|Kavisli oklar
+338|Kayıtlı planlar hesabınızda kalır ve gönderilebilir.
+339|Kayıtlı planlar sağdaki listede görünür – yüklemek için tıklayın. Kaydetme ve liste yalnızca hesapla kullanılabilir
+340|Kayıtlı antrenmanlara güne göre bakın, tamamını görüntüleyin ve yeni bir güne kopya olarak yerleştirin. Bir planı kaydederken uygulama, antrenmanın takvime eklenip eklenmeyeceğini sorar.
+341|Yarım saha: 11v11
+342|Yarım saha: 6'lı yarı saha
+343|Ev sahibi
+344|Burada hangi gün hangi antrenmanı yaptığınızı görürsünüz. Takvim hesabınıza aittir ve spora göre ayrılmıştır.
+345|Yardım ve kılavuz
+346|🟠 Huni
+347|Huni:
+348|Araç çubuğundaki "Çizgiler" bölümünde dört ok türü bulunur – her biri 2 tıklamayla (başlangıç, bitiş) çizilir. "Düz / Kavisli"nin sağındaki bir açıklama, hangi çizginin neyi gösterdiğini belirtir (seçili olan vurgulanır).
+349|"Çizgiler" bölümünde üç ok türü bulunur – her biri 2 tıklamayla (başlangıç, bitiş) çizilir. "Düz / Kavisli"nin sağındaki bir açıklama, hangi çizginin neyi gösterdiğini belirtir (seçili olan vurgulanır).
+350|"Çizgiler" bölümünde iki ok türü bulunur – her biri 2 tıklamayla (başlangıç, bitiş) çizilir. "Düz / Kavisli"nin sağındaki bir açıklama, hangi çizginin neyi gösterdiğini belirtir (seçili olan vurgulanır).
+351|"Alanım"da gönderilen tüm planları ve durumlarını görün
+352|Antrenman planında aç
+353|her zaman boş alanla
+354|Kütüphaneye kaydet
+355|Bir sporda yalnızca o spordaki kulüplerin logoları gösterilir
+356|İnceleniyor
+357|🔍 İncelemede
+358|"Antrenman planına yükle"
+359|Hangi bölüme?
+360|Bu egzersiz antrenman planının hangi bölümüne planlansın?
+361|Sahaya tıklayın → nesne yerleştirilir
+362|iPhone / iPad (Safari):
+363|Evet
+364|Her egzersiz 1–5 yıldızla puanlanabilir. Her kullanıcı egzersiz başına bir kez oy verebilir (değişiklik her zaman mümkün).
+365|Şimdi güncelle
+366|👥 Kadro
+367|Kadro açılır listesi
+368|Antrenman planında kadro
+369|Kadroyu yönet
+370|Kadro antrenman planında otomatik olarak kullanılabilir olur (üstteki açılır liste)
+371|📅 Takvim:
+372|Notlu kartoteks:
+373|📚 Katalog
+374|Katalog ve planlama hesap olmadan. Kaydetme, puanlama, gönderme ve kadro için ücretsiz hesap gerekir. "Alanım"da kendi egzersizlerinizi ve gönderdiğiniz planları yönetirsiniz.
+375|Kategori etiketine tıklayın → yalnızca bu kategorinin egzersizlerini göster
+376|Voleybolda dripling yok – dalgalı çizgi gizlenir
+377|Tenisde pas yolu ve dripling yok – iki araç da gizlenir
+378|Küçük saha: 9v9 / 7v7
+379|Ada tıklayın → "Alanım" veya "Çıkış yap"
+380|Bir etiketi kümeye atamak için ona tıklayın. Kümesi olmayan etiketler "Diğer" olarak gösterilir.
+381|Virgülle ayrılmış, ör. DRİPLİNG, 1VS1
+382|👤 Hesap
+383|Hesabı sil:
+384|Hesap ve alanım
+385|Yeni gün için kopya
+386|"Kopyayı at" iptal eder ve formu boşaltır
+387|ücretsiz hesap
+388|Kısa açıklama…
+389|📅 Uzun vade
+390|Kement
+391|⤳ Koşu yolu
+392|⤳ Koşu yolu:
+393|"Temizle" → planı tamamen sıfırlar: egzersizler, başlık, tarih ve oyuncu adları – tamamen yeni bir plana başlarsınız
+394|Çizgiyi seçin (↖) → "Numara" altında ok ucuna bir sayı yazın
+395|Çizgiler ve oklar (futbol)
+396|Çizgiler ve oklar (tenis)
+397|Çizgiler ve oklar (voleybol)
+398|Logo yükle:
+399|Onay veren kulüplerin logoları ana sayfanın arka planında gösterilir.
+400|Sil
+401|🗑 Sil
+402|Malzeme:
+403|Malzeme ve özel nesneler
+404|Malzeme listesi gereken en yüksek miktarı otomatik gösterir (çift sayım yok)
+405|Birkaç blok sezon genel görünümünü oluşturur
+406|birden çok gün
+407|Çoklu seçim ve klavye kısayolları
+408|Alanım:
+409|Kulübüm
+410|"Kulübüm"
+411|Kulübüm – kulüp oluştur ve katıl
+412|Tek tıklamayla tüm bir takımı temel bir taktik dizilişe yerleştirin.
+413|Tek tıklamayla tüm bir takımı temel bir voleybol dizilişine yerleştirin.
+414|Üyeleri kulüpten çıkar
+415|Girişten sonra: ad sağ üstte görünür
+416|Kabulden sonra kulüp logosu üstte başlıkta görünür
+417|Bir egzersiz gönderildikten sonra düzenleyici yeniden boş olur ve "Küçük saha"ya sıfırlanır
+418|Ad *
+419|Ad
+420|Bloğun adı *
+421|Kadronun yanında antrenör ekibinizin bir listesi vardır. Antrenman planında her egzersize bir veya birkaç antrenör atarsınız.
+422|Yeni olarak kaydet
+423|Yeni diziliş seçin → önceki oyuncuların yerini otomatik alır
+424|Yeni sürüm mevcut
+425|Yeni başlık…
+426|Yeni antrenman bloğu
+427|değil
+428|hiç kaydedilmedi
+429|📝 Not
+430|"📝 Not +"
+431|Not ekle
+432|Notlar
+433|Notlar, isimler, maç günü rakipleri, antrenörler ve tarihler kaldırılır.
+434|Notlar / ilerleme
+435|Notlar özeldir: bir plan yayınlanırken gönderilmezler
+436|Plandaki notlar ve oyuncu adları
+437|yalnızca hesabınız
+438|yalnızca bu antrenman için
+439|Sağ üstte "Giriş yap" → e-posta + parola veya yeni hesap
+440|Nesneler en yakın ızgara noktasına otomatik oturur
+441|Giriş yapmadan
+442|İsteğe bağlı: AssistCoach web sitesinin logosunu tanıtım amacıyla kullanıma sunma (gönüllü, istediğiniz zaman geri alınabilir)
+443|→ Pas yolu
+444|→ Pas yolu:
+445|→ Pas yolu / ara pas
+446|→ Pas yolu / ara pas:
+447|Parola
+448|Zorunlu alanları doldurun: ad, bölüm, oyuncu sayısı, açıklama
+449|"+ Plan"
+450|Plana ad verin ve "Kaydet"e tıklayın
+451|Plan zaten var
+452|Planı doldur →
+453|Planları yıldızlarla puanlayın (listede ve önizlemede); ortalama 3 puandan sonra gösterilir
+454|Planları kaydet ve yayınla
+455|Yerleştirilmiş nesneleri sağ tıklamayla döndürün; toplar ve malzemeler kenardaki tutamaçla yeniden boyutlandırılabilir
+456|Izgara ve yakalama
+457|Nesneye sağ tıklayın → 22,5° döndür
+458|Toplam süre aşıldığında kırmızı uyarı görünür
+459|⇒ Şut
+460|⇒ Şut:
+461|Odak
+462|Odak noktaları, hedefler, özel notlar…
+463|"+ Slot"
+464|Düzenleyici açılırken ve kapanırken böyle davranır.
+465|Özel:
+466|Sonra
+467|Antrenman planını kaydetme
+468|"Kaydet" (üstte) → planı adıyla kaydedin, kapattıktan sonra da kalır
+469|👤 Oyuncuları adlandır:
+470|👤 Oyuncu
+471|+ Oyuncu
+472|Oyuncuya tıklayın → verileri düzenleyin veya silin
+473|Ad, numara ve pozisyonla oyuncu oluşturun. Antrenman planında devamsızları işaretten çıkarın – aktif oyuncu sayısı otomatik hesaba katılır.
+474|+ Maç günü
+475|Spor
+476|Kulüpteki sporlar ve slotlar
+477|Yıldızlara doğrudan kartta veya ayrıntı penceresinde tıklayın
+478|Anahtar kelime ara …
+479|Ctrl+A
+480|Ctrl+A · Tümünü seç
+481|Ctrl+C · Kopyala
+482|Ctrl+C / Ctrl+V
+483|Ctrl+V · Yapıştır
+484|Ctrl+Z
+485|Ctrl+Z · Geri al
+486|Arama alanı: metin ad, açıklama ve etiketlerde aranır
+487|Güne dokunun → o günün antrenmanları; antrenmana dokunun → egzersizler, süreler, antrenörler ve notlarla tüm plan
+488|Etiket ekle (genel)
+489|Gün ekle:
+490|Etiketler
+491|Etiketleri kümelere ata
+492|Etiketlere doğrudan kartta tıklayın → bu etikete göre filtrele
+493|Taktik dizilişleri ve egzersiz akışlarını doğrudan sahada çizin.
+494|Taktik dizilişleri ve egzersiz akışlarını doğrudan voleybol sahasında çizin.
+495|Taktik dizilişleri ve egzersiz akışlarını doğrudan tenis kortunda çizin.
+496|⌨️ Klavye kısayolları (saha düzenleyici)
+497|"+ Tenis"
+498|İpucu:
+499|Başlık
+500|☰☰ / ≡ Geçiş: tam kartlar ile kompakt liste arasında geçiş yapın
+501|"Antrenörler"
+502|Antrenörler kendi sporlarını rozet olarak görür
+503|Antrenör ekibi
+504|Antrenör ekibi ve antrenörleri planlama
+505|Tüm sezon için antrenman blokları oluşturun ve yük seyrini görselleştirin. Yeni: diğer antrenörlerin onaylanmış planlarını içeren antrenman planı kütüphanesi (puanla ve yükle).
+506|+ Antrenman
+507|📋 Antrenman planı
+508|"Antrenman planı kütüphanesi"
+509|Antrenman planı oluştur
+510|"✓ Uygula"
+511|Uygula
+512|"✓ Uygula" → kırpma penceresi → egzersize ekle
+513|Egzersizi kopyala ve genişlet
+514|Egzersiz ara…
+515|Katalogdaki egzersizleri eksiksiz bir antrenmanda bir araya getirin.
+516|Egzersizleri 6 bölümde arayın, etiketlere göre filtreleyin, yıldızla puanlayın ve doğrudan antrenman planına alın. Görünüm: açık veya kompakt liste.
+517|Egzersizleri sürükle ve bırakla sıralayın, süreyi − / + ile ayarlayın, hedef süre belirleyin (aşılırsa kırmızı uyarı), egzersizleri paralel (∥) olarak işaretleyin, egzersiz başına notlar, planı kaydedin ve PDF olarak yazdırın.
+518|Egzersiz ayrıntıları
+519|Egzersiz kataloğu – arama ve filtreleme
+520|🏟️ Kulüp
+521|Kulüp oluştur:
+522|Kulübü sil:
+523|Bir veya birden fazla sporla kulüp oluşturun ya da katılın. Kulüp yöneticisi olarak logo yükleyin, spor başına slotları yönetin, yönetici rolünü devredin veya kulübü silin.
+524|Kulüp ara:
+525|Ana sayfadaki kulüp logoları ve kulübü silme
+526|Kulüp yönetimi (yönetici)
+527|"↑ Yayınla" → planı yönetici incelemesine gönder
+528|Yayınlandı
+529|"+ Voleybol"
+530|Tam saha: 11v11
+531|Tam saha: 6v6
+532|Başlangıç
+533|Önizleme
+534|Öneriler
+535|– seçin –
+536|Bugün kimler var? Oyuncu sayısının doğru olması için devamsızlıkları doğrudan antrenman planına girin.
+537|Araç seçin (oyuncu, C harfli siyah üçgen olarak koç, top, kale, huni, ekipman)
+538|Araç seçin (oyuncu, C harfli siyah üçgen olarak koç, top, huni, ekipman) – voleybolda kale ve dripling yok
+539|Araç seçin (oyuncu, C harfli siyah üçgen olarak koç, top, huni, ekipman) – tenisde kale ve dripling yok
+540|Hafta
+541|Hafta adı
+542|ör. 1v1 hücum, pres, şut tekniği
+543|ör. 6-12
+544|ör. 15. hafta
+545|ör. 18. hafta · 29.04–03.05
+546|ör. pas oyunu…
+547|ör. önceki haftaya göre yoğunluk artışı…
+548|ör. 2026 ilkbahar hazırlığı
+549|Dönem
+550|Kırpmayı büyütmek veya küçültmek için köşeleri sürükleyin. Tüm alanı ortasından sürükleyerek taşıyın.
+551|Hedef süre
+552|Hedef süre ve paralel egzersizler
+553|Hedefler / notlar
+554|Antrenman planınızdaki her egzersiz için kendi notunuzu yazabilirsiniz.
+555|(silmek için ×)
+556|geri çek
+557|© 2026 AssistCoach
+558|Şartlar
+559|📲 Telefonda da
+560|Gizlilik
+561|Kendi egzersizlerinizi oluşturun ve kataloğa eklenmek üzere önerin.
+562|Futbol
+563|Künye
+564|QR kodunu telefon kamerasıyla tarayın ve AssistCoach'u uygulama olarak kaydedin.
+565|Siteye QR kodu
+566|Tenis
+567|Egzersiz gönder
+568|ve bir çocuğa, bir oyuncuya, bir koça ya da bir sorumluya yardımı olduysa … o zaman tüm emek değmiştir
+569|Vizyon ve hedefler ↗
+570|Voleybol
+571|Kadroyu oluşturmak için ilk oyuncunuzu ekleyin.
+572|Antrenman planında her egzersize bir veya birkaç antrenör atayabilirsiniz.
+573|Henüz oyuncu oluşturulmadı
+574|Aktif antrenman periyodizasyonu
+575|Blok kütüphanesi
+576|Blok oluştur, haftaları doldur, günleri planla
+577|Daha sonra kullanmak için kayıtlı bloklar
+578|+ Yeni blok
+579|Herkese açık planlara göz atın ve antrenman planına yükleyin
+580|Plan ara …
+581|Antrenman planı kütüphanesi
+582|Kadrom
+583|+ Plan
+584|Sezon planlaması
+585|AssistCoach'a hoş geldiniz
+586|Antrenman tarihi
+587|Yazdır
+588|💾 Kayıtlı planlar
+589|Temizle
+590|Kaydet
+591|Antrenmanı adlandır…
+592|Bugün kimler var?
+593|Kanat oyuncusu
+594|Bek
+595|Defansif orta saha
+596|Stoper
+597|Doğum yılı
+598|Santrfor
+599|Bu kişi için yeni not …
+600|📝 Notlar
+601|Numara (isteğe bağlı)
+602|Bu notları yalnızca siz görürsünüz. Lütfen sağlık verisi veya teşhis girmeyin.
+603|Ofansif orta saha
+604|Pozisyon (isteğe bağlı)
+605|Büyükler (erkek)
+606|Büyükler (kadın)
+607|Kaleci
+608|ör. 10
+609|Merkez orta saha
+610|Tüm egzersizleri sil
+611|API temel URL'si
+612|API anahtarı (isteğe bağlı)
+613|API bağlantısı
+614|CSV dışa aktar
+615|CSV içe aktar
+616|Dışa aktar
+617|BT tarafından sağlanıyorsa
+618|https://sunucunuz.example/api
+619|İçe aktar
+620|BT belgesi
+621|Kaydet ve test et
+622|Şablon
+623|Çıkış yap
+624|Final oyunu
+625|Bölüm *
+626|Bölüm seçildi
+627|Yönetici kuyruğu – bloklar
+628|Yönetici kuyruğu – antrenman planları
+629|Yönetici kuyruğu – egzersizler
+630|Yaş grubu/grupları seçildi
+631|Yaş grupları *
+632|Oyuncu sayısı *
+633|Oyuncu sayısı girildi
+634|Görünen ad (ör. Max Müller)
+635|Top sepeti
+636|Yük yoğunluğu *
+637|Yük yoğunluğu seçildi
+638|Yük süresi girildi
+639|Yük süresi (dk) *
+640|Açıklama orijinale göre uyarlandı
+641|Açıklama (en az 20 karakter) *
+642|Açıklama (en az 20 karakter)
+643|Lütfen seçin…
+644|Kontrol listesi
+645|Gizlilik politikası
+646|Geri bildiriminiz…
+647|Adınız
+648|sizin@eposta.com
+649|E-posta adresi
+650|E-posta (isteğe bağlı, yanıt için)
+651|İnceleme ve onay için gönderilen bloklar (anonimleştirilmiş).
+652|İnceleme ve onay için gönderilen antrenman planları.
+653|Bölümlere göre gönderilen egzersizler — egzersizleri incelemek için bir alana tıklayın.
+654|Tüm zorunlu bilgilerle yeni bir egzersiz oluşturun. Yönetim ekibi inceler ve gerekirse kataloğa onaylar.
+655|Neredeyse bitti!
+656|Geri bildirimi gönder
+657|💬 Geri bildirim gönder
+658|Saha diyagramı orijinale göre değiştirildi
+659|Saha diyagramı çizildi
+660|Saha diyagramı (zorunlu – en az 1 nesne) *
+661|Silinen egzersizler geri yüklenebilir veya kalıcı olarak kaldırılabilir.
+662|Yeni parolanızı girin. En az 6 karakter.
+663|E-posta adresinizi girin – size sıfırlama bağlantısı göndereceğiz.
+664|Temel bilgiler
+665|Bir iyileştirme önerisi mi var, hata mı buldunuz ya da bir fikriniz mi var? Bize yazın – her geri bildirimden memnun oluruz.
+666|Ana bölüm
+667|Giriş
+668|Yüksek
+669|Engeller
+670|Gençlik kaleleri
+671|Koord. merdiveni
+672|Kopyayı at
+673|Kolay
+674|Bağlantıyı gönder
+675|Malzeme
+676|Gönderdiklerim
+677|Antrenman planlarım
+678|Kendi egzersizlerinizi oluşturmak ve kataloğa önermek için giriş yapın.
+679|En az 3 etiket eklendi
+680|Mini kaleler
+681|İkinci seçenekle egzersizi hemen antrenman planında kullanabilirsiniz; yine de incelemeye gönderilir ve onaydan sonra kataloğa girer.
+682|Orta
+683|Mesaj
+684|Ad dolduruldu
+685|Egzersizin adı *
+686|Yeni parola
+687|Yeni parola belirle
+688|Henüz gönderilmiş plan yok.
+689|Henüz gönderim yok.
+690|Open Field
+691|🗑 Çöp kutusu
+692|Çöp kutusu
+693|Parolayı kaydet
+694|Parolanızı mı unuttunuz?
+695|Parolayı tekrarla
+696|Gönderdiğiniz veya zaten yayınlanmış planlar.
+697|Geri tepme duvarı
+698|Halkalar
+699|Katalogdaki görünürlük
+700|Özel antrenman
+701|Direkler
+702|Etiket girin…
+703|Etiketler (en az 3) *
+704|Başlık orijinale göre uyarlandı
+705|Gönderdiğiniz ve hâlâ inceleme bekleyen egzersizler.
+706|Egzersiz kataloğu
+707|Egzersiz adı…
+708|Warm Up
+709|Ek malzeme:
+710|Egzersiz nasıl işler? Amaç nedir?
+711|ör. 12
+712|ör. 6–12
+713|ör. huni, top, yelek
+714|ör. Max Müller
+715|Sayılabilir malzeme (miktarı seçin):
+716|Girişe dön
+717|Pas halkası

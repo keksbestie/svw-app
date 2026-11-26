@@ -158,7 +158,9 @@ const TRANSLATIONS = {
 const LANG_META = {
   de: { flag: '🇩🇪', code: 'DE' },
   en: { flag: '🇬🇧', code: 'EN' },
-  es: { flag: '🇪🇸', code: 'ES' }
+  es: { flag: '🇪🇸', code: 'ES' },
+  fr: { flag: '🇫🇷', code: 'FR' },
+  tr: { flag: '🇹🇷', code: 'TR' }
 };
 
 let currentLang = localStorage.getItem('tb_lang') || localStorage.getItem('svw_lang') || 'de';
