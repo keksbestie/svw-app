@@ -200,3 +200,17 @@ test('Vereinsfarbe: Trainingsplan-Knopf in der Kopfzeile hat die Akzentfarbe als
   }
   expect(errors).toEqual([]);
 });
+
+test('Anmelden lädt den Verein (Zuordnung, Rolle, Farbe) ohne Neuladen der Seite', async ({ page }) => {
+  const errors = await openApp(page);
+  const r = await page.evaluate(async () => {
+    currentClub = null; currentClubRole = null;
+    const rows = { profiles: { role: 'admin', reviewer_sports: [], club_id: 'c1', club_role: 'club_admin' }, clubs: { id: 'c1', name: 'Testihausen 09', logo_url: null, slot_count: 0, logo_public_consent: false, sports: ['fussball'], primary_color: 'blau', focus_points: [] } };
+    const mk = t => { const q = { select() { return q; }, eq() { return q; }, single() { return Promise.resolve({ data: rows[t], error: null }); } }; return q; };
+    _supabase = { from: mk };
+    await _applyProfile('u1');
+    return { club: currentClub && currentClub.name, role: currentClubRole, admin: IS_ADMIN, color: document.documentElement.getAttribute('data-club-color') };
+  });
+  expect(r).toEqual({ club: 'Testihausen 09', role: 'club_admin', admin: true, color: 'blau' });
+  expect(errors).toEqual([]);
+});

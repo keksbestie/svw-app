@@ -27,6 +27,8 @@ async function _applyProfile(userId){
   REVIEWER_SPORTS=profile?.reviewer_sports||[];
   document.body.classList.toggle('admin',IS_ADMIN);
   document.body.classList.toggle('reviewer',IS_REVIEWER);
+  // Verein (Zuordnung, Farbe, Schwerpunkte) mitladen, sonst fehlt er nach dem Anmelden bis zum Neuladen der Seite
+  if(typeof loadClubData==='function') await loadClubData(userId);
 }
 
 async function loadSubmissions(){
