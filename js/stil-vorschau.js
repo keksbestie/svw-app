@@ -141,5 +141,54 @@
     if (!isMix() || !wrap() || !wrap().offsetParent) return;
     if (e.key === 'ArrowRight') go(cur() + 1); if (e.key === 'ArrowLeft') go(cur() - 1);
   });
+
+  /* ---------- Zusatzkarten (Vision, Angebote) und Einführungs-Symbole ---------- */
+  var ARROW = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+  function ico(path) { return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + path + '</svg>'; }
+  var EXTRA = [
+    ['about', 'about', '05', 'Vision &amp; Ziele', 'Wofür AssistCoach steht und wohin die Reise geht.', '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><line x1="12" y1="1" x2="12" y2="4"/>'],
+    ['offers', 'angebote', '06', 'Angebote', 'Pakete und Möglichkeiten für Trainer:innen und Vereine.', '<path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.2"/>']
+  ];
+  function ensureExtras() {
+    var w = wrap(); if (!w || w.querySelector('.home-card--about')) return;
+    EXTRA.forEach(function (x) {
+      var d = document.createElement('div');
+      d.className = 'home-card home-card--' + x[0];
+      d.setAttribute('onclick', "goPage('" + x[1] + "')");
+      d.innerHTML = '<div class="home-card-num">' + x[2] + '</div><div class="home-card-inner"><div class="home-card-icon">' + ico(x[5]) + '</div><div class="home-card-title">' + x[3] + '</div><div class="home-card-desc">' + x[4] + '</div></div><div class="home-card-arrow">' + ARROW + '</div>';
+      w.appendChild(d);
+    });
+  }
+  function ensureObIcons() {
+    var sl = document.querySelectorAll('.ob-slide'); if (sl.length < 4) return;
+    var set = [[1, '#2fd08f', '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>'],
+               [2, '#4f8bff', '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>'],
+               [3, '#a874ff', '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>']];
+    set.forEach(function (x) {
+      var f = sl[x[0]] && sl[x[0]].firstElementChild; if (!f || f.dataset.done) return;
+      f.dataset.done = '1'; f.className = 'ob-ico'; f.removeAttribute('style'); f.style.setProperty('--c', x[1]); f.innerHTML = ico(x[2]).replace('width="22" height="22"', 'width="28" height="28"');
+    });
+  }
+
+  var ballSport = '';
+  function ensureBall() {
+    var w = wrap(); if (!w) return;
+    var sp = window.currentSport && window.currentSport.id; if (!sp) return;
+    var b = document.getElementById('ringBall');
+    if (!b) {
+      b = document.createElement('button'); b.type = 'button'; b.id = 'ringBall';
+      b.setAttribute('aria-label', 'Sportart ändern'); b.title = 'Sportart ändern';
+      b.innerHTML = '<span class="rb-disc"><img alt=""></span><span class="rb-lbl"></span>';
+      b.addEventListener('pointerdown', function (e) { e.stopPropagation(); });
+      b.addEventListener('click', function (e) { e.stopPropagation(); if (typeof changeSport === 'function') changeSport(); });
+      w.insertBefore(b, w.firstChild);
+    }
+    if (ballSport !== sp) {
+      ballSport = sp;
+      b.querySelector('img').src = 'icons/sport-' + sp + '-w.png';
+      b.querySelector('.rb-lbl').textContent = (window.currentSport.label || sp);
+    }
+  }
+  setInterval(function () { if (isMix()) { ensureExtras(); ensureObIcons(); ensureBall(); } }, 300);
   requestAnimationFrame(frame);
 })();
