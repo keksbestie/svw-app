@@ -198,6 +198,17 @@
       b.querySelector('.rb-lbl').textContent = (window.currentSport.label || sp);
     }
   }
+  /* Im Mix-Look keine Emoji vor Schlagwörtern (Navigation, Knöpfe); beim Verlassen kommen sie zurück */
+  var EMO = /^(?:[\u2600-\u27BF\uFE0F]|[\uD83C-\uD83E][\uDC00-\uDFFF])+\s*/;
+  function stripEmoji() {
+    var mix = isMix();
+    document.querySelectorAll('.mb, #homeHeroBtns button, .home-hero-btn').forEach(function (el) {
+      var n = el.firstChild; if (!n || n.nodeType !== 3) return;
+      if (mix) { var m = n.nodeValue.match(EMO); if (m) { el.setAttribute('data-emo', m[0]); n.nodeValue = n.nodeValue.slice(m[0].length); } }
+      else if (el.hasAttribute('data-emo')) { n.nodeValue = el.getAttribute('data-emo') + n.nodeValue; el.removeAttribute('data-emo'); }
+    });
+  }
+  setInterval(stripEmoji, 400);
   setInterval(function () { if (isMix()) { ensureExtras(); ensureObIcons(); ensureBall(); } }, 300);
   requestAnimationFrame(frame);
 })();

@@ -432,3 +432,10 @@ html[data-stil="nacht"][data-mix] .home-hero-sub{margin:12px auto 14px}
 html[data-stil="nacht"][data-mix] #homeHeroBtns{margin-top:10px!important}
 html[data-stil="nacht"][data-mix] #homeCards{margin-top:-14px}
 }
+/* Navigation: ruhiger, mit leuchtender Linie statt Symbolen */
+html[data-mix] .mb{position:relative;border-bottom:0!important;padding:0 20px;color:var(--text-3);transition:color .25s}
+html[data-mix] .mb:hover{color:var(--text-1)}
+html[data-mix] .mb::after{content:"";position:absolute;left:50%;bottom:0;height:2px;width:0;transform:translateX(-50%);background:linear-gradient(90deg,#2fd08f,#4f8bff,#a874ff);border-radius:2px;transition:width .35s cubic-bezier(.22,1,.36,1)}
+html[data-mix] .mb:hover::after{width:22%}
+html[data-mix] .mb.active{box-shadow:none;color:var(--text-1)}
+html[data-mix] .mb.active::after{width:calc(100% - 40px)}
