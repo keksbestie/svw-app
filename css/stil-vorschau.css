@@ -421,3 +421,14 @@ html[data-stil="nacht"][data-mix] .home-hero-eyebrow{display:none!important}
 html[data-stil="nacht"][data-mix] .home-hero{position:relative;z-index:6}
 html[data-stil="nacht"][data-mix] #homeCards{z-index:1}
 @media (min-width:701px){html[data-stil="nacht"][data-mix] .home-hero{padding-top:50px}}
+/* Mehr Luft zwischen den Texten, Scrollleiste ausgeblendet (Scrollen geht weiter) */
+html[data-mix],html[data-mix] body,html[data-mix] .page,html[data-mix] #page-home{scrollbar-width:none;-ms-overflow-style:none}
+html[data-mix] ::-webkit-scrollbar{width:0;height:0;display:none}
+@media (min-width:701px){
+html[data-stil="nacht"][data-mix] .home-hero{padding-top:58px}
+html[data-stil="nacht"][data-mix] .home-hero-title{margin-bottom:14px}
+html[data-stil="nacht"][data-mix] .home-hero-tagline{margin-bottom:6px}
+html[data-stil="nacht"][data-mix] .home-hero-sub{margin:12px auto 14px}
+html[data-stil="nacht"][data-mix] #homeHeroBtns{margin-top:10px!important}
+html[data-stil="nacht"][data-mix] #homeCards{margin-top:-14px}
+}
