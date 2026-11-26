@@ -52,7 +52,7 @@
   setInterval(modeLabel, 800);
 
   /* ---------- 3D-Rad für die Karten (nur im Stil "Mix") ---------- */
-  var rot = 0, target = 0, dragging = false, moved = 0, startX = 0, startRot = 0, hover = 0, snapping = false, active = -1;
+  var hv = 0, rot = 0, target = 0, dragging = false, moved = 0, startX = 0, startRot = 0, hover = 0, snapping = false, active = -1;
   var ui = document.createElement('div'); ui.id = 'ringUi';
   function wrap() { return document.getElementById('homeCards'); }
   function cards() { var w = wrap(); return w ? [].slice.call(w.querySelectorAll('.home-card')) : []; }
@@ -92,10 +92,13 @@
       var cs = cards(), n = cs.length, st = 360 / n, cs0 = getComputedStyle(w);
       var Rx = parseFloat(cs0.getPropertyValue('--Rx')) || 520, Rz = parseFloat(cs0.getPropertyValue('--Rz')) || 300, lift = parseFloat(cs0.getPropertyValue('--lift')) || 70;
       if (!dragging) {
-        if (hover) { rot += hover * dt * 0.09; snapping = false; }
+        hv += (hover * 0.028 - hv) * Math.min(1, dt * 0.004);
+        if (hover) { snapping = false; }
+        rot += hv * dt;
+        if (hover) { /* läuft */ }
         else {
           if (!snapping) { target = Math.round(rot / st) * st; snapping = true; }
-          rot += (target - rot) * Math.min(1, dt * 0.008);
+          if (!hover) rot += (target - rot) * Math.min(1, dt * 0.0045);
         }
       }
       cs.forEach(function (c, i) {
