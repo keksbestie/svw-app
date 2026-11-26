@@ -1,0 +1,513 @@
+/* ══════════════════════════════════════════════════
+   STIL-VORSCHAU (nur zum Ansehen, ersetzt noch nichts)
+   Gilt nur, wenn <html data-stil="nacht|frisch|studio"> gesetzt ist.
+   Aufbau der Startseite bleibt gleich, nur Look und Bewegung ändern sich.
+   ══════════════════════════════════════════════════ */
+
+/* ---------- Umschalter (unten Mitte) ---------- */
+#stilSwitch{position:fixed;left:50%;bottom:max(14px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:99999;display:flex;gap:4px;padding:5px;border-radius:99px;background:rgba(20,22,24,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 6px 24px rgba(0,0,0,.35);max-width:calc(100vw - 24px)}
+#stilSwitch button{font:700 13px 'Barlow',sans-serif;letter-spacing:.02em;color:#d8dcd9;background:none;border:0;padding:8px 14px;border-radius:99px;cursor:pointer;white-space:nowrap}
+#stilSwitch button[aria-pressed="true"]{background:#fff;color:#111}
+#stilSwitch button:focus-visible{outline:2px solid #fff;outline-offset:1px}
+@media (max-width:480px){#stilSwitch button{padding:8px 10px;font-size:12px}}
+
+@keyframes stilUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes stilGlow{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(3%,-4%,0) scale(1.08)}}
+
+/* Gemeinsam: altes Raster und Rahmen-Effekte aus */
+html[data-stil] #page-home::before{display:none}
+html[data-stil] #page-home{isolation:isolate;overflow-x:hidden;overflow-y:auto}
+html[data-stil] #page-home::after{content:"";position:fixed;z-index:-1;pointer-events:none}
+html[data-stil] .home-hero-eyebrow::before,html[data-stil] .home-hero-eyebrow::after{width:36px;opacity:.6}
+html[data-stil] .home-hero>*{animation:stilUp .7s cubic-bezier(.2,.7,.2,1) both}
+html[data-stil] .home-hero>*:nth-child(2){animation-delay:.06s}
+html[data-stil] .home-hero>*:nth-child(3){animation-delay:.12s}
+html[data-stil] .home-hero>*:nth-child(4){animation-delay:.18s}
+html[data-stil] .home-sport-card{animation:stilUp .6s cubic-bezier(.2,.7,.2,1) both}
+html[data-stil] .home-sport-card:nth-child(2){animation-delay:.08s}
+html[data-stil] .home-sport-card:nth-child(3){animation-delay:.16s}
+html[data-stil] #homeCards .home-card{animation:stilUp .6s cubic-bezier(.2,.7,.2,1) both}
+html[data-stil] #homeCards .home-card:nth-child(2){animation-delay:.07s}
+html[data-stil] #homeCards .home-card:nth-child(3){animation-delay:.14s}
+html[data-stil] #homeCards .home-card:nth-child(4){animation-delay:.21s}
+html[data-stil] #homeCards .home-card:nth-child(5){animation-delay:.28s}
+html[data-stil] .home-card:hover{transform:translateY(-4px)}
+html[data-stil] .home-card::before{display:none}
+@media (prefers-reduced-motion:reduce){html[data-stil] *{animation:none!important;transition:none!important}}
+
+/* ══════════ 1  NACHT: dunkel, Glas, Leuchtverläufe ══════════ */
+html[data-stil="nacht"] #page-home{background:#050d12}
+html[data-stil="nacht"] #page-home::after{inset:-20%;background:
+  radial-gradient(40% 36% at 22% 8%,rgba(34,211,140,.40),transparent 70%),
+  radial-gradient(38% 34% at 82% 30%,rgba(56,120,255,.30),transparent 70%),
+  radial-gradient(46% 40% at 50% 108%,rgba(34,211,140,.22),transparent 70%);animation:stilGlow 16s ease-in-out infinite}
+html[data-stil="nacht"] #clubLogoBg{display:none}
+html[data-stil="nacht"] .home-motto{color:rgba(255,255,255,.4)!important}
+html[data-stil="nacht"] .home-hero-eyebrow{color:#7ff0bf}
+html[data-stil="nacht"] .home-hero-eyebrow::before,html[data-stil="nacht"] .home-hero-eyebrow::after{background:#7ff0bf}
+html[data-stil="nacht"] .home-hero-title{font-weight:800;letter-spacing:.02em;background:linear-gradient(180deg,#fff 30%,#9fe9c6);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+html[data-stil="nacht"] .home-hero-tagline{color:#bfe7d3;opacity:1;font-weight:500;letter-spacing:.2em;font-size:clamp(13px,1.4vw,16px)}
+html[data-stil="nacht"] .home-hero-sub{color:rgba(255,255,255,.7)}
+html[data-stil="nacht"] #homeSportBadge{color:#fff}
+html[data-stil="nacht"] .home-hero-btn,html[data-stil="nacht"] #page-home .home-hero-btn{background:rgba(255,255,255,.08)!important;border:1px solid rgba(255,255,255,.22)!important;color:#fff!important;backdrop-filter:blur(8px)}
+html[data-stil="nacht"] .home-hero-btn:hover{background:rgba(255,255,255,.18)!important}
+html[data-stil="nacht"] .home-sport-card{background:linear-gradient(160deg,rgba(255,255,255,.10),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.16);border-radius:24px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 10px 40px rgba(0,0,0,.35);overflow:hidden}
+html[data-stil="nacht"] .home-sport-card::before{content:"";position:absolute;inset:auto -30% -45% -30%;height:70%;background:radial-gradient(closest-side,rgba(34,211,140,.40),transparent);opacity:.0;transition:opacity .3s}
+html[data-stil="nacht"] .home-sport-card:hover{border-color:rgba(127,240,191,.7);transform:translateY(-5px);background:linear-gradient(160deg,rgba(255,255,255,.14),rgba(255,255,255,.04));box-shadow:0 16px 48px rgba(34,211,140,.22)}
+html[data-stil="nacht"] .home-sport-card:hover::before{opacity:1}
+html[data-stil] .home-sport-img{mix-blend-mode:normal;width:80px;height:80px;object-fit:contain}
+html[data-stil] .home-sport-card[data-sport="fussball"] .home-sport-img{content:url(../icons/sport-fussball-w.png)}
+html[data-stil] .home-sport-card[data-sport="volleyball"] .home-sport-img{content:url(../icons/sport-volleyball-w.png)}
+html[data-stil] .home-sport-card[data-sport="tennis"] .home-sport-img{content:url(../icons/sport-tennis-w.png)}
+html[data-stil="nacht"] .home-sport-img{filter:drop-shadow(0 0 10px rgba(34,211,140,.55)) !important}
+html[data-stil="nacht"] .home-sport-label{color:#fff;letter-spacing:.14em}
+html[data-stil="nacht"] .home-card{background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.14);border-radius:24px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 12px 44px rgba(0,0,0,.35);overflow:hidden}
+html[data-stil="nacht"] .home-card::after{content:"";position:absolute;right:-60px;top:-60px;width:180px;height:180px;border-radius:50%;background:radial-gradient(closest-side,var(--c,#22d38c),transparent);opacity:.28;transition:opacity .3s,transform .5s}
+html[data-stil="nacht"] .home-card:hover{border-color:rgba(255,255,255,.34);box-shadow:0 18px 56px rgba(0,0,0,.45)}
+html[data-stil="nacht"] .home-card:hover::after{opacity:.55;transform:scale(1.25)}
+html[data-stil="nacht"] .home-card--catalog{--c:#22d38c}
+html[data-stil="nacht"] .home-card--plan{--c:#4f8bff}
+html[data-stil="nacht"] .home-card--blocks{--c:#a874ff}
+html[data-stil="nacht"] .home-card--templates{--c:#ffb020}
+html[data-stil="nacht"] .home-card--submit{--c:#ff6a9a}
+html[data-stil="nacht"] .home-card-num{color:rgba(255,255,255,.4)}
+html[data-stil="nacht"] .home-card .home-card-icon{border-radius:16px;color:#fff!important;background:linear-gradient(145deg,var(--c),color-mix(in srgb,var(--c) 45%,#000))!important;box-shadow:0 8px 24px color-mix(in srgb,var(--c) 45%,transparent)}
+html[data-stil="nacht"] .home-card-title{color:#fff;font-weight:800;letter-spacing:.04em}
+html[data-stil="nacht"] .home-card-desc{color:rgba(255,255,255,.66)}
+html[data-stil="nacht"] .home-card-arrow{color:#fff;width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.28);display:grid;place-items:center;background:rgba(255,255,255,.06)}
+html[data-stil="nacht"] .home-card:hover .home-card-arrow{background:#fff;color:#06121a;border-color:#fff}
+html[data-stil="nacht"] #homeQr{background:rgba(255,255,255,.07)!important;border:1px solid rgba(255,255,255,.16)!important;border-radius:22px!important}
+html[data-stil="nacht"] #page-home footer{border-top-color:rgba(255,255,255,.1)!important}
+html[data-stil="nacht"] #page-home .home-topbar button,html[data-stil="nacht"] #page-home .lang-btn{background:rgba(255,255,255,.1)!important;color:#fff!important;border:1px solid rgba(255,255,255,.2)!important;box-shadow:none!important;backdrop-filter:blur(8px)}
+html[data-stil="nacht"] #homeSignInBtn{background:#fff!important;color:#06121a!important;border-color:#fff!important}
+
+/* ══════════ 2  FRISCH: hell, bunte Verläufe, runde Formen ══════════ */
+html[data-stil="frisch"] #page-home{background:#fbfcfb}
+html[data-stil="frisch"] #page-home::after{inset:0 0 auto 0;height:560px;background:
+  radial-gradient(50% 70% at 15% 0%,#b8f0d4 0%,transparent 70%),
+  radial-gradient(45% 65% at 85% 5%,#c9d9ff 0%,transparent 70%),
+  radial-gradient(40% 55% at 55% 0%,#fff1b8 0%,transparent 70%);animation:stilGlow 18s ease-in-out infinite}
+html[data-stil="frisch"] #clubLogoBg{display:none}
+html[data-stil="frisch"] .home-motto{color:#6a7670!important}
+html[data-stil="frisch"] .home-hero{padding-top:56px}
+html[data-stil="frisch"] .home-hero-eyebrow{color:#0f6b40;background:#fff;padding:6px 14px;border-radius:99px;letter-spacing:.14em;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+html[data-stil="frisch"] .home-hero-eyebrow::before,html[data-stil="frisch"] .home-hero-eyebrow::after{display:none}
+html[data-stil="frisch"] .home-hero-title{font-family:'Barlow',sans-serif;font-weight:800;text-transform:none;letter-spacing:-.035em;font-size:clamp(46px,7vw,92px);color:#10201a;line-height:1}
+html[data-stil="frisch"] .home-hero-tagline{font-family:'Barlow',sans-serif;text-transform:none;letter-spacing:-.01em;font-weight:700;font-size:clamp(20px,2.6vw,30px);background:linear-gradient(90deg,#0f9d58,#2563eb);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;opacity:1}
+html[data-stil="frisch"] .home-hero-sub{color:#44524b}
+html[data-stil="frisch"] #homeSportBadge{color:#10201a}
+html[data-stil="frisch"] .home-hero-btn,html[data-stil="frisch"] #page-home .home-hero-btn{background:#fff!important;border:0!important;color:#10201a!important;box-shadow:0 2px 12px rgba(16,32,26,.10)!important;font-family:'Barlow',sans-serif!important;text-transform:none!important;letter-spacing:0!important;font-size:14px!important;font-weight:600!important}
+html[data-stil="frisch"] .home-hero-btn:hover{box-shadow:0 6px 20px rgba(16,32,26,.16)!important;transform:translateY(-2px)}
+html[data-stil="frisch"] .home-sport-card{background:#fff;border:0;border-radius:28px;box-shadow:0 8px 30px rgba(16,32,26,.10);transition:transform .25s cubic-bezier(.3,1.5,.5,1),box-shadow .25s}
+html[data-stil="frisch"] .home-sport-card:hover{transform:translateY(-6px) rotate(-1deg);box-shadow:0 18px 40px rgba(16,32,26,.16);background:#fff;border:0}
+html[data-stil="frisch"] .home-sport-img{width:84px;height:84px;padding:16px;border-radius:50%;background:linear-gradient(145deg,#2fcf8f,#2f6df0);filter:none !important;box-sizing:border-box;box-shadow:0 8px 20px rgba(47,109,240,.28)}
+html[data-stil="frisch"] .home-sport-label{color:#10201a;font-family:'Barlow',sans-serif;font-weight:700;text-transform:none;letter-spacing:0;font-size:17px}
+html[data-stil="frisch"] .home-sport-card--locked{opacity:.55}
+html[data-stil="frisch"] .home-sport-soon{color:#6a7670}
+html[data-stil="frisch"] .home-card{background:#fff;border:0;border-radius:28px;box-shadow:0 6px 28px rgba(16,32,26,.08);padding:30px 28px 26px;transition:transform .25s cubic-bezier(.3,1.5,.5,1),box-shadow .25s}
+html[data-stil="frisch"] .home-card:hover{transform:translateY(-6px);box-shadow:0 18px 44px rgba(16,32,26,.15)}
+html[data-stil="frisch"] .home-card--catalog{--c1:#34d399;--c2:#059669}
+html[data-stil="frisch"] .home-card--plan{--c1:#60a5fa;--c2:#2563eb}
+html[data-stil="frisch"] .home-card--blocks{--c1:#c084fc;--c2:#7c3aed}
+html[data-stil="frisch"] .home-card--templates{--c1:#fbbf24;--c2:#ea580c}
+html[data-stil="frisch"] .home-card--submit{--c1:#f9a8d4;--c2:#db2777}
+html[data-stil="frisch"] .home-card-num{display:none}
+html[data-stil="frisch"] .home-card .home-card-icon{width:60px;height:60px;border-radius:20px;color:#fff!important;background:linear-gradient(145deg,var(--c1),var(--c2))!important;box-shadow:0 8px 18px color-mix(in srgb,var(--c2) 35%,transparent);margin-bottom:22px;transition:transform .3s cubic-bezier(.3,1.6,.5,1)}
+html[data-stil="frisch"] .home-card:hover .home-card-icon{transform:rotate(-8deg) scale(1.1)}
+html[data-stil="frisch"] .home-card-title{font-family:'Barlow',sans-serif;text-transform:none;font-size:22px;font-weight:700;letter-spacing:-.01em;color:#10201a}
+html[data-stil="frisch"] .home-card-desc{color:#55645c}
+html[data-stil="frisch"] .home-card-arrow{color:#fff;background:#10201a;width:38px;height:38px;border-radius:50%;display:grid;place-items:center}
+html[data-stil="frisch"] .home-card:hover .home-card-arrow{color:#fff;background:linear-gradient(145deg,var(--c1),var(--c2))}
+html[data-stil="frisch"] #homeQr{background:#fff!important;border:0!important;border-radius:24px!important;box-shadow:0 6px 28px rgba(16,32,26,.10)!important}
+html[data-stil="frisch"] #homeQr div{color:#10201a!important}
+html[data-stil="frisch"] #homeQr div div{color:#55645c!important}
+html[data-stil="frisch"] #page-home footer,html[data-stil="frisch"] #page-home footer button{color:#55645c!important}
+html[data-stil="frisch"] #page-home footer{border-top-color:#e4e9e6!important}
+html[data-stil="frisch"] #page-home .home-topbar button,html[data-stil="frisch"] #page-home .lang-btn{background:#fff!important;color:#10201a!important;box-shadow:0 2px 10px rgba(16,32,26,.10)!important}
+html[data-stil="frisch"] #homeSignInBtn{background:#10201a!important;color:#fff!important}
+
+/* ══════════ 3  STUDIO: schwarz, ruhig, feine Linien ══════════ */
+html[data-stil="studio"] #page-home{background:#0b0b0b;color:#f2f2f0}
+html[data-stil="studio"] #page-home::after{left:50%;top:-30%;width:70vw;height:70vw;max-width:900px;max-height:900px;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(255,106,0,.16),transparent 70%);animation:stilGlow 20s ease-in-out infinite}
+html[data-stil="studio"] #clubLogoBg{display:none}
+html[data-stil="studio"] .home-motto{color:rgba(255,255,255,.35)!important}
+html[data-stil="studio"] .home-hero{padding-top:64px;max-width:860px}
+html[data-stil="studio"] .home-hero-eyebrow{color:#ff7a1a;font-weight:600;letter-spacing:.42em;font-size:11px}
+html[data-stil="studio"] .home-hero-eyebrow::before,html[data-stil="studio"] .home-hero-eyebrow::after{background:#ff7a1a;width:40px}
+html[data-stil="studio"] .home-hero-title{font-family:'Barlow',sans-serif;font-weight:500;letter-spacing:.34em;font-size:clamp(30px,5.2vw,64px);color:#fff;margin-right:-.34em}
+html[data-stil="studio"] .home-hero-tagline{font-family:'Barlow',sans-serif;font-weight:500;letter-spacing:.3em;font-size:12px;color:#bdbdb8;opacity:1}
+html[data-stil="studio"] .home-hero-sub{color:#9a9a95;max-width:420px}
+html[data-stil="studio"] #homeSportBadge{color:#d8d8d4}
+html[data-stil="studio"] .home-hero-btn,html[data-stil="studio"] #page-home .home-hero-btn{background:transparent!important;border:1px solid rgba(255,255,255,.35)!important;border-radius:2px!important;color:#fff!important;letter-spacing:.22em!important;font-size:11px!important;font-weight:600!important;font-family:'Barlow',sans-serif!important}
+html[data-stil="studio"] .home-hero-btn:hover{background:#fff!important;color:#000!important}
+html[data-stil="studio"] .home-sport-grid{max-width:680px;gap:0;border-top:1px solid rgba(255,255,255,.18);border-bottom:1px solid rgba(255,255,255,.18)}
+html[data-stil="studio"] .home-sport-card{background:transparent;border:0;border-radius:0;border-left:1px solid rgba(255,255,255,.18);box-shadow:none;padding:34px 16px 28px}
+html[data-stil="studio"] .home-sport-card:first-child{border-left:0}
+html[data-stil="studio"] .home-sport-card:hover{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.18);box-shadow:none;transform:none}
+html[data-stil="studio"] .home-sport-card:first-child:hover{border-left:0}
+html[data-stil="studio"] .home-sport-img{filter:none !important;opacity:.85;width:68px;height:68px;transition:transform .5s cubic-bezier(.2,.7,.2,1),opacity .3s}
+html[data-stil="studio"] .home-sport-card:hover .home-sport-img{opacity:1;transform:scale(1.08)}
+html[data-stil="studio"] .home-sport-label{color:#fff;font-family:'Barlow',sans-serif;font-weight:600;font-size:11px;letter-spacing:.3em}
+html[data-stil="studio"] .home-sport-soon{color:#8a8a85}
+html[data-stil="studio"] .home-cards{max-width:1100px;gap:0;border-top:1px solid rgba(255,255,255,.18)}
+html[data-stil="studio"] .home-card{background:transparent;border:0;border-radius:0;box-shadow:none;border-bottom:1px solid rgba(255,255,255,.18);border-left:1px solid rgba(255,255,255,.12);padding:34px 28px 28px}
+html[data-stil="studio"] .home-card:first-child{border-left:0}
+html[data-stil="studio"] .home-card:hover{background:rgba(255,255,255,.04);transform:none;box-shadow:none;border-color:rgba(255,255,255,.18)}
+html[data-stil="studio"] .home-card:hover{border-bottom-color:#ff7a1a}
+html[data-stil="studio"] .home-card-num{color:#ff7a1a;font-family:'Barlow',sans-serif;font-weight:600;letter-spacing:.3em;margin-bottom:38px}
+html[data-stil="studio"] .home-card .home-card-icon{background:none!important;color:#fff!important;width:auto;height:auto;border-radius:0;margin-bottom:22px;justify-content:flex-start}
+html[data-stil="studio"] .home-card .home-card-icon svg{width:30px;height:30px;stroke-width:1.2}
+html[data-stil="studio"] .home-card:hover .home-card-icon{transform:none}
+html[data-stil="studio"] .home-card-title{font-family:'Barlow',sans-serif;font-weight:600;font-size:14px;letter-spacing:.24em;color:#fff}
+html[data-stil="studio"] .home-card-desc{color:#9a9a95;font-size:13.5px}
+html[data-stil="studio"] .home-card-arrow{color:#fff}
+html[data-stil="studio"] .home-card:hover .home-card-arrow{color:#ff7a1a}
+html[data-stil="studio"] #homeQr{background:transparent!important;border:1px solid rgba(255,255,255,.18)!important;border-radius:2px!important;backdrop-filter:none!important}
+html[data-stil="studio"] #page-home footer{border-top-color:rgba(255,255,255,.12)!important}
+html[data-stil="studio"] #page-home .home-topbar button,html[data-stil="studio"] #page-home .lang-btn{background:transparent!important;color:#fff!important;border:1px solid rgba(255,255,255,.3)!important;border-radius:2px!important;box-shadow:none!important;letter-spacing:.2em!important;font-size:11px!important}
+html[data-stil="studio"] #homeSignInBtn{background:#fff!important;color:#000!important;border-color:#fff!important}
+@media (max-width:960px){html[data-stil="studio"] .home-card:nth-child(odd){border-left:0}}
+@media (max-width:600px){html[data-stil="studio"] .home-card{border-left:0}html[data-stil="studio"] .home-sport-card{padding:26px 8px 22px}html[data-stil="studio"] .home-hero-title{letter-spacing:.22em;margin-right:-.22em}}
+
+/* ══════════ 4  MIX: Nacht + Studio, Karten im 3D-Rad ══════════ */
+@keyframes stilFade{from{opacity:0}to{opacity:1}}
+html[data-stil="nacht"][data-mix] #page-home{background:#04090d}
+html[data-stil="nacht"][data-mix] .home-hero{padding-top:56px;max-width:860px}
+html[data-stil="nacht"][data-mix] .home-hero-eyebrow{font-weight:600;letter-spacing:.42em;font-size:11px}
+html[data-stil="nacht"][data-mix] .home-hero-title{font-family:'Barlow',sans-serif;font-weight:500;letter-spacing:.32em;margin-right:-.32em;font-size:clamp(28px,5vw,62px);background:linear-gradient(180deg,#fff 40%,#8fe9c0);-webkit-background-clip:text;background-clip:text}
+html[data-stil="nacht"][data-mix] .home-hero-tagline{font-family:'Barlow',sans-serif;font-weight:500;letter-spacing:.32em;font-size:12px;color:#b9c9c1}
+html[data-stil="nacht"][data-mix] .home-hero-sub{color:#93a39b;max-width:420px}
+html[data-stil="nacht"][data-mix] .home-hero-btn,html[data-stil="nacht"][data-mix] #page-home .home-hero-btn{border-radius:2px!important;letter-spacing:.2em!important;font-size:11px!important;font-weight:600!important;font-family:'Barlow',sans-serif!important;text-transform:uppercase}
+html[data-stil="nacht"][data-mix] #page-home .home-topbar button,html[data-stil="nacht"][data-mix] #page-home .lang-btn{border-radius:2px!important;letter-spacing:.18em!important;font-size:11px!important}
+html[data-stil="nacht"][data-mix] .home-sport-card{border-radius:6px}
+html[data-stil="nacht"][data-mix] .home-sport-label{font-family:'Barlow',sans-serif;font-weight:600;font-size:11px;letter-spacing:.3em}
+
+/* Das Rad */
+html[data-stil="nacht"][data-mix] #homeCards{display:block!important;position:relative;max-width:none;width:100%;height:520px;flex:none;overflow:visible;padding:0;margin:8px auto 0;perspective:1600px;perspective-origin:50% 30%;touch-action:pan-y;cursor:grab;--Rx:390px;--Rz:230px;--lift:110px;--cw:236px}
+html[data-stil="nacht"][data-mix] #homeCards:active{cursor:grabbing}
+html[data-stil="nacht"][data-mix] #homeCards[style*="display: none"]{display:none!important}
+html[data-stil="nacht"][data-mix] #homeCards .home-card{position:absolute;left:50%;top:196px;width:var(--cw);height:290px;margin-left:calc(var(--cw) / -2);filter:brightness(calc(.4 + .6 * var(--d,1)));animation:stilFade .8s both;padding:22px 20px 18px;border-radius:10px;background:linear-gradient(165deg,rgba(255,255,255,.10),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.16);box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 50px color-mix(in srgb,var(--c,#22d38c) 16%,transparent);user-select:none;-webkit-user-select:none;will-change:transform}
+html[data-stil="nacht"][data-mix] #homeCards .home-card:hover{box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 60px color-mix(in srgb,var(--c,#22d38c) 30%,transparent)}
+html[data-stil="nacht"][data-mix] #homeCards .home-card::before{display:block;content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,var(--c),transparent);opacity:.9}
+html[data-stil="nacht"][data-mix] .home-card-num{color:var(--c);font-family:'Barlow',sans-serif;font-weight:600;letter-spacing:.3em;margin-bottom:30px}
+html[data-stil="nacht"][data-mix] .home-card .home-card-icon{border-radius:12px;width:54px;height:54px}
+html[data-stil="nacht"][data-mix] .home-card-title{font-family:'Barlow',sans-serif;font-weight:600;font-size:15px;letter-spacing:.22em}
+html[data-stil="nacht"][data-mix] .home-card-desc{font-size:13.5px}
+html[data-stil="nacht"][data-mix] .home-card-arrow{border-radius:2px}
+
+/* Steuerung und Detailfeld unter dem Rad */
+#ringUi{display:none}
+html[data-stil="nacht"][data-mix] #ringUi{display:block;position:relative;z-index:2;text-align:center;margin:6px auto 44px;padding:0 20px;max-width:560px;color:#dfe8e3}
+#ringUi .rg-row{display:flex;justify-content:center;align-items:center;gap:18px}
+#ringUi .rg-btn{width:42px;height:42px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.05);color:#fff;border-radius:2px;cursor:pointer;display:grid;place-items:center;transition:background .2s,color .2s}
+#ringUi .rg-btn:hover{background:#fff;color:#04090d}
+#ringUi .rg-btn:focus-visible,#ringUi .rg-dot:focus-visible,#ringUi .rg-open:focus-visible{outline:2px solid #8fe9c0;outline-offset:3px}
+#ringUi .rg-dots{display:flex;gap:10px}
+#ringUi .rg-dot{width:28px;height:3px;border:0;padding:0;background:rgba(255,255,255,.22);cursor:pointer;transition:background .3s,width .3s}
+#ringUi .rg-dot[aria-current="true"]{background:var(--c,#8fe9c0);width:44px}
+#ringUi .rg-detail{display:grid;grid-template-rows:1fr;margin-top:22px}
+#ringUi .rg-detail>div{overflow:hidden}
+#ringUi .rg-title{font:600 12px 'Barlow',sans-serif;letter-spacing:.34em;text-transform:uppercase;color:var(--c,#8fe9c0);margin-bottom:8px}
+#ringUi .rg-text{font:400 15px/1.6 'Barlow',sans-serif;color:#aab8b1;margin:0 auto 18px;max-width:46ch}
+#ringUi .rg-open{font:600 11px 'Barlow',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#04090d;background:#fff;border:0;border-radius:2px;padding:13px 26px;cursor:pointer;transition:transform .2s,box-shadow .2s}
+#ringUi .rg-open:hover{box-shadow:0 8px 28px color-mix(in srgb,var(--c,#8fe9c0) 50%,transparent);transform:translateY(-2px)}
+#ringUi .rg-fade{animation:stilUp .45s cubic-bezier(.2,.7,.2,1) both}
+@media (max-width:700px){html[data-stil="nacht"][data-mix] #homeCards{height:470px;--Rx:215px;--Rz:160px;--lift:90px;--cw:220px;perspective:1100px}html[data-stil="nacht"][data-mix] #homeCards .home-card{height:270px;top:160px;padding:20px 18px 16px}}
+@media (prefers-reduced-motion:reduce){#ringUi .rg-fade{animation:none}}
+
+html[data-stil="nacht"][data-mix] #homeCards .home-card-num{margin-bottom:16px}
+html[data-stil="nacht"][data-mix] #homeCards .home-card .home-card-icon{width:44px;height:44px;margin-bottom:14px}
+html[data-stil="nacht"][data-mix] #homeCards .home-card-title{font-size:13px;margin-bottom:8px}
+html[data-stil="nacht"][data-mix] #homeCards .home-card-desc{font-size:12.5px;line-height:1.5}
+html[data-stil="nacht"][data-mix] #homeCards .home-card-arrow{margin-top:14px;width:32px;height:32px}
+html[data-stil="nacht"][data-mix] .home-hero{padding-top:36px;padding-bottom:4px}
+html[data-stil="nacht"][data-mix] .home-hero-title{margin-bottom:14px}
+html[data-stil="nacht"][data-mix] #ringUi{margin-bottom:28px}
+
+/* ══════════ MIX auf allen Seiten: Farben, Kopfzeile, Katalog ══════════ */
+/* Dunkel ist der Standard im Mix, Hell kommt über data-theme="light" (App-Mond-Knopf oder Schalter unten) */
+html[data-mix]{
+  --accent:#2fd08f;--accent-d:#1fb578;--accent-l:rgba(47,208,143,.13);--accent-mid:#2fd08f;
+  --bg:#05090d;--surface:#0e161c;--surface-2:#1a2831;--border:rgba(255,255,255,.14);--border-s:rgba(255,255,255,.28);
+  --text-1:#eef3f0;--text-2:#a9b7b0;--text-3:#71827a;
+  --shadow:0 10px 36px rgba(0,0,0,.40);--shadow-lg:0 18px 54px rgba(0,0,0,.55);
+  --radius-sm:5px;--radius-md:9px;--radius-lg:12px;color-scheme:dark}
+html[data-mix][data-theme="light"]{
+  --accent:#0f8a5a;--accent-d:#0b6e48;--accent-l:#e3f4ec;--accent-mid:#14a06b;
+  --bg:#f5f7f7;--surface:#ffffff;--surface-2:#eef2f1;--border:#e0e6e4;--border-s:#c8d1ce;
+  --text-1:#0d1613;--text-2:#46544e;--text-3:#7a8883;
+  --shadow:0 1px 3px rgba(15,35,28,.05),0 8px 28px rgba(15,35,28,.06);--shadow-lg:0 18px 48px rgba(15,35,28,.13);color-scheme:light}
+html[data-mix] body{background:var(--bg)}
+html[data-mix] body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+  radial-gradient(42% 30% at 15% 0%,rgba(34,211,140,.16),transparent 70%),radial-gradient(38% 30% at 90% 8%,rgba(56,120,255,.14),transparent 70%)}
+html[data-mix][data-theme="light"] body::before{background:
+  radial-gradient(42% 30% at 12% 0%,rgba(52,211,153,.18),transparent 70%),radial-gradient(38% 30% at 92% 6%,rgba(96,165,250,.16),transparent 70%)}
+/* Kopfzeile und Hauptnavigation */
+html[data-mix] header,html[data-mix] .mnav{background:color-mix(in srgb,var(--bg) 78%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:none;border-bottom:1px solid var(--border)}
+html[data-mix] .logo-t{font-family:'Barlow',sans-serif;font-weight:600;font-size:14px;letter-spacing:.26em}
+html[data-mix] .logo-s{letter-spacing:.28em}
+html[data-mix] .gs-in{border-radius:99px;background:var(--surface-2);border:1px solid var(--border)}
+html[data-mix] .mb{font-family:'Barlow',sans-serif;font-weight:600;font-size:11.5px;letter-spacing:.24em;border-bottom-width:2px}
+html[data-mix] .mb.active{color:var(--text-1);border-bottom-color:var(--accent);box-shadow:0 8px 16px -10px var(--accent)}
+html[data-mix] .st{font-family:'Barlow',sans-serif;font-weight:600;font-size:11px;letter-spacing:.2em}
+/* Abschnitts-Kopf im Katalog: Farbe des Abschnitts bleibt, wirkt aber tiefer und ruhiger */
+html[data-mix] .hero{border-radius:var(--radius-md);box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.12)}
+html[data-mix]:not([data-theme="light"]) .hero{filter:saturate(1.05) brightness(.95)}
+html[data-mix] .hero-title,html[data-mix] .hero-num{filter:none}
+html[data-mix] .hero-title{color:#fff}
+html[data-mix] .hero-desc{color:rgba(255,255,255,.88)}
+html[data-mix] .hero-lbl{color:rgba(255,255,255,.7)}
+html[data-mix] .hero-title{font-family:'Barlow',sans-serif;font-weight:600;font-size:20px;letter-spacing:.16em;text-transform:uppercase}
+html[data-mix] .hero-lbl{letter-spacing:.34em}
+html[data-mix] .hero-num{font-family:'Barlow',sans-serif;font-weight:300}
+/* Filter, Karten, Plan-Spalte */
+html[data-mix] .fbar,html[data-mix] .plan-cart{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:none}
+html[data-mix] .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:none;transition:transform .25s cubic-bezier(.2,.7,.2,1),border-color .25s,box-shadow .25s}
+html[data-mix] .card:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--accent) 60%,transparent);box-shadow:0 16px 44px -12px color-mix(in srgb,var(--accent) 40%,transparent)}
+html[data-mix] .cname{font-weight:600;letter-spacing:.01em}
+html[data-mix] .card-collapsed:hover{transform:none}
+html[data-mix] .mbadge,html[data-mix] .matpill{border-radius:4px}
+html[data-mix] .tchip,html[data-mix] .cpill{border-radius:99px}
+
+/* Hell-Modus der Startseite im Mix (skandinavisch: viel Weiß, gleiche Schrift, gleiche Farben) */
+html[data-stil="nacht"][data-mix][data-theme="light"] #page-home{background:#f5f7f7}
+html[data-stil="nacht"][data-mix][data-theme="light"] #page-home::after{background:
+  radial-gradient(40% 36% at 20% 6%,rgba(52,211,153,.30),transparent 70%),
+  radial-gradient(38% 34% at 84% 24%,rgba(96,165,250,.26),transparent 70%),
+  radial-gradient(46% 40% at 50% 108%,rgba(52,211,153,.16),transparent 70%)}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-motto{color:#7a8883!important}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-hero-eyebrow{color:#0f8a5a}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-hero-eyebrow::before,html[data-stil="nacht"][data-mix][data-theme="light"] .home-hero-eyebrow::after{background:#0f8a5a}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-hero-title{background:linear-gradient(180deg,#0d1613 45%,#0f8a5a);-webkit-background-clip:text;background-clip:text}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-hero-tagline{color:#46544e}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-hero-sub{color:#5b6963}
+html[data-stil="nacht"][data-mix][data-theme="light"] #homeSportBadge{color:#0d1613}
+html[data-stil="nacht"][data-mix][data-theme="light"] #page-home .home-hero-btn{background:#fff!important;color:#0d1613!important;border:1px solid #d6dedb!important}
+html[data-stil="nacht"][data-mix][data-theme="light"] #page-home .home-hero-btn:hover{background:#0d1613!important;color:#fff!important}
+html[data-stil="nacht"][data-mix][data-theme="light"] #page-home .home-topbar button,html[data-stil="nacht"][data-mix][data-theme="light"] #page-home .lang-btn{background:#fff!important;color:#0d1613!important;border:1px solid #d6dedb!important}
+html[data-stil="nacht"][data-mix][data-theme="light"] #homeSignInBtn{background:#0d1613!important;color:#fff!important;border-color:#0d1613!important}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-sport-card{background:#fff;border:1px solid #dfe6e3;box-shadow:0 10px 30px rgba(15,35,28,.08)}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-sport-label{color:#0d1613}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-sport-img{filter:brightness(0) !important}
+html[data-stil="nacht"][data-mix][data-theme="light"] #homeCards .home-card{background:#fff;border:1px solid #dfe6e3;box-shadow:0 24px 50px rgba(15,35,28,.12),0 0 40px color-mix(in srgb,var(--c,#22d38c) 12%,transparent)}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-card-num{color:var(--c)}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-card-title{color:#0d1613}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-card-desc{color:#55635d}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-card-arrow{color:#0d1613;border-color:#c8d1ce;background:#fff}
+html[data-stil="nacht"][data-mix][data-theme="light"] .home-card:hover .home-card-arrow{background:#0d1613;color:#fff}
+html[data-stil="nacht"][data-mix][data-theme="light"] #homeQr{background:#fff!important;border:1px solid #dfe6e3!important}
+html[data-stil="nacht"][data-mix][data-theme="light"] #homeQr div{color:#0d1613!important}
+html[data-stil="nacht"][data-mix][data-theme="light"] #homeQr div div{color:#5b6963!important}
+html[data-stil="nacht"][data-mix][data-theme="light"] #page-home footer,html[data-stil="nacht"][data-mix][data-theme="light"] #page-home footer button{color:#5b6963!important}
+html[data-stil="nacht"][data-mix][data-theme="light"] #page-home footer{border-top-color:#dfe6e3!important}
+html[data-mix][data-theme="light"] #ringUi{color:#0d1613}
+html[data-mix][data-theme="light"] #ringUi .rg-text{color:#55635d}
+html[data-mix][data-theme="light"] #ringUi .rg-btn{border-color:#c8d1ce;background:#fff;color:#0d1613}
+html[data-mix][data-theme="light"] #ringUi .rg-btn:hover,html[data-mix][data-theme="light"] #ringUi .rg-open{background:#0d1613;color:#fff}
+html[data-mix][data-theme="light"] #ringUi .rg-dot{background:#cfd8d5}
+
+/* Bewegung aus: keine Animationen, Karten als ruhiges Raster statt Rad */
+html[data-stil][data-anim="off"] *,html[data-stil][data-anim="off"] *::before,html[data-stil][data-anim="off"] *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+html[data-stil="nacht"][data-mix][data-anim="off"] #homeCards{height:auto;perspective:none;display:grid!important;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;padding:6px 24px 24px;max-width:1000px;cursor:default;margin-top:0}
+html[data-stil="nacht"][data-mix][data-anim="off"] #homeCards[style*="display: none"]{display:none!important}
+html[data-stil="nacht"][data-mix][data-anim="off"] #homeCards .home-card{position:relative;left:auto;top:auto;margin:0;width:auto;height:auto;transform:none!important;filter:none;z-index:auto!important}
+html[data-stil="nacht"][data-mix][data-anim="off"] #ringUi{display:none}
+html[data-stil="nacht"][data-mix][data-anim="off"] .home-card:hover{transform:none}
+html[data-mix][data-theme="light"] #homeCards .home-card{filter:none!important;opacity:calc(.5 + .5 * var(--d,1))}
+html[data-mix][data-theme="light"][data-anim="off"] #homeCards .home-card{opacity:1}
+#stilSwitch{flex-wrap:wrap;justify-content:center;border-radius:22px}
+@media (max-width:520px){#stilSwitch{width:calc(100vw - 20px)}#stilSwitch span{display:none}#stilSwitch button{padding:7px 9px;font-size:12px}}
+
+html[data-mix]:not([data-theme="light"]) .gs-in{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.26);color:#fff}
+html[data-mix]:not([data-theme="light"]) .gs-in::placeholder{color:rgba(255,255,255,.62)}
+html[data-mix]:not([data-theme="light"]) .gs-in:focus{background:rgba(255,255,255,.14);border-color:var(--accent);box-shadow:0 0 0 3px rgba(47,208,143,.18)}
+html[data-mix]:not([data-theme="light"]) .gs-ico{opacity:1;filter:none}
+
+/* ══════════ MIX: Vision/Angebote als Karten im Rad, Einführung im neuen Stil ══════════ */
+.home-card--about,.home-card--offers{display:none}
+html[data-mix] #homeCards .home-card--about,html[data-mix] #homeCards .home-card--offers{display:flex}
+html[data-stil="nacht"] .home-card--about{--c:#22c7d6}
+html[data-stil="nacht"] .home-card--offers{--c:#ffb020}
+html[data-mix] #homeHeroBtns button[onclick*="about"],html[data-mix] #homeHeroBtns button[onclick*="angebote"]{display:none}
+
+html[data-mix] #onboardingOverlay{background:rgba(2,6,9,.80)!important;backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important}
+html[data-mix] #onboardingOverlay > div{position:relative;background:var(--surface)!important;border:1px solid var(--border-s);border-radius:12px!important;max-width:500px!important;box-shadow:0 40px 100px rgba(0,0,0,.6),0 0 80px rgba(47,208,143,.10)!important}
+html[data-mix] #onboardingOverlay > div::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,#2fd08f,#4f8bff,#a874ff,#ff6a9a)}
+html[data-mix] .ob-slide{padding:44px 36px 28px!important;animation:stilUp .5s cubic-bezier(.2,.7,.2,1) both}
+html[data-mix] .ob-slide > div[style*="font-family"]{font-family:'Barlow',sans-serif!important;font-weight:600!important;font-size:15px!important;letter-spacing:.24em!important;text-transform:uppercase;color:var(--text-1)!important;margin-bottom:16px!important}
+html[data-mix] .ob-slide:first-child > div[style*="font-family"]{font-size:19px!important;letter-spacing:.3em!important;background:linear-gradient(180deg,var(--text-1) 40%,var(--accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+html[data-mix] .ob-slide > div[style*="line-height"]{font-size:13.5px!important;color:var(--text-2)!important}
+html[data-mix] .ob-slide span[style*="font-weight:800"]{color:var(--accent)!important;font-weight:600!important;letter-spacing:.1em;min-width:14px}
+html[data-mix] .ob-slide > div:first-child img{border-radius:50%}
+html[data-mix] .ob-slide > div:first-child:has(img){border-radius:50%!important;box-shadow:0 0 50px rgba(47,208,143,.28)}
+html[data-mix] .ob-ico{width:64px;height:64px;margin:0 auto 22px;border-radius:14px;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,var(--c),color-mix(in srgb,var(--c) 45%,#000));box-shadow:0 10px 28px color-mix(in srgb,var(--c) 45%,transparent)}
+html[data-mix] .ob-dot{width:24px;height:3px;border-radius:0;background:var(--border-s)}
+html[data-mix] .ob-dot-active{width:44px;background:var(--accent);border-radius:0}
+html[data-mix] #onboardingOverlay button{border-radius:2px!important;font-family:'Barlow',sans-serif!important;font-size:11px!important;font-weight:600!important;letter-spacing:.22em!important;text-transform:uppercase;padding:14px 12px!important;transition:transform .2s,box-shadow .2s,background .2s}
+html[data-mix] #obLeftBtn{border:1px solid var(--border-s)!important;color:var(--text-2)!important}
+html[data-mix] #obLeftBtn:hover{border-color:var(--text-1)!important;color:var(--text-1)!important}
+html[data-mix] #obNextBtn{background:var(--text-1)!important;color:var(--bg)!important}
+html[data-mix] #obNextBtn:hover{box-shadow:0 8px 28px color-mix(in srgb,var(--accent) 45%,transparent);transform:translateY(-2px)}
+html[data-mix] #obTourBtn{border:1px solid var(--accent)!important;color:var(--accent)!important}
+
+/* Schwebender Ball in der Mitte des Rads = aktuelle Sportart (Klick: Sportart ändern) */
+#ringBall{display:none}
+html[data-mix] #homeSportBadge{display:none!important}
+html[data-stil="nacht"][data-mix] #homeCards #ringBall{display:block;position:absolute;left:50%;top:96px;margin-left:-95px;width:190px;height:190px;z-index:19;background:none;border:0;padding:0;cursor:pointer;transform:translate3d(0,0,-200px);animation:ballBob 6s ease-in-out infinite}
+@keyframes ballBob{0%,100%{transform:translate3d(0,0,-200px)}50%{transform:translate3d(0,-10px,-200px)}}
+#ringBall .rb-disc{display:block;width:100%;height:100%}
+#ringBall img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 14px 30px rgba(47,208,143,.45));animation:ballSpin 40s linear infinite;transition:filter .3s}
+#ringBall:hover img{filter:drop-shadow(0 14px 40px rgba(47,208,143,.8))}
+@keyframes ballSpin{to{transform:rotate(360deg)}}
+#ringBall .rb-lbl{display:none}
+#ringBall:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:50%}
+html[data-mix][data-theme="light"] #ringBall img{filter:brightness(0) drop-shadow(0 16px 20px rgba(15,35,28,.25))}
+html[data-mix][data-theme="light"] #ringBall:hover img{filter:brightness(0) drop-shadow(0 16px 26px rgba(15,35,28,.4))}
+html[data-stil="nacht"][data-mix][data-anim="off"] #homeCards #ringBall{position:relative;left:auto;top:auto;margin:0 auto 6px;width:120px;height:120px;grid-column:1/-1;transform:none!important;animation:none!important}
+@media (max-width:700px){html[data-stil="nacht"][data-mix] #homeCards #ringBall{width:140px;height:140px;margin-left:-70px;top:78px}}
+/* Tour: schnelles Ausblenden, ruhiges Einblenden, Hervorhebung gleitet */
+html[data-mix] #tourBubble[style*="opacity: 0"]{transition:opacity .14s ease!important}
+html[data-mix] #tourBubble{will-change:opacity}
+html[data-mix] #tourHighlight{will-change:top,left,width,height}
+
+/* Kopfzeile und Navigation: deckend, nicht mehr durchsichtig */
+html[data-mix] header,html[data-mix] .mnav{background:var(--surface)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+html[data-mix] .mnav{border-bottom:1px solid var(--border)}
+
+/* Tour im Mix-Stil */
+html[data-mix] #tourHighlight{border-radius:8px!important;box-shadow:0 0 0 4000px rgba(2,6,9,.74),0 0 0 2px var(--accent),0 0 36px color-mix(in srgb,var(--accent) 55%,transparent)!important;transition:top .55s cubic-bezier(.22,1,.36,1),left .55s cubic-bezier(.22,1,.36,1),width .55s cubic-bezier(.22,1,.36,1),height .55s cubic-bezier(.22,1,.36,1)!important;animation:tourPulse 2.6s ease-in-out infinite}
+@keyframes tourPulse{0%,100%{outline:0 solid color-mix(in srgb,var(--accent) 40%,transparent);outline-offset:2px}50%{outline:6px solid transparent;outline-offset:6px}}
+html[data-mix] #tourBubble{transition:opacity .3s ease,top .55s cubic-bezier(.22,1,.36,1),left .55s cubic-bezier(.22,1,.36,1)!important}
+html[data-mix] #tourBubble{max-width:340px!important}
+html[data-mix] #tourBubble > div{background:var(--surface)!important;border:1px solid var(--border-s);border-radius:10px!important;padding:22px 24px 18px!important;box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 60px color-mix(in srgb,var(--accent) 12%,transparent)!important;overflow:hidden}
+html[data-mix] #tourBubble > div::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,#2fd08f,#4f8bff,#a874ff,#ff6a9a)}
+html[data-mix] #tourArrow{background:var(--surface)!important;border-left:1px solid var(--border-s);border-top:1px solid var(--border-s)}
+html[data-mix] #tourStepLabel{font:600 10px 'Barlow',sans-serif!important;letter-spacing:.34em!important;color:var(--accent)!important}
+html[data-mix] #tourBubble button[onclick="endTour()"]{color:var(--text-3)!important;font-size:15px!important;transition:color .2s}
+html[data-mix] #tourBubble button[onclick="endTour()"]:hover{color:var(--text-1)!important}
+html[data-mix] #tourTitle{font-family:'Barlow',sans-serif!important;font-weight:600!important;font-size:14px!important;letter-spacing:.2em;text-transform:uppercase;color:var(--text-1)!important;margin-bottom:10px!important}
+html[data-mix] #tourText{font-size:13.5px!important;line-height:1.65!important;color:var(--text-2)!important}
+html[data-mix] #tourDots{gap:4px!important}
+html[data-mix] #tourDots span{height:3px!important;width:12px!important;border-radius:0!important;transition:background .3s,width .3s!important}
+html[data-mix] #tourDots span[style*="var(--accent)"]{width:26px!important}
+html[data-mix] #tourBubble button[id^="tour"]{border-radius:2px!important;font-family:'Barlow',sans-serif!important;font-size:11px!important;font-weight:600!important;letter-spacing:.2em!important;text-transform:uppercase;padding:10px 14px!important;transition:transform .2s,box-shadow .2s,background .2s}
+html[data-mix] #tourPrevBtn{border:1px solid var(--border-s)!important;color:var(--text-2)!important}
+html[data-mix] #tourPrevBtn:hover{border-color:var(--text-1)!important;color:var(--text-1)!important}
+html[data-mix] #tourNextBtn{background:var(--text-1)!important;color:var(--bg)!important}
+html[data-mix] #tourNextBtn:hover{transform:translateY(-2px);box-shadow:0 8px 24px color-mix(in srgb,var(--accent) 45%,transparent)}
+html[data-mix] #tourText strong{color:var(--text-1)}
+html[data-mix] #tourBubble button[id^="tour"]{white-space:nowrap;letter-spacing:.14em!important;padding:10px 12px!important;flex:none}
+html[data-mix] #tourDots{min-width:0;gap:3px!important}
+html[data-mix] #tourDots span{width:8px!important}
+html[data-mix] #tourDots span[style*="var(--accent)"]{width:18px!important}
+html[data-mix] #tourBubble{max-width:360px!important}
+
+/* Startseite kompakter, damit man (Desktop) nicht scrollen muss */
+@media (min-width:701px){
+html[data-stil="nacht"][data-mix] .home-hero{padding-top:26px;padding-bottom:0}
+html[data-stil="nacht"][data-mix] .home-hero-title{font-size:clamp(26px,3.4vw,44px);margin-bottom:6px}
+html[data-stil="nacht"][data-mix] .home-hero-tagline{font-size:11px}
+html[data-stil="nacht"][data-mix] .home-hero-sub{margin:6px auto 8px;font-size:13px}
+html[data-stil="nacht"][data-mix] #homeCards{height:400px;margin-top:-30px;--Rx:350px;--Rz:200px;--lift:90px;--cw:216px}
+html[data-stil="nacht"][data-mix] #homeCards .home-card{top:140px;height:250px;padding:18px 18px 14px}
+html[data-stil="nacht"][data-mix] #homeCards .home-card-num{margin-bottom:10px}
+html[data-stil="nacht"][data-mix] #homeCards .home-card .home-card-icon{margin-bottom:10px}
+html[data-stil="nacht"][data-mix] #homeCards #ringBall{top:44px;width:170px;height:170px;margin-left:-85px}
+html[data-stil="nacht"][data-mix] #ringUi{margin:0 auto 16px}
+html[data-stil="nacht"][data-mix] #ringUi .rg-detail{margin-top:8px}
+html[data-stil="nacht"][data-mix] #ringUi .rg-text{margin-bottom:10px;font-size:14px;line-height:1.5}
+}
+html[data-stil="nacht"][data-mix] .home-hero-eyebrow{display:none!important}
+html[data-stil="nacht"][data-mix] .home-hero{position:relative;z-index:6}
+html[data-stil="nacht"][data-mix] #homeCards{z-index:1}
+@media (min-width:701px){html[data-stil="nacht"][data-mix] .home-hero{padding-top:50px}}
+/* Mehr Luft zwischen den Texten, Scrollleiste ausgeblendet (Scrollen geht weiter) */
+html[data-mix],html[data-mix] body,html[data-mix] .page,html[data-mix] #page-home{scrollbar-width:none;-ms-overflow-style:none}
+html[data-mix] ::-webkit-scrollbar{width:0;height:0;display:none}
+@media (min-width:701px){
+html[data-stil="nacht"][data-mix] .home-hero{padding-top:58px}
+html[data-stil="nacht"][data-mix] .home-hero-title{margin-bottom:14px}
+html[data-stil="nacht"][data-mix] .home-hero-tagline{margin-bottom:6px}
+html[data-stil="nacht"][data-mix] .home-hero-sub{margin:12px auto 14px}
+html[data-stil="nacht"][data-mix] #homeHeroBtns{margin-top:10px!important}
+html[data-stil="nacht"][data-mix] #homeCards{margin-top:-14px}
+}
+/* Navigation: ruhiger, mit leuchtender Linie statt Symbolen */
+html[data-mix] .mb{position:relative;border-bottom:0!important;padding:0 20px;color:var(--text-3);transition:color .25s}
+html[data-mix] .mb:hover{color:var(--text-1)}
+html[data-mix] .mb::after{content:"";position:absolute;left:50%;bottom:0;height:2px;width:0;transform:translateX(-50%);background:linear-gradient(90deg,#2fd08f,#4f8bff,#a874ff);border-radius:2px;transition:width .35s cubic-bezier(.22,1,.36,1)}
+html[data-mix] .mb:hover::after{width:22%}
+html[data-mix] .mb.active{box-shadow:none;color:var(--text-1)}
+html[data-mix] .mb.active::after{width:calc(100% - 40px)}
+/* Seiten der App: breite Schrift statt der kondensierten Überschriften (aus styles.css erzeugt) */
+html[data-mix] .acc-tab,
+html[data-mix] .bcrd,
+html[data-mix] .bnav-label,
+html[data-mix] .bpl,
+html[data-mix] .bpr,
+html[data-mix] .bsc,
+html[data-mix] .cal-daytitle,
+html[data-mix] .cal-title,
+html[data-mix] .cfg-fs-btn,
+html[data-mix] .club-admin-title,
+html[data-mix] .cname,
+html[data-mix] .empty-grid h3,
+html[data-mix] .gri-n,
+html[data-mix] .grl,
+html[data-mix] .help-card-title,
+html[data-mix] .hero-num,
+html[data-mix] .hero-title,
+html[data-mix] .home-card-num,
+html[data-mix] .home-card-title,
+html[data-mix] .home-cta-primary,
+html[data-mix] .home-cta-secondary,
+html[data-mix] .home-hero-eyebrow,
+html[data-mix] .home-hero-tagline,
+html[data-mix] .home-hero-title,
+html[data-mix] .home-sport-label,
+html[data-mix] .home-sport-soon,
+html[data-mix] .hq-title,
+html[data-mix] .lane-browse-btn,
+html[data-mix] .lname,
+html[data-mix] .lnum,
+html[data-mix] .logo-t,
+html[data-mix] .lp-name,
+html[data-mix] .ls-t,
+html[data-mix] .ltp-block-title,
+html[data-mix] .ltp-day-card-label,
+html[data-mix] .ltp-day-label,
+html[data-mix] .ltp-day-plan,
+html[data-mix] .ltp-prog-t,
+html[data-mix] .ltp-week-label,
+html[data-mix] .ltp-week-num,
+html[data-mix] .ltp-week-row-label,
+html[data-mix] .mat-sec-name,
+html[data-mix] .mat-summary-t,
+html[data-mix] .mb,
+html[data-mix] .mhdr-t,
+html[data-mix] .more-item,
+html[data-mix] .mtit,
+html[data-mix] .my-sub-title,
+html[data-mix] .offer-btn,
+html[data-mix] .pi-n,
+html[data-mix] .pi-name,
+html[data-mix] .plan-cart-title,
+html[data-mix] .plan-in,
+html[data-mix] .print-output,
+html[data-mix] .queue-card-name,
+html[data-mix] .queue-title,
+html[data-mix] .review-btn,
+html[data-mix] .sb-t,
+html[data-mix] .spa,
+html[data-mix] .spi-n,
+html[data-mix] .st,
+html[data-mix] .sub-list-name,
+html[data-mix] .submit-btn-main,
+html[data-mix] .submit-checklist-title,
+html[data-mix] .submit-form-title,
+html[data-mix] .submit-login-title,
+html[data-mix] .tpl-name,
+html[data-mix] .tpl-t,html[data-mix] [style*="Barlow Condensed"]{font-family:"Barlow",sans-serif!important;letter-spacing:.04em;font-weight:600}
+/* Knöpfe in der Kopfzeile passend zum Rest */
+html[data-mix] header button,html[data-mix] .home-topbar button{border-radius:4px!important}
+html[data-mix] #homeSignInBtn,html[data-mix] header #signInBtn{letter-spacing:.14em;font-size:11px;text-transform:uppercase}
