@@ -5,6 +5,8 @@
 let currentClub = null;
 let currentClubRole = null;
 let clubLogoUrl = null;
+const CLUB_BASE_COLS = 'id, name, logo_url, slot_count, logo_public_consent, sports';
+const CLUB_FOCUS_MAX = 8;
 
 // ── Vereinslogo-Hintergrund Startseite ────────────────────────────
 let _bgLogos = [];
@@ -74,14 +76,26 @@ async function loadClubData(userId) {
   try {
     const { data: profile } = await _supabase
       .from('profiles').select('club_id, club_role').eq('id', userId).single();
-    if (!profile?.club_id) { currentClub = null; currentClubRole = null; clubLogoUrl = null; _renderClubBtn(); return; }
+    if (!profile?.club_id) { _clearClubState(); return; }
     currentClubRole = profile.club_role;
-    const { data: club } = await _supabase
-      .from('clubs').select('id, name, logo_url, slot_count, logo_public_consent, sports').eq('id', profile.club_id).single();
+    // Neue Spalten (Farbe, Schwerpunkte) zuerst mitladen; fehlen sie noch in der Datenbank, ohne sie laden
+    let res = await _supabase.from('clubs').select(CLUB_BASE_COLS + ', primary_color, focus_points').eq('id', profile.club_id).single();
+    if (res.error) res = await _supabase.from('clubs').select(CLUB_BASE_COLS).eq('id', profile.club_id).single();
+    const club = res.data;
     currentClub = club || null;
     clubLogoUrl = club?.logo_url || null;
+    applyClubColor(club?.primary_color || null);
     _renderClubBtn();
+    renderClubFocusPlanner();
   } catch(e) { console.warn('Club load error', e); }
+}
+
+// Verein weg (Logout, Austritt, gelöscht): Zustand und Vereinsfarbe zurücksetzen
+function _clearClubState() {
+  _clearClubState();
+  applyClubColor(null);
+  _renderClubBtn();
+  renderClubFocusPlanner();
 }
 
 function _renderClubBtn() {
@@ -378,6 +392,9 @@ async function _renderAdminView(wrap) {
       </label>
     </div>
 
+    ${_clubColorCardHtml()}
+    ${_focusAdminCardHtml()}
+
     <div style="background:var(--surface);border-radius:12px;padding:20px;box-shadow:var(--sh);margin-bottom:14px;">
       <div class="club-section-label">Aktive Sportarten</div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px;">
@@ -471,7 +488,8 @@ async function _renderTrainerView(wrap) {
       <div style="font-size:13px;color:var(--gd2);margin-bottom:8px;">Du bist Trainer:in in diesem Verein.</div>
       ${mySport ? `<div style="display:inline-block;padding:4px 12px;background:var(--accent);color:#fff;border-radius:20px;font-size:12px;font-weight:800;margin-bottom:14px;">Sportart: ${esc(_sportLabel(mySport))}</div>` : ''}
       <button class="slot-btn slot-btn-remove" style="margin-top:8px;" onclick="leaveClub()">Verein verlassen</button>
-    </div>`;
+    </div>
+    <div style="margin-top:14px;">${_focusCardHtml(_clubFocusItems(), false)}</div>`;
 }
 
 // ── Aktionen ──────────────────────────────────────────────────────
@@ -548,7 +566,7 @@ async function _executeDeleteClub(clubId, clubName) {
   await _supabase.from('club_join_requests').delete().eq('club_id', clubId);
   const { error } = await _supabase.from('clubs').delete().eq('id', clubId);
   if (error) { showToast('Fehler beim Löschen: ' + error.message, 'err'); return; }
-  if (currentClub?.id === clubId) { currentClub = null; currentClubRole = null; clubLogoUrl = null; _renderClubBtn(); }
+  if (currentClub?.id === clubId) _clearClubState();
   document.getElementById('deleteClubModal')?.remove();
   showToast(`Verein „${clubName}" wurde gelöscht.`);
   if (typeof IS_ADMIN !== 'undefined' && IS_ADMIN) { renderClubAdminPanel(); renderClubTab(); }
@@ -668,4 +686,93 @@ async function renderClubAdminPanel() {
           <button class="slot-btn slot-btn-remove" onclick="adminDeleteClub('${escJs(c.id)}','${escJs(c.name)}')">Löschen</button>
         </div>`).join('') || '<div class="slot-free">Noch keine Vereine.</div>'}
     </div>`;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// VEREINSFARBE + VEREINS-SCHWERPUNKTE
+// Bearbeiten darf nur die Vereins-Leitung (club_admin); alle angebundenen Trainer:innen sehen es.
+// Fehlen die Datenbank-Spalten noch (docs/sql/club-schwerpunkte-farbe.sql), bleibt alles still bei den Standardwerten.
+// ══════════════════════════════════════════════════════════════════
+function _clubFocusItems() {
+  const fp = currentClub?.focus_points;
+  if (!Array.isArray(fp)) return [];
+  return fp.filter(i => i && typeof i === 'object' && String(i.title || '').trim()).map(i => ({ title: String(i.title), text: String(i.text || '') }));
+}
+
+function _focusItemHtml(i) {
+  return `<div class="focus-item"><div class="focus-item-title">${esc(i.title)}</div>${i.text ? `<div class="focus-item-text">${esc(i.text)}</div>` : ''}</div>`;
+}
+
+function _focusCardHtml(items, withIntro = true) {
+  const body = items.length
+    ? items.map(_focusItemHtml).join('')
+    : `<div class="focus-empty">${esc(tt('club_focus_empty'))}</div>`;
+  return `<div class="focus-card"><div class="focus-card-title">${esc(tt('club_focus_title'))}</div>${withIntro ? `<p class="focus-card-intro">${esc(tt('club_focus_intro_trainer'))}</p>` : ''}${body}</div>`;
+}
+
+// Kompakte, einklappbare Karte oben im Planer (nur für Trainer:innen mit Verein und mindestens einem Schwerpunkt)
+function renderClubFocusPlanner() {
+  const el = document.getElementById('clubFocusPlanner');
+  if (!el) return;
+  const items = currentClub ? _clubFocusItems() : [];
+  if (!items.length) { el.style.display = 'none'; el.innerHTML = ''; return; }
+  const open = el.querySelector('details')?.open ?? true;
+  el.style.display = '';
+  el.innerHTML = `<details class="focus-card focus-card--planner" ${open ? 'open' : ''}><summary><span class="focus-card-title">${esc(tt('club_focus_planner'))}</span><span class="focus-count">${items.length}</span></summary>${items.map(_focusItemHtml).join('')}</details>`;
+}
+
+function _clubColorCardHtml() {
+  const cur = currentClub?.primary_color || 'gruen';
+  const sw = CLUB_COLORS.map(c => `<button type="button" class="cc-opt${c.id === cur ? ' sel' : ''}" aria-pressed="${c.id === cur}" onclick="saveClubColor('${c.id}')" style="--sw-l:${c.light};--sw-d:${c.dark}"><span class="cc-sw"></span><span class="cc-name">${esc(tt(c.key))}</span></button>`).join('');
+  return `<div style="background:var(--surface);border-radius:12px;padding:20px;box-shadow:var(--sh);margin-bottom:14px;">
+      <div class="club-section-label">${esc(tt('club_color_title'))}</div>
+      <div style="font-size:12px;color:var(--gd2);margin-bottom:10px;">${esc(tt('club_color_hint'))}</div>
+      <div class="cc-grid">${sw}</div>
+    </div>`;
+}
+
+async function saveClubColor(id) {
+  if (!_supabase || !currentClub || currentClubRole !== 'club_admin') return;
+  if (!CLUB_COLORS.some(c => c.id === id)) return;
+  const val = id === 'gruen' ? null : id;
+  const { error } = await _supabase.from('clubs').update({ primary_color: val }).eq('id', currentClub.id);
+  if (error) { showToast(tt('club_db_missing'), 'err'); return; }
+  currentClub.primary_color = val;
+  applyClubColor(val);
+  showToast(tt('club_color_saved'));
+  renderClubTab();
+}
+
+let _focusDraft = [];
+function _focusAdminCardHtml() {
+  _focusDraft = _clubFocusItems();
+  return `<div style="background:var(--surface);border-radius:12px;padding:20px;box-shadow:var(--sh);margin-bottom:14px;">
+      <div class="club-section-label">${esc(tt('club_focus_title'))}</div>
+      <div style="font-size:12px;color:var(--gd2);margin-bottom:10px;">${esc(tt('club_focus_intro_admin'))}</div>
+      <div id="clubFocusEdit">${_focusEditRowsHtml()}</div>
+    </div>`;
+}
+
+function _focusEditRowsHtml() {
+  const rows = _focusDraft.map((it, i) => `<div class="focus-edit-row">
+      <input class="fc" maxlength="60" value="${esc(it.title)}" placeholder="${esc(tt('club_focus_name_ph'))}" oninput="_focusDraft[${i}].title=this.value">
+      <textarea class="fc" rows="3" maxlength="600" placeholder="${esc(tt('club_focus_text_ph'))}" oninput="_focusDraft[${i}].text=this.value">${esc(it.text)}</textarea>
+      <button type="button" class="slot-btn slot-btn-remove" onclick="focusRemove(${i})">${esc(tt('club_focus_remove'))}</button>
+    </div>`).join('');
+  const add = _focusDraft.length < CLUB_FOCUS_MAX ? `<button type="button" class="slot-btn" onclick="focusAdd()">+ ${esc(tt('club_focus_add'))}</button>` : '';
+  return rows + `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">${add}<button type="button" class="slot-btn slot-btn-copy" onclick="saveClubFocus()">${esc(tt('club_focus_save'))}</button></div>`;
+}
+
+function focusAdd() { _focusDraft.push({ title: '', text: '' }); document.getElementById('clubFocusEdit').innerHTML = _focusEditRowsHtml(); }
+function focusRemove(i) { _focusDraft.splice(i, 1); document.getElementById('clubFocusEdit').innerHTML = _focusEditRowsHtml(); }
+
+async function saveClubFocus() {
+  if (!_supabase || !currentClub || currentClubRole !== 'club_admin') return;
+  const items = _focusDraft.map(i => ({ title: i.title.trim().slice(0, 60), text: i.text.trim().slice(0, 600) })).filter(i => i.title).slice(0, CLUB_FOCUS_MAX);
+  const { error } = await _supabase.from('clubs').update({ focus_points: items }).eq('id', currentClub.id);
+  if (error) { showToast(tt('club_db_missing'), 'err'); return; }
+  currentClub.focus_points = items;
+  renderClubFocusPlanner();
+  showToast(tt('club_focus_saved'));
+  renderClubTab();
 }

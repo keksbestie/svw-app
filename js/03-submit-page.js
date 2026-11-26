@@ -317,6 +317,7 @@ async function doLogout(){
   if(typeof resetPlanPlayerNames==='function') resetPlanPlayerNames();
   if(typeof blockLibrary!=='undefined') blockLibrary=blockLibrary.filter(b=>!b._dbId); // nur lokal noch nicht gesicherte Einträge behalten
   currentUser=null; IS_ADMIN=false; IS_REVIEWER=false; REVIEWER_SPORTS=[];
+  if(typeof _clearClubState==='function') _clearClubState(); // Verein, Vereinsfarbe und Schwerpunkte zurücksetzen
   if(typeof renderSavedPlans==='function') renderSavedPlans();
   if(typeof renderLtp==='function') renderLtp();
   if(typeof renderLibrary==='function'&&typeof activeLtpTab!=='undefined'&&activeLtpTab===1) renderLibrary();

@@ -31,6 +31,31 @@ const TRANSLATIONS = {
     rev_cant_label:'Das gehört nicht dazu',
     rev_cant:'Übungen direkt im Katalog anlegen, ändern oder löschen sowie Rollen vergeben können nur Admins.',
     rev_none:'Dir ist noch keine Sportart zugewiesen. Bitte das Admin-Team, dir Sportarten zu geben – ohne Sportart siehst du keine fremden Einreichungen.',
+
+    cc_gruen:'Grün (Standard)',
+    cc_rot:'Rot',
+    cc_blau:'Blau',
+    cc_lila:'Lila',
+    cc_orange:'Orange',
+    cc_gelb:'Gelb',
+    cc_tuerkis:'Türkis',
+    cc_pink:'Pink',
+    cc_schwarz:'Schwarz',
+    club_color_title:'Vereinsfarbe',
+    club_color_hint:'Alle Trainer:innen deines Vereins sehen die App in dieser Akzentfarbe.',
+    club_color_saved:'Vereinsfarbe gespeichert.',
+    club_focus_title:'Vereins-Schwerpunkte',
+    club_focus_intro_admin:'Lege fest, worauf dein Verein im Training Wert legt. Alle angebundenen Trainer:innen sehen diese Punkte.',
+    club_focus_intro_trainer:'Darauf legt dein Verein im Training Wert:',
+    club_focus_add:'Schwerpunkt hinzufügen',
+    club_focus_name_ph:'Titel, z. B. Defensivverhalten',
+    club_focus_text_ph:'Beschreibung…',
+    club_focus_save:'Schwerpunkte speichern',
+    club_focus_remove:'Entfernen',
+    club_focus_empty:'Dein Verein hat noch keine Schwerpunkte festgelegt.',
+    club_focus_saved:'Schwerpunkte gespeichert.',
+    club_db_missing:'Speichern nicht möglich: Die Datenbank wurde noch nicht aktualisiert.',
+    club_focus_planner:'Schwerpunkte deines Vereins',
   },
   en: {
     nav_home:'Home', nav_catalog:'Catalog', nav_plan:'Planner', nav_longterm:'Blocks',
@@ -54,6 +79,31 @@ const TRANSLATIONS = {
     rev_cant_label:'What is not included',
     rev_cant:'Creating, changing or deleting exercises directly in the catalog and assigning roles are for admins only.',
     rev_none:'No sport is assigned to you yet. Ask the admin team to assign sports – without a sport you do not see other people’s submissions.',
+
+    cc_gruen:'Green (default)',
+    cc_rot:'Red',
+    cc_blau:'Blue',
+    cc_lila:'Purple',
+    cc_orange:'Orange',
+    cc_gelb:'Yellow',
+    cc_tuerkis:'Teal',
+    cc_pink:'Pink',
+    cc_schwarz:'Black',
+    club_color_title:'Club colour',
+    club_color_hint:'All coaches of your club see the app in this accent colour.',
+    club_color_saved:'Club colour saved.',
+    club_focus_title:'Club focus points',
+    club_focus_intro_admin:'Define what your club values in training. All linked coaches see these points.',
+    club_focus_intro_trainer:'This is what your club values in training:',
+    club_focus_add:'Add focus point',
+    club_focus_name_ph:'Title, e.g. Defensive behaviour',
+    club_focus_text_ph:'Description…',
+    club_focus_save:'Save focus points',
+    club_focus_remove:'Remove',
+    club_focus_empty:'Your club has not set any focus points yet.',
+    club_focus_saved:'Focus points saved.',
+    club_db_missing:'Cannot save: the database has not been updated yet.',
+    club_focus_planner:'Your club’s focus points',
   },
   es: {
     nav_home:'Inicio', nav_catalog:'Catálogo', nav_plan:'Planificador', nav_longterm:'Bloques',
@@ -77,6 +127,31 @@ const TRANSLATIONS = {
     rev_cant_label:'Lo que no incluye',
     rev_cant:'Crear, cambiar o borrar ejercicios directamente en el catálogo y asignar roles solo pueden hacerlo los administradores.',
     rev_none:'Aún no tienes ningún deporte asignado. Pide al equipo de administración que te asigne deportes; sin deporte no ves los envíos de otros.',
+
+    cc_gruen:'Verde (estándar)',
+    cc_rot:'Rojo',
+    cc_blau:'Azul',
+    cc_lila:'Morado',
+    cc_orange:'Naranja',
+    cc_gelb:'Amarillo',
+    cc_tuerkis:'Turquesa',
+    cc_pink:'Rosa',
+    cc_schwarz:'Negro',
+    club_color_title:'Color del club',
+    club_color_hint:'Todos los entrenadores de tu club ven la app con este color de acento.',
+    club_color_saved:'Color del club guardado.',
+    club_focus_title:'Prioridades del club',
+    club_focus_intro_admin:'Define en qué pone el acento tu club en el entrenamiento. Todos los entrenadores vinculados ven estos puntos.',
+    club_focus_intro_trainer:'En esto pone el acento tu club en el entrenamiento:',
+    club_focus_add:'Añadir prioridad',
+    club_focus_name_ph:'Título, p. ej. Comportamiento defensivo',
+    club_focus_text_ph:'Descripción…',
+    club_focus_save:'Guardar prioridades',
+    club_focus_remove:'Quitar',
+    club_focus_empty:'Tu club aún no ha definido prioridades.',
+    club_focus_saved:'Prioridades guardadas.',
+    club_db_missing:'No se puede guardar: la base de datos aún no está actualizada.',
+    club_focus_planner:'Prioridades de tu club',
   }
 };
 
@@ -184,43 +259,67 @@ function adjustFontSize(dir) {
 
 // ══════════════════════════════════════════════════════
 // ══════════════════════════════════════════════════════════════════
-// CLUB THEME ENGINE (prepared for future use)
+// VEREINSFARBE (Akzentfarbe der App je Verein)
 // ══════════════════════════════════════════════════════════════════
-// To activate club colours, call: applyClubTheme('#HEX_PRIMARY', '#HEX_SECONDARY')
-// This overrides --accent and --club-secondary globally.
-// Club settings can be stored in localStorage under 'svw_club_theme'.
-function applyClubTheme(primary, secondary) {
+// Kuratierte Palette, keine freie Farbwahl. Je Farbe zwei Töne:
+//   light  = Füllfarbe im hellen Design (weiße Schrift darauf, Farbe selbst als Text auf Weiß lesbar)
+//   dark   = hellerer Ton für den dunklen Glas-Look (Farbe als Text auf Dunkel lesbar, dunkle Schrift darauf)
+// 'gruen' ist der Standard und ändert nichts. Schwarz bekommt im dunklen Design einen hellen Ton.
+const CLUB_COLORS = [
+  { id:'gruen',   key:'cc_gruen',   light:'#1a7f4b', dark:'#22d38c' },
+  { id:'rot',     key:'cc_rot',     light:'#c62828', dark:'#ff6b6b' },
+  { id:'blau',    key:'cc_blau',    light:'#1565c0', dark:'#6aa9ff' },
+  { id:'lila',    key:'cc_lila',    light:'#7b1fa2', dark:'#c58bff' },
+  { id:'orange',  key:'cc_orange',  light:'#c2410c', dark:'#ff9d4d' },
+  { id:'gelb',    key:'cc_gelb',    light:'#965a06', dark:'#facc15' },
+  { id:'tuerkis', key:'cc_tuerkis', light:'#00796b', dark:'#2dd4bf' },
+  { id:'pink',    key:'cc_pink',    light:'#c2185b', dark:'#ff7eb0' },
+  { id:'schwarz', key:'cc_schwarz', light:'#1a1a1a', dark:'#e5e7eb' },
+];
+const CLUB_COLOR_ON_DARK = '#0b0f0c'; // Schrift auf den hellen Tönen
+let currentClubColor = null;
+
+function clubColorById(id) { return CLUB_COLORS.find(c => c.id === id && c.id !== 'gruen') || null; }
+
+function _mixHex(a, b, p) { // p = Anteil von a (0..1)
+  const x = parseInt(a.slice(1), 16), y = parseInt(b.slice(1), 16);
+  const ch = s => Math.round(((x >> s) & 255) * p + ((y >> s) & 255) * (1 - p));
+  return '#' + [16, 8, 0].map(s => ch(s).toString(16).padStart(2, '0')).join('');
+}
+
+// Setzt die Vereinsfarbe (id aus der Palette) oder entfernt sie (null / 'gruen' / unbekannt = Standard-Grün)
+function applyClubColor(id, remember = true) {
+  const c = clubColorById(id);
   const root = document.documentElement;
-  root.style.setProperty('--accent', primary);
-  root.style.setProperty('--accent-d', shadeColor(primary, -15));
-  root.style.setProperty('--accent-l', shadeColor(primary, 90));
-  root.style.setProperty('--club-secondary', secondary || '#3a3a3a');
-  localStorage.setItem('tb_club_theme', JSON.stringify({ primary, secondary }));
-}
-
-function resetClubTheme() {
-  const root = document.documentElement;
-  root.style.removeProperty('--accent');
-  root.style.removeProperty('--accent-d');
-  root.style.removeProperty('--accent-l');
-  root.style.removeProperty('--club-secondary');
-  localStorage.removeItem('tb_club_theme');
-}
-
-function shadeColor(hex, percent) {
-  const num = parseInt(hex.replace('#',''), 16);
-  const r = Math.min(255, Math.max(0, (num >> 16) + percent * 2.55));
-  const g = Math.min(255, Math.max(0, ((num >> 8) & 0xff) + percent * 2.55));
-  const b = Math.min(255, Math.max(0, (num & 0xff) + percent * 2.55));
-  return '#' + [r,g,b].map(v => Math.round(v).toString(16).padStart(2,'0')).join('');
-}
-
-function loadClubTheme() {
-  const saved = localStorage.getItem('tb_club_theme') || localStorage.getItem('svw_club_theme');
-  if (saved) {
-    try { const c = JSON.parse(saved); applyClubTheme(c.primary, c.secondary); } catch(e){}
+  let st = document.getElementById('clubColorStyle');
+  if (!c) {
+    if (st) st.remove();
+    root.removeAttribute('data-club-color');
+    currentClubColor = null;
+    if (remember) { try { localStorage.removeItem('tb_club_color'); } catch (e) {} }
+    return;
   }
+  if (!st) { st = document.createElement('style'); st.id = 'clubColorStyle'; document.head.appendChild(st); }
+  const soft = _mixHex(c.dark, '#ffffff', .55);
+  st.textContent =
+    'html[data-club-color]:root{--accent:' + c.light + ';--accent-d:' + _mixHex(c.light, '#000000', .8) + ';--accent-mid:' + _mixHex(c.light, '#ffffff', .85) + ';--accent-l:' + _mixHex(c.light, '#ffffff', .1) + ';--accent-on:#ffffff;--ac-lt:' + c.light + ';--ac-glow:' + c.dark + ';--ac-soft:' + soft + ';}' +
+    'html[data-club-color][data-theme="dark"]{--accent:' + c.dark + ';--accent-d:' + _mixHex(c.dark, '#ffffff', .82) + ';--accent-mid:' + _mixHex(c.dark, '#000000', .9) + ';--accent-l:' + _mixHex(c.dark, '#1c221c', .16) + ';--accent-on:' + CLUB_COLOR_ON_DARK + ';}';
+  root.setAttribute('data-club-color', c.id);
+  currentClubColor = c.id;
+  if (remember) { try { localStorage.setItem('tb_club_color', c.id); } catch (e) {} }
 }
+
+function resetClubTheme() { applyClubColor(null); }
+
+// Beim Start: zuletzt bekannte Vereinsfarbe sofort anwenden (kein Aufblitzen), wird nach dem Login geprüft
+function loadClubTheme() {
+  try { localStorage.removeItem('tb_club_theme'); localStorage.removeItem('svw_club_theme'); } catch (e) {}
+  let id = null; try { id = localStorage.getItem('tb_club_color'); } catch (e) {}
+  if (id) applyClubColor(id, false);
+}
+
+// Übersetzung für Texte, die per JavaScript erzeugt werden
+function tt(key) { const t = TRANSLATIONS[currentLang] || TRANSLATIONS.de; return t[key] || TRANSLATIONS.de[key] || key; }
 
 // TAG CLUSTERS — editable at runtime
 // ══════════════════════════════════════════════════════
