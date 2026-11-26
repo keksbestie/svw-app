@@ -28,7 +28,7 @@ async function initClubLogoBg(sportId) {
     logos = logos.filter(c => (c.sports || []).includes(sportId));
   }
 
-  if (document.documentElement.hasAttribute('data-mix') && window.renderTribune) { window.renderTribune(wrap, logos); return; }
+  if (document.documentElement.hasAttribute('data-mix') && window.renderTribune) { window.renderTribune(wrap, logos.filter(c => !(currentClub && c.id === currentClub.id))); return; }
   if (!logos.length) return;
   const W = window.innerWidth;
   const H = window.innerHeight;
@@ -81,6 +81,7 @@ async function loadClubData(userId) {
     currentClub = club || null;
     clubLogoUrl = club?.logo_url || null;
     _renderClubBtn();
+    if (typeof initClubLogoBg === 'function' && document.getElementById('page-home')?.classList.contains('active')) initClubLogoBg(window.currentSport?.id || null);
   } catch(e) { console.warn('Club load error', e); }
 }
 

@@ -188,6 +188,22 @@
     });
   }
 
+  /* Eigenes Vereinslogo schwebt unter dem Ball, wenn der Trainer einem Verein angehört */
+  function ensureClubMark() {
+    var w = wrap(); if (!w) return;
+    var url = (typeof clubLogoUrl !== 'undefined' && typeof currentClub !== 'undefined' && currentClub) ? clubLogoUrl : null;
+    var m = document.getElementById('clubMark');
+    if (!url || !isMix()) { if (m) m.remove(); return; }
+    if (!m) {
+      m = document.createElement('div'); m.id = 'clubMark'; m.innerHTML = '<img alt="">';
+      m.addEventListener('pointerdown', function (e) { e.stopPropagation(); });
+      w.insertBefore(m, w.firstChild);
+    }
+    var im = m.querySelector('img');
+    if (im.getAttribute('src') !== url) im.src = url;
+    m.title = (currentClub && currentClub.name) || '';
+  }
+  setInterval(ensureClubMark, 700);
   var ballSport = '';
   function ensureBall() {
     var w = wrap(); if (!w) return;
