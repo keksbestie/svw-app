@@ -90,6 +90,10 @@
     var box = ui.querySelector('.rg-detail > div'); box.classList.remove('rg-fade'); void box.offsetWidth; box.classList.add('rg-fade');
   }
   var last = performance.now();
+  /* Nach einer Minute ohne Eingabe dreht sich das Rad ganz langsam von selbst */
+  var lastAct = performance.now(), iv = 0;
+  ['pointermove', 'pointerdown', 'keydown', 'wheel', 'touchstart', 'scroll'].forEach(function (ev) { window.addEventListener(ev, function () { lastAct = performance.now(); }, { passive: true, capture: true }); });
+  window._ringIdleTest = function (ms) { lastAct = performance.now() - ms; };
   function frame(t) {
     var dt = Math.min(50, t - last); last = t;
     var w = wrap();
@@ -102,7 +106,11 @@
         hv += (hover * 0.028 - hv) * Math.min(1, dt * 0.004);
         if (hover) { snapping = false; }
         rot += hv * dt;
-        if (hover) { /* läuft */ }
+        var tb = document.getElementById('tourBubble');
+        var idle = !hover && performance.now() - lastAct > 60000 && !(tb && tb.style.display === 'block');
+        iv += ((idle ? 0.005 : 0) - iv) * Math.min(1, dt * 0.0015);
+        if (idle || iv > 0.0003) { rot += iv * dt; snapping = false; }
+        else if (hover) { /* läuft */ }
         else {
           if (!snapping) { target = Math.round(rot / st) * st; snapping = true; }
           if (!hover) rot += (target - rot) * Math.min(1, dt * 0.0045);
