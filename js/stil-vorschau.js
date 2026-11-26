@@ -94,10 +94,12 @@
     if (dragging) { var dx = e.clientX - startX; moved = Math.max(moved, Math.abs(dx)); rot = startRot - dx * 0.3; return; }
     if (!isMix() || !w || e.pointerType !== 'mouse') { hover = 0; return; }
     var r = w.getBoundingClientRect();
-    if (e.clientY < r.top - 40 || e.clientY > r.bottom + 40) { hover = 0; return; }
-    var p = (e.clientX - r.left) / r.width, z = .22;
-    hover = p < z ? -(z - p) / z : p > 1 - z ? (p - (1 - z)) / z : 0;
-    hover = Math.max(-1, Math.min(1, hover)) * 1;
+    if (e.clientY < r.top - 20 || e.clientY > r.bottom + 20) { hover = 0; return; }
+    var g = getComputedStyle(w), half = (parseFloat(g.getPropertyValue('--Rx')) || 290) + (parseFloat(g.getPropertyValue('--cw')) || 236) / 2;
+    var p = (e.clientX - (r.left + r.width / 2)) / half;
+    if (Math.abs(p) > 1.15) { hover = 0; return; }
+    var z = .3;
+    hover = Math.abs(p) < z ? 0 : Math.sign(p) * Math.min(1, (Math.abs(p) - z) / (1 - z));
   });
   document.addEventListener('pointerdown', function (e) {
     var w = wrap(); if (!isMix() || !w || !w.contains(e.target)) return;
