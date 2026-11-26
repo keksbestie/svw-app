@@ -183,11 +183,11 @@ html[data-stil="nacht"][data-mix] .home-sport-card{border-radius:6px}
 html[data-stil="nacht"][data-mix] .home-sport-label{font-family:'Barlow',sans-serif;font-weight:600;font-size:11px;letter-spacing:.3em}
 
 /* Das Rad */
-html[data-stil="nacht"][data-mix] #homeCards{display:block!important;position:relative;max-width:none;width:100%;height:410px;flex:none;overflow:visible;padding:0;margin:8px auto 0;perspective:1700px;perspective-origin:50% 38%;touch-action:pan-y;cursor:grab;--R:420px;--cw:290px}
+html[data-stil="nacht"][data-mix] #homeCards{display:block!important;position:relative;max-width:none;width:100%;height:520px;flex:none;overflow:visible;padding:0;margin:8px auto 0;perspective:1600px;perspective-origin:50% 30%;touch-action:pan-y;cursor:grab;--Rx:540px;--Rz:320px;--lift:150px;--cw:290px}
 html[data-stil="nacht"][data-mix] #homeCards:active{cursor:grabbing}
 html[data-stil="nacht"][data-mix] #homeCards[style*="display: none"]{display:none!important}
-html[data-stil="nacht"][data-mix] #homeCards .home-card{position:absolute;left:50%;top:0;width:var(--cw);height:360px;margin-left:calc(var(--cw) / -2);transform:translateZ(calc(var(--R) * -1)) rotateY(var(--a,0deg)) translateZ(var(--R));backface-visibility:hidden;-webkit-backface-visibility:hidden;filter:brightness(calc(.4 + .6 * var(--d,1)));animation:stilFade .8s both;padding:30px 26px 24px;border-radius:10px;background:linear-gradient(165deg,rgba(255,255,255,.10),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.16);box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 50px color-mix(in srgb,var(--c,#22d38c) 16%,transparent);user-select:none;-webkit-user-select:none;will-change:transform}
-html[data-stil="nacht"][data-mix] #homeCards .home-card:hover{transform:translateZ(calc(var(--R) * -1)) rotateY(var(--a,0deg)) translateZ(var(--R))}
+html[data-stil="nacht"][data-mix] #homeCards .home-card{position:absolute;left:50%;top:150px;width:var(--cw);height:360px;margin-left:calc(var(--cw) / -2);filter:brightness(calc(.4 + .6 * var(--d,1)));animation:stilFade .8s both;padding:30px 26px 24px;border-radius:10px;background:linear-gradient(165deg,rgba(255,255,255,.10),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.16);box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 50px color-mix(in srgb,var(--c,#22d38c) 16%,transparent);user-select:none;-webkit-user-select:none;will-change:transform}
+html[data-stil="nacht"][data-mix] #homeCards .home-card:hover{box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 60px color-mix(in srgb,var(--c,#22d38c) 30%,transparent)}
 html[data-stil="nacht"][data-mix] #homeCards .home-card::before{display:block;content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,var(--c),transparent);opacity:.9}
 html[data-stil="nacht"][data-mix] .home-card-num{color:var(--c);font-family:'Barlow',sans-serif;font-weight:600;letter-spacing:.3em;margin-bottom:30px}
 html[data-stil="nacht"][data-mix] .home-card .home-card-icon{border-radius:12px;width:54px;height:54px}
@@ -212,5 +212,5 @@ html[data-stil="nacht"][data-mix] #ringUi{display:block;position:relative;z-inde
 #ringUi .rg-open{font:600 11px 'Barlow',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#04090d;background:#fff;border:0;border-radius:2px;padding:13px 26px;cursor:pointer;transition:transform .2s,box-shadow .2s}
 #ringUi .rg-open:hover{box-shadow:0 8px 28px color-mix(in srgb,var(--c,#8fe9c0) 50%,transparent);transform:translateY(-2px)}
 #ringUi .rg-fade{animation:stilUp .45s cubic-bezier(.2,.7,.2,1) both}
-@media (max-width:700px){html[data-stil="nacht"][data-mix] #homeCards{height:390px;--R:300px;--cw:244px;perspective:1100px}html[data-stil="nacht"][data-mix] #homeCards .home-card{height:340px;padding:24px 20px 20px}}
+@media (max-width:700px){html[data-stil="nacht"][data-mix] #homeCards{height:470px;--Rx:230px;--Rz:200px;--lift:110px;--cw:244px;perspective:1100px}html[data-stil="nacht"][data-mix] #homeCards .home-card{height:340px;top:110px;padding:24px 20px 20px}}
 @media (prefers-reduced-motion:reduce){#ringUi .rg-fade{animation:none}}

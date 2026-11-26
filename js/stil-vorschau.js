@@ -29,17 +29,15 @@
   apply(get());
 
   /* ---------- 3D-Rad für die Karten (nur im Stil "Mix") ---------- */
-  var rot = 0, target = 0, dragging = false, moved = 0, startX = 0, startRot = 0, lastAct = Date.now(), active = -1;
+  var rot = 0, target = 0, dragging = false, moved = 0, startX = 0, startRot = 0, hover = 0, snapping = false, active = -1;
   var ui = document.createElement('div'); ui.id = 'ringUi';
-  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   function wrap() { return document.getElementById('homeCards'); }
   function cards() { var w = wrap(); return w ? [].slice.call(w.querySelectorAll('.home-card')) : []; }
   function isMix() { return document.documentElement.hasAttribute('data-mix'); }
-  var STEP = 50;
   function mod(a, n) { return ((a % n) + n) % n; }
-  function clampR(r) { var m = (cards().length - 1) * STEP; return Math.max(-20, Math.min(m + 20, r)); }
-  function go(i) { var n = cards().length; i = Math.max(0, Math.min(n - 1, i)); target = i * STEP; lastAct = Date.now(); }
-  function cur() { return Math.max(0, Math.min(cards().length - 1, Math.round(rot / STEP))); }
+  function step() { return 360 / Math.max(1, cards().length); }
+  function cur() { return mod(Math.round(rot / step()), cards().length); }
+  function go(i) { var n = cards().length, st = step(), c = Math.round(rot / st), d = mod(i - c, n); if (d > n / 2) d -= n; target = (c + d) * st; snapping = true; }
   function buildUi() {
     var w = wrap(); if (!w || ui.parentNode) return;
     ui.innerHTML = '<div class="rg-row"><button type="button" class="rg-btn" aria-label="Vorherige Karte" data-d="-1">←</button><div class="rg-dots"></div><button type="button" class="rg-btn" aria-label="Nächste Karte" data-d="1">→</button></div>' +
@@ -57,8 +55,7 @@
     var dots = ui.querySelector('.rg-dots');
     if (dots.children.length !== cs.length) { dots.innerHTML = ''; cs.forEach(function (_, i) { var d = document.createElement('button'); d.type = 'button'; d.className = 'rg-dot'; d.dataset.i = i; d.setAttribute('aria-label', 'Karte ' + (i + 1)); dots.appendChild(d); }); }
     [].forEach.call(dots.children, function (d, i) { d.setAttribute('aria-current', i === idx); });
-    var col = getComputedStyle(c).getPropertyValue('--c').trim() || '#8fe9c0';
-    ui.style.setProperty('--c', col);
+    ui.style.setProperty('--c', getComputedStyle(c).getPropertyValue('--c').trim() || '#8fe9c0');
     ui.querySelector('.rg-title').textContent = (c.querySelector('.home-card-title') || {}).textContent || '';
     ui.querySelector('.rg-text').textContent = (c.querySelector('.home-card-desc') || {}).textContent || '';
     var box = ui.querySelector('.rg-detail > div'); box.classList.remove('rg-fade'); void box.offsetWidth; box.classList.add('rg-fade');
@@ -69,40 +66,55 @@
     var w = wrap();
     if (isMix() && w && w.offsetParent) {
       buildUi();
-      var cs = cards(), n = cs.length, step = STEP;
+      var cs = cards(), n = cs.length, st = 360 / n, cs0 = getComputedStyle(w);
+      var Rx = parseFloat(cs0.getPropertyValue('--Rx')) || 520, Rz = parseFloat(cs0.getPropertyValue('--Rz')) || 300, lift = parseFloat(cs0.getPropertyValue('--lift')) || 70;
       if (!dragging) {
-        if (!reduce && Date.now() - lastAct > 5500) { target = (cur() >= n - 1 ? 0 : cur() + 1) * STEP; lastAct = Date.now() - 1500; }
-        rot += (target - rot) * Math.min(1, dt * 0.006);
+        if (hover) { rot += hover * dt * 0.09; snapping = false; }
+        else {
+          if (!snapping) { target = Math.round(rot / st) * st; snapping = true; }
+          rot += (target - rot) * Math.min(1, dt * 0.008);
+        }
       }
       cs.forEach(function (c, i) {
-        var a = i * step - rot, rad = a * Math.PI / 180;
-        c.style.setProperty('--a', a + 'deg');
-        c.style.setProperty('--d', ((Math.cos(rad) + 1) / 2).toFixed(3));
-        c.style.zIndex = Math.round(Math.cos(rad) * 10 + 10);
-        c.style.pointerEvents = Math.abs(a) > 100 ? 'none' : '';
+        var a = mod(i * st - rot + 180, 360) - 180, rad = a * Math.PI / 180, cs_ = Math.cos(rad);
+        var f = Math.max(-48, Math.min(48, a));
+        var x = Rx * Math.sin(rad), z = Rz * (cs_ - 1), y = -lift * (1 - cs_) / 2;
+        c.style.transform = 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,' + z.toFixed(1) + 'px) rotateY(' + f.toFixed(1) + 'deg)';
+        c.style.setProperty('--d', ((cs_ + 1) / 2).toFixed(3));
+        c.style.zIndex = Math.round(cs_ * 20 + 20);
       });
       var idx = cur();
       if (idx !== active) { active = idx; updateUi(idx); }
     }
     requestAnimationFrame(frame);
   }
+  /* Maus am linken/rechten Rand: Rad dreht sich; Mitte: rastet auf die nächste Karte ein */
+  document.addEventListener('pointermove', function (e) {
+    var w = wrap();
+    if (dragging) { var dx = e.clientX - startX; moved = Math.max(moved, Math.abs(dx)); rot = startRot - dx * 0.3; return; }
+    if (!isMix() || !w || e.pointerType !== 'mouse') { hover = 0; return; }
+    var r = w.getBoundingClientRect();
+    if (e.clientY < r.top - 40 || e.clientY > r.bottom + 40) { hover = 0; return; }
+    var p = (e.clientX - r.left) / r.width, z = .22;
+    hover = p < z ? -(z - p) / z : p > 1 - z ? (p - (1 - z)) / z : 0;
+    hover = Math.max(-1, Math.min(1, hover)) * 1;
+  });
   document.addEventListener('pointerdown', function (e) {
     var w = wrap(); if (!isMix() || !w || !w.contains(e.target)) return;
-    dragging = true; moved = 0; startX = e.clientX; startRot = rot; lastAct = Date.now();
+    dragging = true; moved = 0; startX = e.clientX; startRot = rot; snapping = false;
   });
-  document.addEventListener('pointermove', function (e) {
-    if (!dragging) return; var dx = e.clientX - startX; moved = Math.max(moved, Math.abs(dx)); rot = clampR(startRot - dx * 0.3); lastAct = Date.now();
-  });
-  function end() { if (!dragging) return; dragging = false; target = cur() * STEP; lastAct = Date.now(); }
+  function end() { if (!dragging) return; dragging = false; snapping = false; }
   document.addEventListener('pointerup', end); document.addEventListener('pointercancel', end);
   document.addEventListener('click', function (e) {
     var w = wrap(); if (!isMix() || !w || !w.contains(e.target)) return;
     var c = e.target.closest('.home-card'); if (!c) return;
-    var cs = cards(), i = cs.indexOf(c);
     if (moved > 6) { e.stopPropagation(); e.preventDefault(); moved = 0; return; }
-    if (i !== cur()) { e.stopPropagation(); e.preventDefault(); go(i); }
+    var i = cards().indexOf(c);
+    if (i !== cur()) { e.stopPropagation(); e.preventDefault(); hover = 0; go(i); }
   }, true);
-  w_keys();
-  function w_keys() { document.addEventListener('keydown', function (e) { if (!isMix() || !wrap() || !wrap().offsetParent) return; if (e.key === 'ArrowRight') go(cur() + 1); if (e.key === 'ArrowLeft') go(cur() - 1); }); }
+  document.addEventListener('keydown', function (e) {
+    if (!isMix() || !wrap() || !wrap().offsetParent) return;
+    if (e.key === 'ArrowRight') go(cur() + 1); if (e.key === 'ArrowLeft') go(cur() - 1);
+  });
   requestAnimationFrame(frame);
 })();
