@@ -321,6 +321,7 @@ async function doLogout(){
   if(typeof renderLtp==='function') renderLtp();
   if(typeof renderLibrary==='function'&&typeof activeLtpTab!=='undefined'&&activeLtpTab===1) renderLibrary();
   document.body.classList.remove('admin');
+  document.body.classList.remove('reviewer');
   if(typeof refreshSportAvailability==='function') refreshSportAvailability();
   submitUser=null; submitTags=[]; submitCanvasData=null; submitCanvasObjs=null; submitCopyOf=null;
   renderSubmitPage();
@@ -855,6 +856,15 @@ function renderAccountPage(){
   if(!currentUser) return;
   const usersTab=document.getElementById('accTabUsers');
   if(usersTab) usersTab.style.display=IS_ADMIN?'':'none';
+  const revCard=document.getElementById('accReviewerCard');
+  if(revCard){
+    revCard.style.display=IS_REVIEWER?'':'none';
+    const sp=document.getElementById('accReviewerSports');
+    if(sp){
+      const t=TRANSLATIONS[currentLang]||TRANSLATIONS.de;
+      sp.textContent=REVIEWER_SPORTS.length?REVIEWER_SPORTS.map(s=>_ALL_SPORTS.find(x=>x.id===s)?.label||s).join(', '):(t.rev_none||TRANSLATIONS.de.rev_none);
+    }
+  }
   const name=currentUser.user_metadata?.username||'';
   document.getElementById('accUsernameIn').value=name;
   document.getElementById('accEmailIn').value=currentUser.email||'';
