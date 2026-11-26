@@ -291,6 +291,7 @@ function removePlanLane(id,si){
 }
 
 function addToPlan(id,si){
+  if(isGuest()){showLoginRequired('Das Einplanen von Übungen');return;}
   if(!currentPlan.lanes[si]) currentPlan.lanes[si]=[];
   const already=currentPlan.lanes[si].some(raw=>_laneItem(raw).id===id);
   if(!already){

@@ -360,6 +360,7 @@ function renderSubmitChecklist_init(){
 
 // ── Übung aus dem Katalog kopieren und erweitern ─────
 function copyExToSubmit(id){
+  if(isGuest()){showLoginRequired('Das Kopieren von Übungen');return;}
   const e=exercises.find(x=>x.id===id); if(!e) return;
   if(typeof closeMod==='function') closeMod('exDetailMod');
   submitCopyOf={id:e.id,name:e.name||'',desc:e.desc||'',objs:JSON.parse(JSON.stringify(e.canvasObjects||[])),
