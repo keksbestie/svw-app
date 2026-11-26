@@ -417,3 +417,4 @@ html[data-stil="nacht"][data-mix] #ringUi{margin:0 auto 16px}
 html[data-stil="nacht"][data-mix] #ringUi .rg-detail{margin-top:8px}
 html[data-stil="nacht"][data-mix] #ringUi .rg-text{margin-bottom:10px;font-size:14px;line-height:1.5}
 }
+html[data-stil="nacht"][data-mix] .home-hero-eyebrow{display:none!important}
