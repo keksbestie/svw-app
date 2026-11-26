@@ -401,3 +401,19 @@ html[data-mix] #tourDots{min-width:0;gap:3px!important}
 html[data-mix] #tourDots span{width:8px!important}
 html[data-mix] #tourDots span[style*="var(--accent)"]{width:18px!important}
 html[data-mix] #tourBubble{max-width:360px!important}
+
+/* Startseite kompakter, damit man (Desktop) nicht scrollen muss */
+@media (min-width:701px){
+html[data-stil="nacht"][data-mix] .home-hero{padding-top:26px;padding-bottom:0}
+html[data-stil="nacht"][data-mix] .home-hero-title{font-size:clamp(26px,3.4vw,44px);margin-bottom:6px}
+html[data-stil="nacht"][data-mix] .home-hero-tagline{font-size:11px}
+html[data-stil="nacht"][data-mix] .home-hero-sub{margin:6px auto 8px;font-size:13px}
+html[data-stil="nacht"][data-mix] #homeCards{height:400px;margin-top:-30px;--Rx:350px;--Rz:200px;--lift:90px;--cw:216px}
+html[data-stil="nacht"][data-mix] #homeCards .home-card{top:140px;height:250px;padding:18px 18px 14px}
+html[data-stil="nacht"][data-mix] #homeCards .home-card-num{margin-bottom:10px}
+html[data-stil="nacht"][data-mix] #homeCards .home-card .home-card-icon{margin-bottom:10px}
+html[data-stil="nacht"][data-mix] #homeCards #ringBall{top:44px;width:170px;height:170px;margin-left:-85px}
+html[data-stil="nacht"][data-mix] #ringUi{margin:0 auto 16px}
+html[data-stil="nacht"][data-mix] #ringUi .rg-detail{margin-top:8px}
+html[data-stil="nacht"][data-mix] #ringUi .rg-text{margin-bottom:10px;font-size:14px;line-height:1.5}
+}
