@@ -183,10 +183,10 @@ html[data-stil="nacht"][data-mix] .home-sport-card{border-radius:6px}
 html[data-stil="nacht"][data-mix] .home-sport-label{font-family:'Barlow',sans-serif;font-weight:600;font-size:11px;letter-spacing:.3em}
 
 /* Das Rad */
-html[data-stil="nacht"][data-mix] #homeCards{display:block!important;position:relative;max-width:none;width:100%;height:520px;flex:none;overflow:visible;padding:0;margin:8px auto 0;perspective:1600px;perspective-origin:50% 30%;touch-action:pan-y;cursor:grab;--Rx:540px;--Rz:320px;--lift:150px;--cw:290px}
+html[data-stil="nacht"][data-mix] #homeCards{display:block!important;position:relative;max-width:none;width:100%;height:400px;flex:none;overflow:visible;padding:0;margin:8px auto 0;perspective:1600px;perspective-origin:50% 30%;touch-action:pan-y;cursor:grab;--Rx:290px;--Rz:210px;--lift:80px;--cw:236px}
 html[data-stil="nacht"][data-mix] #homeCards:active{cursor:grabbing}
 html[data-stil="nacht"][data-mix] #homeCards[style*="display: none"]{display:none!important}
-html[data-stil="nacht"][data-mix] #homeCards .home-card{position:absolute;left:50%;top:150px;width:var(--cw);height:360px;margin-left:calc(var(--cw) / -2);filter:brightness(calc(.4 + .6 * var(--d,1)));animation:stilFade .8s both;padding:30px 26px 24px;border-radius:10px;background:linear-gradient(165deg,rgba(255,255,255,.10),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.16);box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 50px color-mix(in srgb,var(--c,#22d38c) 16%,transparent);user-select:none;-webkit-user-select:none;will-change:transform}
+html[data-stil="nacht"][data-mix] #homeCards .home-card{position:absolute;left:50%;top:80px;width:var(--cw);height:290px;margin-left:calc(var(--cw) / -2);filter:brightness(calc(.4 + .6 * var(--d,1)));animation:stilFade .8s both;padding:22px 20px 18px;border-radius:10px;background:linear-gradient(165deg,rgba(255,255,255,.10),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.16);box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 50px color-mix(in srgb,var(--c,#22d38c) 16%,transparent);user-select:none;-webkit-user-select:none;will-change:transform}
 html[data-stil="nacht"][data-mix] #homeCards .home-card:hover{box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 60px color-mix(in srgb,var(--c,#22d38c) 30%,transparent)}
 html[data-stil="nacht"][data-mix] #homeCards .home-card::before{display:block;content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,var(--c),transparent);opacity:.9}
 html[data-stil="nacht"][data-mix] .home-card-num{color:var(--c);font-family:'Barlow',sans-serif;font-weight:600;letter-spacing:.3em;margin-bottom:30px}
@@ -212,5 +212,14 @@ html[data-stil="nacht"][data-mix] #ringUi{display:block;position:relative;z-inde
 #ringUi .rg-open{font:600 11px 'Barlow',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#04090d;background:#fff;border:0;border-radius:2px;padding:13px 26px;cursor:pointer;transition:transform .2s,box-shadow .2s}
 #ringUi .rg-open:hover{box-shadow:0 8px 28px color-mix(in srgb,var(--c,#8fe9c0) 50%,transparent);transform:translateY(-2px)}
 #ringUi .rg-fade{animation:stilUp .45s cubic-bezier(.2,.7,.2,1) both}
-@media (max-width:700px){html[data-stil="nacht"][data-mix] #homeCards{height:470px;--Rx:230px;--Rz:200px;--lift:110px;--cw:244px;perspective:1100px}html[data-stil="nacht"][data-mix] #homeCards .home-card{height:340px;top:110px;padding:24px 20px 20px}}
+@media (max-width:700px){html[data-stil="nacht"][data-mix] #homeCards{height:370px;--Rx:175px;--Rz:150px;--lift:70px;--cw:220px;perspective:1100px}html[data-stil="nacht"][data-mix] #homeCards .home-card{height:270px;top:70px;padding:20px 18px 16px}}
 @media (prefers-reduced-motion:reduce){#ringUi .rg-fade{animation:none}}
+
+html[data-stil="nacht"][data-mix] #homeCards .home-card-num{margin-bottom:16px}
+html[data-stil="nacht"][data-mix] #homeCards .home-card .home-card-icon{width:44px;height:44px;margin-bottom:14px}
+html[data-stil="nacht"][data-mix] #homeCards .home-card-title{font-size:13px;margin-bottom:8px}
+html[data-stil="nacht"][data-mix] #homeCards .home-card-desc{font-size:12.5px;line-height:1.5}
+html[data-stil="nacht"][data-mix] #homeCards .home-card-arrow{margin-top:14px;width:32px;height:32px}
+html[data-stil="nacht"][data-mix] .home-hero{padding-top:36px;padding-bottom:4px}
+html[data-stil="nacht"][data-mix] .home-hero-title{margin-bottom:14px}
+html[data-stil="nacht"][data-mix] #ringUi{margin-bottom:28px}
