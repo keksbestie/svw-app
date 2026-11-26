@@ -1,10 +1,8 @@
 /* Tribüne im Hintergrund der Startseite (Blick vom Rasen nach aussen): Vereinslogos sitzen auf den Plätzen. Drei Entwürfe zum Auswählen (Vorschau). */
 (function () {
-  var KEY = 'tribuene-design';
-  var DESIGNS = [['frontal', 'Frontal'], ['schraeg', 'Schräg'], ['weit', 'Weit']];
-  var DEMO = [0, 12, 40, 90], demo = 0, cur = 'frontal', lastWrap = null, lastLogos = [], bar = null;
-  try { cur = localStorage.getItem(KEY) || 'frontal'; } catch (e) {}
-  if (!DESIGNS.some(function (d) { return d[0] === cur; })) cur = 'frontal';
+  var cur = 'frontal', lastWrap = null, lastLogos = [];
+  /* Zum Ausprobieren: ?tribuene=12, =40 oder =90 zeigt Beispiel-Logos */
+  var demoN = 0; try { demoN = parseInt((location.search.match(/[?&]tribuene=(\d+)/) || [])[1], 10) || 0; } catch (e) {}
 
   function rnd(seed) { var s = seed; return function () { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; }; }
   function light() { return document.documentElement.getAttribute('data-theme') === 'light'; }
@@ -12,9 +10,7 @@
   /* Blick vom Rasen: 3D-Rechnung. Betrachter auf dem Spielfeld (Augenhöhe 1,7 m), die Tribüne ist eine runde, flache Schüssel (ein durchgehender Rang):
      unten nah am Spielfeld, nach oben rücken die Reihen immer weiter nach hinten. Gezeichnet werden Flächen, die Logos sitzen willkürlich darauf. */
   var VARS = {
-    frontal: { a: 70, b: 84, n: 2.05, rows: 42, rise: 0.3, off: 1.5, ex: 3.1, yaw: 0 },
-    schraeg: { a: 64, b: 80, n: 2.1, rows: 42, rise: 0.3, off: 1.5, ex: 3, yaw: 0.5 },
-    weit:    { a: 105, b: 125, n: 2.0, rows: 38, rise: 0.28, off: 3, ex: 3.8, yaw: 0.25 }
+    frontal: { a: 70, b: 84, n: 2.05, rows: 42, rise: 0.3, off: 1.5, ex: 3.1, yaw: 0 }
   };
   function sp(v, e) { return (v < 0 ? -1 : 1) * Math.pow(Math.abs(v), e); }
 
@@ -95,21 +91,25 @@
 
     /* Logos: willkürlich auf der Schüssel verteilt (feste Zufallsfolge, so bleiben bestehende Logos beim Wachsen an ihrem Platz) */
     var items = lastLogos.slice();
-    if (DEMO[demo]) { var base0 = items.length ? items : [{ name: 'Beispiel', logo_url: 'icons/logo.svg' }]; items = []; for (var q = 0; q < DEMO[demo]; q++) items.push(base0[q % base0.length]); }
+    if (demoN) { var base0 = items.length ? items : [{ name: 'Beispiel', logo_url: 'icons/logo.svg' }]; items = []; for (var q = 0; q < demoN; q++) items.push(base0[q % base0.length]); }
     var N = items.length, placed = [], rr = rnd(23);
     function sizeAt(z) { return Math.max(17, Math.min(50, Math.round(2.8 * cam.F / z))); }
-    var tries = 0;
-    while (placed.length < N && tries < N * 80 + 200) {
-      tries++;
-      var kk = Math.floor(Math.pow(rr(), 1.25) * R), pt = project(V, cam, (rr() * 2 - 1) * Math.PI, rowGeom(V, kk));
-      if (!pt || pt[0] < 14 || pt[0] > W - 14 || pt[1] < 20 || pt[1] > H - 30) continue;
-      var szp = Math.round(sizeAt(pt[2]) * (0.9 + rr() * 0.2));
-      var behind = Math.abs(pt[0] - cam.cx) < 400 && pt[1] > 20 && pt[1] < H * 0.78;
-      var bad = false;
-      for (var t = 0; t < placed.length; t++) if (Math.hypot(placed[t].x - pt[0], placed[t].y - pt[1]) < (placed[t].sz + szp) / 2 + 4) { bad = true; break; }
-      if (bad) continue;
-      placed.push({ x: pt[0], y: pt[1], sz: szp, op: behind ? 0.22 : 0.95 });
-    }
+    /* erst nur links und rechts neben den Karten, hinter den Karten nur wenn dort kein Platz mehr ist */
+    function centre(x, y) { return Math.abs(x - cam.cx) < 400 && y > 20 && y < H * 0.78; }
+    [true, false].forEach(function (strict) {
+      var tries = 0;
+      while (placed.length < N && tries < N * 90 + 300) {
+        tries++;
+        var kk = Math.floor(Math.pow(rr(), 1.25) * R), pt = project(V, cam, (rr() * 2 - 1) * Math.PI, rowGeom(V, kk));
+        if (!pt || pt[0] < 14 || pt[0] > W - 14 || pt[1] < 20 || pt[1] > H - 30) continue;
+        var szp = Math.round(sizeAt(pt[2]) * (0.9 + rr() * 0.2)), behind = centre(pt[0], pt[1]);
+        if (strict && behind) continue;
+        var bad = false;
+        for (var t = 0; t < placed.length; t++) if (Math.hypot(placed[t].x - pt[0], placed[t].y - pt[1]) < (placed[t].sz + szp) / 2 + 4) { bad = true; break; }
+        if (bad) continue;
+        placed.push({ x: pt[0], y: pt[1], sz: szp, op: behind ? 0.22 : 0.95 });
+      }
+    });
     placed.forEach(function (pl, kx) {
       var c2 = items[kx], sz = pl.sz;
       var el = document.createElement('span');
@@ -121,25 +121,6 @@
   }
   window.renderTribune = render;
 
-  function ensureBar() {
-    if (bar) return bar;
-    bar = document.createElement('div'); bar.id = 'tribSwitch';
-    bar.innerHTML = '<span>Tribüne</span>' + DESIGNS.map(function (d) { return '<button type="button" data-d="' + d[0] + '">' + d[1] + '</button>'; }).join('') + '<button type="button" data-demo="1">Beispiel-Logos</button>';
-    bar.addEventListener('click', function (e) {
-      var b = e.target.closest('button'); if (!b) return;
-      if (b.dataset.demo) { demo = (demo + 1) % DEMO.length; mark(); if (lastWrap) render(lastWrap, lastLogos); return; }
-      cur = b.dataset.d; try { localStorage.setItem(KEY, cur); } catch (x) {}
-      mark(); if (lastWrap) render(lastWrap, lastLogos);
-    });
-    document.body.appendChild(bar); mark();
-    return bar;
-  }
-  function mark() { if (bar) bar.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.demo ? demo > 0 : b.dataset.d === cur); if (b.dataset.demo) b.textContent = demo ? 'Beispiel: ' + DEMO[demo] + ' Logos' : 'Beispiel-Logos'; }); }
   var rt;
   window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { if (lastWrap && lastWrap.childNodes.length) render(lastWrap, lastLogos); }, 200); });
-  setInterval(function () {
-    var show = document.documentElement.hasAttribute('data-mix') && document.body.classList.contains('on-home') && lastWrap && lastWrap.offsetParent && window.innerWidth >= 900;
-    if (show) ensureBar();
-    if (bar) bar.style.display = show ? '' : 'none';
-  }, 400);
 })();
