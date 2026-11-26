@@ -120,3 +120,17 @@ test('Gespeicherte Daten bleiben nach Neuladen erhalten', async ({ page }) => {
   expect(await page.evaluate(() => exercises.map(e => e.name))).toEqual(['Testübung Pass', 'Testübung Schuss']);
   expect(errors).toEqual([]);
 });
+
+test('Sprachumschaltung: Texte kommen aus lang/en.json und Deutsch kommt zurück', async ({ page }) => {
+  const de = require('../lang/de.json');
+  const key = Object.keys(de).find(k => k.startsWith('home.') && de[k].length > 5);
+  await page.route('**/lang/en.json', r => r.fulfill({ json: { [key]: 'ENGLISH TEST' } }));
+  const errors = await openApp(page);
+  const texts = () => page.evaluate(k => Array.from(document.querySelectorAll('[data-i18n="' + k + '"]')).map(e => e.textContent.trim()), key);
+  const before = await texts();
+  await page.evaluate(() => setLang('en'));
+  await expect.poll(texts).toEqual(before.map(() => 'ENGLISH TEST'));
+  await page.evaluate(() => setLang('de'));
+  expect(await texts()).toEqual(before);
+  expect(errors).toEqual([]);
+});
