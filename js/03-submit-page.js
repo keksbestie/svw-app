@@ -309,6 +309,7 @@ async function doLogout(){
   await _supabase.auth.signOut();
   try{ localStorage.removeItem('ac_squad'); localStorage.removeItem('ac_coaches'); }catch(e){}
   if(typeof squad!=='undefined') squad=[];
+  if(typeof squadAll!=='undefined') squadAll=[];
   if(typeof coaches!=='undefined') coaches=[];
   if(typeof playerNotes!=='undefined') playerNotes=[];
   if(typeof calEntries!=='undefined') calEntries=[];
