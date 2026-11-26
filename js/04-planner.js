@@ -168,8 +168,11 @@ function openPlanPlayers(id,si){
     const im=m.querySelector('#ppImg'), wrap=m.querySelector('#ppImgWrap');
     im.onload=()=>{
       const b=_exImageBounds(ex); if(!b||!im.naturalWidth) return;
-      // Nur markieren, wenn das Bild zum berechneten Ausschnitt passt (sonst wäre die Lage falsch)
-      if(Math.abs((im.naturalWidth/im.naturalHeight)/(b.w/b.h)-1)>0.06) return;
+      // Am Feldrand wurde der Ausschnitt rechts/unten beschnitten: Größe aus dem tatsächlichen Seitenverhältnis des Bildes korrigieren (links/oben bleibt fest)
+      const A=im.naturalWidth/im.naturalHeight, B=b.w/b.h;
+      if(A<B) b.w=b.h*A; else b.h=b.w/A;
+      // Nur markieren, wenn das Bild grob zum berechneten Ausschnitt passt (sonst wäre die Lage falsch, z. B. bei von Hand gesetztem Zuschnitt)
+      if(Math.min(A,B)/Math.max(A,B)<0.6) return;
       players.forEach((p,i)=>{
         if(typeof p.x!=='number') return;
         const d=document.createElement('div'), r=Math.max(p.r+5,16);
