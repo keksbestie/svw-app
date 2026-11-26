@@ -81,6 +81,21 @@ function updateSelPlayerLabel(val){
   redraw();
 }
 
+// Farbe des ausgewählten Spielers ändern (auch nach dem Setzen)
+function updateSelPlayerColor(col){
+  const idx=selectedIndices.length===1?selectedIndices[0]:selectedObjIdx;
+  if(idx===null||idx<0||!canvasObjects[idx]||canvasObjects[idx].type!=='player'||!col) return;
+  const o=canvasObjects[idx];
+  if(o.color===col) return;
+  pushUndo();
+  const wasKeeper=o.color==='#f9a825', special=_isVolleyballSport()?'L':'TW';
+  o.color=col;
+  if(col==='#f9a825'){ if(/^\d*$/.test((o.label||'').trim())) o.label=special; }
+  else if(wasKeeper&&['TW','L'].includes(o.label)) o.label=_autoNumber?'0':'';
+  if(_autoNumber) renumberPlayers();
+  redraw();
+}
+
 // Update the selected player's name (below circle)
 // Spieler werden im Editor nicht mehr benannt (keine Namen in Katalog-Übungen); Namen vergibt man im Trainingsplan.
 function updateSelPlayerName(val){ /* bewusst ohne Wirkung */ }
@@ -113,6 +128,8 @@ function _updatePlayerEdit(){
     if(inp) inp.value=o.label||'';
     const nameInp=document.getElementById('playerNameInput');
     if(nameInp) nameInp.value=o.name||'';
+    const colSel=document.getElementById('playerColorEdit');
+    if(colSel) colSel.value=o.color||'';
   }
   if(isLine){
     const inp=document.getElementById('lineLabelInput');

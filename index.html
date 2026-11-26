@@ -2405,7 +2405,7 @@
 <script src="js/07-longterm-planning.js?v=20261008"></script>
 <script src="js/08-modals-toast.js?v=20261125"></script>
 <script src="js/09-default-descs.js?v=20261008"></script>
-<script src="js/10-field-editor.js?v=20261008"></script>
+<script src="js/10-field-editor.js?v=20261126"></script>
 <script src="js/11-app-start.js?v=20261008"></script>
 <script src="js/12-kader.js?v=20261126"></script>
 <script src="js/13-sport.js?v=20261126"></script>
@@ -2611,6 +2611,17 @@ if('serviceWorker' in navigator){
         <div style="width:1px;height:16px;background:rgba(255,255,255,.12);"></div>
         <span style="font-size:10px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.5px;">IM KREIS</span>
         <input id="playerLabelInput" type="text" maxlength="4" oninput="updateSelPlayerLabel(this.value)" placeholder="Nr." style="width:44px;padding:3px 7px;border-radius:5px;border:none;background:#344736;color:#fff;font-size:12px;font-weight:700;font-family:'Barlow Condensed',sans-serif;outline:none;text-align:center;">
+        <span style="font-size:10px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.5px;">FARBE</span>
+        <select id="playerColorEdit" onchange="updateSelPlayerColor(this.value)" title="Farbe der ausgewählten Spielerin / des ausgewählten Spielers" style="padding:3px 6px;border-radius:5px;border:none;font-size:11px;background:#344736;color:#fff;cursor:pointer;height:26px;">
+          <option value="#ffffff">● Weiß</option>
+          <option value="#1565c0">● Blau</option>
+          <option value="#e53935">● Rot</option>
+          <option value="#1b5e20">● Grün</option>
+          <option value="#e65100">● Orange</option>
+          <option value="#f9a825">● Gelb / TW·Libero</option>
+          <option value="#4a148c">● Lila</option>
+          <option value="#212121">● Schwarz</option>
+        </select>
         <input id="playerNameInput" hidden type="text" maxlength="14" oninput="updateSelPlayerName(this.value)" placeholder="Name" style="width:110px;padding:3px 8px;border-radius:5px;border:none;background:#344736;color:#fff;font-size:12px;font-weight:600;font-family:'Barlow Condensed',sans-serif;outline:none;">
       </div>
       <!-- Linien-Label-Editor: nur sichtbar wenn einzelne Linie selektiert -->
