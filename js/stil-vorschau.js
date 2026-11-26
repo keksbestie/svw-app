@@ -5,21 +5,21 @@
   function get() {
     var q = /[?&]stil=([a-z]+)/.exec(location.search);
     if (q) return q[1];
-    try { return localStorage.getItem(KEY) || 'aktuell'; } catch (e) { return 'aktuell'; }
+    return 'mix';
   }
   function apply(s) {
     var h = document.documentElement;
     if (s === 'mix') { h.setAttribute('data-stil', 'nacht'); h.setAttribute('data-mix', '1'); }
     else { h.removeAttribute('data-mix'); if (s === 'aktuell') h.removeAttribute('data-stil'); else h.setAttribute('data-stil', s); }
-    try { localStorage.setItem(KEY, s); } catch (e) {}
     var b = document.querySelectorAll('#stilSwitch button');
     for (var i = 0; i < b.length; i++) b[i].setAttribute('aria-pressed', b[i].dataset.s === s);
   }
   var bar = document.createElement('div');
   bar.id = 'stilSwitch';
-  bar.setAttribute('role', 'group');
+  bar.setAttribute('role', 'group'); if (!/[?&]stil=/.test(location.search)) bar.className = 'solo';
   bar.setAttribute('aria-label', 'Stil wählen');
-  NAMES.forEach(function (n) {
+  var PREVIEW = /[?&]stil=/.test(location.search); /* Stil-Knöpfe nur mit ?stil=… sichtbar (Vergleich) */
+  if (PREVIEW) NAMES.forEach(function (n) {
     var btn = document.createElement('button');
     btn.type = 'button'; btn.dataset.s = n[0]; btn.textContent = n[1];
     btn.onclick = function () { apply(n[0]); };
@@ -39,11 +39,11 @@
     var b = document.getElementById('stilAnim'); if (b) { b.textContent = v === 'off' ? 'Bewegung: aus' : 'Bewegung: an'; b.setAttribute('aria-pressed', v === 'on'); }
     if (v === 'off') { cards().forEach(function (c) { c.style.transform = ''; c.style.filter = ''; c.style.zIndex = ''; }); }
   }
-  var sep = document.createElement('span'); sep.style.cssText = 'width:1px;background:rgba(255,255,255,.2);margin:4px 2px'; bar.appendChild(sep);
+  var sep = document.createElement('span'); sep.style.cssText = 'width:1px;background:rgba(255,255,255,.2);margin:4px 2px'; if (PREVIEW) bar.appendChild(sep);
   var bm = document.createElement('button'); bm.type = 'button'; bm.id = 'stilMode';
   function modeLabel() { bm.textContent = document.documentElement.getAttribute('data-theme') === 'light' ? 'Hell' : 'Dunkel'; }
   bm.onclick = function () { if (typeof toggleTheme === 'function') toggleTheme(); setTimeout(modeLabel, 50); };
-  bar.appendChild(bm);
+  if (PREVIEW) bar.appendChild(bm);
   var ba = document.createElement('button'); ba.type = 'button'; ba.id = 'stilAnim';
   ba.onclick = function () { animApply(document.documentElement.getAttribute('data-anim') === 'off' ? 'on' : 'off'); };
   bar.appendChild(ba);
