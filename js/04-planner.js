@@ -99,15 +99,35 @@ function piHTML(item,ex,si,col){
 // ── Spielernamen je Übung im Plan ────────────────────
 // Übungen enthalten nur Nummern/Farben der Spieler. Die Namen vergibt man hier pro Plan (nur im eigenen Plan, nie im Katalog).
 function _exPlayers(ex){
-  const seen=new Set(), out=[];
+  // Jeder Spielerpunkt ist einzeln benennbar (auch ohne Nummer oder mit gleicher Nummer/Farbe): Schlüssel = Farbe|Nummer|Nr. des Vorkommens
+  const seen={}, out=[];
   ((ex&&ex.canvasObjects)||[]).forEach(o=>{
     if(!o||o.type!=='player') return;
-    const key=(o.color||'')+'|'+(o.label||'');
-    if(seen.has(key)) return; seen.add(key);
-    out.push({key,label:o.label||'',color:o.color||'#fff'});
+    const base=(o.color||'')+'|'+(o.label||'');
+    const n=seen[base]=(seen[base]||0)+1;
+    out.push({key:base+'|'+n,label:o.label||'',color:o.color||'#fff',x:o.x,y:o.y,r:14*(o.scale||1)});
   });
   const num=v=>{const n=parseInt(v);return isNaN(n)?1e6:n;};
-  return out.sort((a,b)=>num(a.label)-num(b.label)||String(a.label).localeCompare(String(b.label)));
+  return out.map((p,i)=>({...p,_i:i})).sort((a,b)=>num(a.label)-num(b.label)||String(a.label).localeCompare(String(b.label))||a._i-b._i);
+}
+// Ausschnitt des Felds, den das gespeicherte Bild zeigt (gleiche Berechnung wie beim automatischen Zuschneiden im Editor)
+function _exImageBounds(ex){
+  try{
+    const objs=(ex&&ex.canvasObjects)||[]; if(!objs.length||typeof _baseR!=='function') return null;
+    let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+    objs.forEach(o=>{
+      if(_LINE_TYPES.includes(o.type)){
+        const c=_ctrlOf(o);
+        const pts=c?_curvePts(o.x1,o.y1,c.x,c.y,o.x2,o.y2,20):[{x:o.x1,y:o.y1},{x:o.x2,y:o.y2}];
+        pts.forEach(q=>{x0=Math.min(x0,q.x);y0=Math.min(y0,q.y);x1=Math.max(x1,q.x);y1=Math.max(y1,q.y);});
+      } else if(o.x!==undefined){
+        const r=_baseR(o)*_objSc(o)+8;
+        x0=Math.min(x0,o.x-r);y0=Math.min(y0,o.y-r);x1=Math.max(x1,o.x+r);y1=Math.max(y1,o.y+r);
+      }
+    });
+    const pad=48, x=Math.max(0,x0-pad), y=Math.max(0,y0-pad);
+    return {x,y,w:x1+pad-x,h:y1+pad-y};
+  }catch(e){return null;}
 }
 // Spielernamen gelten nur für diese eine Einheit: ausschließlich im Arbeitsspeicher, nie Teil des Plans (nicht gespeichert, nicht im Kalender, nicht veröffentlichbar)
 let planPlayerNames={};
@@ -136,25 +156,50 @@ function openPlanPlayers(id,si){
     +'<div style="font-family:Barlow Condensed,sans-serif;font-size:20px;font-weight:900;margin-bottom:2px;">👤 Spieler benennen</div>'
     +'<div id="ppSub" style="font-size:12px;color:var(--text-3);margin-bottom:12px;"></div>'
     +'<div style="display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap;">'
-    +'<div id="ppImgBox" style="flex:1 1 320px;min-width:0;display:none;"><img id="ppImg" alt="Felddiagramm der Übung" style="width:100%;max-height:60vh;object-fit:contain;border-radius:10px;border:1px solid var(--border);background:#2d7a3a;display:block;"><div style="font-size:11px;color:var(--text-3);margin-top:6px;">Die Nummern im Bild entsprechen den Nummern links.</div></div>'
+    +'<div id="ppImgBox" style="flex:1 1 320px;min-width:0;display:none;"><div id="ppImgWrap" style="position:relative;line-height:0;"><img id="ppImg" alt="Felddiagramm der Übung" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--border);background:#2d7a3a;display:block;"></div><div style="font-size:11px;color:var(--text-3);margin-top:6px;">Der gerade ausgewählte Spieler ist im Bild farbig hervorgehoben. Du kannst auch einen Punkt im Bild anklicken.</div></div>'
     +'<div style="flex:1 1 280px;min-width:0;"><div id="ppRows" style="display:grid;gap:8px;"></div></div></div>'
     +'<div style="font-size:11px;color:var(--text-3);margin:10px 0 14px;">Die Namen gelten nur für diese eine Einheit: Sie werden nicht gespeichert und stehen nur im Ausdruck. Nach dem Schließen der App oder dem Laden eines anderen Plans sind sie weg.</div>'
     +'<div style="display:flex;gap:8px;"><button class="bsc" data-act="cancel" style="flex:1;">Abbrechen</button><button class="bpr" data-act="save" style="flex:2;">Speichern</button></div>'
     +'<button data-act="clear" style="width:100%;margin-top:10px;padding:8px;background:none;border:1.5px solid #e53935;color:#e53935;border-radius:8px;cursor:pointer;font-weight:700;">Alle Namen löschen</button></div>';
   document.body.appendChild(m);
   m.querySelector('#ppSub').textContent=ex.name||'';
-  if(ex.image){ const im=m.querySelector('#ppImg'); im.src=ex.image; m.querySelector('#ppImgBox').style.display=''; }
+  const markers=[]; // Markierungen im Bild je Spieler
+  if(ex.image){
+    const im=m.querySelector('#ppImg'), wrap=m.querySelector('#ppImgWrap');
+    im.onload=()=>{
+      const b=_exImageBounds(ex); if(!b||!im.naturalWidth) return;
+      // Nur markieren, wenn das Bild zum berechneten Ausschnitt passt (sonst wäre die Lage falsch)
+      if(Math.abs((im.naturalWidth/im.naturalHeight)/(b.w/b.h)-1)>0.06) return;
+      players.forEach((p,i)=>{
+        if(typeof p.x!=='number') return;
+        const d=document.createElement('div'), r=Math.max(p.r+5,16);
+        d.style.cssText='position:absolute;box-sizing:border-box;border-radius:50%;cursor:pointer;transition:all .12s;'
+          +'left:'+((p.x-b.x-r)/b.w*100)+'%;top:'+((p.y-b.y-r)/b.h*100)+'%;width:'+(2*r/b.w*100)+'%;height:'+(2*r/b.h*100)+'%;';
+        d.onclick=()=>rows.querySelectorAll('input')[i]?.focus();
+        wrap.appendChild(d); markers[i]=d;
+      });
+      setActive(rows.querySelector('input:focus')?rows.querySelector('input:focus').dataset.key:null);
+    };
+    im.src=ex.image; m.querySelector('#ppImgBox').style.display='';
+  }
+  const setActive=key=>{
+    players.forEach((p,i)=>{
+      const on=p.key===key, d=markers[i];
+      if(d) d.style.cssText=d.style.cssText.replace(/border:[^;]*;|box-shadow:[^;]*;|z-index:[^;]*;/g,'')+(on?'border:3px solid #ff2d95;box-shadow:0 0 0 3px rgba(255,255,255,.9),0 0 14px 4px rgba(255,45,149,.8);z-index:2;':'border:0;');
+      const row=rows.children[i]; if(row) row.style.background=on?'rgba(255,45,149,.16)':'';
+    });
+  };
   const rows=m.querySelector('#ppRows');
   players.forEach(p=>{
-    const row=document.createElement('div'); row.style.cssText='display:flex;align-items:center;gap:8px;';
+    const row=document.createElement('div'); row.style.cssText='display:flex;align-items:center;gap:8px;padding:3px 4px;border-radius:8px;';
     const dot=document.createElement('div'); dot.style.cssText='width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;border:2px solid rgba(0,0,0,.25);background:'+p.color+';color:'+(['#ffffff','#f9a825'].includes(p.color)?'#222':'#fff')+';';
     dot.textContent=p.label||'•'; row.appendChild(dot);
-    const inp=document.createElement('input'); inp.type='text'; inp.maxLength=20; inp.className='fc'; inp.placeholder='Name'; inp.dataset.key=p.key; inp.value=names[p.key]||''; inp.style.cssText='flex:1;min-width:0;';
+    const inp=document.createElement('input'); inp.type='text'; inp.maxLength=20; inp.className='fc'; inp.placeholder='Name'; inp.dataset.key=p.key; inp.value=names[p.key]||''; inp.style.cssText='flex:1;min-width:0;'; inp.onfocus=()=>setActive(p.key);
     row.appendChild(inp);
     if(kader.length){
       const sel=document.createElement('select'); sel.className='fc'; sel.style.cssText='flex:0 0 42%;min-width:0;';
       sel.innerHTML='<option value="">Aus Kader …</option>'+kader.map(n=>'<option>'+esc(n)+'</option>').join('');
-      sel.onchange=()=>{ if(sel.value){inp.value=sel.value; sel.value='';} };
+      sel.onfocus=()=>setActive(p.key); sel.onchange=()=>{ if(sel.value){inp.value=sel.value; sel.value='';} };
       row.appendChild(sel);
     }
     rows.appendChild(row);
