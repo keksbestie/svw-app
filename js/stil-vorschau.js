@@ -188,7 +188,7 @@
     });
   }
 
-  /* Eigenes Vereinslogo schwebt unter dem Ball, wenn der Trainer einem Verein angehört */
+  /* Eigenes Vereinslogo schwebt gross in der Mitte hinter dem Rad, wenn der Trainer einem Verein angehört */
   function ensureClubMark() {
     var w = wrap(); if (!w) return;
     var url = (typeof clubLogoUrl !== 'undefined' && typeof currentClub !== 'undefined' && currentClub) ? clubLogoUrl : null;
@@ -196,7 +196,6 @@
     if (!url || !isMix()) { if (m) m.remove(); return; }
     if (!m) {
       m = document.createElement('div'); m.id = 'clubMark'; m.innerHTML = '<img alt="">';
-      m.addEventListener('pointerdown', function (e) { e.stopPropagation(); });
       w.insertBefore(m, w.firstChild);
     }
     var im = m.querySelector('img');
