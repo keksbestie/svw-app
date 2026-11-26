@@ -65,7 +65,7 @@
       spans(A.map(function (p, i) { return p && B[i] ? p : null; })).forEach(function (sp2) {
         var zm = A[sp2[Math.floor(sp2.length / 2)]][2];
         var fade = Math.max(0.25, 1 - k / R * 0.7);
-        var tone = (k % 2 ? 0.07 : 0.12) * fade * Math.max(0.4, Math.min(1, 1.2 - (zm - 12) / 160));
+        var tone = (k % 2 ? 0.045 : 0.08) * fade * Math.max(0.4, Math.min(1, 1.2 - (zm - 12) / 160));
         c.beginPath();
         sp2.forEach(function (i, j) { if (j) c.lineTo(A[i][0], A[i][1]); else c.moveTo(A[i][0], A[i][1]); });
         for (var j2 = sp2.length - 1; j2 >= 0; j2--) c.lineTo(B[sp2[j2]][0], B[sp2[j2]][1]);
@@ -80,7 +80,7 @@
       var p0 = rows[0][i], p1 = rows[R - 1][i];
       if (!p0 || !p1) continue;
       c.beginPath(); c.moveTo(p0[0], p0[1]); c.lineTo(p1[0], p1[1]);
-      c.strokeStyle = 'rgba(' + base + ',' + (lt ? 0.07 : 0.05) + ')'; c.stroke();
+      c.strokeStyle = 'rgba(' + base + ',' + (lt ? 0.05 : 0.035) + ')'; c.stroke();
     }
     /* Kante am Spielfeld */
     spans(rows[0]).forEach(function (sp2) {
