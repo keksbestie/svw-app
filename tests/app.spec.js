@@ -232,3 +232,11 @@ test('Vereinsfarbe: Trainingsplan-Knopf in der Kopfzeile hat die Akzentfarbe als
   }
   expect(errors).toEqual([]);
 });
+
+test('Angebote: Vereins-Karte nennt die eigene Vereinsfarbe', async ({ page }) => {
+  const errors = await openApp(page);
+  await page.evaluate(() => goPage('angebote'));
+  await expect(page.locator('.offer-card--club')).toContainText('Vereinsfarbe');
+  await expect(page.locator('.offer-card--club')).toContainText('Spielphilosophie');
+  expect(errors).toEqual([]);
+});
