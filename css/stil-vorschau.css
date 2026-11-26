@@ -1,0 +1,170 @@
+/* ══════════════════════════════════════════════════
+   STIL-VORSCHAU (nur zum Ansehen, ersetzt noch nichts)
+   Gilt nur, wenn <html data-stil="nacht|frisch|studio"> gesetzt ist.
+   Aufbau der Startseite bleibt gleich, nur Look und Bewegung ändern sich.
+   ══════════════════════════════════════════════════ */
+
+/* ---------- Umschalter (unten Mitte) ---------- */
+#stilSwitch{position:fixed;left:50%;bottom:max(14px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:99999;display:flex;gap:4px;padding:5px;border-radius:99px;background:rgba(20,22,24,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 6px 24px rgba(0,0,0,.35);max-width:calc(100vw - 24px)}
+#stilSwitch button{font:700 13px 'Barlow',sans-serif;letter-spacing:.02em;color:#d8dcd9;background:none;border:0;padding:8px 14px;border-radius:99px;cursor:pointer;white-space:nowrap}
+#stilSwitch button[aria-pressed="true"]{background:#fff;color:#111}
+#stilSwitch button:focus-visible{outline:2px solid #fff;outline-offset:1px}
+@media (max-width:480px){#stilSwitch button{padding:8px 10px;font-size:12px}}
+
+@keyframes stilUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes stilGlow{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(3%,-4%,0) scale(1.08)}}
+
+/* Gemeinsam: altes Raster und Rahmen-Effekte aus */
+html[data-stil] #page-home::before{display:none}
+html[data-stil] #page-home{isolation:isolate;overflow:hidden}
+html[data-stil] #page-home::after{content:"";position:absolute;z-index:-1;pointer-events:none}
+html[data-stil] .home-hero-eyebrow::before,html[data-stil] .home-hero-eyebrow::after{width:36px;opacity:.6}
+html[data-stil] .home-hero>*{animation:stilUp .7s cubic-bezier(.2,.7,.2,1) both}
+html[data-stil] .home-hero>*:nth-child(2){animation-delay:.06s}
+html[data-stil] .home-hero>*:nth-child(3){animation-delay:.12s}
+html[data-stil] .home-hero>*:nth-child(4){animation-delay:.18s}
+html[data-stil] .home-sport-card{animation:stilUp .6s cubic-bezier(.2,.7,.2,1) both}
+html[data-stil] .home-sport-card:nth-child(2){animation-delay:.08s}
+html[data-stil] .home-sport-card:nth-child(3){animation-delay:.16s}
+html[data-stil] #homeCards .home-card{animation:stilUp .6s cubic-bezier(.2,.7,.2,1) both}
+html[data-stil] #homeCards .home-card:nth-child(2){animation-delay:.07s}
+html[data-stil] #homeCards .home-card:nth-child(3){animation-delay:.14s}
+html[data-stil] #homeCards .home-card:nth-child(4){animation-delay:.21s}
+html[data-stil] #homeCards .home-card:nth-child(5){animation-delay:.28s}
+html[data-stil] .home-card:hover{transform:translateY(-4px)}
+html[data-stil] .home-card::before{display:none}
+@media (prefers-reduced-motion:reduce){html[data-stil] *{animation:none!important;transition:none!important}}
+
+/* ══════════ 1  NACHT: dunkel, Glas, Leuchtverläufe ══════════ */
+html[data-stil="nacht"] #page-home{background:#050d12}
+html[data-stil="nacht"] #page-home::after{inset:-20%;background:
+  radial-gradient(40% 36% at 22% 8%,rgba(34,211,140,.40),transparent 70%),
+  radial-gradient(38% 34% at 82% 30%,rgba(56,120,255,.30),transparent 70%),
+  radial-gradient(46% 40% at 50% 108%,rgba(34,211,140,.22),transparent 70%);animation:stilGlow 16s ease-in-out infinite}
+html[data-stil="nacht"] #clubLogoBg{display:none}
+html[data-stil="nacht"] .home-motto{color:rgba(255,255,255,.4)!important}
+html[data-stil="nacht"] .home-hero-eyebrow{color:#7ff0bf}
+html[data-stil="nacht"] .home-hero-eyebrow::before,html[data-stil="nacht"] .home-hero-eyebrow::after{background:#7ff0bf}
+html[data-stil="nacht"] .home-hero-title{font-weight:800;letter-spacing:.02em;background:linear-gradient(180deg,#fff 30%,#9fe9c6);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+html[data-stil="nacht"] .home-hero-tagline{color:#bfe7d3;opacity:1;font-weight:500;letter-spacing:.2em;font-size:clamp(13px,1.4vw,16px)}
+html[data-stil="nacht"] .home-hero-sub{color:rgba(255,255,255,.7)}
+html[data-stil="nacht"] #homeSportBadge{color:#fff}
+html[data-stil="nacht"] .home-hero-btn,html[data-stil="nacht"] #page-home .home-hero-btn{background:rgba(255,255,255,.08)!important;border:1px solid rgba(255,255,255,.22)!important;color:#fff!important;backdrop-filter:blur(8px)}
+html[data-stil="nacht"] .home-hero-btn:hover{background:rgba(255,255,255,.18)!important}
+html[data-stil="nacht"] .home-sport-card{background:linear-gradient(160deg,rgba(255,255,255,.10),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.16);border-radius:24px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 10px 40px rgba(0,0,0,.35);overflow:hidden}
+html[data-stil="nacht"] .home-sport-card::before{content:"";position:absolute;inset:auto -30% -45% -30%;height:70%;background:radial-gradient(closest-side,rgba(34,211,140,.40),transparent);opacity:.0;transition:opacity .3s}
+html[data-stil="nacht"] .home-sport-card:hover{border-color:rgba(127,240,191,.7);transform:translateY(-5px);background:linear-gradient(160deg,rgba(255,255,255,.14),rgba(255,255,255,.04));box-shadow:0 16px 48px rgba(34,211,140,.22)}
+html[data-stil="nacht"] .home-sport-card:hover::before{opacity:1}
+html[data-stil] .home-sport-img{mix-blend-mode:normal;width:80px;height:80px;object-fit:contain}
+html[data-stil] .home-sport-card[data-sport="fussball"] .home-sport-img{content:url(../icons/sport-fussball-w.png)}
+html[data-stil] .home-sport-card[data-sport="volleyball"] .home-sport-img{content:url(../icons/sport-volleyball-w.png)}
+html[data-stil] .home-sport-card[data-sport="tennis"] .home-sport-img{content:url(../icons/sport-tennis-w.png)}
+html[data-stil="nacht"] .home-sport-img{filter:drop-shadow(0 0 10px rgba(34,211,140,.55)) !important}
+html[data-stil="nacht"] .home-sport-label{color:#fff;letter-spacing:.14em}
+html[data-stil="nacht"] .home-card{background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.14);border-radius:24px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 12px 44px rgba(0,0,0,.35);overflow:hidden}
+html[data-stil="nacht"] .home-card::after{content:"";position:absolute;right:-60px;top:-60px;width:180px;height:180px;border-radius:50%;background:radial-gradient(closest-side,var(--c,#22d38c),transparent);opacity:.28;transition:opacity .3s,transform .5s}
+html[data-stil="nacht"] .home-card:hover{border-color:rgba(255,255,255,.34);box-shadow:0 18px 56px rgba(0,0,0,.45)}
+html[data-stil="nacht"] .home-card:hover::after{opacity:.55;transform:scale(1.25)}
+html[data-stil="nacht"] .home-card--catalog{--c:#22d38c}
+html[data-stil="nacht"] .home-card--plan{--c:#4f8bff}
+html[data-stil="nacht"] .home-card--blocks{--c:#a874ff}
+html[data-stil="nacht"] .home-card--templates{--c:#ffb020}
+html[data-stil="nacht"] .home-card--submit{--c:#ff6a9a}
+html[data-stil="nacht"] .home-card-num{color:rgba(255,255,255,.4)}
+html[data-stil="nacht"] .home-card .home-card-icon{border-radius:16px;color:#fff!important;background:linear-gradient(145deg,var(--c),color-mix(in srgb,var(--c) 45%,#000))!important;box-shadow:0 8px 24px color-mix(in srgb,var(--c) 45%,transparent)}
+html[data-stil="nacht"] .home-card-title{color:#fff;font-weight:800;letter-spacing:.04em}
+html[data-stil="nacht"] .home-card-desc{color:rgba(255,255,255,.66)}
+html[data-stil="nacht"] .home-card-arrow{color:#fff;width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.28);display:grid;place-items:center;background:rgba(255,255,255,.06)}
+html[data-stil="nacht"] .home-card:hover .home-card-arrow{background:#fff;color:#06121a;border-color:#fff}
+html[data-stil="nacht"] #homeQr{background:rgba(255,255,255,.07)!important;border:1px solid rgba(255,255,255,.16)!important;border-radius:22px!important}
+html[data-stil="nacht"] #page-home footer{border-top-color:rgba(255,255,255,.1)!important}
+html[data-stil="nacht"] #page-home .home-topbar button,html[data-stil="nacht"] #page-home .lang-btn{background:rgba(255,255,255,.1)!important;color:#fff!important;border:1px solid rgba(255,255,255,.2)!important;box-shadow:none!important;backdrop-filter:blur(8px)}
+html[data-stil="nacht"] #homeSignInBtn{background:#fff!important;color:#06121a!important;border-color:#fff!important}
+
+/* ══════════ 2  FRISCH: hell, bunte Verläufe, runde Formen ══════════ */
+html[data-stil="frisch"] #page-home{background:#fbfcfb}
+html[data-stil="frisch"] #page-home::after{inset:0 0 auto 0;height:560px;background:
+  radial-gradient(50% 70% at 15% 0%,#b8f0d4 0%,transparent 70%),
+  radial-gradient(45% 65% at 85% 5%,#c9d9ff 0%,transparent 70%),
+  radial-gradient(40% 55% at 55% 0%,#fff1b8 0%,transparent 70%);animation:stilGlow 18s ease-in-out infinite}
+html[data-stil="frisch"] #clubLogoBg{display:none}
+html[data-stil="frisch"] .home-motto{color:#6a7670!important}
+html[data-stil="frisch"] .home-hero{padding-top:56px}
+html[data-stil="frisch"] .home-hero-eyebrow{color:#0f6b40;background:#fff;padding:6px 14px;border-radius:99px;letter-spacing:.14em;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+html[data-stil="frisch"] .home-hero-eyebrow::before,html[data-stil="frisch"] .home-hero-eyebrow::after{display:none}
+html[data-stil="frisch"] .home-hero-title{font-family:'Barlow',sans-serif;font-weight:800;text-transform:none;letter-spacing:-.035em;font-size:clamp(46px,7vw,92px);color:#10201a;line-height:1}
+html[data-stil="frisch"] .home-hero-tagline{font-family:'Barlow',sans-serif;text-transform:none;letter-spacing:-.01em;font-weight:700;font-size:clamp(20px,2.6vw,30px);background:linear-gradient(90deg,#0f9d58,#2563eb);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;opacity:1}
+html[data-stil="frisch"] .home-hero-sub{color:#44524b}
+html[data-stil="frisch"] #homeSportBadge{color:#10201a}
+html[data-stil="frisch"] .home-hero-btn,html[data-stil="frisch"] #page-home .home-hero-btn{background:#fff!important;border:0!important;color:#10201a!important;box-shadow:0 2px 12px rgba(16,32,26,.10)!important;font-family:'Barlow',sans-serif!important;text-transform:none!important;letter-spacing:0!important;font-size:14px!important;font-weight:600!important}
+html[data-stil="frisch"] .home-hero-btn:hover{box-shadow:0 6px 20px rgba(16,32,26,.16)!important;transform:translateY(-2px)}
+html[data-stil="frisch"] .home-sport-card{background:#fff;border:0;border-radius:28px;box-shadow:0 8px 30px rgba(16,32,26,.10);transition:transform .25s cubic-bezier(.3,1.5,.5,1),box-shadow .25s}
+html[data-stil="frisch"] .home-sport-card:hover{transform:translateY(-6px) rotate(-1deg);box-shadow:0 18px 40px rgba(16,32,26,.16);background:#fff;border:0}
+html[data-stil="frisch"] .home-sport-img{width:84px;height:84px;padding:16px;border-radius:50%;background:linear-gradient(145deg,#2fcf8f,#2f6df0);filter:none !important;box-sizing:border-box;box-shadow:0 8px 20px rgba(47,109,240,.28)}
+html[data-stil="frisch"] .home-sport-label{color:#10201a;font-family:'Barlow',sans-serif;font-weight:700;text-transform:none;letter-spacing:0;font-size:17px}
+html[data-stil="frisch"] .home-sport-card--locked{opacity:.55}
+html[data-stil="frisch"] .home-sport-soon{color:#6a7670}
+html[data-stil="frisch"] .home-card{background:#fff;border:0;border-radius:28px;box-shadow:0 6px 28px rgba(16,32,26,.08);padding:30px 28px 26px;transition:transform .25s cubic-bezier(.3,1.5,.5,1),box-shadow .25s}
+html[data-stil="frisch"] .home-card:hover{transform:translateY(-6px);box-shadow:0 18px 44px rgba(16,32,26,.15)}
+html[data-stil="frisch"] .home-card--catalog{--c1:#34d399;--c2:#059669}
+html[data-stil="frisch"] .home-card--plan{--c1:#60a5fa;--c2:#2563eb}
+html[data-stil="frisch"] .home-card--blocks{--c1:#c084fc;--c2:#7c3aed}
+html[data-stil="frisch"] .home-card--templates{--c1:#fbbf24;--c2:#ea580c}
+html[data-stil="frisch"] .home-card--submit{--c1:#f9a8d4;--c2:#db2777}
+html[data-stil="frisch"] .home-card-num{display:none}
+html[data-stil="frisch"] .home-card .home-card-icon{width:60px;height:60px;border-radius:20px;color:#fff!important;background:linear-gradient(145deg,var(--c1),var(--c2))!important;box-shadow:0 8px 18px color-mix(in srgb,var(--c2) 35%,transparent);margin-bottom:22px;transition:transform .3s cubic-bezier(.3,1.6,.5,1)}
+html[data-stil="frisch"] .home-card:hover .home-card-icon{transform:rotate(-8deg) scale(1.1)}
+html[data-stil="frisch"] .home-card-title{font-family:'Barlow',sans-serif;text-transform:none;font-size:22px;font-weight:700;letter-spacing:-.01em;color:#10201a}
+html[data-stil="frisch"] .home-card-desc{color:#55645c}
+html[data-stil="frisch"] .home-card-arrow{color:#fff;background:#10201a;width:38px;height:38px;border-radius:50%;display:grid;place-items:center}
+html[data-stil="frisch"] .home-card:hover .home-card-arrow{color:#fff;background:linear-gradient(145deg,var(--c1),var(--c2))}
+html[data-stil="frisch"] #homeQr{background:#fff!important;border:0!important;border-radius:24px!important;box-shadow:0 6px 28px rgba(16,32,26,.10)!important}
+html[data-stil="frisch"] #homeQr div{color:#10201a!important}
+html[data-stil="frisch"] #homeQr div div{color:#55645c!important}
+html[data-stil="frisch"] #page-home footer,html[data-stil="frisch"] #page-home footer button{color:#55645c!important}
+html[data-stil="frisch"] #page-home footer{border-top-color:#e4e9e6!important}
+html[data-stil="frisch"] #page-home .home-topbar button,html[data-stil="frisch"] #page-home .lang-btn{background:#fff!important;color:#10201a!important;box-shadow:0 2px 10px rgba(16,32,26,.10)!important}
+html[data-stil="frisch"] #homeSignInBtn{background:#10201a!important;color:#fff!important}
+
+/* ══════════ 3  STUDIO: schwarz, ruhig, feine Linien ══════════ */
+html[data-stil="studio"] #page-home{background:#0b0b0b;color:#f2f2f0}
+html[data-stil="studio"] #page-home::after{left:50%;top:-30%;width:70vw;height:70vw;max-width:900px;max-height:900px;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(255,106,0,.16),transparent 70%);animation:stilGlow 20s ease-in-out infinite}
+html[data-stil="studio"] #clubLogoBg{display:none}
+html[data-stil="studio"] .home-motto{color:rgba(255,255,255,.35)!important}
+html[data-stil="studio"] .home-hero{padding-top:64px;max-width:860px}
+html[data-stil="studio"] .home-hero-eyebrow{color:#ff7a1a;font-weight:600;letter-spacing:.42em;font-size:11px}
+html[data-stil="studio"] .home-hero-eyebrow::before,html[data-stil="studio"] .home-hero-eyebrow::after{background:#ff7a1a;width:40px}
+html[data-stil="studio"] .home-hero-title{font-family:'Barlow',sans-serif;font-weight:500;letter-spacing:.34em;font-size:clamp(30px,5.2vw,64px);color:#fff;margin-right:-.34em}
+html[data-stil="studio"] .home-hero-tagline{font-family:'Barlow',sans-serif;font-weight:500;letter-spacing:.3em;font-size:12px;color:#bdbdb8;opacity:1}
+html[data-stil="studio"] .home-hero-sub{color:#9a9a95;max-width:420px}
+html[data-stil="studio"] #homeSportBadge{color:#d8d8d4}
+html[data-stil="studio"] .home-hero-btn,html[data-stil="studio"] #page-home .home-hero-btn{background:transparent!important;border:1px solid rgba(255,255,255,.35)!important;border-radius:2px!important;color:#fff!important;letter-spacing:.22em!important;font-size:11px!important;font-weight:600!important;font-family:'Barlow',sans-serif!important}
+html[data-stil="studio"] .home-hero-btn:hover{background:#fff!important;color:#000!important}
+html[data-stil="studio"] .home-sport-grid{max-width:680px;gap:0;border-top:1px solid rgba(255,255,255,.18);border-bottom:1px solid rgba(255,255,255,.18)}
+html[data-stil="studio"] .home-sport-card{background:transparent;border:0;border-radius:0;border-left:1px solid rgba(255,255,255,.18);box-shadow:none;padding:34px 16px 28px}
+html[data-stil="studio"] .home-sport-card:first-child{border-left:0}
+html[data-stil="studio"] .home-sport-card:hover{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.18);box-shadow:none;transform:none}
+html[data-stil="studio"] .home-sport-card:first-child:hover{border-left:0}
+html[data-stil="studio"] .home-sport-img{filter:none !important;opacity:.85;width:68px;height:68px;transition:transform .5s cubic-bezier(.2,.7,.2,1),opacity .3s}
+html[data-stil="studio"] .home-sport-card:hover .home-sport-img{opacity:1;transform:scale(1.08)}
+html[data-stil="studio"] .home-sport-label{color:#fff;font-family:'Barlow',sans-serif;font-weight:600;font-size:11px;letter-spacing:.3em}
+html[data-stil="studio"] .home-sport-soon{color:#8a8a85}
+html[data-stil="studio"] .home-cards{max-width:1100px;gap:0;border-top:1px solid rgba(255,255,255,.18)}
+html[data-stil="studio"] .home-card{background:transparent;border:0;border-radius:0;box-shadow:none;border-bottom:1px solid rgba(255,255,255,.18);border-left:1px solid rgba(255,255,255,.12);padding:34px 28px 28px}
+html[data-stil="studio"] .home-card:first-child{border-left:0}
+html[data-stil="studio"] .home-card:hover{background:rgba(255,255,255,.04);transform:none;box-shadow:none;border-color:rgba(255,255,255,.18)}
+html[data-stil="studio"] .home-card:hover{border-bottom-color:#ff7a1a}
+html[data-stil="studio"] .home-card-num{color:#ff7a1a;font-family:'Barlow',sans-serif;font-weight:600;letter-spacing:.3em;margin-bottom:38px}
+html[data-stil="studio"] .home-card .home-card-icon{background:none!important;color:#fff!important;width:auto;height:auto;border-radius:0;margin-bottom:22px;justify-content:flex-start}
+html[data-stil="studio"] .home-card .home-card-icon svg{width:30px;height:30px;stroke-width:1.2}
+html[data-stil="studio"] .home-card:hover .home-card-icon{transform:none}
+html[data-stil="studio"] .home-card-title{font-family:'Barlow',sans-serif;font-weight:600;font-size:14px;letter-spacing:.24em;color:#fff}
+html[data-stil="studio"] .home-card-desc{color:#9a9a95;font-size:13.5px}
+html[data-stil="studio"] .home-card-arrow{color:#fff}
+html[data-stil="studio"] .home-card:hover .home-card-arrow{color:#ff7a1a}
+html[data-stil="studio"] #homeQr{background:transparent!important;border:1px solid rgba(255,255,255,.18)!important;border-radius:2px!important;backdrop-filter:none!important}
+html[data-stil="studio"] #page-home footer{border-top-color:rgba(255,255,255,.12)!important}
+html[data-stil="studio"] #page-home .home-topbar button,html[data-stil="studio"] #page-home .lang-btn{background:transparent!important;color:#fff!important;border:1px solid rgba(255,255,255,.3)!important;border-radius:2px!important;box-shadow:none!important;letter-spacing:.2em!important;font-size:11px!important}
+html[data-stil="studio"] #homeSignInBtn{background:#fff!important;color:#000!important;border-color:#fff!important}
+@media (max-width:960px){html[data-stil="studio"] .home-card:nth-child(odd){border-left:0}}
+@media (max-width:600px){html[data-stil="studio"] .home-card{border-left:0}html[data-stil="studio"] .home-sport-card{padding:26px 8px 22px}html[data-stil="studio"] .home-hero-title{letter-spacing:.22em;margin-right:-.22em}}
