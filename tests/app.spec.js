@@ -214,3 +214,35 @@ test('Anmelden lädt den Verein (Zuordnung, Rolle, Farbe) ohne Neuladen der Seit
   expect(r).toEqual({ club: 'Testihausen 09', role: 'club_admin', admin: true, color: 'blau' });
   expect(errors).toEqual([]);
 });
+
+test('Vereinszustand zurücksetzen: keine Endlosschleife, Farbe zurück auf Standard, Abmelden läuft durch', async ({ page }) => {
+  const errors = await openApp(page);
+  const r = await page.evaluate(async () => {
+    currentClub = { id: 'c1', name: 'Test', focus_points: [{ title: 'A', text: 'b' }] }; currentClubRole = 'club_admin'; clubLogoUrl = 'x.png';
+    applyClubColor('rot');
+    const before = document.documentElement.getAttribute('data-club-color');
+    let err = null; try { _clearClubState(); } catch (e) { err = e.message; }
+    const clubBtnHidden = document.getElementById('navClubBtn').style.display === 'none';
+    // Abmelden: ein Verein im Speicher darf danach nicht mehr da sein, und doLogout darf nicht abbrechen
+    currentClub = { id: 'c1', name: 'Test' }; currentClubRole = 'club_admin'; applyClubColor('blau');
+    _supabase = { auth: { signOut: async () => ({}) } };
+    let logoutErr = null; try { await doLogout(); } catch (e) { logoutErr = e.message; }
+    return { before, err, club: currentClub, role: currentClubRole, logo: clubLogoUrl, after: document.documentElement.getAttribute('data-club-color'), clubBtnHidden, logoutErr, afterLogout: document.documentElement.getAttribute('data-club-color'), clubAfterLogout: currentClub };
+  });
+  expect(r.before).toBe('rot');
+  expect(r.err).toBeNull();
+  expect(r.club).toBeNull(); expect(r.role).toBeNull(); expect(r.logo).toBeNull();
+  expect(r.after).toBeNull();
+  expect(r.clubBtnHidden).toBe(true);
+  expect(r.logoutErr).toBeNull();
+  expect(r.afterLogout).toBeNull(); expect(r.clubAfterLogout).toBeNull();
+  expect(errors).toEqual([]);
+});
+
+test('Angebote: Vereins-Karte nennt die eigene Vereinsfarbe', async ({ page }) => {
+  const errors = await openApp(page);
+  await page.evaluate(() => goPage('angebote'));
+  await expect(page.locator('.offer-card--club')).toContainText('Vereinsfarbe');
+  await expect(page.locator('.offer-card--club')).toContainText('Spielphilosophie');
+  expect(errors).toEqual([]);
+});
