@@ -4,6 +4,17 @@
 let squadAll = [];     // alle Spieler des Kontos: [{id, name, number, position, ageGroup, sport}]
 let squad = [];        // nur die Spieler der aktuell gewählten Sportart (siehe refreshSquad)
 
+// Jahrgänge je Sportart (Volleyball: U12–U20 wie beim Erstellen der Übungen)
+const KADER_AGES_DEFAULT=['U7','U8','U9','U10','U11','U12','U13','U14','U15','U16','U17','U18','U19','U20','U21','U23','Senioren','Seniorinnen'];
+function kaderAgeList(){ return currentSportId()==='volleyball' ? AGE_GROUPS_VB.slice() : KADER_AGES_DEFAULT; }
+function fillAgeSelect(selected){
+  const sel=document.getElementById('pAge'); if(!sel) return;
+  const opts=kaderAgeList();
+  if(selected && !opts.includes(selected)) opts.push(selected); // alter Wert bleibt sichtbar
+  sel.innerHTML='<option value="">-- wählen --</option>'+opts.map(o=>`<option>${esc(o)}</option>`).join('');
+  sel.value=selected||'';
+}
+
 // Positionen je Sportart (Tennis: keine Positionen)
 const SPORT_POSITIONS = {
   fussball: ['Torwart','Innenverteidiger','Außenverteidiger','Defensives Mittelfeld','Zentrales Mittelfeld','Offensives Mittelfeld','Außensturm','Mittelstürmer'],
@@ -265,7 +276,7 @@ function renderKaderPage() {
     groups[g].push(p);
   });
 
-  const AGE_ORDER = ['U7','U8','U9','U10','U11','U12','U13','U14','U15','U16','U17','U18','U19','U20','U21','U23','Senioren','Seniorinnen','Ohne Jahrgang'];
+  const AGE_ORDER = ['U7','U8','U9','U10','U11','U12','U13','U14','U15','U16','U17','U18','U19','U20','U21','U23','Senioren','Seniorinnen','Erwachsene','Ohne Jahrgang'];
   const sortedGroups = Object.keys(groups).sort((a, b) => {
     const ai = AGE_ORDER.indexOf(a), bi = AGE_ORDER.indexOf(b);
     return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
@@ -436,7 +447,7 @@ function openPlayerModal(id) {
     if (!p) return;
     document.getElementById('pName').value = p.name;
     document.getElementById('pNumber').value = p.number || '';
-    document.getElementById('pAge').value = p.ageGroup || '';
+    fillAgeSelect(p.ageGroup || '');
     fillPositionSelect(p.position || '');
     title.textContent = 'Spieler bearbeiten';
     delBtn.style.display = '';
@@ -444,7 +455,7 @@ function openPlayerModal(id) {
   } else {
     document.getElementById('pName').value = '';
     document.getElementById('pNumber').value = '';
-    document.getElementById('pAge').value = '';
+    fillAgeSelect('');
     fillPositionSelect('');
     title.textContent = 'Spieler anlegen';
     delBtn.style.display = 'none';
