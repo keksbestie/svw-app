@@ -418,3 +418,6 @@ html[data-stil="nacht"][data-mix] #ringUi .rg-detail{margin-top:8px}
 html[data-stil="nacht"][data-mix] #ringUi .rg-text{margin-bottom:10px;font-size:14px;line-height:1.5}
 }
 html[data-stil="nacht"][data-mix] .home-hero-eyebrow{display:none!important}
+html[data-stil="nacht"][data-mix] .home-hero{position:relative;z-index:6}
+html[data-stil="nacht"][data-mix] #homeCards{z-index:1}
+@media (min-width:701px){html[data-stil="nacht"][data-mix] .home-hero{padding-top:50px}}
