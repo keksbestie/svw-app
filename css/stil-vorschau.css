@@ -460,8 +460,8 @@ html[data-mix] #page-angebote .offer-more{align-self:flex-start;background:none;
 html[data-mix] #page-angebote .offer-more:hover{color:var(--text-1)}
 html[data-mix] #page-angebote .offer-btn{border-radius:2px;font:600 11px 'Barlow',sans-serif;letter-spacing:.2em;padding:14px 18px;background:transparent;color:var(--text-1);border:1px solid var(--border-s);transition:background .25s,color .25s,box-shadow .25s}
 html[data-mix] #page-angebote .offer-btn:hover{background:var(--text-1);color:var(--bg)}
-html[data-mix] #page-angebote .offer-card--hero .offer-btn{background:linear-gradient(90deg,#2fd08f,#4f8bff);color:#04130c;border:0;padding:16px 18px}
-html[data-mix] #page-angebote .offer-card--hero .offer-btn:hover{box-shadow:0 12px 36px -8px rgba(79,139,255,.7);color:#04130c;background:linear-gradient(90deg,#2fd08f,#4f8bff)}
+html[data-mix] #page-angebote .offer-card--hero .offer-btn{background:linear-gradient(90deg,var(--ac-glow),#4f8bff);color:#04130c;border:0;padding:16px 18px}
+html[data-mix] #page-angebote .offer-card--hero .offer-btn:hover{box-shadow:0 12px 36px -8px rgba(79,139,255,.7);color:#04130c;background:linear-gradient(90deg,var(--ac-glow),#4f8bff)}
 @media (max-width:900px){
 html[data-mix] #page-angebote .offer-grid{grid-template-columns:1fr}
 html[data-mix] #page-angebote .offer-card--hero{margin-top:10px;order:0!important}
