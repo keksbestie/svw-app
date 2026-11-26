@@ -34,6 +34,7 @@
 <header>
   <div class="logo" onclick="goPage('home')" style="cursor:pointer;" title="Zur Startseite" data-i18n-title="about.zur_startseite">
     <img src="icons/logo.svg" alt="" width="34" height="34" style="border-radius:27%;flex-shrink:0;display:block;">
+    <span class="logo-flag" data-i18n="reviewer_flag">Reviewer</span>
     <div>
       <div style="display:flex;align-items:center;gap:6px;">
         <div class="logo-t" data-i18n="app.assistcoach">AssistCoach</div>
@@ -614,6 +615,7 @@
   <div class="inner">
     <div class="print-output" id="printOutput" style="display:none;"></div>
     <div class="print-hdr" id="printHdr"></div>
+    <div id="clubFocusPlanner" class="no-print" style="display:none;"></div>
     <div class="plan-hdr no-print">
       <input class="plan-in" id="planName" type="text" placeholder="Trainingseinheit benennen…" data-i18n-placeholder="planner.trainingseinheit_benennen">
       <input class="plan-in plan-date-in" id="planDate" type="date" title="Datum der Trainingseinheit" data-i18n-title="planner.datum_der_trainingseinheit">
@@ -752,6 +754,24 @@
 
     <!-- Tab: Profil -->
     <div id="accPanelProfile">
+      <div id="accReviewerCard" class="rev-card" style="display:none;">
+        <div class="rev-card-head">
+          <span class="rev-card-flag" data-i18n="reviewer_flag">Reviewer</span>
+          <div class="rev-card-title" data-i18n="rev_title">Du bist Reviewer</div>
+        </div>
+        <p class="rev-card-text" data-i18n="rev_intro">Das Admin-Team hat dir Reviewer-Rechte gegeben. Du hilfst mit, eingereichte Inhalte zu prüfen, bevor sie für alle sichtbar werden.</p>
+        <div class="rev-card-label" data-i18n="rev_sports_label">Deine Sportarten</div>
+        <div id="accReviewerSports" class="rev-card-sports">–</div>
+        <div class="rev-card-label" data-i18n="rev_can_label">Das kannst du</div>
+        <ul class="rev-card-list">
+          <li data-i18n="rev_can_1">Eingereichte Übungen deiner Sportarten ansehen: Auf der Seite „Übung einreichen“ erscheint dafür die Prüf-Warteschlange, sortiert nach Abschnitt.</li>
+          <li data-i18n="rev_can_2">Jede Einreichung vor der Entscheidung bearbeiten, dann freigeben (sie kommt in den Katalog), als „In Review“ markieren oder ablehnen (sie wird gelöscht).</li>
+          <li data-i18n="rev_can_3">Eingereichte Trainingspläne und Langzeitplanungs-Blöcke ansehen und freigeben oder ablehnen.</li>
+          <li data-i18n="rev_can_4">Deine Sportarten nutzen, auch wenn sie für andere noch gesperrt sind, weil im Katalog noch Übungen fehlen.</li>
+        </ul>
+        <div class="rev-card-label" data-i18n="rev_cant_label">Das gehört nicht dazu</div>
+        <p class="rev-card-text" data-i18n="rev_cant">Übungen direkt im Katalog anlegen, ändern oder löschen sowie Rollen vergeben können nur Admins.</p>
+      </div>
       <div style="background:var(--surface);border-radius:12px;padding:22px 24px;box-shadow:var(--sh);margin-bottom:14px;">
         <div class="fsec" style="margin-top:0;" data-i18n="account.benutzerdaten">Benutzerdaten</div>
         <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
