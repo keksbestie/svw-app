@@ -1539,3 +1539,7 @@ body:has([style*="inset:0"][style*="z-index:9999"]) { overflow: hidden; }
 /* Tab-Leisten: horizontal wischbar, aber ohne sichtbaren Mini-Scrollbalken */
 .tab-scroll { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -ms-overflow-style: none; }
 .tab-scroll::-webkit-scrollbar { display: none; width: 0; height: 0; }
+
+/* Gäste: gesperrte Übungskarten (unscharf, nicht auswählbar) */
+.card-locked{filter:blur(5px);opacity:.7;cursor:pointer;user-select:none;}
+.card-locked *{pointer-events:none;}

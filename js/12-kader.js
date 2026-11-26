@@ -1,7 +1,35 @@
 // ══════════════════════════════════════════════════════════════════
 // MODUL: KADER-VERWALTUNG + TRAININGSPLAN-KADER
 // ══════════════════════════════════════════════════════════════════
-let squad = [];        // [{id, name, number, position, ageGroup}]
+let squadAll = [];     // alle Spieler des Kontos: [{id, name, number, position, ageGroup, sport}]
+let squad = [];        // nur die Spieler der aktuell gewählten Sportart (siehe refreshSquad)
+
+// Jahrgänge je Sportart (Volleyball: U12–U20 wie beim Erstellen der Übungen)
+const KADER_AGES_DEFAULT=['U7','U8','U9','U10','U11','U12','U13','U14','U15','U16','U17','U18','U19','U20','U21','U23','Senioren','Seniorinnen'];
+function kaderAgeList(){ return currentSportId()==='volleyball' ? AGE_GROUPS_VB.slice() : KADER_AGES_DEFAULT; }
+function fillAgeSelect(selected){
+  const sel=document.getElementById('pAge'); if(!sel) return;
+  const opts=kaderAgeList();
+  if(selected && !opts.includes(selected)) opts.push(selected); // alter Wert bleibt sichtbar
+  sel.innerHTML='<option value="">-- wählen --</option>'+opts.map(o=>`<option>${esc(o)}</option>`).join('');
+  sel.value=selected||'';
+}
+
+// Positionen je Sportart (Tennis: keine Positionen)
+const SPORT_POSITIONS = {
+  fussball: ['Torwart','Innenverteidiger','Außenverteidiger','Defensives Mittelfeld','Zentrales Mittelfeld','Offensives Mittelfeld','Außensturm','Mittelstürmer'],
+  volleyball: ['Außen','Diagonal','Mitte','Libero/Libera','Zuspiel','Universal'],
+  tennis: []
+};
+function currentSportId() {
+  if (window.currentSport && window.currentSport.id) return window.currentSport.id;
+  try { const g = typeof getSavedSport === 'function' && getSavedSport(); if (g) return g.id; } catch {}
+  return 'fussball';
+}
+function refreshSquad() {
+  const sp = currentSportId();
+  squad = squadAll.filter(p => (p.sport || 'fussball') === sp);
+}
 let editPlayerId = null;
 let coaches = [];       // Trainerteam: [{id, name, role}] – pro Übung im Plan einplanbar
 let editCoachId = null;
@@ -165,11 +193,13 @@ async function loadSquad() {
       .eq('owner_id', currentUser.id)
       .order('name');
     if (error) throw error;
-    squad = (data || []).map(r => ({
+    squadAll = (data || []).map(r => ({
       id: r.id, name: r.name,
-      number: r.number || '', position: r.position || '', ageGroup: r.age_group || ''
+      number: r.number || '', position: r.position || '', ageGroup: r.age_group || '',
+      sport: r.sport || 'fussball'
     }));
     cacheSquadLocal();
+    refreshSquad();
   } catch (e) {
     console.warn('Kader laden fehlgeschlagen, nutze Cache:', e);
     loadSquadLocal();
@@ -204,12 +234,13 @@ function cacheCoachesLocal() {
 function loadSquadLocal() {
   try {
     const raw = localStorage.getItem('ac_squad');
-    if (raw) squad = JSON.parse(raw);
+    if (raw) squadAll = JSON.parse(raw);
   } catch {}
+  refreshSquad();
 }
 
 function cacheSquadLocal() {
-  try { localStorage.setItem('ac_squad', JSON.stringify(squad)); } catch {}
+  try { localStorage.setItem('ac_squad', JSON.stringify(squadAll)); } catch {}
 }
 
 // ── Render ────────────────────────────────────────────────────────
@@ -245,7 +276,7 @@ function renderKaderPage() {
     groups[g].push(p);
   });
 
-  const AGE_ORDER = ['U7','U8','U9','U10','U11','U12','U13','U14','U15','U16','U17','U18','U19','U20','U21','U23','Senioren','Seniorinnen','Ohne Jahrgang'];
+  const AGE_ORDER = ['U7','U8','U9','U10','U11','U12','U13','U14','U15','U16','U17','U18','U19','U20','U21','U23','Senioren','Seniorinnen','Erwachsene','Ohne Jahrgang'];
   const sortedGroups = Object.keys(groups).sort((a, b) => {
     const ai = AGE_ORDER.indexOf(a), bi = AGE_ORDER.indexOf(b);
     return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
@@ -393,6 +424,17 @@ function escH(s) {
   return esc(s);
 }
 
+// Positionsliste passend zur Sportart füllen; bei Tennis das Feld ausblenden
+function fillPositionSelect(selected) {
+  const sel = document.getElementById('pPosition'); if (!sel) return;
+  const list = SPORT_POSITIONS[currentSportId()] || [];
+  const opts = list.slice();
+  if (selected && !opts.includes(selected)) opts.push(selected);
+  sel.innerHTML = '<option value="">-- wählen --</option>' + opts.map(o => `<option>${esc(o)}</option>`).join('');
+  sel.value = selected || '';
+  const fg = sel.closest('.fg'); if (fg) fg.style.display = list.length ? '' : 'none';
+}
+
 // ── Modal ─────────────────────────────────────────────────────────
 function openPlayerModal(id) {
   editPlayerId = id || null;
@@ -405,16 +447,16 @@ function openPlayerModal(id) {
     if (!p) return;
     document.getElementById('pName').value = p.name;
     document.getElementById('pNumber').value = p.number || '';
-    document.getElementById('pAge').value = p.ageGroup || '';
-    document.getElementById('pPosition').value = p.position || '';
+    fillAgeSelect(p.ageGroup || '');
+    fillPositionSelect(p.position || '');
     title.textContent = 'Spieler bearbeiten';
     delBtn.style.display = '';
     loadPlayerNotes(id);
   } else {
     document.getElementById('pName').value = '';
     document.getElementById('pNumber').value = '';
-    document.getElementById('pAge').value = '';
-    document.getElementById('pPosition').value = '';
+    fillAgeSelect('');
+    fillPositionSelect('');
     title.textContent = 'Spieler anlegen';
     delBtn.style.display = 'none';
     { const w = document.getElementById('playerNotesWrap'); if (w) w.style.display = 'none'; }
@@ -514,7 +556,7 @@ async function savePlayer() {
     name,
     number: document.getElementById('pNumber').value.trim(),
     ageGroup: document.getElementById('pAge').value,
-    position: document.getElementById('pPosition').value
+    position: SPORT_POSITIONS[currentSportId()].length ? document.getElementById('pPosition').value : ''
   };
 
   // Duplikatsprüfung: gleicher Name (case-insensitiv), anderer Eintrag
@@ -531,8 +573,8 @@ async function savePlayer() {
   try {
     if (editPlayerId) {
       // Update
-      const idx = squad.findIndex(p => p.id === editPlayerId);
-      if (idx !== -1) squad[idx] = { ...squad[idx], ...data };
+      const idx = squadAll.findIndex(p => p.id === editPlayerId);
+      if (idx !== -1) squadAll[idx] = { ...squadAll[idx], ...data };
       if (_supabase && currentUser) {
         await _supabase.from('players').update({
           name: data.name, number: data.number || null,
@@ -541,16 +583,20 @@ async function savePlayer() {
       }
     } else {
       // Insert
-      const newPlayer = { id: uid(), ...data };
-      squad.push(newPlayer);
+      const newPlayer = { id: uid(), ...data, sport: currentSportId() };
+      squadAll.push(newPlayer);
       if (_supabase && currentUser) {
-        await _supabase.from('players').insert({
+        const row = {
           id: newPlayer.id, owner_id: currentUser.id,
           name: data.name, number: data.number || null,
-          age_group: data.ageGroup || null, position: data.position || null
-        });
+          age_group: data.ageGroup || null, position: data.position || null,
+          sport: newPlayer.sport
+        };
+        const r = await _supabase.from('players').insert(row);
+        if (r.error) { delete row.sport; await _supabase.from('players').insert(row); } // Spalte "sport" noch nicht angelegt
       }
     }
+    refreshSquad();
     cacheSquadLocal();
     showToast(editPlayerId ? 'Spieler aktualisiert' : 'Spieler angelegt');
     closePlayerModal();
@@ -567,7 +613,8 @@ async function deletePlayer() {
   if (!editPlayerId) return;
   if (!confirm('Spieler wirklich löschen?')) return;
 
-  squad = squad.filter(p => p.id !== editPlayerId);
+  squadAll = squadAll.filter(p => p.id !== editPlayerId);
+  refreshSquad();
   if (_supabase && currentUser) {
     await _supabase.from('players').delete()
       .eq('id', editPlayerId).eq('owner_id', currentUser.id);
